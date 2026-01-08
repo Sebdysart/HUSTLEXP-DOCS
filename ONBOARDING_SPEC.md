@@ -1,8 +1,25 @@
-# HustleXP Onboarding Specification v1.1
+# HustleXP Onboarding Specification v1.2
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Last Updated: January 2025**  
-**Purpose: Role inference + authority priming before user sees feed**
+**Purpose: Role inference + authority priming before user sees feed**  
+**Governed by:** [AI_INFRASTRUCTURE.md](./AI_INFRASTRUCTURE.md) §3–§8
+
+---
+
+## 0. AI Governance (CONSTITUTIONAL)
+
+This specification is governed by `AI_INFRASTRUCTURE.md`. The following constraints apply:
+
+| Constraint | Value | Reference |
+|------------|-------|-----------|
+| Authority Level | **A2** (Proposal-Only) | AI_INFRASTRUCTURE §3.2 |
+| Certainty Tiers | STRONG / MODERATE / WEAK | AI_INFRASTRUCTURE §8 |
+| Logging Required | certainty_tier, confidence, anomaly_flags, schema_version | AI_INFRASTRUCTURE §8.3 |
+| Fallback | Explicit user selection | AI_INFRASTRUCTURE §14.2 |
+| Kill Switch | `ai.onboarding.enabled` | AI_INFRASTRUCTURE §14.1 |
+
+**Rule:** AI proposes role confidence. Deterministic validators decide. Database enforces. UI reveals.
 
 ---
 
@@ -339,7 +356,7 @@ Same system. Different lens.
 ```typescript
 interface OnboardingResult {
   // Metadata (IMMUTABLE)
-  version: string;           // '1.1.0' — locked per user
+  version: string;           // '1.2.0' — locked per user
   completedAt: string;       // ISO timestamp
   
   // Role determination
@@ -521,13 +538,15 @@ enum RoleCertainty {
 | MODERATE | "Based on your responses, you seem like a" | "You can adjust this if it doesn't feel right." | No |
 | WEAK | "We couldn't determine your primary use case" | "Please select how you'll mainly use HustleXP:" | **Yes** |
 
-### 11.3 Logging Rules
+### 11.3 Logging Rules (AI_INFRASTRUCTURE §8.3)
 
 All onboarding completions MUST log:
 - `certainty_tier` (enum)
+- `confidence` (numeric 0-1)
 - `inconsistency_flags[]` (string array)
 - `role_was_overridden` (boolean)
 - `onboarding_version` (string, immutable)
+- `schema_version` (string)
 
 ### 11.4 Enforcement Rules (Server-Side)
 
@@ -580,7 +599,7 @@ function canReOnboard(existingResult, daysSinceCompletion): boolean {
 
 Every user stores:
 ```typescript
-onboarding_version: "1.1.0"
+onboarding_version: "1.2.0"
 ```
 
 **Rules:**
@@ -613,9 +632,9 @@ onboarding_version: "1.1.0"
 - [x] Enforcement rules generation
 
 ### Backend (TODO - Phase 11)
-- [ ] `POST /onboarding/submitCalibration`
-- [ ] `POST /onboarding/confirmRole`
-- [ ] `POST /onboarding/lockPreferences`
+- [ ] `POST /onboarding/submitCalibration` (AI_INFRASTRUCTURE §15.1)
+- [ ] `POST /onboarding/confirmRole` (AI_INFRASTRUCTURE §15.1)
+- [ ] `POST /onboarding/lockPreferences` (AI_INFRASTRUCTURE §15.1)
 - [ ] Server-side role confidence recomputation
 - [ ] Enforcement rules stored per user
 - [ ] Analytics events
@@ -628,7 +647,8 @@ onboarding_version: "1.1.0"
 |---------|------|---------|
 | 1.0 | Jan 2025 | Initial specification |
 | 1.1 | Jan 2025 | Added: Role Certainty tiers (§11), Gaming detection (§10), Enforcement rules, Version lock, Re-onboarding rules |
+| 1.2 | Jan 2025 | Added: AI Governance section (§0), cross-references to AI_INFRASTRUCTURE.md |
 
 ---
 
-**END OF ONBOARDING SPECIFICATION v1.1**
+**END OF ONBOARDING SPECIFICATION v1.2**
