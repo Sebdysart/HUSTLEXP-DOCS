@@ -1,4 +1,4 @@
-# HustleXP Product Specification v1.0.1
+# HustleXP Product Specification v1.1.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -215,6 +215,124 @@ UPDATE tasks SET title = 'Hacked' WHERE state = 'COMPLETED';
 ```
 
 **Exception:** Only `updated_at` timestamp may change (for audit purposes).
+
+---
+
+## §3.5 Task Modes
+
+Every task has exactly one **fulfillment mode**, declared at creation time.
+
+### Mode Definitions
+
+| Mode | Description | Default | Minimum Price |
+|------|-------------|---------|---------------|
+| `STANDARD` | Normal task feed, no time pressure | ✅ Yes | $5.00 |
+| `LIVE` | Real-time fulfillment, elevated visibility | No | $15.00 |
+
+**Mode is immutable after task creation.** A poster cannot switch a STANDARD task to LIVE after the task exists.
+
+### LIVE Mode Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **LIVE-1** | Live tasks require FUNDED escrow before broadcast | DB trigger (HX901) |
+| **LIVE-2** | Live tasks require $15.00 minimum price | DB constraint (HX902) |
+| **LIVE-3** | Hustlers must explicitly opt into Live Mode | UI + DB state |
+| **LIVE-4** | Live broadcasts are geo-bounded | Backend service |
+| **LIVE-5** | Live broadcasts are time-bounded (TTL) | Backend service |
+| **LIVE-6** | Live Mode is session-based, not permanent | State machine |
+| **LIVE-7** | No auto-accept, no AI task assignment | Constitutional |
+
+### Hustler Live Mode States
+
+```typescript
+type HustlerLiveState = 'OFF' | 'ACTIVE' | 'COOLDOWN' | 'PAUSED';
+```
+
+| State | Meaning | Receives Live Broadcasts |
+|-------|---------|--------------------------|
+| `OFF` | Not opted in (default) | ❌ |
+| `ACTIVE` | Explicitly available | ✅ |
+| `COOLDOWN` | Temporary rest after completions | ❌ |
+| `PAUSED` | System-triggered (fatigue, decline rate) | ❌ |
+
+### Session Rules
+
+| Trigger | Result |
+|---------|--------|
+| 2 tasks accepted in session | Automatic COOLDOWN (15 min) |
+| 5 declines without acceptance | PAUSED (reduced broadcasts) |
+| 3 hours continuous | Fatigue warning |
+| 4 hours continuous | Forced COOLDOWN (30 min) |
+
+---
+
+## §3.6 Live Task Lifecycle
+
+### Broadcast Flow
+
+```
+1. Poster creates LIVE task (mode = 'LIVE', price ≥ $15)
+2. Poster pays → escrow.state = FUNDED
+3. task.live_broadcast_started_at = NOW()
+4. System broadcasts to hustlers within radius (default: 3 miles)
+5. If no acceptance after 60s, radius expands (+2 miles)
+6. Continue until acceptance or TTL expires (default: 10 min)
+```
+
+### Broadcast Configuration
+
+```typescript
+interface LiveBroadcastConfig {
+  initial_radius_miles: number;      // Default: 3
+  max_radius_miles: number;          // Default: 10
+  expansion_interval_seconds: number; // Default: 60
+  expansion_step_miles: number;      // Default: 2
+  broadcast_ttl_minutes: number;     // Default: 10
+}
+```
+
+### Live Task State Transitions
+
+```
+OPEN (LIVE) ──→ BROADCAST_ACTIVE ──┬──→ ACCEPTED ──→ [standard flow]
+                                   │
+                                   └──→ BROADCAST_EXPIRED ──→ [poster options]
+```
+
+### Poster Options After Broadcast Expiry
+
+If no hustler accepts within TTL:
+- **Switch to Standard** — Task joins normal feed
+- **Increase Price** — Rebroadcast at higher rate
+- **Cancel & Refund** — Full refund to card
+
+Escrow remains FUNDED until poster decides.
+
+### XP and Trust Multipliers
+
+| Metric | Standard | Live |
+|--------|----------|------|
+| XP multiplier | 1.0× | 1.25× |
+| Task completion (trust) | +1 | +1.5 |
+| Abandonment (trust) | -2 | **-4** |
+| Complete under 30 min (trust) | +0.5 | +1 |
+
+### Live Mode Performance Tracking
+
+```typescript
+interface LiveModeStats {
+  total_live_tasks: number;
+  live_completion_rate: number;      // Must stay > 90%
+  average_response_time_seconds: number;
+  average_eta_accuracy: number;
+  live_earnings_total: number;
+}
+```
+
+**Consequences:**
+- `live_completion_rate < 80%` → PAUSED from Live Mode (7 days)
+- `live_completion_rate < 70%` → BANNED from Live Mode (30 days)
 
 ---
 
@@ -517,6 +635,11 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX301` | Complete without accepted proof | INV-3 violation |
 | `HX401` | Badge deletion attempt | Append-only violation |
 | `HX801` | Admin action audit violation | Append-only violation |
+| `HX901` | Live broadcast without funded escrow | LIVE-1 violation |
+| `HX902` | Live task below price floor | LIVE-2 violation |
+| `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |
+| `HX904` | Live Mode toggle cooldown | Toggle attempt within 5 minutes |
+| `HX905` | Live Mode banned | Attempt to enable while banned |
 
 All HX error codes are raised by database triggers. Application code cannot suppress them.
 
@@ -528,7 +651,8 @@ All HX error codes are raised by database triggers. Application code cannot supp
 |---------|------|--------|---------|
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial authoritative specification |
 | 1.0.1 | Jan 2025 | HustleXP Core | Fixed: Error codes aligned with schema.sql (HX004, HX401, HX801) |
+| 1.1.0 | Jan 2025 | HustleXP Core | Added: §3.5 Task Modes, §3.6 Live Task Lifecycle, HX9XX error codes |
 
 ---
 
-**END OF PRODUCT_SPEC v1.0.1**
+**END OF PRODUCT_SPEC v1.1.0**

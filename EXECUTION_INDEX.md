@@ -60,6 +60,13 @@
 | `admin_actions` | ARCHITECTURE §2.6 | schema.sql:L791 | ✅ |
 | `schema_versions` | Internal | schema.sql:L19 | ✅ |
 
+### 1.4 Live Mode Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `live_sessions` | PRODUCT_SPEC §3.5 | schema.sql:L1137 | ✅ |
+| `live_broadcasts` | PRODUCT_SPEC §3.6 | schema.sql:L1160 | ✅ |
+
 ---
 
 ## SECTION 2: DATABASE TRIGGERS (INVARIANT ENFORCEMENT)
@@ -89,6 +96,13 @@
 | `trust_tier_audit` | Log trust changes | schema.sql:L455 | ✅ |
 | `admin_actions_no_delete` | Append-only audit | schema.sql:L825 | ✅ |
 | `*_updated_at` (7 triggers) | Auto-timestamp | schema.sql:L906-912 | ✅ |
+
+### 2.4 Live Mode Triggers
+
+| Trigger | Invariant | Schema Location | Test File | Status |
+|---------|-----------|-----------------|-----------|--------|
+| `live_task_escrow_check` | LIVE-1 | schema.sql:L1195 | ❌ | ✅ Schema, ❌ Test |
+| `live_task_price_check` | LIVE-2 | schema.sql:L1213 | ❌ | ✅ Schema, ❌ Test |
 
 ---
 
@@ -159,6 +173,18 @@
 | First celebration single-use | Server-tracked timestamp | ✅ Schema |
 | Poster dashboard: no gamification | Role-gated components | ❌ |
 | Hustler pre-unlock: locked visuals only | UI state gate | ❌ |
+
+### 3.8 Live Mode Invariants (PRODUCT_SPEC §3.5, §3.6)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| LIVE-1 | Live tasks require FUNDED escrow | DB trigger (HX901) | ✅ Schema |
+| LIVE-2 | Live tasks require $15 minimum | DB constraint (HX902) | ✅ Schema |
+| LIVE-3 | Hustlers must opt in explicitly | UI + DB state | ❌ |
+| LIVE-4 | Broadcasts are geo-bounded | Backend service | ❌ |
+| LIVE-5 | Broadcasts are time-bounded (TTL) | Backend service | ❌ |
+| LIVE-6 | Session-based, not permanent | State machine | ❌ |
+| LIVE-7 | No auto-accept, no AI decisions | Constitutional | ❌ |
 
 ---
 
@@ -596,10 +622,11 @@ LIMIT 1;
 | 1.0.0 | Jan 2025 | Initial execution index with schema.sql v1.0.0 |
 | 1.1.0 | Jan 2025 | Backend scaffold: EscrowService, TaskService, db.ts, trpc.ts, escrow router, INV-1/INV-2 kill tests |
 | 1.2.0 | Jan 2025 | Added: ONB invariants (§3.6-3.7), UI_SPEC §12 ESLint rules, BUILD_GUIDE phases (§8), new frontend components (§7.5) |
+| 1.3.0 | Jan 2025 | Added: Live Mode invariants (§3.8), Live Mode tables (§1.4), Live Mode triggers (§2.4) |
 
 ---
 
-**END OF EXECUTION INDEX v1.2.0**
+**END OF EXECUTION INDEX v1.3.0**
 
 ---
 

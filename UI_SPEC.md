@@ -1,4 +1,4 @@
-# HustleXP UI Specification v1.1.0
+# HustleXP UI Specification v1.2.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -735,13 +735,187 @@ const hasCompletedFirstTask = user.xp_first_celebration_shown_at !== null;
 
 ---
 
+## §13. Live Mode UI Rules
+
+Live Mode requires distinct visual treatment to communicate real-time state without creating panic or exploitation.
+
+### 13.1 Mode Indicator Colors
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `LIVE_INDICATOR` | `#EF4444` (Red-500) | Live badge, active broadcast |
+| `STANDARD_INDICATOR` | `#6B7280` (Gray-500) | Standard mode, neutral |
+| `LIVE_ACTIVE` | `#22C55E` (Green-500) | Hustler Live Mode active |
+| `LIVE_COOLDOWN` | `#F59E0B` (Amber-500) | Hustler in cooldown |
+
+### 13.2 Live Task Card Rules
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  🔴 LIVE                    ← Red badge, top-left       │
+├─────────────────────────────────────────────────────────┤
+│  Task title                                             │
+│  Poster name • VERIFIED                                 │
+│                                                         │
+│  💰 $35.00 (you receive ~$29.75)  ← Clear breakdown    │
+│  📍 1.2 miles away                ← Distance visible   │
+│  ✅ Escrow: FUNDED               ← Trust signal        │
+│                                                         │
+│  [ Accept Task ]                                        │
+└─────────────────────────────────────────────────────────┘
+```
+
+**REQUIRED:**
+- Red "🔴 LIVE" badge in top-left
+- Escrow state always visible
+- Distance always visible
+- Clear price breakdown (poster pays / hustler receives)
+
+**FORBIDDEN:**
+- Countdown timers (creates panic)
+- Urgency copy ("Act now!", "Limited time!", "Hurry!")
+- Pulsing or flashing animations
+- Sound effects beyond system default
+
+### 13.3 Hustler Live Mode Toggle
+
+The toggle must be **prominent**, not buried in settings.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  LIVE MODE                                              │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  [ ● ACTIVE ]   ← Green when active                    │
+│                                                         │
+│  🟢 Actively available                                  │
+│  Session: 47 min • Tasks: 2 • Earned: $52              │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**REQUIRED:**
+- Toggle visible on home screen or persistent header
+- Session stats visible when active
+- Cooldown countdown visible when in cooldown
+- State change requires confirmation tap
+
+**FORBIDDEN:**
+- Auto-enable on app open
+- Hidden toggle (must be prominent)
+- Ambiguous state (always clear ON/OFF/COOLDOWN)
+
+### 13.4 Poster Live Task Confirmation
+
+When a hustler accepts:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  🟢 HUSTLER ON THE WAY                                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Marcus                                                 │
+│  ⭐ VERIFIED • 47 tasks completed                       │
+│                                                         │
+│  ETA: ~12 minutes                                       │
+│  Distance: 1.2 miles                                    │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**This is the screenshot moment.**
+
+**REQUIRED:**
+- Green status indicator
+- Hustler name and trust tier
+- ETA (not "searching...")
+- Certainty, not animation
+
+**FORBIDDEN:**
+- Confetti or celebration
+- Animation spam
+- Fake "searching" states
+
+### 13.5 Live Mode Notification Rules
+
+Notifications are **state signals**, not advertisements.
+
+**Format:**
+```
+LIVE TASK nearby
+$35 • 1.2 miles • Escrow funded
+```
+
+**REQUIRED:**
+- Price (hustler take-home)
+- Distance
+- Escrow confirmation
+
+**FORBIDDEN:**
+- Urgency language ("Act now!", "Don't miss out!")
+- Custom sound effects
+- Custom vibration patterns
+- Notification spam (max 1 per task)
+
+### 13.6 Live Mode Session Summary
+
+After session ends:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Session Complete                                       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  2 tasks • $52 earned • 1.5 hours                      │
+│                                                         │
+│  Live Mode performance: ⭐ Excellent                    │
+│                                                         │
+│  [ Share ]  [ View Details ]                           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**This is shareable because:**
+- Concrete earnings
+- Time efficiency visible
+- Skill validation (performance rating)
+
+### 13.7 ESLint Rule: `no-urgency-copy-live-mode`
+
+```javascript
+// Rule: Urgency copy forbidden in Live Mode contexts
+// Error: "Urgency language violates Live Mode UI rules (§13.2)"
+
+// FORBIDDEN strings in Live Mode UI:
+const FORBIDDEN_LIVE_COPY = [
+  'Act now',
+  'Hurry',
+  'Limited time',
+  'Don\'t miss',
+  'Last chance',
+  'Expires in',
+  'Only X left',
+  'ASAP',
+  'Urgent',
+  'Rush'
+];
+
+// ALLOWED:
+'LIVE TASK nearby'
+'Escrow funded'
+'ETA: ~12 minutes'
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial visual contract |
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: Onboarding Visual Rules (§12), cross-refs to ONBOARDING_SPEC |
+| 1.2.0 | Jan 2025 | HustleXP Core | Added: Live Mode UI Rules (§13), mode indicator colors, notification rules |
 
 ---
 
-**END OF UI_SPEC v1.1.0**
+**END OF UI_SPEC v1.2.0**

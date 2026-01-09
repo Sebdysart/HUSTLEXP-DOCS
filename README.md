@@ -11,17 +11,17 @@ The specifications are constitutional — code must conform to specs, not vice v
 ```
 HustleXP-Fresh/
 ├── SPECIFICATIONS (Constitutional Authority)
-│   ├── PRODUCT_SPEC.md        ← WHAT must be true
-│   ├── ARCHITECTURE.md        ← WHO can make it true
-│   ├── UI_SPEC.md             ← HOW it is expressed
+│   ├── PRODUCT_SPEC.md        ← WHAT must be true (+ Live Mode §3.5-3.6)
+│   ├── ARCHITECTURE.md        ← WHO can make it true (+ Live Mode §10)
+│   ├── UI_SPEC.md             ← HOW it is expressed (+ Live Mode §13)
 │   ├── BUILD_GUIDE.md         ← HOW it is built
 │   ├── ONBOARDING_SPEC.md     ← Onboarding flow
 │   ├── AI_INFRASTRUCTURE.md   ← AI governance
 │   ├── EXECUTION_INDEX.md     ← Implementation tracking
-│   └── schema.sql             ← Database enforcement
+│   └── schema.sql             ← Database enforcement (+ Live Mode tables)
 │
-├── STAGING (Pending Integration)
-│   └── LIVE_MODE_SPEC.md      ← Real-time task system (v0.1.0)
+├── STAGING (Reference / Archive)
+│   └── LIVE_MODE_SPEC.md      ← Original spec (INTEGRATED into main specs)
 │
 ├── FRONTEND SCAFFOLD (Reference Implementation)
 │   ├── screens/               ← Screen components
@@ -42,9 +42,9 @@ HustleXP-Fresh/
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, business rules | ✅ v1.0.1 |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | Layer hierarchy, authority model | ✅ v1.0.0 |
-| [UI_SPEC.md](./UI_SPEC.md) | Visual rules, animation constraints, copy guidelines | ✅ v1.1.0 |
+| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, business rules, **Live Mode** | ✅ v1.1.0 |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Layer hierarchy, authority model, **Live Mode authority** | ✅ v1.1.0 |
+| [UI_SPEC.md](./UI_SPEC.md) | Visual rules, animation constraints, **Live Mode UI** | ✅ v1.2.0 |
 | [BUILD_GUIDE.md](./BUILD_GUIDE.md) | Implementation rules, testing requirements, phase gates | ✅ v1.0.0 |
 | [ONBOARDING_SPEC.md](./ONBOARDING_SPEC.md) | User onboarding flow, role inference | ✅ v1.3.0 |
 | [AI_INFRASTRUCTURE.md](./AI_INFRASTRUCTURE.md) | AI governance, proposal/decision model | ✅ v1.1.0 |
@@ -54,14 +54,17 @@ HustleXP-Fresh/
 
 ## Staging Documents
 
-Staging documents are **pending integration** into main specs. They are fully specified but not yet constitutional.
+Staging documents are **reference/archive** after integration. The original LIVE_MODE_SPEC.md has been integrated into main specs.
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [LIVE_MODE_SPEC.md](./staging/LIVE_MODE_SPEC.md) | Real-time task fulfillment system | ⏳ v0.1.0 |
+| [LIVE_MODE_SPEC.md](./staging/LIVE_MODE_SPEC.md) | Original real-time task spec | ✅ INTEGRATED |
 
-**Integration targets:**
-- LIVE_MODE_SPEC → PRODUCT_SPEC §3.5, UI_SPEC §13, ARCHITECTURE §10
+**Integrated into:**
+- PRODUCT_SPEC §3.5, §3.6 (Task Modes, Live Task Lifecycle)
+- ARCHITECTURE §10 (Live Mode Authority)
+- UI_SPEC §13 (Live Mode UI Rules)
+- schema.sql (live_sessions, live_broadcasts tables, LIVE-1/LIVE-2 triggers)
 
 ---
 

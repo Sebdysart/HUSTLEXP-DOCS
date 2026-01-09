@@ -92,6 +92,14 @@ CREATE TABLE users (
     -- Gamification unlock tracking (ONBOARDING_SPEC §13.4, UI_SPEC §12.4)
     xp_first_celebration_shown_at TIMESTAMPTZ,  -- NULL until first XP animation plays
     
+    -- Live Mode (PRODUCT_SPEC §3.5)
+    live_mode_state VARCHAR(20) DEFAULT 'OFF'
+        CHECK (live_mode_state IN ('OFF', 'ACTIVE', 'COOLDOWN', 'PAUSED')),
+    live_mode_session_started_at TIMESTAMPTZ,
+    live_mode_banned_until TIMESTAMPTZ,
+    live_mode_total_tasks INTEGER DEFAULT 0,
+    live_mode_completion_rate NUMERIC(5,4),
+    
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
@@ -140,6 +148,13 @@ CREATE TABLE tasks (
             'CANCELLED',      -- TERMINAL: Terminated by poster/admin
             'EXPIRED'         -- TERMINAL: Time limit exceeded
         )),
+    
+    -- Live Mode (PRODUCT_SPEC §3.5)
+    mode VARCHAR(20) NOT NULL DEFAULT 'STANDARD'
+        CHECK (mode IN ('STANDARD', 'LIVE')),
+    live_broadcast_started_at TIMESTAMPTZ,
+    live_broadcast_expired_at TIMESTAMPTZ,
+    live_broadcast_radius_miles NUMERIC(4,1),
     
     -- Time bounds
     deadline TIMESTAMPTZ,
@@ -1113,6 +1128,112 @@ END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
 -- ============================================================================
+-- SECTION 10.5: LIVE MODE TABLES (PRODUCT_SPEC §3.5, §3.6)
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 10.5.1 LIVE SESSIONS TABLE
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE live_sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    
+    started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ended_at TIMESTAMPTZ,
+    end_reason VARCHAR(20) CHECK (end_reason IN ('MANUAL', 'COOLDOWN', 'FATIGUE', 'FORCED')),
+    
+    tasks_accepted INTEGER DEFAULT 0,
+    tasks_declined INTEGER DEFAULT 0,
+    tasks_completed INTEGER DEFAULT 0,
+    earnings_cents INTEGER DEFAULT 0,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_live_sessions_user ON live_sessions(user_id);
+CREATE INDEX idx_live_sessions_started ON live_sessions(started_at);
+
+-- ----------------------------------------------------------------------------
+-- 10.5.2 LIVE BROADCASTS TABLE
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE live_broadcasts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_id UUID NOT NULL REFERENCES tasks(id),
+    
+    started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expired_at TIMESTAMPTZ,
+    accepted_at TIMESTAMPTZ,
+    accepted_by UUID REFERENCES users(id),
+    
+    initial_radius_miles NUMERIC(4,1) NOT NULL,
+    final_radius_miles NUMERIC(4,1),
+    hustlers_notified INTEGER DEFAULT 0,
+    hustlers_viewed INTEGER DEFAULT 0,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_live_broadcasts_task ON live_broadcasts(task_id);
+CREATE INDEX idx_live_broadcasts_active ON live_broadcasts(started_at) 
+    WHERE expired_at IS NULL AND accepted_at IS NULL;
+
+-- ============================================================================
+-- SECTION 10.6: LIVE MODE TRIGGERS
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- LIVE-1: Live tasks require FUNDED escrow before broadcast
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION live_task_requires_funded_escrow()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.mode = 'LIVE' AND NEW.live_broadcast_started_at IS NOT NULL THEN
+        IF NOT EXISTS (
+            SELECT 1 FROM escrows 
+            WHERE task_id = NEW.id AND state = 'FUNDED'
+        ) THEN
+            RAISE EXCEPTION 'LIVE-1_VIOLATION: Cannot broadcast live task without funded escrow. Task: %', NEW.id
+                USING ERRCODE = 'HX901';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER live_task_escrow_check
+    BEFORE UPDATE ON tasks
+    FOR EACH ROW
+    WHEN (NEW.live_broadcast_started_at IS DISTINCT FROM OLD.live_broadcast_started_at)
+    EXECUTE FUNCTION live_task_requires_funded_escrow();
+
+-- ----------------------------------------------------------------------------
+-- LIVE-2: Live tasks require elevated price floor ($15.00 = 1500 cents)
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION live_task_price_floor()
+RETURNS TRIGGER AS $$
+DECLARE
+    live_minimum_cents INTEGER := 1500; -- $15.00
+BEGIN
+    IF NEW.mode = 'LIVE' AND NEW.price < live_minimum_cents THEN
+        RAISE EXCEPTION 'LIVE-2_VIOLATION: Live tasks require minimum price of $15.00. Task: %, Price: %', 
+            NEW.id, NEW.price
+            USING ERRCODE = 'HX902';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER live_task_price_check
+    BEFORE INSERT OR UPDATE ON tasks
+    FOR EACH ROW
+    WHEN (NEW.mode = 'LIVE')
+    EXECUTE FUNCTION live_task_price_floor();
+
+-- ============================================================================
 -- SECTION 11: ERROR CODE REFERENCE
 -- ============================================================================
 -- 
@@ -1125,9 +1246,14 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 -- HX301: INV-3 violation (COMPLETED requires ACCEPTED proof)
 -- HX401: INV-BADGE-2 violation (badge delete attempt)
 -- HX801: Admin action audit immutability
+-- HX901: LIVE-1 violation (live broadcast without funded escrow)
+-- HX902: LIVE-2 violation (live task below price floor)
+-- HX903: Hustler not in ACTIVE live mode state
+-- HX904: Live Mode toggle cooldown violation
+-- HX905: Live Mode banned
 -- 
 -- ============================================================================
 
 -- ============================================================================
--- END OF CONSTITUTIONAL SCHEMA v1.0.0
+-- END OF CONSTITUTIONAL SCHEMA v1.1.0
 -- ============================================================================

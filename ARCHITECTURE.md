@@ -1,4 +1,4 @@
-# HustleXP Architecture Specification v1.0.0
+# HustleXP Architecture Specification v1.1.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -851,12 +851,99 @@ These invariants define architectural correctness. Violation = broken system.
 
 ---
 
+## §10. Live Mode Authority
+
+Live Mode is a **real-time task fulfillment system** that requires special authority considerations.
+
+### 10.1 Core Principle
+
+> Live Mode turns HustleXP into a real-time marketplace — but only when both sides explicitly opt in.
+
+**This is a mode switch, not a feature.** It activates a higher-intensity, higher-trust marketplace layer.
+
+### 10.2 Authority Distribution
+
+| Layer | Authority | Live Mode Scope |
+|-------|-----------|-----------------|
+| Layer 0 (Database) | Highest | LIVE-1, LIVE-2 enforcement via triggers |
+| Layer 1 (Backend) | High | Broadcast routing, geo-matching, session management |
+| Layer 2 (API) | Medium | Mode switching, availability state changes |
+| Layer 3 (AI) | Advisory Only | Recommendations only, never decisions |
+| Layer 4 (Frontend) | Low | UI mode shifts, notification display |
+
+### 10.3 Live Mode Invariants (Cross-Reference)
+
+| ID | Invariant | Spec Reference | Enforcement |
+|----|-----------|----------------|-------------|
+| LIVE-1 | Live tasks require FUNDED escrow | PRODUCT_SPEC §3.5 | DB trigger (HX901) |
+| LIVE-2 | Live tasks require $15 minimum | PRODUCT_SPEC §3.5 | DB constraint (HX902) |
+| LIVE-3 | Hustlers must opt in explicitly | PRODUCT_SPEC §3.5 | UI + DB state |
+| LIVE-4 | Broadcasts are geo-bounded | PRODUCT_SPEC §3.6 | Backend service |
+| LIVE-5 | Broadcasts are time-bounded | PRODUCT_SPEC §3.6 | Backend service |
+| LIVE-6 | Session-based, not permanent | PRODUCT_SPEC §3.5 | State machine |
+| LIVE-7 | No auto-accept, no AI decisions | Constitutional | Code review |
+
+### 10.4 Broadcast Service Authority
+
+The `LiveBroadcastService` has the following authority:
+
+**CAN:**
+- Route broadcasts to hustlers within radius
+- Expand radius over time
+- Expire broadcasts after TTL
+- Track broadcast metrics
+
+**CANNOT:**
+- Auto-match hustlers to tasks
+- Override hustler availability state
+- Bypass escrow funding requirement
+- Modify pricing
+
+### 10.5 AI Constraints in Live Mode
+
+AI is **strictly advisory** (A1 authority per AI_INFRASTRUCTURE §3).
+
+**AI CAN:**
+- Recommend when to enable Live Mode
+- Predict earnings potential
+- Suggest optimal availability windows
+- Summarize session performance
+
+**AI CANNOT:**
+- Force Live Mode on/off
+- Auto-accept tasks for hustlers
+- Override pricing
+- Change broadcast ordering authority
+- Make accept/decline decisions
+
+### 10.6 Session Management Authority
+
+| Actor | Can Start Session | Can End Session | Can Force Cooldown |
+|-------|-------------------|-----------------|-------------------|
+| Hustler | ✅ Yes (toggle ON) | ✅ Yes (toggle OFF) | ❌ No |
+| System | ❌ No | ✅ Yes (fatigue rules) | ✅ Yes (fatigue rules) |
+| AI | ❌ No | ❌ No | ❌ No |
+| Admin | ✅ Override only | ✅ Override only | ✅ Override only |
+
+### 10.7 Abuse Prevention Authority
+
+| Abuse Scenario | Detection Layer | Enforcement Layer |
+|---------------|-----------------|-------------------|
+| Toggle spam | Layer 1 (Backend) | Layer 0 (DB - HX904) |
+| Abandonment pattern | Layer 1 (Backend) | Layer 0 (DB - HX905 ban) |
+| Location spoofing | Layer 1 (Backend) | Layer 1 (permanent ban) |
+| Fake task spam | Layer 0 (escrow required) | Layer 0 (money committed) |
+| Griefing (accept-cancel) | Layer 1 (pattern detection) | Layer 1 (PAUSED state) |
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial authority specification |
+| 1.1.0 | Jan 2025 | HustleXP Core | Added: §10 Live Mode Authority |
 
 ---
 
-**END OF ARCHITECTURE v1.0.0**
+**END OF ARCHITECTURE v1.1.0**
