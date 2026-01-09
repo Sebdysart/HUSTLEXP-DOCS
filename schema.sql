@@ -89,6 +89,9 @@ CREATE TABLE users (
     trust_ui_density VARCHAR(20) DEFAULT 'normal',
     copy_tone_variant VARCHAR(20) DEFAULT 'neutral',
     
+    -- Gamification unlock tracking (ONBOARDING_SPEC §13.4, UI_SPEC §12.4)
+    xp_first_celebration_shown_at TIMESTAMPTZ,  -- NULL until first XP animation plays
+    
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL

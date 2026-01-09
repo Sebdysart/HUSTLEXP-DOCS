@@ -1,4 +1,4 @@
-# HustleXP UI Specification v1.0.0
+# HustleXP UI Specification v1.1.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -588,15 +588,150 @@ If data may be stale (offline, cached):
 
 ## §11. Cross-Reference Matrix
 
-| UI_SPEC Section | PRODUCT_SPEC | ARCHITECTURE | schema.sql |
-|-----------------|--------------|--------------|------------|
-| §2 Color Authority | §5 (XP) | §3 (XP Authority) | — |
-| §3 Animation | — | §2.5 (Layer 5) | — |
-| §4 Badges | §5.4 | §5 (Badge Authority) | L464 |
-| §5 Copy | — | — | — |
-| §6 Screen Rules | §3, §4, §7 | — | — |
-| §8 Enforcement | — | §9 (Invariants) | — |
-| §9 State Display | — | §1.2 (Authority) | — |
+| UI_SPEC Section | PRODUCT_SPEC | ARCHITECTURE | ONBOARDING_SPEC | schema.sql |
+|-----------------|--------------|--------------|-----------------|------------|
+| §2 Color Authority | §5 (XP) | §3 (XP Authority) | — | — |
+| §3 Animation | — | §2.5 (Layer 5) | §13.4 (First XP) | — |
+| §4 Badges | §5.4 | §5 (Badge Authority) | — | L464 |
+| §5 Copy | — | — | §12 (Divergent) | — |
+| §6 Screen Rules | §3, §4, §7 | — | §12, §13 | — |
+| §8 Enforcement | — | §9 (Invariants) | §0.1 (ONB-*) | — |
+| §9 State Display | — | §1.2 (Authority) | — | — |
+| §12 Onboarding | — | §2 (Layer Hierarchy) | §12-15 | — |
+
+---
+
+## §12. Onboarding Visual Rules
+
+### 12.1 Constitutional Constraints
+
+Onboarding visuals are governed by ONBOARDING_SPEC.md §0.1 invariants:
+
+| Invariant | UI Implication |
+|-----------|----------------|
+| **ONB-2** | Zero rewards during onboarding |
+| **ONB-3** | Posters never see gamification |
+| **ONB-4** | Hustlers see locked gamification until first RELEASED |
+| **ONB-5** | First XP celebration is single-use |
+
+### 12.2 Role-Gated UI Elements
+
+**Poster Dashboard (ONB-3 Enforcement):**
+
+| Element | Visibility |
+|---------|------------|
+| XP counter | ❌ NEVER |
+| Level indicator | ❌ NEVER |
+| Streak counter | ❌ NEVER |
+| Badge display | ❌ NEVER |
+| Progress bars (gamification) | ❌ NEVER |
+
+**Hustler Dashboard Pre-Unlock (ONB-4 Enforcement):**
+
+| Element | State |
+|---------|-------|
+| XP counter | Visible, "0 XP", static |
+| Level indicator | "Level 1 • Locked" |
+| Streak counter | "Inactive" |
+| Badges | Greyed silhouettes |
+| Progress bar | Empty, no fill |
+| "Unlocks after first task" | Visible label |
+
+**Hustler Dashboard Post-Unlock:**
+
+| Element | State |
+|---------|-------|
+| XP counter | Active, animated on change |
+| Level indicator | Active, progress shown |
+| Streak counter | Active, fire/glow if active |
+| Badges | Full color when earned |
+| Progress bar | Filled to current XP |
+
+### 12.3 Onboarding Screen Visual Language
+
+**Phase 0 (Framing Screen):**
+- White or neutral surface background
+- No brand gradients
+- No motion
+- No progress indicator
+- Single CTA button
+
+**Phase 1 (Calibration):**
+- Minimal progress indicator (thin bar)
+- ≤150ms transition between questions
+- No loading spinners
+- No "you're doing great" feedback
+
+**Phase 3 (Authority Confirmation):**
+- No animation
+- No celebration
+- No positive reinforcement copy
+- Role displayed in large text
+- Equal visual weight for Continue/Adjust
+
+### 12.4 First XP Celebration (ONB-5 Enforcement)
+
+**Triggers when:**
+- `xp_first_celebration_shown_at IS NULL`
+- AND first XP awarded
+- AND user role = 'worker' OR 'dual'
+
+**Visual Sequence:**
+
+| Time | Element |
+|------|---------|
+| 0-300ms | XP number fade in + scale 1.0→1.1→1.0 |
+| 300-800ms | Progress bar linear fill |
+| 800-1200ms | "First Task Complete!" fade in |
+| 1200-1800ms | Badge unlock (if earned) |
+| 1800-2000ms | Settle to static |
+
+**Constraints:**
+- No confetti (M2 forbidden)
+- No sound
+- No shake/vibrate
+- Server-tracked: `xp_first_celebration_shown_at`
+- Reduced motion: All instant, no animation
+
+### 12.5 ESLint Rule: `no-gamification-for-poster`
+
+```javascript
+// Rule: Gamification UI components forbidden in poster context
+// Error: "Gamification elements cannot render for poster role (ONB-3)"
+
+// FORBIDDEN in poster context:
+<XPCounter />
+<LevelBadge />
+<StreakIndicator />
+<ProgressBar variant="xp" />
+<BadgeGrid />
+
+// ALLOWED in poster context:
+<TaskList />
+<PaymentHistory />
+<WalletBalance />
+<ReviewQueue />
+```
+
+### 12.6 ESLint Rule: `no-animated-gamification-pre-unlock`
+
+```javascript
+// Rule: Gamification animations forbidden before first RELEASED escrow
+// Error: "Cannot animate gamification before first task completion (ONB-4)"
+
+// Context check:
+const hasCompletedFirstTask = user.xp_first_celebration_shown_at !== null;
+
+// FORBIDDEN if !hasCompletedFirstTask:
+<XPCounter animated />
+<ProgressBar animated />
+<BadgeUnlock animated />
+
+// ALLOWED if !hasCompletedFirstTask:
+<XPCounter static value={0} />
+<ProgressBar static value={0} locked />
+<BadgeGrid locked />
+```
 
 ---
 
@@ -605,7 +740,8 @@ If data may be stale (offline, cached):
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial visual contract |
+| 1.1.0 | Jan 2025 | HustleXP Core | Added: Onboarding Visual Rules (§12), cross-refs to ONBOARDING_SPEC |
 
 ---
 
-**END OF UI_SPEC v1.0.0**
+**END OF UI_SPEC v1.1.0**
