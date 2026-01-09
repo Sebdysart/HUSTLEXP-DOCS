@@ -42,39 +42,39 @@ HustleXP-Fresh/
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, business rules, **Live Mode** | ✅ v1.1.0 |
+| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, **Human Systems** | ✅ v1.2.0 |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Layer hierarchy, authority model, **Live Mode authority** | ✅ v1.1.0 |
-| [UI_SPEC.md](./UI_SPEC.md) | Visual rules, animation constraints, **Live Mode UI** | ✅ v1.2.0 |
+| [UI_SPEC.md](./UI_SPEC.md) | Visual rules, **Money Timeline, Failure Recovery** | ✅ v1.3.0 |
 | [BUILD_GUIDE.md](./BUILD_GUIDE.md) | Implementation rules, testing requirements, phase gates | ✅ v1.0.0 |
 | [ONBOARDING_SPEC.md](./ONBOARDING_SPEC.md) | User onboarding flow, role inference | ✅ v1.3.0 |
-| [AI_INFRASTRUCTURE.md](./AI_INFRASTRUCTURE.md) | AI governance, proposal/decision model | ✅ v1.1.0 |
-| [EXECUTION_INDEX.md](./EXECUTION_INDEX.md) | Implementation tracking matrix | ✅ v1.2.0 |
+| [AI_INFRASTRUCTURE.md](./AI_INFRASTRUCTURE.md) | AI governance, **Session Forecast** | ✅ v1.2.0 |
+| [EXECUTION_INDEX.md](./EXECUTION_INDEX.md) | Implementation tracking, **Human Systems invariants** | ✅ v1.5.0 |
 
 ---
 
 ## Staging Documents
 
-Staging documents are **reference/archive** after integration. The original LIVE_MODE_SPEC.md has been integrated into main specs.
+Staging documents are **reference/archive** after integration.
 
 | Document | Purpose | Status |
 |----------|---------|--------|
 | [LIVE_MODE_SPEC.md](./staging/LIVE_MODE_SPEC.md) | Original real-time task spec | ✅ INTEGRATED |
-| [HUMAN_SYSTEMS_SPEC.md](./staging/HUMAN_SYSTEMS_SPEC.md) | Money legibility, failure recovery, AI forecasts | ⏳ v0.1.0 |
+| [HUMAN_SYSTEMS_SPEC.md](./staging/HUMAN_SYSTEMS_SPEC.md) | Original human systems spec | ✅ INTEGRATED |
 
-**LIVE_MODE integrated into:**
-- PRODUCT_SPEC §3.5, §3.6 (Task Modes, Live Task Lifecycle)
-- ARCHITECTURE §10 (Live Mode Authority)
-- UI_SPEC §13 (Live Mode UI Rules)
-- schema.sql (live_sessions, live_broadcasts tables, LIVE-1/LIVE-2 triggers)
+**All staging specs have been integrated into constitutional law.**
 
-**HUMAN_SYSTEMS targets:**
-- GAP-1: Money Timeline → UI_SPEC §14
-- GAP-2: Failure Recovery UX → UI_SPEC §15
-- GAP-3: Session Forecast → AI_INFRASTRUCTURE §10
-- GAP-4: Private Percentile → PRODUCT_SPEC §8.3
-- GAP-5: Global Anti-Burnout → PRODUCT_SPEC §3.7
-- GAP-6: Poster Quality → PRODUCT_SPEC §8.4
-- GAP-7: Pause State → PRODUCT_SPEC §11
+### Integration Map
+
+| Original Spec | Integrated Into |
+|--------------|-----------------|
+| LIVE_MODE_SPEC | PRODUCT_SPEC §3.5-3.6, ARCHITECTURE §10, UI_SPEC §13, schema.sql |
+| HUMAN_SYSTEMS GAP-1 | UI_SPEC §14 (Money Timeline), schema.sql (money_timeline view) |
+| HUMAN_SYSTEMS GAP-2 | UI_SPEC §15 (Failure Recovery UX) |
+| HUMAN_SYSTEMS GAP-3 | AI_INFRASTRUCTURE §21 (Session Forecast), schema.sql |
+| HUMAN_SYSTEMS GAP-4 | PRODUCT_SPEC §8.3 (Private Percentile) |
+| HUMAN_SYSTEMS GAP-5 | PRODUCT_SPEC §3.7 (Global Fatigue), schema.sql |
+| HUMAN_SYSTEMS GAP-6 | PRODUCT_SPEC §8.4 (Poster Reputation), schema.sql |
+| HUMAN_SYSTEMS GAP-7 | PRODUCT_SPEC §11 (Account Pause), schema.sql |
 
 ---
 

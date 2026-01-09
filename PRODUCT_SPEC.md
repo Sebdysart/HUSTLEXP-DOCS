@@ -1,4 +1,4 @@
-# HustleXP Product Specification v1.1.0
+# HustleXP Product Specification v1.2.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -336,6 +336,51 @@ interface LiveModeStats {
 
 ---
 
+## §3.7 Global Fatigue System
+
+Fatigue awareness extends **beyond Live Mode** to all activity.
+
+### Fatigue Triggers
+
+| Trigger | Context | Result |
+|---------|---------|--------|
+| 4 hours total activity | Any mode | Gentle nudge |
+| 6 hours total activity | Any mode | Stronger nudge |
+| 8 hours total activity | Any mode | Mandatory break (30 min) |
+| 7 consecutive active days | Any mode | "Rest day" suggestion |
+
+### Fatigue Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **FATIGUE-1** | 8-hour limit triggers mandatory break | Backend service |
+| **FATIGUE-2** | Nudges are suggestions, not blocks (except 8h) | UI only |
+| **FATIGUE-3** | Activity tracking is per-calendar-day | DB column |
+| **FATIGUE-4** | Break timer cannot be bypassed | Backend enforcement |
+
+### Fatigue Tracking
+
+```typescript
+interface FatigueState {
+  daily_active_minutes: number;
+  last_activity_date: Date;
+  consecutive_active_days: number;
+  last_mandatory_break_at: Date | null;
+  current_session_start: Date | null;
+}
+```
+
+### Break Duration Rules
+
+| Activity Level | Required Break |
+|----------------|----------------|
+| 4 hours | Suggested: 15 min |
+| 6 hours | Suggested: 30 min |
+| 8 hours | **Mandatory: 30 min** |
+| After mandatory break | Resets daily counter |
+
+---
+
 ## §4. Escrow System
 
 ### 4.1 Escrow States
@@ -593,6 +638,69 @@ Role is determined during onboarding (see ONBOARDING_SPEC.md).
 
 Trust tier changes are logged in `trust_ledger` (append-only).
 
+### 8.3 Private Percentile Status
+
+Hustlers see their relative standing **without public leaderboards**.
+
+#### Percentile Metrics
+
+| Metric | Calculation | Visible To |
+|--------|-------------|------------|
+| Reliability | Tasks completed / Tasks accepted | Hustler only |
+| Response Time | Avg time to accept tasks | Hustler only |
+| Completion Rate | Successful / Total tasks | Hustler only |
+| Earnings Velocity | Earnings / Active hours | Hustler only |
+
+#### Percentile Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **PERC-1** | Percentiles are never public | API guard |
+| **PERC-2** | No comparison to named users | UI review |
+| **PERC-3** | Percentiles update weekly max | Backend job |
+| **PERC-4** | Minimum 100 users for percentile | Statistical validity |
+| **PERC-5** | No "rankings" or "leaderboards" | Constitutional |
+
+#### Display Rules
+
+- Format: "Top X% this week" (never "Rank #Y")
+- Self-relative only: Compare to own history
+- No gamification: No rewards for percentile position
+
+### 8.4 Poster Reputation
+
+Poster reputation is visible **only to hustlers**, never to posters.
+
+#### Reputation Metrics
+
+| Metric | Calculation | Visible To |
+|--------|-------------|------------|
+| Tasks Posted | COUNT(tasks) in 90 days | Hustlers only |
+| Dispute Rate | Disputes / Tasks | Hustlers only |
+| Avg Response Time | Avg time to respond to proofs | Hustlers only |
+| Hustler Rating | Avg rating from workers | Hustlers only |
+
+#### Reputation Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **POSTER-1** | Reputation never shown to poster | API guard |
+| **POSTER-2** | Minimum 5 tasks for reputation | Statistical validity |
+| **POSTER-3** | Rolling 90-day window | DB query |
+| **POSTER-4** | No "bad poster" labels | UI review |
+
+#### Rating System (Post-Task)
+
+After task completion, hustler can rate poster:
+- `GREAT` — No issues
+- `OKAY` — Minor issues
+- `DIFFICULT` — Significant issues
+
+Optional feedback flags:
+- Clearer task description needed
+- Faster communication needed
+- More reasonable expectations needed
+
 ---
 
 ## §9. Monetary Rules
@@ -645,6 +753,66 @@ All HX error codes are raised by database triggers. Application code cannot supp
 
 ---
 
+## §11. Account Pause State
+
+Users can **pause their account** without losing progress.
+
+### 11.1 Account States
+
+```typescript
+type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
+```
+
+| Status | User Action | Task Visibility | Notifications |
+|--------|-------------|-----------------|---------------|
+| `ACTIVE` | Full access | Visible | Enabled |
+| `PAUSED` | View only | Hidden from feed | Disabled |
+| `SUSPENDED` | None (admin action) | Hidden | Disabled |
+
+### 11.2 What's Protected During Pause
+
+| Aspect | During Pause | After Resume |
+|--------|--------------|--------------|
+| XP | No decay | Intact |
+| Level | Frozen | Intact |
+| Trust Tier | Frozen | Intact |
+| Badges | Permanent | Intact |
+| Earnings History | Preserved | Intact |
+| Task History | Preserved | Intact |
+
+### 11.3 Streak Grace Period
+
+| Pause Duration | Streak Effect | Trust Effect |
+|----------------|---------------|--------------|
+| Up to 14 days | Full streak preserved | Full protection |
+| 15-30 days | Streak resets to 1 | Trust tier preserved |
+| 31-90 days | Streak resets to 1 | Trust tier preserved |
+| 90+ days | Streak resets to 1 | Trust tier drops one level |
+
+### 11.4 Pause Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **PAUSE-1** | XP never decays during pause | Backend logic |
+| **PAUSE-2** | Badges are permanent regardless | DB constraint |
+| **PAUSE-3** | Pause is always available | UI always shows option |
+| **PAUSE-4** | Resume is instant | No "reactivation" delay |
+| **PAUSE-5** | No punitive notifications during pause | Notification service |
+
+### 11.5 Pause Tracking
+
+```typescript
+interface PauseState {
+  account_status: 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
+  paused_at: Date | null;
+  pause_streak_snapshot: number;
+  pause_trust_tier_snapshot: number;
+  pause_reason: string | null;
+}
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
@@ -652,7 +820,8 @@ All HX error codes are raised by database triggers. Application code cannot supp
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial authoritative specification |
 | 1.0.1 | Jan 2025 | HustleXP Core | Fixed: Error codes aligned with schema.sql (HX004, HX401, HX801) |
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: §3.5 Task Modes, §3.6 Live Task Lifecycle, HX9XX error codes |
+| 1.2.0 | Jan 2025 | HustleXP Core | Added: §3.7 Global Fatigue, §8.3 Private Percentile, §8.4 Poster Reputation, §11 Account Pause |
 
 ---
 
-**END OF PRODUCT_SPEC v1.1.0**
+**END OF PRODUCT_SPEC v1.2.0**

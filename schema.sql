@@ -1234,9 +1234,143 @@ CREATE TRIGGER live_task_price_check
     EXECUTE FUNCTION live_task_price_floor();
 
 -- ============================================================================
+-- SECTION 10.7: HUMAN SYSTEMS SCHEMA (PRODUCT_SPEC §3.7, §8.3, §8.4, §11)
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 10.7.1 FATIGUE TRACKING (Global Anti-Burnout)
+-- ----------------------------------------------------------------------------
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS daily_active_minutes INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS last_activity_date DATE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS consecutive_active_days INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS last_mandatory_break_at TIMESTAMPTZ;
+
+-- ----------------------------------------------------------------------------
+-- 10.7.2 ACCOUNT PAUSE STATE
+-- ----------------------------------------------------------------------------
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS account_status VARCHAR(20) DEFAULT 'ACTIVE'
+    CHECK (account_status IN ('ACTIVE', 'PAUSED', 'SUSPENDED'));
+ALTER TABLE users ADD COLUMN IF NOT EXISTS paused_at TIMESTAMPTZ;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS pause_streak_snapshot INTEGER;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS pause_trust_tier_snapshot INTEGER;
+
+-- ----------------------------------------------------------------------------
+-- 10.7.3 POSTER RATINGS TABLE (Hustler-only reputation)
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS poster_ratings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_id UUID NOT NULL REFERENCES tasks(id),
+    poster_id UUID NOT NULL REFERENCES users(id),
+    rated_by UUID NOT NULL REFERENCES users(id),
+    
+    rating VARCHAR(20) NOT NULL CHECK (rating IN ('GREAT', 'OKAY', 'DIFFICULT')),
+    feedback_flags TEXT[],
+    
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    
+    UNIQUE(task_id, rated_by)
+);
+
+CREATE INDEX IF NOT EXISTS idx_poster_ratings_poster ON poster_ratings(poster_id);
+CREATE INDEX IF NOT EXISTS idx_poster_ratings_task ON poster_ratings(task_id);
+
+-- ----------------------------------------------------------------------------
+-- 10.7.4 POSTER REPUTATION VIEW (Hustlers only — PRODUCT_SPEC §8.4)
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE VIEW poster_reputation AS
+SELECT 
+    u.id as poster_id,
+    COUNT(DISTINCT t.id) as tasks_posted_90d,
+    COUNT(DISTINCT d.id) as disputes_90d,
+    ROUND(AVG(EXTRACT(EPOCH FROM (p.reviewed_at - p.submitted_at))/3600)::NUMERIC, 1) as avg_response_hours,
+    COUNT(CASE WHEN pr.rating = 'GREAT' THEN 1 END) as great_ratings,
+    COUNT(CASE WHEN pr.rating = 'OKAY' THEN 1 END) as okay_ratings,
+    COUNT(CASE WHEN pr.rating = 'DIFFICULT' THEN 1 END) as difficult_ratings,
+    COUNT(pr.id) as total_ratings
+FROM users u
+LEFT JOIN tasks t ON t.poster_id = u.id AND t.created_at > NOW() - INTERVAL '90 days'
+LEFT JOIN disputes d ON d.task_id = t.id
+LEFT JOIN proofs p ON p.task_id = t.id
+LEFT JOIN poster_ratings pr ON pr.poster_id = u.id AND pr.created_at > NOW() - INTERVAL '90 days'
+GROUP BY u.id
+HAVING COUNT(DISTINCT t.id) >= 5;  -- POSTER-2: Minimum 5 tasks
+
+-- ----------------------------------------------------------------------------
+-- 10.7.5 SESSION FORECASTS TABLE (AI Predictions — AI_INFRASTRUCTURE §21)
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS session_forecasts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    
+    -- Forecast outputs
+    earnings_low_cents INTEGER NOT NULL,
+    earnings_high_cents INTEGER NOT NULL,
+    confidence VARCHAR(20) NOT NULL CHECK (confidence IN ('LOW', 'MEDIUM', 'HIGH')),
+    conditions VARCHAR(20) NOT NULL CHECK (conditions IN ('POOR', 'FAIR', 'GOOD', 'EXCELLENT')),
+    best_categories TEXT[],
+    nearby_demand INTEGER,
+    
+    -- Accuracy tracking
+    actual_earnings_cents INTEGER,  -- Filled in after session ends
+    
+    -- Metadata
+    inputs_hash VARCHAR(64),        -- Privacy: hash of inputs
+    expires_at TIMESTAMPTZ NOT NULL,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_session_forecasts_user ON session_forecasts(user_id);
+CREATE INDEX IF NOT EXISTS idx_session_forecasts_expires ON session_forecasts(expires_at);
+
+-- ----------------------------------------------------------------------------
+-- 10.7.6 MONEY TIMELINE VIEW (UI_SPEC §14)
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE VIEW money_timeline AS
+SELECT 
+    e.id,
+    e.worker_id,
+    e.amount_cents,
+    e.state as escrow_state,
+    e.released_at,
+    t.id as task_id,
+    t.title as task_title,
+    t.state as task_state,
+    CASE 
+        WHEN e.state = 'RELEASED' AND e.released_at > NOW() - INTERVAL '24 hours' 
+            THEN 'TODAY'
+        WHEN e.state = 'RELEASED' 
+            THEN 'AVAILABLE'
+        WHEN e.state = 'FUNDED' AND t.state IN ('ACCEPTED', 'PROOF_SUBMITTED') 
+            THEN 'COMING_SOON'
+        WHEN e.state = 'LOCKED_DISPUTE' 
+            THEN 'BLOCKED'
+        ELSE 'PENDING'
+    END as timeline_category,
+    CASE
+        WHEN e.state = 'FUNDED' AND t.state = 'ACCEPTED' 
+            THEN 'Task in progress'
+        WHEN e.state = 'FUNDED' AND t.state = 'PROOF_SUBMITTED' 
+            THEN 'Awaiting review'
+        WHEN e.state = 'LOCKED_DISPUTE' 
+            THEN 'Under dispute review'
+        ELSE NULL
+    END as status_context
+FROM escrows e
+JOIN tasks t ON e.task_id = t.id
+WHERE e.worker_id IS NOT NULL;
+
+-- ============================================================================
 -- SECTION 11: ERROR CODE REFERENCE
 -- ============================================================================
 -- 
+-- Core Invariants (HX0XX, HX1XX, HX2XX, HX3XX, HX4XX, HX8XX)
 -- HX001: Task terminal state violation
 -- HX002: Escrow terminal state violation
 -- HX004: INV-4 violation (escrow amount immutability)
@@ -1246,14 +1380,22 @@ CREATE TRIGGER live_task_price_check
 -- HX301: INV-3 violation (COMPLETED requires ACCEPTED proof)
 -- HX401: INV-BADGE-2 violation (badge delete attempt)
 -- HX801: Admin action audit immutability
+--
+-- Live Mode (HX9XX)
 -- HX901: LIVE-1 violation (live broadcast without funded escrow)
 -- HX902: LIVE-2 violation (live task below price floor)
 -- HX903: Hustler not in ACTIVE live mode state
 -- HX904: Live Mode toggle cooldown violation
 -- HX905: Live Mode banned
+--
+-- Human Systems (HX6XX) — Reserved for future enforcement
+-- HX601: Fatigue mandatory break bypass attempt
+-- HX602: Pause state violation
+-- HX603: Poster reputation access by poster (POSTER-1 violation)
+-- HX604: Percentile public exposure attempt (PERC-1 violation)
 -- 
 -- ============================================================================
 
 -- ============================================================================
--- END OF CONSTITUTIONAL SCHEMA v1.1.0
+-- END OF CONSTITUTIONAL SCHEMA v1.2.0
 -- ============================================================================

@@ -67,6 +67,15 @@
 | `live_sessions` | PRODUCT_SPEC §3.5 | schema.sql:L1137 | ✅ |
 | `live_broadcasts` | PRODUCT_SPEC §3.6 | schema.sql:L1160 | ✅ |
 
+### 1.5 Human Systems Tables
+
+| Table/View | Spec Reference | Schema Location | Status |
+|------------|----------------|-----------------|--------|
+| `poster_ratings` | PRODUCT_SPEC §8.4 | schema.sql:L1265 | ✅ |
+| `poster_reputation` (VIEW) | PRODUCT_SPEC §8.4 | schema.sql:L1285 | ✅ |
+| `session_forecasts` | AI_INFRASTRUCTURE §21 | schema.sql:L1305 | ✅ |
+| `money_timeline` (VIEW) | UI_SPEC §14 | schema.sql:L1330 | ✅ |
+
 ---
 
 ## SECTION 2: DATABASE TRIGGERS (INVARIANT ENFORCEMENT)
@@ -186,17 +195,84 @@
 | LIVE-6 | Session-based, not permanent | State machine | ❌ |
 | LIVE-7 | No auto-accept, no AI decisions | Constitutional | ❌ |
 
-### 3.9 Human Systems Gaps (HUMAN_SYSTEMS_SPEC v0.1.0)
+### 3.9 Human Systems — NOW CONSTITUTIONAL
 
-| ID | Gap | Description | Status |
-|----|-----|-------------|--------|
-| GAP-1 | Money Legibility | Money Timeline for hustlers | ❌ STAGING |
-| GAP-2 | Failure Recovery UX | Graceful failure paths | ❌ STAGING |
-| GAP-3 | Earning Predictability | AI Session Forecast | ❌ STAGING |
-| GAP-4 | Private Percentile | No leaderboards, self-relative status | ❌ STAGING |
-| GAP-5 | Anti-Burnout (Global) | Extend fatigue rules beyond Live Mode | 🟡 PARTIAL |
-| GAP-6 | Poster Quality | Poster reputation visible to hustlers | ❌ STAGING |
-| GAP-7 | Exit With Dignity | Graceful pause state | ❌ STAGING |
+| ID | Gap | Description | Spec Location | Status |
+|----|-----|-------------|---------------|--------|
+| GAP-1 | Money Legibility | Money Timeline | UI_SPEC §14, schema.sql view | ✅ INTEGRATED |
+| GAP-2 | Failure Recovery UX | Graceful failure paths | UI_SPEC §15 | ✅ INTEGRATED |
+| GAP-3 | Earning Predictability | AI Session Forecast | AI_INFRASTRUCTURE §21, schema.sql | ✅ INTEGRATED |
+| GAP-4 | Private Percentile | No leaderboards | PRODUCT_SPEC §8.3 | ✅ INTEGRATED |
+| GAP-5 | Anti-Burnout (Global) | Fatigue rules everywhere | PRODUCT_SPEC §3.7, schema.sql | ✅ INTEGRATED |
+| GAP-6 | Poster Quality | Reputation to hustlers | PRODUCT_SPEC §8.4, schema.sql | ✅ INTEGRATED |
+| GAP-7 | Exit With Dignity | Pause state | PRODUCT_SPEC §11, schema.sql | ✅ INTEGRATED |
+
+### 3.10 Money Timeline Invariants (UI_SPEC §14)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| MONEY-1 | Timeline reflects actual escrow states | DB view | ✅ Schema |
+| MONEY-2 | No charts, no graphs, no gambling visuals | UI review | ❌ UI |
+| MONEY-3 | Time + certainty only | UI review | ❌ UI |
+| MONEY-4 | COMING SOON shows context | Backend | ✅ Schema |
+
+### 3.11 Failure Recovery Invariants (UI_SPEC §15)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| FAIL-1 | Every negative outcome has explanation | UI review | ❌ UI |
+| FAIL-2 | Every explanation has next step | UI review | ❌ UI |
+| FAIL-3 | No shame language | Copy review | ❌ UI |
+| FAIL-4 | Recovery path always visible | UI component | ❌ UI |
+| FAIL-5 | Impact is specific, not vague | Copy review | ❌ UI |
+
+### 3.12 Private Percentile Invariants (PRODUCT_SPEC §8.3)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| PERC-1 | Percentiles are never public | API guard (HX604) | ❌ Backend |
+| PERC-2 | No comparison to named users | UI review | ❌ UI |
+| PERC-3 | Percentiles update weekly max | Backend job | ❌ Backend |
+| PERC-4 | Minimum 100 users for percentile | Statistical validity | ❌ Backend |
+| PERC-5 | No rankings or leaderboards | Constitutional | ❌ Code review |
+
+### 3.13 Poster Reputation Invariants (PRODUCT_SPEC §8.4)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| POSTER-1 | Reputation never shown to poster | API guard (HX603) | ❌ Backend |
+| POSTER-2 | Minimum 5 tasks for reputation | DB view | ✅ Schema |
+| POSTER-3 | Rolling 90-day window | DB view | ✅ Schema |
+| POSTER-4 | No "bad poster" labels | UI review | ❌ UI |
+
+### 3.14 Fatigue Invariants (PRODUCT_SPEC §3.7)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| FATIGUE-1 | 8-hour limit triggers mandatory break | Backend service | ❌ Backend |
+| FATIGUE-2 | Nudges are suggestions (except 8h) | UI only | ❌ UI |
+| FATIGUE-3 | Activity tracking per-calendar-day | DB column | ✅ Schema |
+| FATIGUE-4 | Break timer cannot be bypassed | Backend (HX601) | ❌ Backend |
+
+### 3.15 Pause State Invariants (PRODUCT_SPEC §11)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| PAUSE-1 | XP never decays during pause | Backend logic | ❌ Backend |
+| PAUSE-2 | Badges are permanent | DB constraint | ✅ Schema |
+| PAUSE-3 | Pause is always available | UI | ❌ UI |
+| PAUSE-4 | Resume is instant | Backend | ❌ Backend |
+| PAUSE-5 | No punitive notifications during pause | Notification service | ❌ Backend |
+
+### 3.16 Session Forecast Invariants (AI_INFRASTRUCTURE §21)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| FORECAST-1 | Never guarantee earnings | Copy review | ❌ UI |
+| FORECAST-2 | Always show disclaimer | UI component | ❌ UI |
+| FORECAST-3 | Ranges only, no exact numbers | Backend | ❌ Backend |
+| FORECAST-4 | Expire after 15 minutes | TTL enforcement | ❌ Backend |
+| FORECAST-5 | Log all forecasts for accuracy | AI logging | ✅ Schema |
 
 ---
 
@@ -636,10 +712,11 @@ LIMIT 1;
 | 1.2.0 | Jan 2025 | Added: ONB invariants (§3.6-3.7), UI_SPEC §12 ESLint rules, BUILD_GUIDE phases (§8), new frontend components (§7.5) |
 | 1.3.0 | Jan 2025 | Added: Live Mode invariants (§3.8), Live Mode tables (§1.4), Live Mode triggers (§2.4) |
 | 1.4.0 | Jan 2025 | Added: Human Systems gap tracking (§3.9) |
+| 1.5.0 | Jan 2025 | INTEGRATED: All 7 Human Systems (§3.9-3.16), Human Systems tables (§1.5) |
 
 ---
 
-**END OF EXECUTION INDEX v1.4.0**
+**END OF EXECUTION INDEX v1.5.0**
 
 ---
 

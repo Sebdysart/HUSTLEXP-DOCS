@@ -1,4 +1,4 @@
-# HustleXP UI Specification v1.2.0
+# HustleXP UI Specification v1.3.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -908,6 +908,233 @@ const FORBIDDEN_LIVE_COPY = [
 
 ---
 
+## §14. Money Timeline (Financial Legibility)
+
+The Money Timeline transforms HustleXP from a gig app into a **financial planning tool**.
+
+### 14.1 Core Principle
+
+Users don't churn because of UX. They churn because they feel **financially blind**.
+
+The Money Timeline answers:
+- What money do I have **now**?
+- What money is **coming**?
+- What money is **blocked**?
+
+### 14.2 Money Timeline UI
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  YOUR MONEY                                             │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  AVAILABLE NOW                                          │
+│  $127.50                                                │
+│  [ Transfer to Bank ]                                   │
+│                                                         │
+│  ─────────────────────────────────────────────────────  │
+│                                                         │
+│  TODAY                                                  │
+│  + $21.25   Couch move — Released 2:34 PM              │
+│  + $15.00   Grocery pickup — Released 11:20 AM         │
+│                                                         │
+│  COMING SOON                                            │
+│  + $40.00   Deep cleaning — In escrow (task active)    │
+│  + $25.00   Package delivery — In escrow (proof sent)  │
+│                                                         │
+│  BLOCKED                                                │
+│  ⚠️ $15.00   Furniture assembly — Under review          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 14.3 Timeline Categories
+
+| Category | Meaning | Color | Criteria |
+|----------|---------|-------|----------|
+| **AVAILABLE NOW** | Withdrawable | Green | `escrow.state = RELEASED` AND transferred |
+| **TODAY** | Recent releases | Green | Released in last 24h |
+| **COMING SOON** | Earned not released | Amber | `escrow.state = FUNDED` AND task in progress |
+| **BLOCKED** | Frozen in dispute | Red | `escrow.state = LOCKED_DISPUTE` |
+
+### 14.4 Money Timeline Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **MONEY-1** | Timeline reflects actual escrow states | DB query |
+| **MONEY-2** | No charts, no graphs, no gambling visuals | UI review |
+| **MONEY-3** | Time + certainty only | UI review |
+| **MONEY-4** | COMING SOON shows expected release context | Backend |
+
+### 14.5 Forbidden Money UI Patterns
+
+```javascript
+const FORBIDDEN_MONEY_UI = [
+  // Gambling visuals
+  'Spin', 'Jackpot', 'Bonus', 'Lucky', 'Win',
+  
+  // Charts that obscure clarity
+  'Pie chart', 'Line graph', 'Bar chart',
+  
+  // Vague language
+  'Pending', 'Processing', 'Soon',
+  
+  // Over-optimism
+  'Potential earnings', 'Could earn', 'Up to'
+];
+```
+
+---
+
+## §15. Failure Recovery UX
+
+When things go wrong, users need **explanation, not punishment**.
+
+### 15.1 Core Principle
+
+Every negative outcome has:
+1. Clear explanation of what happened
+2. Concrete impact (if any)
+3. Specific next step
+4. **No shame language**
+
+### 15.2 Failure Screen Template
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  [NEUTRAL HEADER]                                       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  WHAT HAPPENED                                          │
+│  [Clear, factual explanation]                           │
+│                                                         │
+│  IMPACT                                                 │
+│  • [Specific consequence 1]                             │
+│  • [Specific consequence 2]                             │
+│                                                         │
+│  WHAT YOU CAN DO                                        │
+│  [ Primary Action ]                                     │
+│  [ Secondary Action ]                                   │
+│                                                         │
+│  [Recovery context / encouragement]                     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 15.3 Task Failed (Hustler View)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  This task didn't complete successfully                 │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  WHAT HAPPENED                                          │
+│  The poster reported the task wasn't completed          │
+│  as described.                                          │
+│                                                         │
+│  IMPACT                                                 │
+│  • No payment for this task                             │
+│  • Trust score: No change (first occurrence)            │
+│                                                         │
+│  WHAT YOU CAN DO                                        │
+│  [ Dispute This Decision ]                              │
+│  [ Accept and Move On ]                                 │
+│                                                         │
+│  Your next completed task restores normal standing.     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 15.4 Trust Tier Change
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Your trust tier has changed                            │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  VERIFIED → STANDARD                                    │
+│                                                         │
+│  WHY THIS HAPPENED                                      │
+│  2 tasks weren't completed successfully in the          │
+│  past 30 days.                                          │
+│                                                         │
+│  WHAT THIS MEANS                                        │
+│  • Some task types may be less visible to you           │
+│  • Your earnings potential is unchanged                 │
+│                                                         │
+│  HOW TO RECOVER                                         │
+│  Complete 5 tasks successfully to restore VERIFIED.     │
+│                                                         │
+│  Progress: 0 / 5                                        │
+│  ○ ○ ○ ○ ○                                              │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 15.5 Dispute Lost
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Dispute resolved                                       │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  DECISION: In favor of poster                           │
+│                                                         │
+│  WHAT THIS MEANS                                        │
+│  • Payment of $25.00 refunded to poster                 │
+│  • This counts as an incomplete task                    │
+│                                                         │
+│  WHY THIS DECISION                                      │
+│  The submitted proof didn't match the task              │
+│  requirements. [View Details]                           │
+│                                                         │
+│  MOVING FORWARD                                         │
+│  This is one outcome. Your overall record still         │
+│  shows 47 successful completions.                       │
+│                                                         │
+│  [ Got It ]                                             │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 15.6 Forbidden Failure Copy
+
+```javascript
+const FORBIDDEN_FAILURE_COPY = [
+  // Shame language
+  'You failed', 'Your fault', 'Mistake',
+  
+  // Punitive language
+  'Penalty', 'Punished', 'Strike', 'Warning',
+  'Demotion', 'Banned',
+  
+  // Vague impact
+  'Consequences', 'Action taken', 'Noted',
+  
+  // Passive aggressive
+  'Unfortunately', 'Regrettably', 'We had to'
+];
+
+const REQUIRED_FAILURE_ELEMENTS = [
+  'WHAT HAPPENED',      // Always explain
+  'IMPACT',             // Always specify
+  'WHAT YOU CAN DO',    // Always provide action
+  'Recovery path'       // Always show hope
+];
+```
+
+### 15.7 Failure Recovery Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **FAIL-1** | Every negative outcome has explanation | UI review |
+| **FAIL-2** | Every explanation has next step | UI review |
+| **FAIL-3** | No shame language | Copy review |
+| **FAIL-4** | Recovery path always visible | UI component |
+| **FAIL-5** | Impact is specific, not vague | Copy review |
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
@@ -915,7 +1142,8 @@ const FORBIDDEN_LIVE_COPY = [
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial visual contract |
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: Onboarding Visual Rules (§12), cross-refs to ONBOARDING_SPEC |
 | 1.2.0 | Jan 2025 | HustleXP Core | Added: Live Mode UI Rules (§13), mode indicator colors, notification rules |
+| 1.3.0 | Jan 2025 | HustleXP Core | Added: Money Timeline (§14), Failure Recovery UX (§15) |
 
 ---
 
-**END OF UI_SPEC v1.2.0**
+**END OF UI_SPEC v1.3.0**

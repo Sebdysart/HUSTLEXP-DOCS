@@ -984,13 +984,137 @@ A subsystem CANNOT ship unless:
 
 ---
 
+## §21. Session Forecast AI
+
+The Session Forecast provides **earning predictions** to help hustlers plan their time.
+
+### 21.1 Core Principle
+
+Best gig money apps answer: **"If I open this app for 90 minutes, what happens?"**
+
+### 21.2 Authority Level
+
+Session Forecast AI operates at **A1 (Advisory)** — recommendations only.
+
+```
+FORECAST AI CAN:
+- Predict earnings ranges
+- Suggest best task categories
+- Show demand conditions
+- Provide time-based estimates
+
+FORECAST AI CANNOT:
+- Guarantee any earnings
+- Auto-accept tasks
+- Change task visibility
+- Override user decisions
+- Make promises
+```
+
+### 21.3 Forecast Inputs
+
+```typescript
+interface ForecastInputs {
+  user_location: GeoPoint;
+  time_of_day: number;              // 0-23
+  day_of_week: number;              // 0-6
+  user_historical_earnings: number[];
+  user_completion_rate: number;
+  user_avg_task_time: number;
+  nearby_active_tasks: number;
+  nearby_active_hustlers: number;
+  category_demand: Record<string, number>;
+}
+```
+
+### 21.4 Forecast Output
+
+```typescript
+interface SessionForecast {
+  earnings_low: number;             // 25th percentile
+  earnings_high: number;            // 75th percentile
+  confidence: 'LOW' | 'MEDIUM' | 'HIGH';
+  best_categories: string[];
+  conditions: 'POOR' | 'FAIR' | 'GOOD' | 'EXCELLENT';
+  nearby_demand: number;
+  disclaimer: string;               // ALWAYS present
+  generated_at: Date;
+  expires_at: Date;                 // Short TTL (15 min)
+}
+```
+
+### 21.5 Forecast Rules
+
+| Rule | Description |
+|------|-------------|
+| Ranges only | "$35–$55" never "$45" |
+| No guarantees | Always include disclaimer |
+| Short TTL | Forecasts expire in 15 minutes |
+| Confidence-gated | Don't show LOW confidence forecasts |
+| Accuracy tracking | Log predicted vs actual for improvement |
+
+### 21.6 Forecast Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **FORECAST-1** | Never guarantee earnings | Copy review |
+| **FORECAST-2** | Always show disclaimer | UI component |
+| **FORECAST-3** | Ranges only, no exact numbers | Backend |
+| **FORECAST-4** | Expire after 15 minutes | TTL enforcement |
+| **FORECAST-5** | Log all forecasts for accuracy tracking | AI logging |
+
+### 21.7 Forecast Display
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  🧠 SESSION FORECAST                                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Based on your location & history:                      │
+│                                                         │
+│  EXPECTED EARNINGS                                      │
+│  $35 – $55 in the next 90 minutes                      │
+│                                                         │
+│  BEST OPPORTUNITIES                                     │
+│  • Delivery tasks (high demand nearby)                  │
+│  • Moving help ($40+ tasks available)                   │
+│                                                         │
+│  CONDITIONS                                             │
+│  🟢 Good — 12 active posters within 3 miles            │
+│                                                         │
+│  This is an estimate, not a guarantee.                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 21.8 Forecast Event Logging
+
+Per §8.3 (AI Logging), all forecasts must be logged:
+
+```typescript
+interface ForecastEvent {
+  event_type: 'FORECAST_GENERATED' | 'FORECAST_VIEWED' | 'FORECAST_EXPIRED';
+  user_id: string;
+  forecast_id: string;
+  inputs_hash: string;           // Privacy: hash inputs
+  earnings_low: number;
+  earnings_high: number;
+  confidence: string;
+  actual_earnings?: number;      // Filled in later for accuracy
+  timestamp: Date;
+}
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
 |---------|------|---------|
 | 1.0 | Jan 2025 | Initial draft |
 | 1.1 | Jan 2025 | Added: DB schemas (§6), tRPC contracts (§15), specific rate limits (§13), cross-reference index (§20), integration with BUILD_GUIDE authority hierarchy |
+| 1.2 | Jan 2025 | Added: Session Forecast AI (§21) with A1 authority, earning prediction rules |
 
 ---
 
-**END OF AI INFRASTRUCTURE SPECIFICATION v1.1**
+**END OF AI INFRASTRUCTURE SPECIFICATION v1.2**
