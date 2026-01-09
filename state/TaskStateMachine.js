@@ -1,7 +1,8 @@
 /**
  * TaskStateMachine - Task lifecycle state management
  * 
- * SPEC: BUILD_GUIDE.md §2.1
+ * SPEC: PRODUCT_SPEC.md §3 (Task Lifecycle)
+ * IMPL: BUILD_GUIDE.md §6 (Phase 3: Frontend State)
  * RIVE COMPATIBLE: Explicit states, explicit conditions
  * 
  * States:

@@ -1,7 +1,9 @@
 /**
  * EscrowStateMachine - Escrow/payment state management
  * 
- * SPEC: BUILD_GUIDE.md §2.2
+ * SPEC: PRODUCT_SPEC.md §4 (Escrow System)
+ * IMPL: BUILD_GUIDE.md §6 (Phase 3: Frontend State)
+ * AUTH: ARCHITECTURE.md §6 (Stripe & Money Authority)
  * RIVE COMPATIBLE: Explicit states, explicit conditions
  * AUDIT-2: Escrow state machine transitions
  * 

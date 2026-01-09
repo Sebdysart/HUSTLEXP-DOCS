@@ -1,6 +1,10 @@
 /**
  * OnboardingStateMachine - Role inference + authority priming
  * 
+ * SPEC: ONBOARDING_SPEC.md (Full specification)
+ * IMPL: BUILD_GUIDE.md §6 (Phase 3: Frontend State)
+ * AUTH: ARCHITECTURE.md §7 (AI Containment Model)
+ * 
  * VERSION: 1.0.0 (IMMUTABLE - never change weights without new version)
  * 
  * HARDENED FOR:

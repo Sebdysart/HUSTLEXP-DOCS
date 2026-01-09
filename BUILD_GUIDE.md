@@ -238,7 +238,7 @@ describe('INV-X: [Invariant Name]', () => {
     // Action: Attempt invalid operation
     // Assert: Specific error code thrown
     await expect(invalidOperation()).rejects.toMatchObject({
-      code: 'HXXXX'
+      code: 'HX101' // Replace with expected error code (HX101, HX201, etc.)
     });
   });
 

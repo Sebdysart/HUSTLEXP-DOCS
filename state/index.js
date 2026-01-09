@@ -1,7 +1,9 @@
 /**
  * State Machine Exports
  * 
- * SPEC: BUILD_GUIDE.md §2
+ * SPEC: PRODUCT_SPEC.md §3, §4, §5, §6 (Lifecycles)
+ * IMPL: BUILD_GUIDE.md §6 (Phase 3: Frontend State)
+ * AUTH: ARCHITECTURE.md §2.4 (Layer 4 - Frontend Logic)
  * RIVE COMPATIBLE: All state machines use explicit states and conditions
  * 
  * Invariants enforced:

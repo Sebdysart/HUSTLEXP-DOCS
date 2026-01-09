@@ -1,7 +1,8 @@
 /**
  * ProofStateMachine - Proof verification state management
  * 
- * SPEC: BUILD_GUIDE.md §1.1 (Proof Table)
+ * SPEC: PRODUCT_SPEC.md §6 (Proof System)
+ * IMPL: BUILD_GUIDE.md §6 (Phase 3: Frontend State)
  * RIVE COMPATIBLE: Explicit states, explicit conditions
  * AUDIT-3: Proof verification workflow
  * 
