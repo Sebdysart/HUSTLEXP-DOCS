@@ -59,12 +59,22 @@ Staging documents are **reference/archive** after integration. The original LIVE
 | Document | Purpose | Status |
 |----------|---------|--------|
 | [LIVE_MODE_SPEC.md](./staging/LIVE_MODE_SPEC.md) | Original real-time task spec | ✅ INTEGRATED |
+| [HUMAN_SYSTEMS_SPEC.md](./staging/HUMAN_SYSTEMS_SPEC.md) | Money legibility, failure recovery, AI forecasts | ⏳ v0.1.0 |
 
-**Integrated into:**
+**LIVE_MODE integrated into:**
 - PRODUCT_SPEC §3.5, §3.6 (Task Modes, Live Task Lifecycle)
 - ARCHITECTURE §10 (Live Mode Authority)
 - UI_SPEC §13 (Live Mode UI Rules)
 - schema.sql (live_sessions, live_broadcasts tables, LIVE-1/LIVE-2 triggers)
+
+**HUMAN_SYSTEMS targets:**
+- GAP-1: Money Timeline → UI_SPEC §14
+- GAP-2: Failure Recovery UX → UI_SPEC §15
+- GAP-3: Session Forecast → AI_INFRASTRUCTURE §10
+- GAP-4: Private Percentile → PRODUCT_SPEC §8.3
+- GAP-5: Global Anti-Burnout → PRODUCT_SPEC §3.7
+- GAP-6: Poster Quality → PRODUCT_SPEC §8.4
+- GAP-7: Pause State → PRODUCT_SPEC §11
 
 ---
 

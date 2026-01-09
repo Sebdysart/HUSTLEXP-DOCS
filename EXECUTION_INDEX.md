@@ -186,6 +186,18 @@
 | LIVE-6 | Session-based, not permanent | State machine | ❌ |
 | LIVE-7 | No auto-accept, no AI decisions | Constitutional | ❌ |
 
+### 3.9 Human Systems Gaps (HUMAN_SYSTEMS_SPEC v0.1.0)
+
+| ID | Gap | Description | Status |
+|----|-----|-------------|--------|
+| GAP-1 | Money Legibility | Money Timeline for hustlers | ❌ STAGING |
+| GAP-2 | Failure Recovery UX | Graceful failure paths | ❌ STAGING |
+| GAP-3 | Earning Predictability | AI Session Forecast | ❌ STAGING |
+| GAP-4 | Private Percentile | No leaderboards, self-relative status | ❌ STAGING |
+| GAP-5 | Anti-Burnout (Global) | Extend fatigue rules beyond Live Mode | 🟡 PARTIAL |
+| GAP-6 | Poster Quality | Poster reputation visible to hustlers | ❌ STAGING |
+| GAP-7 | Exit With Dignity | Graceful pause state | ❌ STAGING |
+
 ---
 
 ## SECTION 4: STATE MACHINES
@@ -623,10 +635,11 @@ LIMIT 1;
 | 1.1.0 | Jan 2025 | Backend scaffold: EscrowService, TaskService, db.ts, trpc.ts, escrow router, INV-1/INV-2 kill tests |
 | 1.2.0 | Jan 2025 | Added: ONB invariants (§3.6-3.7), UI_SPEC §12 ESLint rules, BUILD_GUIDE phases (§8), new frontend components (§7.5) |
 | 1.3.0 | Jan 2025 | Added: Live Mode invariants (§3.8), Live Mode tables (§1.4), Live Mode triggers (§2.4) |
+| 1.4.0 | Jan 2025 | Added: Human Systems gap tracking (§3.9) |
 
 ---
 
-**END OF EXECUTION INDEX v1.3.0**
+**END OF EXECUTION INDEX v1.4.0**
 
 ---
 
