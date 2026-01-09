@@ -1,4 +1,4 @@
-# HustleXP EXECUTION INDEX v1.2.0
+# HustleXP EXECUTION INDEX v1.5.0
 
 **STATUS: ACTIVE — UPDATE WITH EVERY PR**  
 **Last Updated:** January 2025  

@@ -748,6 +748,10 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |
 | `HX904` | Live Mode toggle cooldown | Toggle attempt within 5 minutes |
 | `HX905` | Live Mode banned | Attempt to enable while banned |
+| `HX601` | Fatigue break bypass | FATIGUE-4 violation (reserved) |
+| `HX602` | Pause state violation | PAUSE-* violation (reserved) |
+| `HX603` | Poster rep access by poster | POSTER-1 violation (reserved) |
+| `HX604` | Percentile public exposure | PERC-1 violation (reserved) |
 
 All HX error codes are raised by database triggers. Application code cannot suppress them.
 
