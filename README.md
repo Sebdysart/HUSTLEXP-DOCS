@@ -20,6 +20,9 @@ HustleXP-Fresh/
 │   ├── EXECUTION_INDEX.md     ← Implementation tracking
 │   └── schema.sql             ← Database enforcement
 │
+├── STAGING (Pending Integration)
+│   └── LIVE_MODE_SPEC.md      ← Real-time task system (v0.1.0)
+│
 ├── FRONTEND SCAFFOLD (Reference Implementation)
 │   ├── screens/               ← Screen components
 │   ├── state/                 ← State machines
@@ -46,6 +49,19 @@ HustleXP-Fresh/
 | [ONBOARDING_SPEC.md](./ONBOARDING_SPEC.md) | User onboarding flow, role inference | ✅ v1.3.0 |
 | [AI_INFRASTRUCTURE.md](./AI_INFRASTRUCTURE.md) | AI governance, proposal/decision model | ✅ v1.1.0 |
 | [EXECUTION_INDEX.md](./EXECUTION_INDEX.md) | Implementation tracking matrix | ✅ v1.2.0 |
+
+---
+
+## Staging Documents
+
+Staging documents are **pending integration** into main specs. They are fully specified but not yet constitutional.
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| [LIVE_MODE_SPEC.md](./staging/LIVE_MODE_SPEC.md) | Real-time task fulfillment system | ⏳ v0.1.0 |
+
+**Integration targets:**
+- LIVE_MODE_SPEC → PRODUCT_SPEC §3.5, UI_SPEC §13, ARCHITECTURE §10
 
 ---
 
