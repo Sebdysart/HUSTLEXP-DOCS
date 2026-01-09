@@ -1,4 +1,4 @@
-# HustleXP Product Specification v1.0.0
+# HustleXP Product Specification v1.0.1
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
@@ -116,12 +116,12 @@ Escrow amount CANNOT be modified after creation.
 
 **Enforcement:**
 - Database trigger: `escrow_amount_immutable`
-- Error code: `HX401`
+- Error code: `HX004`
 - Layer: 0 (PostgreSQL)
 
 **Violation Behavior:**
 ```sql
--- This MUST fail with HX401:
+-- This MUST fail with HX004:
 UPDATE escrows SET amount = 9999 WHERE id = 'existing-escrow';
 ```
 
@@ -510,12 +510,13 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 |------|---------|---------|
 | `HX001` | Task terminal state violation | Modify completed/cancelled/expired task |
 | `HX002` | Escrow terminal state violation | Modify released/refunded escrow |
+| `HX004` | Escrow amount modification | INV-4 violation |
 | `HX101` | XP without released escrow | INV-1 violation |
 | `HX102` | XP ledger deletion attempt | Append-only violation |
 | `HX201` | Release without completed task | INV-2 violation |
 | `HX301` | Complete without accepted proof | INV-3 violation |
-| `HX401` | Escrow amount modification | INV-4 violation |
-| `HX501` | Badge deletion attempt | Append-only violation |
+| `HX401` | Badge deletion attempt | Append-only violation |
+| `HX801` | Admin action audit violation | Append-only violation |
 
 All HX error codes are raised by database triggers. Application code cannot suppress them.
 
@@ -526,7 +527,8 @@ All HX error codes are raised by database triggers. Application code cannot supp
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial authoritative specification |
+| 1.0.1 | Jan 2025 | HustleXP Core | Fixed: Error codes aligned with schema.sql (HX004, HX401, HX801) |
 
 ---
 
-**END OF PRODUCT_SPEC v1.0.0**
+**END OF PRODUCT_SPEC v1.0.1**

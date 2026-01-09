@@ -27,7 +27,7 @@ These invariants are **non-negotiable**. Violation degrades onboarding integrity
 
 ---
 
-## 0. AI Governance (CONSTITUTIONAL)
+## §0. AI Governance (CONSTITUTIONAL)
 
 This specification is governed by `AI_INFRASTRUCTURE.md`. The following constraints apply:
 
@@ -43,7 +43,7 @@ This specification is governed by `AI_INFRASTRUCTURE.md`. The following constrai
 
 ---
 
-## 1. Design Philosophy
+## §1. Design Philosophy
 
 ### 1.1 What This Is NOT
 
@@ -93,7 +93,7 @@ Onboarding exists to:
 
 ---
 
-## 2. Core Principle: Implicit First, Explicit Second
+## §2. Core Principle: Implicit First, Explicit Second
 
 Elite products **never ask role directly first**.
 
@@ -111,7 +111,7 @@ Why:
 
 ---
 
-## 3. Onboarding Phases
+## §3. Onboarding Phases
 
 ### Phase 0: Silent Context Capture (No UI)
 
@@ -266,7 +266,7 @@ Why now? Because role context makes answers *truthful*.
 
 ---
 
-## 4. Scoring Function
+## §4. Scoring Function
 
 ### 4.1 Signal Weights
 
@@ -340,7 +340,7 @@ function inferRole(roleConfidence) {
 
 ---
 
-## 5. Profile Signals
+## §5. Profile Signals
 
 Beyond role, compute:
 
@@ -371,7 +371,7 @@ Base: 0.5
 
 ---
 
-## 6. Derived Settings
+## §6. Derived Settings
 
 Onboarding directly writes to:
 
@@ -390,7 +390,7 @@ Same system. Different lens.
 
 ---
 
-## 7. Data Model
+## §7. Data Model
 
 ### 7.1 Onboarding Result Schema
 
@@ -461,7 +461,7 @@ ALTER TABLE users ADD COLUMN copy_tone_variant VARCHAR(20);
 
 ---
 
-## 8. Forbidden Patterns
+## §8. Forbidden Patterns
 
 ### 8.1 What NOT to Do
 
@@ -491,7 +491,7 @@ ALTER TABLE users ADD COLUMN copy_tone_variant VARCHAR(20);
 
 ---
 
-## 9. Success Metrics
+## §9. Success Metrics
 
 ### 9.1 Done Criteria
 
@@ -517,7 +517,7 @@ Track:
 
 ---
 
-## 10. Gaming Detection (Inconsistency Rules)
+## §10. Gaming Detection (Inconsistency Rules)
 
 ### 10.1 Why This Matters
 
@@ -559,7 +559,7 @@ Penalty dampens confidence toward 50/50, triggering lower certainty tier.
 
 ---
 
-## 11. Role Certainty & Enforcement (CONSTITUTIONAL)
+## §11. Role Certainty & Enforcement (CONSTITUTIONAL)
 
 ### 11.1 Certainty Tiers
 
@@ -651,7 +651,7 @@ onboarding_version: "1.2.0"
 
 ---
 
-## 12. Divergent Experience Tracks
+## §12. Divergent Experience Tracks
 
 After role confirmation (Phase 3), the onboarding experience **diverges by role**. This is not personalization — it is jurisdictional separation.
 
@@ -757,7 +757,7 @@ Users can operate in both modes, but:
 
 ---
 
-## 13. Gamification Timing Rules
+## §13. Gamification Timing Rules
 
 ### 14.1 The Unlock Event (Critical)
 
@@ -898,7 +898,7 @@ Posters **never** see:
 
 ---
 
-## 14. Phase 0 Framing Screen (Exact Spec)
+## §14. Phase 0 Framing Screen (Exact Spec)
 
 Before calibration questions, show one framing screen.
 
@@ -942,7 +942,7 @@ This establishes **system authority** without asking permission.
 
 ---
 
-## 15. Phase 3 Authority Confirmation (Exact Spec)
+## §15. Phase 3 Authority Confirmation (Exact Spec)
 
 This is the most important screen in onboarding.
 
@@ -1016,7 +1016,7 @@ interface RoleOverrideEvent {
 
 ---
 
-## 16. Stress Tests: Dual-Mode Abuse Scenarios
+## §16. Stress Tests: Dual-Mode Abuse Scenarios
 
 ### 17.1 Scenario: Poster Tries to Farm XP
 
@@ -1068,7 +1068,7 @@ interface RoleOverrideEvent {
 
 ---
 
-## 17. Implementation Checklist
+## §17. Implementation Checklist
 
 ### Design
 - [x] 5 calibration questions (binary/ternary)
@@ -1112,7 +1112,7 @@ interface RoleOverrideEvent {
 | 1.0 | Jan 2025 | Initial specification |
 | 1.1 | Jan 2025 | Added: Role Certainty tiers (§11), Gaming detection (§10), Enforcement rules, Version lock, Re-onboarding rules |
 | 1.2 | Jan 2025 | Added: AI Governance section (§0), cross-references to AI_INFRASTRUCTURE.md |
-| 1.3 | Jan 2025 | Added: ONB invariants (§0.1), Jurisdictional Handshake principle (§1.3), Divergent Experience Tracks (§12), Gamification Timing Rules (§13), Phase 0/3 exact specs (§14-15), Dual-mode stress tests (§16), Expanded Implementation Checklist (§17) |
+| 1.3 | Jan 2025 | Added: ONB invariants (§0.1), Jurisdictional Handshake principle (§1.3), Divergent Experience Tracks (§12), Gamification Timing Rules (§13), Phase 0/3 exact specs (§14-15), Dual-mode stress tests (§16), Expanded Implementation Checklist (§17), Standardized section numbering |
 
 ---
 

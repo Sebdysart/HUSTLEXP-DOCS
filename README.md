@@ -39,13 +39,13 @@ HustleXP-Fresh/
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, business rules | ✅ v1.0.0 |
+| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, business rules | ✅ v1.0.1 |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Layer hierarchy, authority model | ✅ v1.0.0 |
-| [UI_SPEC.md](./UI_SPEC.md) | Visual rules, animation constraints, copy guidelines | ✅ v1.0.0 |
+| [UI_SPEC.md](./UI_SPEC.md) | Visual rules, animation constraints, copy guidelines | ✅ v1.1.0 |
 | [BUILD_GUIDE.md](./BUILD_GUIDE.md) | Implementation rules, testing requirements, phase gates | ✅ v1.0.0 |
-| [ONBOARDING_SPEC.md](./ONBOARDING_SPEC.md) | User onboarding flow, role inference | ✅ v1.2.0 |
+| [ONBOARDING_SPEC.md](./ONBOARDING_SPEC.md) | User onboarding flow, role inference | ✅ v1.3.0 |
 | [AI_INFRASTRUCTURE.md](./AI_INFRASTRUCTURE.md) | AI governance, proposal/decision model | ✅ v1.1.0 |
-| [EXECUTION_INDEX.md](./EXECUTION_INDEX.md) | Implementation tracking matrix | ✅ v1.1.0 |
+| [EXECUTION_INDEX.md](./EXECUTION_INDEX.md) | Implementation tracking matrix | ✅ v1.2.0 |
 
 ---
 

@@ -1,4 +1,4 @@
-# HustleXP EXECUTION INDEX v1.1.0
+# HustleXP EXECUTION INDEX v1.2.0
 
 **STATUS: ACTIVE — UPDATE WITH EVERY PR**  
 **Last Updated:** January 2025  
@@ -131,7 +131,7 @@
 | INV-BADGE-3 | Animation once (server-side) | ✅ DB column | 🟡 |
 | INV-BADGE-4 | Material matches tier | ❌ UI guard | ❌ |
 
-### 3.5 UI Invariants (UI_SPEC §5)
+### 3.5 UI Invariants (UI_SPEC §5, §12)
 
 | ID | Invariant | Enforcement | Status |
 |----|-----------|-------------|--------|
@@ -139,6 +139,26 @@
 | INV-UI-2 | XP colors only in XP context | ❌ ESLint rule | ❌ |
 | INV-UI-3 | No celebration during dispute | ❌ Screen context guard | ❌ |
 | INV-UI-4 | Respect reduced motion | ❌ Runtime guard | ❌ |
+
+### 3.6 Onboarding Invariants (ONBOARDING_SPEC §0.1)
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| ONB-1 | Users may NOT self-select role before inference | UI flow | ❌ |
+| ONB-2 | Onboarding contains ZERO rewards | UI components | ❌ |
+| ONB-3 | Posters NEVER see gamification | Role-gated UI | ❌ |
+| ONB-4 | Hustlers see gamification ONLY after first RELEASED | DB + UI gate | ❌ |
+| ONB-5 | First XP celebration is single-use, server-tracked | `xp_first_celebration_shown_at` | ✅ Schema |
+| ONB-6 | Onboarding exits immediately after authority established | UI flow | ❌ |
+
+### 3.7 Gamification Timing (ONBOARDING_SPEC §13, UI_SPEC §12)
+
+| Rule | Enforcement | Status |
+|------|-------------|--------|
+| XP animation only after RELEASED escrow | DB column check | ❌ |
+| First celebration single-use | Server-tracked timestamp | ✅ Schema |
+| Poster dashboard: no gamification | Role-gated components | ❌ |
+| Hustler pre-unlock: locked visuals only | UI state gate | ❌ |
 
 ---
 
@@ -270,7 +290,7 @@
 
 ## SECTION 7: FRONTEND ENFORCEMENT
 
-### 7.1 ESLint Rules (UI_SPEC §8)
+### 7.1 ESLint Rules (UI_SPEC §8, §12)
 
 | Rule | Spec Reference | File Path | Status |
 |------|----------------|-----------|--------|
@@ -286,6 +306,8 @@
 | `enforceColorAuthority` | UI_SPEC §2.3 (AUDIT-16) | ❌ | ❌ |
 | `cumulativeAnimationCap` | UI_SPEC §3.2 (AUDIT-17) | ❌ | ❌ |
 | `badgeTierMaterialBinding` | UI_SPEC §4.3 (AUDIT-19) | ❌ | ❌ |
+| `noGamificationForPoster` | UI_SPEC §12.5 (ONB-3) | ❌ | ❌ |
+| `noAnimatedGamificationPreUnlock` | UI_SPEC §12.6 (ONB-4) | ❌ | ❌ |
 
 ### 7.2 Runtime Guards
 
@@ -323,11 +345,114 @@
 | WalletScreen | - | screens/WalletScreen.js | ✅ |
 | ProfileScreen | - | screens/ProfileScreen.js | ✅ |
 
+### 7.5 New Frontend Components (ONBOARDING_SPEC §12-17, UI_SPEC §12)
+
+| Component | Spec Reference | File Path | Status |
+|-----------|----------------|-----------|--------|
+| FramingScreen | ONBOARDING_SPEC §14 | ❌ | ❌ |
+| FirstXPCelebration | ONBOARDING_SPEC §13.4, UI_SPEC §12.4 | ❌ | ❌ |
+| LockedGamificationUI | ONBOARDING_SPEC §13.2, UI_SPEC §12.2 | ❌ | ❌ |
+| PosterDashboard | ONBOARDING_SPEC §12.1 (no gamification) | ❌ | ❌ |
+| HustlerDashboardPreUnlock | ONBOARDING_SPEC §13.2 | ❌ | ❌ |
+| HustlerDashboardPostUnlock | ONBOARDING_SPEC §13.3 | ❌ | ❌ |
+
 ---
 
-## SECTION 8: TESTS
+## SECTION 8: BUILD PHASES (BUILD_GUIDE)
 
-### 8.1 Invariant Tests (Kill Tests)
+### 8.1 Phase Status Overview
+
+| Phase | Name | Spec Reference | Status |
+|-------|------|----------------|--------|
+| Phase 0 | Schema Deployment | BUILD_GUIDE §3 | ✅ Complete |
+| Phase 1 | Backend Services | BUILD_GUIDE §4 | 🟡 In Progress |
+| Phase 2 | API Layer | BUILD_GUIDE §5 | 🟡 Partial |
+| Phase 3 | Frontend State | BUILD_GUIDE §6 | ✅ Scaffold |
+| Phase 4 | Frontend UI | BUILD_GUIDE §7 | 🟡 Scaffold |
+| Phase 5 | Integration | BUILD_GUIDE §8 | ❌ |
+| Phase 6 | Deployment | BUILD_GUIDE §9 | ❌ |
+
+### 8.2 Phase 0: Schema Deployment (BUILD_GUIDE §3)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G0.1 | schema.sql executes without errors | ✅ |
+| G0.2 | All 18 tables created | ✅ |
+| G0.3 | All 17 triggers active | ✅ |
+| G0.4 | INV-1 through INV-5 kill tests pass | ✅ |
+| G0.5 | Schema version recorded | ✅ |
+
+### 8.3 Phase 1: Backend Services (BUILD_GUIDE §4)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G1.1 | Database connection pool | ✅ |
+| G1.2 | Transaction wrapper | ✅ |
+| G1.3 | Type definitions from schema | 🟡 |
+| G1.4 | EscrowService with INV-2 enforcement | 🟡 |
+| G1.5 | TaskService with state machine | 🟡 |
+| G1.6 | AtomicXPService with INV-1 enforcement | ❌ |
+| G1.7 | ProofService | ❌ |
+| G1.8 | DisputeService | ❌ |
+
+### 8.4 Phase 2: API Layer (BUILD_GUIDE §5)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G2.1 | tRPC router configuration | ✅ |
+| G2.2 | Escrow endpoints | 🟡 |
+| G2.3 | Task endpoints | ❌ |
+| G2.4 | Onboarding endpoints | ❌ |
+| G2.5 | Evidence endpoints | ❌ |
+| G2.6 | User endpoints | ❌ |
+| G2.7 | Stripe webhook handler | ❌ |
+
+### 8.5 Phase 3: Frontend State (BUILD_GUIDE §6)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G3.1 | TaskStateMachine | ✅ Scaffold |
+| G3.2 | EscrowStateMachine | ✅ Scaffold |
+| G3.3 | ProofStateMachine | ✅ Scaffold |
+| G3.4 | OnboardingStateMachine | ✅ Scaffold |
+| G3.5 | State machines match PRODUCT_SPEC | 🟡 |
+
+### 8.6 Phase 4: Frontend UI (BUILD_GUIDE §7)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G4.1 | Screen scaffold | ✅ |
+| G4.2 | Navigation structure | ✅ |
+| G4.3 | Constants defined | ✅ |
+| G4.4 | ESLint rules implemented | ❌ |
+| G4.5 | Runtime guards implemented | ❌ |
+| G4.6 | Accessibility compliance | ❌ |
+
+### 8.7 Phase 5: Integration (BUILD_GUIDE §8)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G5.1 | Frontend connects to tRPC | ❌ |
+| G5.2 | Stripe integration tested | ❌ |
+| G5.3 | Full task lifecycle E2E | ❌ |
+| G5.4 | Onboarding flow E2E | ❌ |
+| G5.5 | Dispute flow E2E | ❌ |
+
+### 8.8 Phase 6: Deployment (BUILD_GUIDE §9)
+
+| Gate | Requirement | Status |
+|------|-------------|--------|
+| G6.1 | Schema deployed to production | ❌ |
+| G6.2 | Backend deployed | ❌ |
+| G6.3 | Frontend deployed | ❌ |
+| G6.4 | Health checks passing | ❌ |
+| G6.5 | Monitoring configured | ❌ |
+
+---
+
+## SECTION 9: TESTS
+
+### 9.1 Invariant Tests (Kill Tests)
 
 | Test | Invariant | File Path | Status |
 |------|-----------|-----------|--------|
@@ -342,7 +467,7 @@
 | XP ledger deletion fails | Append-only | backend/tests/invariants/inv-1.test.ts | 🟡 |
 | Admin action deletion fails | Append-only | ❌ | ❌ |
 
-### 8.2 State Machine Tests
+### 9.2 State Machine Tests
 
 | Test | Machine | File Path | Status |
 |------|---------|-----------|--------|
@@ -354,7 +479,7 @@
 | Escrow: FUNDED → RELEASED (without COMPLETED) fails | EscrowStateMachine | backend/tests/invariants/inv-2.test.ts | 🟡 |
 | Proof: SUBMITTED → ACCEPTED | ProofStateMachine | ❌ | ❌ |
 
-### 8.3 E2E Tests
+### 9.3 E2E Tests
 
 | Test | Flow | File Path | Status |
 |------|------|-----------|--------|
@@ -364,9 +489,9 @@
 
 ---
 
-## SECTION 9: EXECUTION PROGRESS SUMMARY
+## SECTION 10: EXECUTION PROGRESS SUMMARY
 
-### 9.1 Overall Status
+### 10.1 Overall Status
 
 | Category | Total | ✅ | 🟡 | ❌ |
 |----------|-------|----|----|-----|
@@ -382,7 +507,7 @@
 | Invariant Tests | 10 | 0 | 6 | 4 |
 | E2E Tests | 3 | 0 | 0 | 3 |
 
-### 9.2 Completion by Layer
+### 10.2 Completion by Layer
 
 | Layer | Authority | Status |
 |-------|-----------|--------|
@@ -393,7 +518,7 @@
 | Layer 4: Frontend UI | Low | 🟡 Partial (screens exist) |
 | Layer 5: Tests | Verification | 🟡 INV-1 + INV-2 kill tests written |
 
-### 9.3 Next Actions (Priority Order)
+### 10.3 Next Actions (Priority Order)
 
 1. **[✅] Create backend scaffold** — tRPC + PostgreSQL connection
 2. **[ ] Run schema.sql** — Apply triggers to database
@@ -406,9 +531,9 @@
 
 ---
 
-## SECTION 10: VERIFICATION QUERIES
+## SECTION 11: VERIFICATION QUERIES
 
-### 10.1 Check Invariant Trigger Existence
+### 11.1 Check Invariant Trigger Existence
 
 ```sql
 SELECT tgname, tgrelid::regclass, tgfoid::regproc
@@ -428,7 +553,7 @@ WHERE tgname IN (
 -- Expected: 10 rows
 ```
 
-### 10.2 Verify INV-1 Enforcement
+### 11.2 Verify INV-1 Enforcement
 
 ```sql
 -- This should FAIL with HX101
@@ -440,7 +565,7 @@ WHERE e.state = 'FUNDED'  -- NOT RELEASED
 LIMIT 1;
 ```
 
-### 10.3 Verify INV-2 Enforcement
+### 11.3 Verify INV-2 Enforcement
 
 ```sql
 -- This should FAIL with HX201
@@ -453,7 +578,7 @@ WHERE id IN (
 );
 ```
 
-### 10.4 Verify Terminal State Enforcement
+### 11.4 Verify Terminal State Enforcement
 
 ```sql
 -- This should FAIL with HX001
@@ -470,10 +595,11 @@ LIMIT 1;
 |---------|------|---------|
 | 1.0.0 | Jan 2025 | Initial execution index with schema.sql v1.0.0 |
 | 1.1.0 | Jan 2025 | Backend scaffold: EscrowService, TaskService, db.ts, trpc.ts, escrow router, INV-1/INV-2 kill tests |
+| 1.2.0 | Jan 2025 | Added: ONB invariants (§3.6-3.7), UI_SPEC §12 ESLint rules, BUILD_GUIDE phases (§8), new frontend components (§7.5) |
 
 ---
 
-**END OF EXECUTION INDEX v1.1.0**
+**END OF EXECUTION INDEX v1.2.0**
 
 ---
 
