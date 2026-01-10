@@ -703,6 +703,327 @@ LIMIT 1;
 
 ---
 
+## SECTION 12: TASK DISCOVERY & MATCHING SYSTEM
+
+### 12.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `task_matching_scores` | TASK_DISCOVERY_SPEC §9 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `saved_searches` | TASK_DISCOVERY_SPEC §9 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 12.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| TaskDiscoveryService | PRODUCT_SPEC §9 | ❌ | ❌ |
+| TaskExplanationService | PRODUCT_SPEC §9.5 | ❌ | ❌ |
+
+### 12.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `taskDiscovery.getFeed` | query | PRODUCT_SPEC §9 | ❌ | ❌ |
+| `taskDiscovery.search` | query | PRODUCT_SPEC §9 | ❌ | ❌ |
+| `taskDiscovery.getExplanation` | query | PRODUCT_SPEC §9.5 | ❌ | ❌ |
+
+### 12.4 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **DISCOVERY-1** | Matching score is always 0.0 to 1.0 | Backend validation | ❌ |
+| **DISCOVERY-2** | Tasks below 0.20 score are hidden from feed | Backend filter | ❌ |
+| **DISCOVERY-3** | Relevance score combines matching + boosts | Backend calculation | ❌ |
+| **DISCOVERY-4** | Filters never bypass trust tier requirements | Backend validation | ❌ |
+| **DISCOVERY-5** | Explanations are advisory only (A1) | AI authority model | ❌ |
+
+---
+
+## SECTION 13: MESSAGING SYSTEM
+
+### 13.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `task_messages` | MESSAGING_SPEC §3.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 13.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| MessagingService | PRODUCT_SPEC §10 | ❌ | ❌ |
+
+### 13.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `messaging.getThread` | query | MESSAGING_SPEC §9 | ❌ | ❌ |
+| `messaging.sendMessage` | mutation | MESSAGING_SPEC §9 | ❌ | ❌ |
+| `messaging.markRead` | mutation | MESSAGING_SPEC §9 | ❌ | ❌ |
+
+### 13.4 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **MSG-1** | Messages only allowed during ACCEPTED/PROOF_SUBMITTED/DISPUTED | Backend validation | ❌ |
+| **MSG-2** | Sender must be poster or worker for task | Backend validation | ❌ |
+| **MSG-3** | Maximum 3 photos per message | DB constraint | ❌ |
+| **MSG-4** | Maximum 500 characters per text message | Backend validation | ❌ |
+| **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation | ❌ |
+| **MSG-6** | Read receipts are optional (privacy) | User preference | ❌ |
+
+---
+
+## SECTION 14: NOTIFICATION SYSTEM
+
+### 14.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `notifications` | NOTIFICATION_SPEC §5.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `notification_preferences` | NOTIFICATION_SPEC §5.2 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 14.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| NotificationService | PRODUCT_SPEC §11 | ❌ | ❌ |
+
+### 14.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `notifications.getList` | query | NOTIFICATION_SPEC §8 | ❌ | ❌ |
+| `notifications.markRead` | mutation | NOTIFICATION_SPEC §8 | ❌ | ❌ |
+| `notifications.markAllRead` | mutation | NOTIFICATION_SPEC §8 | ❌ | ❌ |
+| `notifications.getPreferences` | query | NOTIFICATION_SPEC §8 | ❌ | ❌ |
+| `notifications.updatePreferences` | mutation | NOTIFICATION_SPEC §8 | ❌ | ❌ |
+
+### 14.4 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **NOTIF-1** | Notifications only sent to task participants (poster/worker) | Backend validation | ❌ |
+| **NOTIF-2** | HIGH priority notifications bypass quiet hours | Backend logic | ❌ |
+| **NOTIF-3** | Frequency limits enforced per category | Backend rate limiting | ❌ |
+| **NOTIF-4** | Deep links must be valid (task exists, user has access) | Backend validation | ❌ |
+| **NOTIF-5** | Notifications expire after 30 days | Backend cleanup job | ❌ |
+| **NOTIF-6** | Grouped notifications share same category | Backend grouping logic | ❌ |
+
+---
+
+## SECTION 15: RATING SYSTEM
+
+### 15.1 Database Tables
+
+| Table/View | Spec Reference | Schema Location | Status |
+|------------|----------------|-----------------|--------|
+| `task_ratings` | RATING_SYSTEM_SPEC §4.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `user_rating_summary` (VIEW) | RATING_SYSTEM_SPEC §4.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 15.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| RatingService | PRODUCT_SPEC §12 | ❌ | ❌ |
+
+### 15.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `ratings.submitRating` | mutation | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
+| `ratings.getMyRatings` | query | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
+| `ratings.getUserRatings` | query | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
+| `ratings.getTaskRatings` | query | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
+
+### 15.4 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **RATE-1** | Rating only allowed after task COMPLETED | Backend validation | ❌ |
+| **RATE-2** | Rating window: 7 days after completion | Backend validation | ❌ |
+| **RATE-3** | Both parties must rate (or auto-rated after 7 days) | Backend logic | ❌ |
+| **RATE-4** | Ratings are immutable (cannot edit/delete) | DB constraint + backend validation | ❌ |
+| **RATE-5** | One rating per pair per task | DB UNIQUE constraint | ❌ |
+| **RATE-6** | Stars must be 1-5 | DB CHECK constraint | ❌ |
+| **RATE-7** | Comment max 500 characters | DB CHECK constraint | ❌ |
+| **RATE-8** | Ratings are blind until both parties rate | Backend logic | ❌ |
+
+---
+
+## SECTION 16: ANALYTICS INFRASTRUCTURE
+
+### 16.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `analytics_events` | ANALYTICS_SPEC §5.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 16.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| AnalyticsService | PRODUCT_SPEC §13 | ❌ | ❌ |
+
+### 16.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `analytics.track` | mutation | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
+| `analytics.getFunnel` | query | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
+| `analytics.getCohort` | query | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
+| `analytics.getABTestResults` | query | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
+
+### 16.4 Metrics to Track
+
+| Metric | Target | Measurement | Status |
+|--------|--------|-------------|--------|
+| Feed acceptance rate | >15% | Tasks accepted / Tasks viewed | ❌ |
+| Search conversion rate | >20% | Tasks accepted from search / Search queries | ❌ |
+| Average matching score | >0.60 | Mean matching score of accepted tasks | ❌ |
+| Rating completion rate | >80% | Ratings submitted / Tasks completed | ❌ |
+| Notification delivery rate | >95% | Notifications delivered / Notifications sent | ❌ |
+| Fraud detection rate | >95% | Fraud detected / Total fraud attempts | ❌ |
+
+---
+
+## SECTION 17: FRAUD DETECTION SYSTEM
+
+### 17.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `fraud_risk_scores` | FRAUD_DETECTION_SPEC §5.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `fraud_patterns` | FRAUD_DETECTION_SPEC §5.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 17.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| FraudDetectionService | PRODUCT_SPEC §14 | ❌ | ❌ |
+
+### 17.3 API Endpoints (Admin Only)
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `fraud.getRiskScore` | query | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
+| `fraud.getReviewQueue` | query | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
+| `fraud.reviewFlag` | mutation | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
+| `fraud.detectPatterns` | query | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
+
+### 17.4 Background Jobs
+
+| Job | Purpose | Frequency | Status |
+|-----|---------|-----------|--------|
+| Calculate Risk Scores | Score all users/tasks/transactions | Daily | ❌ |
+| Detect Fraud Patterns | Identify suspicious patterns | Daily | ❌ |
+| Process Review Queue | Flag high-risk items | Real-time | ❌ |
+
+### 17.5 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **FRAUD-1** | Risk scores are calculated for all users/tasks/transactions | Background job | ❌ |
+| **FRAUD-2** | High-risk (≥0.6) entities require manual review | Backend validation | ❌ |
+| **FRAUD-3** | Critical-risk (≥0.8) entities are auto-rejected | Backend validation | ❌ |
+| **FRAUD-4** | Self-match (risk = 1.0) is always blocked | Backend validation | ❌ |
+| **FRAUD-5** | Review decisions are logged in audit trail | Backend logging | ❌ |
+| **FRAUD-6** | Risk scores are recalculated on pattern detection | Background job | ❌ |
+
+---
+
+## SECTION 18: CONTENT MODERATION WORKFLOW
+
+### 18.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `content_moderation_queue` | CONTENT_MODERATION_SPEC §3.3 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `content_reports` | CONTENT_MODERATION_SPEC §4.3 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `content_appeals` | CONTENT_MODERATION_SPEC §7.3 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 18.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| ContentModerationService | PRODUCT_SPEC §15 | ❌ | ❌ |
+
+### 18.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `moderation.getQueue` | query | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
+| `moderation.reviewItem` | mutation | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
+| `moderation.reportContent` | mutation | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
+| `moderation.appealDecision` | mutation | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
+
+### 18.4 AI Integration (A2 Authority)
+
+| Component | AI Authority | Purpose | Status |
+|-----------|--------------|---------|--------|
+| Content Scanning | A2 (Propose) | Proposes: approve, flag, block | ❌ |
+| Confidence Thresholds | A2 + Backend | ≥0.9 auto-block, 0.7-0.9 flag, <0.7 approve | ❌ |
+
+### 18.5 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **MOD-1** | All user-generated content is scanned | Backend trigger on create/update | ❌ |
+| **MOD-2** | CRITICAL content is auto-quarantined | Backend validation | ❌ |
+| **MOD-3** | Review queue items have SLA deadlines | Backend calculation | ❌ |
+| **MOD-4** | Appeals are reviewed by different admin | Backend assignment | ❌ |
+| **MOD-5** | Deleted content is permanently removed | Backend deletion | ❌ |
+| **MOD-6** | User notifications sent on actions | Backend notification service | ❌ |
+
+---
+
+## SECTION 19: GDPR COMPLIANCE & PRIVACY
+
+### 19.1 Database Tables
+
+| Table | Spec Reference | Schema Location | Status |
+|-------|----------------|-----------------|--------|
+| `gdpr_data_requests` | GDPR_COMPLIANCE_SPEC §7.1 | migrations/002_critical_gaps_tables.sql | ❌ |
+| `user_consents` | GDPR_COMPLIANCE_SPEC §4.2 | migrations/002_critical_gaps_tables.sql | ❌ |
+
+### 19.2 Backend Services
+
+| Service | Spec Reference | File Path | Status |
+|---------|----------------|-----------|--------|
+| GDPRService | PRODUCT_SPEC §16 | ❌ | ❌ |
+
+### 19.3 API Endpoints
+
+| Endpoint | Method | Spec Reference | File Path | Status |
+|----------|--------|----------------|-----------|--------|
+| `privacy.requestDataExport` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
+| `privacy.requestAccountDeletion` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
+| `privacy.cancelDeletion` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
+| `privacy.getConsents` | query | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
+| `privacy.updateConsent` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
+
+### 19.4 Background Jobs
+
+| Job | Purpose | Frequency | Status |
+|-----|---------|-----------|--------|
+| Generate Data Export | Create export file (JSON/CSV/PDF) | On-demand | ❌ |
+| Process Account Deletion | Delete user data after grace period | Daily | ❌ |
+| Cleanup Expired Exports | Delete export links after 30 days | Daily | ❌ |
+| Cleanup Expired Notifications | Delete notifications after 30 days | Daily | ❌ |
+
+### 19.5 Invariants
+
+| ID | Invariant | Enforcement | Status |
+|----|-----------|-------------|--------|
+| **GDPR-1** | Data export requests processed within 30 days | Backend SLA enforcement | ❌ |
+| **GDPR-2** | Data deletion requests processed within 7 days | Backend SLA enforcement | ❌ |
+| **GDPR-3** | User consent records are immutable (append-only) | DB constraint | ❌ |
+| **GDPR-4** | Legal retention periods enforced (7 years for transactions) | Backend validation | ❌ |
+| **GDPR-5** | Data breach notifications sent within 72 hours | Backend alerting | ❌ |
+| **GDPR-6** | Export links expire after 30 days | Backend cleanup job | ❌ |
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
@@ -713,6 +1034,7 @@ LIMIT 1;
 | 1.3.0 | Jan 2025 | Added: Live Mode invariants (§3.8), Live Mode tables (§1.4), Live Mode triggers (§2.4) |
 | 1.4.0 | Jan 2025 | Added: Human Systems gap tracking (§3.9) |
 | 1.5.0 | Jan 2025 | INTEGRATED: All 7 Human Systems (§3.9-3.16), Human Systems tables (§1.5) |
+| 1.6.0 | Jan 2025 | ADDED: Critical gaps tracking (§12-19) - Task Discovery, Messaging, Notifications, Ratings, Analytics, Fraud, Moderation, GDPR |
 
 ---
 

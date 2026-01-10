@@ -703,15 +703,630 @@ Optional feedback flags:
 
 ---
 
-## §9. Monetary Rules
+## §8. AI Task Completion System
 
-### 9.1 Minimum Task Value
+### 8.1 Core Principle (LOCK THIS)
+
+> **AI does not chat.  
+> AI closes gaps in a contract.**
+
+The goal is not conversation.  
+The goal is **zero ambiguity before escrow is funded**.
+
+**What This Unlocks:**
+- Cleanest tasks in the market
+- Directly drives fulfillment speed
+- Increases trust
+- Increases repeat usage
+- Prevents disputes **before** money moves
+
+### 8.2 Task Completion State Machine
+
+The task card exists in **four AI states** before posting:
+
+```
+DRAFT → INCOMPLETE → COMPLETE → LOCKED
+```
+
+| State | Description | AI Questions Allowed | Escrow Allowed | Can Edit Fields |
+|-------|-------------|---------------------|----------------|-----------------|
+| **DRAFT** | Initial creation, minimal fields | ✅ Yes | ❌ No | ✅ Yes |
+| **INCOMPLETE** | Missing required fields | ✅ Yes | ❌ No | ✅ Yes |
+| **COMPLETE** | All required fields satisfied, zero ambiguity | ❌ No | ✅ Yes | ✅ Yes (until escrow funded) |
+| **LOCKED** | Escrow funded, task posted | ❌ No | ✅ Already funded | ❌ No (terminal) |
+
+### 8.3 Confidence Threshold Rule
+
+AI questions are triggered **only if required fields cannot be inferred with sufficient confidence**.
+
+```
+IF confidence < 0.85 → ASK
+IF confidence ≥ 0.85 → AUTO-FILL + CONFIRM
+```
+
+**Field Clusters:**
+- **Location**: start_location, end_location (if moving), location_clarity
+- **Time**: deadline, time_window, live_mode_eligible
+- **Scope**: description_clarity, complexity, stairs_involved
+- **Proof**: proof_type, proof_requirements
+
+### 8.4 Question Types (Strictly Limited)
+
+AI questions fall into **four and only four categories**:
+
+1. **LOCATION_CLARITY** — Triggered when multiple locations referenced or vague area
+2. **TIME_CONSTRAINTS** — Triggered when deadline vague or Live Mode eligibility unclear
+3. **TASK_SCOPE** — Triggered when complexity ambiguous or risk of under-specification
+4. **PROOF_EXPECTATION** — Triggered when outcome could be subjective
+
+### 8.5 AI Auto-Fill + Confirm Pattern
+
+When AI confidence ≥ 0.85, it does **not ask** — it **proposes**.
+
+Example:
+```
+✓ We've assumed this task will take 30–45 minutes.
+  [ Adjust time estimate ]
+
+✓ We've set proof type to "Photo at destination".
+  [ Change proof type ]
+```
+
+Poster can edit any auto-filled field. AI never **forces** a choice.
+
+### 8.6 "Flawless Execution" Guarantee
+
+When a task reaches **COMPLETE** state, the system can assert:
+
+- ✅ **Scope is explicit** — No "that's not what I meant"
+- ✅ **Time window is bounded** — No "I thought it was ASAP"
+- ✅ **Proof expectations are clear** — No "I wanted proof differently"
+- ✅ **Price is within rational range** — No "this should've cost less"
+- ✅ **Location is unambiguous** — No "I thought it was closer"
+- ✅ **Dispute probability is minimized** — All edge cases addressed
+
+### 8.7 Live Mode Integration
+
+If poster enables **LIVE MODE**, AI must ask **additional mandatory questions**:
+
+- "Are you available to respond within 30 minutes?" (Yes / No)
+- "Is the task accessible immediately?" (Yes / No)
+- "Is the price final?" (Yes / No)
+
+**If any answer is "no" → Live Mode is blocked.**
+
+### 8.8 AI Voice Rules (Non-Negotiable)
+
+The AI voice must be:
+
+- ✅ **Neutral** — No bias, no judgment
+- ✅ **Precise** — No ambiguity in language
+- ✅ **Slightly formal** — Professional, not casual
+- ✅ **Outcome-focused** — Get to completion, not conversation
+
+**Forbidden patterns:**
+- Casual ("Hey! Just need a quick question...")
+- Playful ("Just curious! 😊")
+- Apologetic ("Sorry to bother you, but...")
+- Salesy ("Want to boost your task visibility?")
+
+### 8.9 AI Task Completion Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **COMPLETE-1** | AI questions only allowed in DRAFT/INCOMPLETE | Backend service |
+| **COMPLETE-2** | COMPLETE requires zero unresolved ambiguity | Backend validation |
+| **COMPLETE-3** | LOCKED disables AI entirely | DB trigger + backend |
+| **COMPLETE-4** | Escrow cannot fund unless state = COMPLETE | DB trigger (HX704) |
+| **COMPLETE-5** | Only 4 question types allowed | Backend validation |
+| **COMPLETE-6** | Confidence threshold cannot be bypassed | Backend validation |
+
+### 8.10 Metrics
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| % tasks reaching COMPLETE without edits | >70% | Backend analytics |
+| Dispute rate: AI-assisted vs manual | <50% of manual | Dispute tracking |
+| Average completion time | <5 min | Task creation to posting |
+| Proof rejection rate | <5% | Proof acceptance tracking |
+| Live Mode fulfillment speed | <10 min avg | Live Mode analytics |
+
+### 8.11 Error Codes
+
+| Code | Meaning | Trigger |
+|------|---------|---------|
+| `HX701` | AI question attempted after LOCKED | COMPLETE-3 violation |
+| `HX702` | Escrow funding attempted before COMPLETE | COMPLETE-4 violation |
+| `HX703` | Invalid question type (not in 4 allowed types) | COMPLETE-5 violation |
+| `HX704` | Confidence threshold bypass attempt | COMPLETE-6 violation |
+
+**Detailed specification:** See `staging/AI_TASK_COMPLETION_SPEC.md`
+
+---
+
+## §9. Task Discovery & Matching System
+
+### 9.1 Core Principle (LOCK THIS)
+
+> **Task discovery is not a feed. It is a personalized matching engine.**
+
+Hustlers don't browse. They **match** with tasks that fit their profile, skills, location, and preferences.
+
+**What This Unlocks:**
+- Highest task acceptance rates
+- Fastest fulfillment
+- Best earning potential for hustlers
+- Highest satisfaction for posters
+
+### 9.2 Matching Score Formula
+
+Every task-hustler pair has a **matching score** (0.0 to 1.0):
+
+```
+matching_score = (
+  trust_multiplier × 0.30 +
+  distance_score × 0.25 +
+  category_match × 0.20 +
+  price_attractiveness × 0.15 +
+  time_match × 0.10
+)
+```
+
+Tasks below 0.20 matching score are hidden from feed unless explicitly searched.
+
+### 9.3 Feed Ranking Algorithm
+
+Tasks are ranked by **relevance score**, not just matching score:
+
+```
+relevance_score = (
+  matching_score × 0.70 +
+  recency_boost × 0.15 +
+  urgency_boost × 0.10 +
+  poster_quality_boost × 0.05
+)
+```
+
+### 9.4 Filter & Sort Options
+
+**Filters:** Category, price range, distance, time window, trust tier, mode (STANDARD/LIVE), escrow status  
+**Sort Options:** Relevance (default), distance, price (high/low), deadline, trust tier, recently posted  
+**Search:** Full-text search on title, description, location, category
+
+### 9.5 "Why This Task?" Explanations
+
+For each task in feed, show AI-generated explanation:
+- Top 3 reasons why task matches
+- Confidence score (0.0 to 1.0)
+- Advisory only (A1 authority)
+
+### 9.6 Task Discovery Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **DISCOVERY-1** | Matching score is always 0.0 to 1.0 | Backend validation |
+| **DISCOVERY-2** | Tasks below 0.20 score are hidden from feed | Backend filter |
+| **DISCOVERY-3** | Relevance score combines matching + boosts | Backend calculation |
+| **DISCOVERY-4** | Filters never bypass trust tier requirements | Backend validation |
+| **DISCOVERY-5** | Explanations are advisory only (A1) | AI authority model |
+
+**Detailed specification:** See `staging/TASK_DISCOVERY_SPEC.md`
+
+---
+
+## §10. In-App Messaging System
+
+### 10.1 Core Principle (LOCK THIS)
+
+> **Messaging exists to coordinate task completion, not to socialize.**
+
+Every message is **task-scoped**. No general chat. No DMs. Only task-specific coordination.
+
+**What This Unlocks:**
+- Prevents disputes (coordination reduces misunderstandings)
+- Reduces "no show" rate (real-time updates)
+- Builds trust (transparent communication)
+- Provides dispute evidence (chat history)
+
+### 10.2 Task-Scoped Messaging
+
+**Allowed:**
+- ✅ Poster and worker can message during task lifecycle (ACCEPTED, PROOF_SUBMITTED, DISPUTED)
+- ✅ Messages are scoped to specific task_id
+- ✅ Messages are visible to both parties + admins (for disputes)
+
+**Forbidden:**
+- ❌ General DMs (no task context)
+- ❌ Messages after task COMPLETED/CANCELLED (read-only archive)
+- ❌ Messages before task ACCEPTED (no worker assigned)
+
+### 10.3 Message Types
+
+- **Text Messages:** Maximum 500 characters, no links
+- **Auto-Messages:** Quick responses ("On my way", "Running late", "Completed")
+- **Photo Sharing:** Maximum 3 photos per message, stored in evidence table
+- **Location Sharing:** One-time "I'm here" location (optional, expires after 15 minutes)
+
+### 10.4 Content Moderation
+
+All messages scanned via AI (A2 authority):
+- High confidence (>0.9): Auto-block
+- Medium confidence (0.7-0.9): Flag for review
+- Low confidence (<0.7): Approve, monitor
+
+### 10.5 Messaging Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **MSG-1** | Messages only allowed during ACCEPTED/PROOF_SUBMITTED/DISPUTED | Backend validation |
+| **MSG-2** | Sender must be poster or worker for task | Backend validation |
+| **MSG-3** | Maximum 3 photos per message | DB constraint |
+| **MSG-4** | Maximum 500 characters per text message | Backend validation |
+| **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation |
+
+**Detailed specification:** See `staging/MESSAGING_SPEC.md`
+
+---
+
+## §11. Notification System
+
+### 11.1 Core Principle (LOCK THIS)
+
+> **Notifications are information, not interruptions.**
+
+Users receive **only actionable, relevant notifications**. No spam. No marketing. No noise.
+
+**What This Unlocks:**
+- Faster task acceptance (instant alerts)
+- Better coordination (real-time updates)
+- Higher completion rates (deadline reminders)
+- Reduced disputes (status updates)
+
+### 11.2 Notification Categories
+
+**Task-Related:** Task accepted, completed, proof submitted/approved/rejected, cancelled, expired, new matching task, Live Mode task  
+**Message:** New message, unread messages (3+)  
+**Trust & Reputation:** Trust tier upgraded, badge earned, dispute opened/resolved  
+**Escrow & Payment:** Escrow funded, payment released, refund issued  
+**System & Safety:** Account suspended, security alert, password changed
+
+### 11.3 Delivery Rules
+
+- **Do Not Disturb (DND):** User-configurable quiet hours (default: 10 PM - 7 AM)
+- **DND Exceptions:** Task accepted, payment released, security alerts (always notify)
+- **Frequency Limits:** Per-category limits prevent spam (e.g., 5 "new matching task" per hour max)
+- **Grouping:** Similar notifications grouped (e.g., "3 tasks accepted")
+
+### 11.4 Notification Preferences
+
+User can control per category:
+- Enable/Disable
+- Sound (on/off)
+- Badge (on/off)
+- Quiet hours override (yes/no)
+
+### 11.5 Notification Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **NOTIF-1** | Notifications only sent to task participants (poster/worker) | Backend validation |
+| **NOTIF-2** | HIGH priority notifications bypass quiet hours | Backend logic |
+| **NOTIF-3** | Frequency limits enforced per category | Backend rate limiting |
+| **NOTIF-4** | Deep links must be valid (task exists, user has access) | Backend validation |
+| **NOTIF-5** | Notifications expire after 30 days | Backend cleanup job |
+
+**Detailed specification:** See `staging/NOTIFICATION_SPEC.md`
+
+---
+
+## §12. Bidirectional Rating System
+
+### 12.1 Core Principle (LOCK THIS)
+
+> **Ratings are mutual, mandatory, and immutable.**
+
+Both worker and poster rate each other after task completion. Ratings cannot be changed. This builds trust, accountability, and quality on both sides.
+
+**What This Unlocks:**
+- Quality filtering (posters see worker ratings, workers see poster ratings)
+- Trust building (ratings inform trust tier calculations)
+- Accountability (both sides responsible for quality)
+- Dispute prevention (ratings encourage good behavior)
+
+### 12.2 Rating Flow
+
+**Ratings are required after task COMPLETED:**
+1. Task reaches COMPLETED state (proof approved, payment released)
+2. Both parties receive notification: "Rate your experience"
+3. Rating window: 7 days after completion
+4. If not rated within 7 days: Auto-rating (5 stars, no comment)
+5. Ratings are **blind** until both parties submit (or 7 days expire)
+
+### 12.3 Rating Components
+
+**Each rating includes:**
+- **Star Rating:** 1-5 stars (required)
+- **Comment:** Text (max 500 chars, optional)
+- **Tags:** Multi-select (optional, e.g., "On Time", "Professional", "High Quality")
+
+### 12.4 Rating Display
+
+**Worker Profile (visible to posters):**
+- Aggregated stats: Average rating, total ratings, star distribution
+- Recent feedback: Last 10 public ratings with comments and tags
+
+**Poster Profile (visible to workers):**
+- Aggregated stats: Average rating, total ratings
+- Recent feedback: Last 10 public ratings
+
+### 12.5 Rating Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **RATE-1** | Rating only allowed after task COMPLETED | Backend validation |
+| **RATE-2** | Rating window: 7 days after completion | Backend validation |
+| **RATE-3** | Both parties must rate (or auto-rated after 7 days) | Backend logic |
+| **RATE-4** | Ratings are immutable (cannot edit/delete) | DB constraint + backend validation |
+| **RATE-5** | One rating per pair per task | DB UNIQUE constraint |
+| **RATE-6** | Stars must be 1-5 | DB CHECK constraint |
+
+**Detailed specification:** See `staging/RATING_SYSTEM_SPEC.md`
+
+---
+
+## §13. Analytics Infrastructure
+
+### 13.1 Core Principle (LOCK THIS)
+
+> **You cannot improve what you do not measure.**
+
+Every user action is tracked. Every conversion is measured. Every decision is data-driven.
+
+**What This Unlocks:**
+- Identify bottlenecks (where users drop off)
+- Optimize conversion (signup → first task → repeat)
+- Measure feature impact (A/B testing)
+- Track retention (cohort analysis)
+- Drive product decisions (data, not intuition)
+
+### 13.2 Event Tracking
+
+**Event Categories:**
+- **User Actions:** Task viewed, accepted, proof submitted, etc.
+- **System Events:** Escrow funded, payment released, dispute opened
+- **Error Events:** Payment failed, validation error, invariant violation
+- **Performance:** API latency, DB query time, cache hit rate
+
+### 13.3 Conversion Funnels
+
+- **Signup Funnel:** Landing → Signup → Onboarding → First Action
+- **Task Posting Funnel:** Create → AI Completion → Escrow Funded → Accepted → Completed
+- **Task Acceptance Funnel:** Viewed → Details → Accepted → Started → Proof Submitted → Completed
+
+### 13.4 Cohort Analysis
+
+- **Retention Cohorts:** Day 1, Day 7, Day 30 retention by signup week/month
+- **Revenue Cohorts:** Revenue per user (RPU), lifetime value (LTV), average revenue per user (ARPU)
+
+### 13.5 A/B Testing Framework
+
+- Consistent variant assignment (per user_id hash)
+- Traffic split (default: 50/50)
+- Statistical significance calculation (p-value < 0.05)
+
+### 13.6 Privacy & Compliance
+
+- Anonymized fields: IP address (hash), user agent (generalized)
+- Retention: Raw events 90 days, aggregated metrics 2 years
+- GDPR compliance: User can export/delete all events
+
+**Detailed specification:** See `staging/ANALYTICS_SPEC.md`
+
+---
+
+## §14. Fraud Detection System
+
+### 14.1 Core Principle (LOCK THIS)
+
+> **Fraud detection prevents platform abuse before it causes damage.**
+
+Every user, task, and transaction is risk-scored. Suspicious patterns trigger automated flags. High-risk activities require manual review before proceeding.
+
+**What This Unlocks:**
+- Prevents fake tasks (self-matching, payment fraud)
+- Detects account abuse (multiple accounts, identity fraud)
+- Protects platform integrity (trust, reputation)
+- Reduces financial losses (chargebacks, refunds)
+- Maintains legal compliance (AML, KYC)
+
+### 14.2 Risk Scoring System
+
+**Risk Score:** 0.0 (no risk) to 1.0 (maximum risk)
+
+| Score Range | Label | Action |
+|-------------|-------|--------|
+| **0.0 - 0.3** | LOW | Auto-approve, monitor |
+| **0.3 - 0.6** | MEDIUM | Review queue, additional verification |
+| **0.6 - 0.8** | HIGH | Manual review required, flag account |
+| **0.8 - 1.0** | CRITICAL | Auto-reject, suspend account, alert admins |
+
+### 14.3 Fraud Patterns
+
+**Account-Level:** Multiple accounts (same device/IP), rapid account creation, suspicious identity, device sharing, VPN/proxy usage  
+**Task-Level:** Self-matching, circular matching, fake task patterns, price manipulation, rapid task creation  
+**Payment-Level:** Chargeback history, failed payment methods, rapid escrow funding, high-value transactions, Stripe Radar flags  
+**Behavioral:** Velocity abuse, dispute abuse, proof rejection abuse, rating manipulation, message spam
+
+### 14.4 Automated Flagging
+
+**Auto-Flag Conditions:**
+- User risk score ≥ 0.6
+- Task risk score ≥ 0.6
+- Transaction risk score ≥ 0.6
+- Self-match detected (risk score = 1.0)
+- Stripe Radar score ≥ 0.8
+- Chargeback detected
+
+### 14.5 Fraud Detection Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **FRAUD-1** | Risk scores are calculated for all users/tasks/transactions | Background job |
+| **FRAUD-2** | High-risk (≥0.6) entities require manual review | Backend validation |
+| **FRAUD-3** | Critical-risk (≥0.8) entities are auto-rejected | Backend validation |
+| **FRAUD-4** | Self-match (risk = 1.0) is always blocked | Backend validation |
+
+**Detailed specification:** See `staging/FRAUD_DETECTION_SPEC.md`
+
+---
+
+## §15. Content Moderation Workflow
+
+### 15.1 Core Principle (LOCK THIS)
+
+> **Content moderation protects platform quality and user safety.**
+
+All user-generated content is scanned automatically. Flagged content enters a review queue. Users can report violations. Escalation rules ensure swift action on serious issues.
+
+**What This Unlocks:**
+- Prevents harassment, spam, and abuse
+- Maintains platform quality (no inappropriate content)
+- Builds trust (users feel safe)
+- Legal compliance (removes liability)
+- Scalable moderation (automated + human)
+
+### 15.2 Content Types to Moderate
+
+Task descriptions, task titles, messages, profile descriptions, ratings/comments, photos (task proof), profile photos
+
+### 15.3 Moderation Categories
+
+| Category | Severity | Action |
+|----------|----------|--------|
+| **Profanity** | Low | Auto-flag, review |
+| **Harassment** | High | Auto-flag, immediate review |
+| **Spam** | Medium | Auto-flag, review |
+| **Inappropriate** | Critical | Auto-flag, immediate removal |
+| **Personal Info** | Medium | Auto-redact, review |
+| **Phishing** | High | Auto-block, review |
+
+### 15.4 Automated Content Scanning
+
+**AI Scanning (A2 Authority):**
+- AI confidence ≥ 0.9: Auto-block, quarantine
+- AI confidence 0.7-0.9: Flag, send to review queue
+- AI confidence < 0.7: Approve, monitor
+
+### 15.5 Human Review Queue
+
+**Priority Levels:**
+- **CRITICAL:** Harassment, threats, illegal content (SLA: 1 hour)
+- **HIGH:** Spam, phishing, inappropriate (SLA: 4 hours)
+- **MEDIUM:** Profanity, personal info (SLA: 24 hours)
+- **LOW:** Misleading, borderline (SLA: 48 hours)
+
+### 15.6 User Reporting System
+
+Users can report content with categories: Harassment, Spam, Inappropriate, Fake Task, Personal Info, Other
+
+### 15.7 Content Moderation Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **MOD-1** | All user-generated content is scanned | Backend trigger on create/update |
+| **MOD-2** | CRITICAL content is auto-quarantined | Backend validation |
+| **MOD-3** | Review queue items have SLA deadlines | Backend calculation |
+| **MOD-4** | Appeals are reviewed by different admin | Backend assignment |
+
+**Detailed specification:** See `staging/CONTENT_MODERATION_SPEC.md`
+
+---
+
+## §16. GDPR Compliance & Privacy
+
+### 16.1 Core Principle (LOCK THIS)
+
+> **User data belongs to users. They control it.**
+
+GDPR compliance is not optional. It's a legal requirement. Users have the right to access, export, delete, and control their data.
+
+**What This Unlocks:**
+- Legal compliance (no fines, no shutdown risk)
+- User trust (transparent data handling)
+- Competitive advantage (users trust us with their data)
+- Scalability (ready for EU expansion)
+
+### 16.2 User Rights
+
+| Right | Implementation |
+|-------|----------------|
+| **Right to Access** | Export feature (JSON/CSV/PDF) |
+| **Right to Rectification** | Profile edit, data correction |
+| **Right to Erasure** | Account deletion, data purge |
+| **Right to Data Portability** | Data export feature |
+| **Right to Restrict Processing** | Opt-out preferences |
+| **Right to Object** | Opt-out preferences |
+| **Right to Withdraw Consent** | Consent management |
+
+### 16.3 Data Export Feature
+
+**Export Includes:** Account info, profile data, task history, transaction history, message history (90 days), rating history, trust tier history, analytics events (90 days)
+
+**Export Format:** JSON (structured), CSV (spreadsheet), PDF (human-readable)  
+**Export Process:** User requests → System generates (async) → Email with download link (expires 7 days)  
+**SLA:** Export generated within 30 days (GDPR requirement)
+
+### 16.4 Data Deletion Feature
+
+**Immediate Deletion:** Account data, profile data, preferences, location data (30 days), analytics events (90 days)  
+**Legal Retention (7 years):** Transaction data, task data, dispute records, tax documents  
+**Anonymization:** Tasks and transactions anonymized (remove user_id) but kept for legal/tax requirements
+
+**Deletion Process:** User requests → 7-day grace period (can cancel) → Permanent deletion  
+**Grace Period:** Account suspended, user can cancel deletion within 7 days
+
+### 16.5 Consent Management
+
+**Consent Types:**
+- Account Creation: Required, not withdrawable
+- Email Notifications: Optional, withdrawable
+- Marketing Emails: Optional, withdrawable
+- Analytics Tracking: Optional, withdrawable
+- Location Tracking: Required for matching, withdrawable (opt-out)
+- Photo Storage: Required for tasks, not withdrawable
+
+### 16.6 Data Breach Notification
+
+**Within 72 Hours (GDPR Requirement):**
+1. Detect breach
+2. Assess impact (what data, how many users)
+3. Report to Data Protection Authority (DPA)
+4. Notify affected users (if high risk)
+5. Document breach (for audit)
+
+### 16.7 GDPR Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **GDPR-1** | Data export requests processed within 30 days | Backend SLA enforcement |
+| **GDPR-2** | Data deletion requests processed within 7 days | Backend SLA enforcement |
+| **GDPR-3** | User consent records are immutable (append-only) | DB constraint |
+| **GDPR-4** | Legal retention periods enforced (7 years for transactions) | Backend validation |
+| **GDPR-5** | Data breach notifications sent within 72 hours | Backend alerting |
+
+**Detailed specification:** See `staging/GDPR_COMPLIANCE_SPEC.md`
+
+---
+
+## §17. Monetary Rules
+
+### 17.1 Minimum Task Value
 
 - Minimum: $5.00 (500 cents)
 - Platform fee: 15% (deducted from escrow before release)
 - Worker receives: 85% of posted amount
 
-### 9.2 Currency
+### 17.2 Currency
 
 All amounts stored in **USD cents** (integers). No floating point.
 
@@ -719,7 +1334,7 @@ All amounts stored in **USD cents** (integers). No floating point.
 amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 ```
 
-### 9.3 Payment Flow
+### 17.3 Payment Flow
 
 1. Poster creates task with price
 2. Stripe PaymentIntent created for `price + platform_fee`
@@ -730,7 +1345,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 
 ---
 
-## §10. Error Codes
+## §18. Error Codes
 
 | Code | Meaning | Trigger |
 |------|---------|---------|
@@ -752,16 +1367,44 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX602` | Pause state violation | PAUSE-* violation (reserved) |
 | `HX603` | Poster rep access by poster | POSTER-1 violation (reserved) |
 | `HX604` | Percentile public exposure | PERC-1 violation (reserved) |
+| `HX701` | AI question attempted after LOCKED | COMPLETE-3 violation |
+| `HX702` | Escrow funding attempted before COMPLETE | COMPLETE-4 violation |
+| `HX703` | Invalid question type (not in 4 allowed types) | COMPLETE-5 violation |
+| `HX704` | Confidence threshold bypass attempt | COMPLETE-6 violation |
+| `HX801` | Message sent outside allowed task states | MSG-1 violation |
+| `HX802` | Message sender not task participant | MSG-2 violation |
+| `HX803` | Message photo count exceeds limit (3) | MSG-3 violation |
+| `HX804` | Message content exceeds limit (500 chars) | MSG-4 violation |
+| `HX805` | Notification sent to non-participant | NOTIF-1 violation |
+| `HX806` | Notification frequency limit exceeded | NOTIF-3 violation |
+| `HX807` | Rating submitted before task COMPLETED | RATE-1 violation |
+| `HX808` | Rating submitted after 7-day window | RATE-2 violation |
+| `HX809` | Rating edit/delete attempted | RATE-4 violation |
+| `HX810` | Rating stars out of range (1-5) | RATE-6 violation |
+| `HX811` | Rating comment exceeds limit (500 chars) | RATE-7 violation |
+| `HX901` | Risk score calculation failed | FRAUD-1 violation |
+| `HX902` | High-risk entity bypassed review | FRAUD-2 violation |
+| `HX903` | Critical-risk entity not auto-rejected | FRAUD-3 violation |
+| `HX904` | Self-match not blocked | FRAUD-4 violation |
+| `HX951` | Content moderation scan failed | MOD-1 violation |
+| `HX952` | CRITICAL content not auto-quarantined | MOD-2 violation |
+| `HX953` | Review queue SLA deadline missing | MOD-3 violation |
+| `HX954` | Appeal reviewed by same admin | MOD-4 violation |
+| `HX971` | GDPR export request not processed within 30 days | GDPR-1 violation |
+| `HX972` | GDPR deletion request not processed within 7 days | GDPR-2 violation |
+| `HX973` | Consent record modified (append-only violation) | GDPR-3 violation |
+| `HX974` | Legal retention period violated | GDPR-4 violation |
+| `HX975` | Data breach not notified within 72 hours | GDPR-5 violation |
 
-All HX error codes are raised by database triggers. Application code cannot suppress them.
+All HX error codes are raised by database triggers or backend validation. Application code cannot suppress them.
 
 ---
 
-## §11. Account Pause State
+## §19. Account Pause State
 
 Users can **pause their account** without losing progress.
 
-### 11.1 Account States
+### 19.1 Account States
 
 ```typescript
 type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
@@ -773,7 +1416,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | `PAUSED` | View only | Hidden from feed | Disabled |
 | `SUSPENDED` | None (admin action) | Hidden | Disabled |
 
-### 11.2 What's Protected During Pause
+### 19.2 What's Protected During Pause
 
 | Aspect | During Pause | After Resume |
 |--------|--------------|--------------|
@@ -784,7 +1427,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | Earnings History | Preserved | Intact |
 | Task History | Preserved | Intact |
 
-### 11.3 Streak Grace Period
+### 19.3 Streak Grace Period
 
 | Pause Duration | Streak Effect | Trust Effect |
 |----------------|---------------|--------------|
@@ -793,7 +1436,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | 31-90 days | Streak resets to 1 | Trust tier preserved |
 | 90+ days | Streak resets to 1 | Trust tier drops one level |
 
-### 11.4 Pause Invariants
+### 19.4 Pause Invariants
 
 | ID | Invariant | Enforcement |
 |----|-----------|-------------|
@@ -803,7 +1446,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | **PAUSE-4** | Resume is instant | No "reactivation" delay |
 | **PAUSE-5** | No punitive notifications during pause | Notification service |
 
-### 11.5 Pause Tracking
+### 19.5 Pause Tracking
 
 ```typescript
 interface PauseState {
@@ -824,8 +1467,10 @@ interface PauseState {
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial authoritative specification |
 | 1.0.1 | Jan 2025 | HustleXP Core | Fixed: Error codes aligned with schema.sql (HX004, HX401, HX801) |
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: §3.5 Task Modes, §3.6 Live Task Lifecycle, HX9XX error codes |
-| 1.2.0 | Jan 2025 | HustleXP Core | Added: §3.7 Global Fatigue, §8.3 Private Percentile, §8.4 Poster Reputation, §11 Account Pause |
+| 1.2.0 | Jan 2025 | HustleXP Core | Added: §3.7 Global Fatigue, §8.3 Private Percentile, §8.4 Poster Reputation, §19 Account Pause |
+| 1.3.0 | Jan 2025 | HustleXP Core | Added: §8 AI Task Completion System (contract-completion engine) |
+| 1.4.0 | Jan 2025 | HustleXP Core | Added: §9 Task Discovery, §10 Messaging, §11 Notifications, §12 Ratings, §13 Analytics, §14 Fraud Detection, §15 Content Moderation, §16 GDPR Compliance |
 
 ---
 
-**END OF PRODUCT_SPEC v1.2.0**
+**END OF PRODUCT_SPEC v1.4.0**

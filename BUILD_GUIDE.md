@@ -28,6 +28,8 @@ Phase 0: Schema Deployment
     ↓ [Gate: All triggers verified]
 Phase 1: Backend Services
     ↓ [Gate: All invariant tests pass]
+Phase 1.5: AI Task Completion System (OPTIONAL - Can be done in parallel)
+    ↓ [Gate: State machine enforced, confidence scoring works]
 Phase 2: API Layer
     ↓ [Gate: All endpoints tested]
 Phase 3: Frontend State
@@ -264,6 +266,51 @@ describe('INV-X: [Invariant Name]', () => {
 | No direct SQL in services | Only via db.ts |
 
 **Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §4.6 Phase 1.5: AI Task Completion System (OPTIONAL)
+
+### 4.6.1 What This Phase Does
+
+Implements the **contract-completion engine** that ensures zero ambiguity before escrow is funded.
+
+**This phase can be done in parallel with Phase 1** or deferred until Phase 2 is complete.
+
+**Detailed specification:** See `staging/AI_TASK_COMPLETION_SPEC.md`
+
+### 4.6.2 Prerequisites
+
+| Requirement | Verification |
+|-------------|--------------|
+| Phase 0 gate passed | Schema deployed |
+| AI_INFRASTRUCTURE.md reviewed | Authority model understood |
+| staging/AI_TASK_COMPLETION_SPEC.md reviewed | Full spec understood |
+| AI orchestration layer working | AI models accessible |
+
+### 4.6.3 Key Implementation Steps
+
+1. **Extend Schema** — Add `ai_completion_state`, confidence scores, `task_completion_questions` table
+2. **Create Service** — `TaskCompletionService` with confidence calculation + question generation
+3. **Add API Endpoints** — `taskCompletion.analyze`, `taskCompletion.answerQuestion`
+4. **Enforce State Machine** — DRAFT → INCOMPLETE → COMPLETE → LOCKED transitions
+5. **Test Confidence Thresholds** — Verify 0.85 threshold works correctly
+
+### 4.6.4 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Schema extended | Columns exist, triggers work |
+| State machine enforced | Tests pass |
+| Confidence scoring works | All thresholds verified |
+| Only 4 question types | Backend validation works |
+| Auto-fill pattern works | Confidence ≥ 0.85 triggers proposal |
+| LOCKED state enforced | Escrow funding locks task |
+| Escrow gate works | Cannot fund unless COMPLETE |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+**Note:** This phase is **optional** and can be deferred. Core task creation (Phase 1) works without it.
 
 ---
 
@@ -709,7 +756,361 @@ If production verification fails:
 
 ---
 
-## §10. Definition of Done
+## §10. Phase 7: Task Discovery & Matching System (High Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §9, `staging/TASK_DISCOVERY_SPEC.md`
+
+### 10.1 Implementation Steps
+
+1. **Schema Extensions:**
+   - Apply migration `002_critical_gaps_tables.sql` (task_matching_scores, saved_searches)
+   - Verify tables created: `SELECT * FROM task_matching_scores LIMIT 1;`
+
+2. **Backend Service:**
+   - Create `TaskDiscoveryService.ts`
+   - Implement matching score calculation
+   - Implement relevance score calculation
+   - Implement feed ranking algorithm
+   - Implement filter/sort/search logic
+
+3. **AI Service (A1 Authority):**
+   - Create `TaskExplanationService.ts`
+   - Generate "Why this task?" explanations
+   - Advisory only (A1 authority)
+
+4. **API Endpoints:**
+   - `taskDiscovery.getFeed({ filters, sortBy, limit, offset })`
+   - `taskDiscovery.search({ query, filters, sortBy, limit, offset })`
+   - `taskDiscovery.getExplanation({ taskId })`
+
+5. **Frontend:**
+   - Task feed screen with matching scores
+   - Filter/sort UI components
+   - Search bar component
+   - "Why this task?" explanation display
+
+### 10.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Matching scores calculated | Test query returns 0.0-1.0 |
+| Feed ranking works | Tasks ordered by relevance_score |
+| Filters work | Filter by category, price, distance |
+| Search works | Full-text search returns results |
+| Explanations generated | AI returns explanation text |
+| Performance acceptable | Feed generation < 200ms p95 |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §11. Phase 8: Messaging System (High Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §10, `staging/MESSAGING_SPEC.md`
+
+### 10.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (task_messages)
+   - Verify table created: `SELECT * FROM task_messages LIMIT 1;`
+
+2. **Backend Service:**
+   - Create `MessagingService.ts`
+   - Implement task-scoped messaging
+   - Implement message lifecycle (allowed only during ACCEPTED/PROOF_SUBMITTED/DISPUTED)
+   - Implement content moderation integration (A2 authority)
+
+3. **API Endpoints:**
+   - `messaging.getThread({ taskId })`
+   - `messaging.sendMessage({ taskId, messageType, content, ... })`
+   - `messaging.markRead({ taskId, messageIds })`
+
+4. **Frontend:**
+   - Task chat screen
+   - Auto-message quick actions
+   - Photo sharing in chat
+   - Location sharing (optional)
+
+### 10.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Messages scoped to tasks | Cannot message without task_id |
+| Lifecycle enforced | Cannot message after COMPLETED |
+| Content moderation works | Flagged messages quarantined |
+| Performance acceptable | Message send < 100ms p95 |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §12. Phase 9: Notification System (High Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §11, `staging/NOTIFICATION_SPEC.md`
+
+### 12.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (notifications, notification_preferences)
+   - Verify tables created
+
+2. **Backend Service:**
+   - Create `NotificationService.ts`
+   - Implement notification creation/delivery
+   - Implement quiet hours logic
+   - Implement frequency limits
+   - Implement grouping logic
+   - Integrate with push notification services (APNs, FCM)
+
+3. **API Endpoints:**
+   - `notifications.getList({ limit, offset, unread_only })`
+   - `notifications.markRead({ notificationIds })`
+   - `notifications.getPreferences()`
+   - `notifications.updatePreferences({ preferences })`
+
+4. **Frontend:**
+   - Notification list screen
+   - Notification preferences screen
+   - Deep linking implementation
+
+### 12.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Notifications delivered | Push notifications received |
+| Quiet hours respected | HIGH priority bypasses, others don't |
+| Frequency limits enforced | No spam (max per category) |
+| Deep links work | Tapping notification opens correct screen |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §13. Phase 10: Rating System (Medium Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §12, `staging/RATING_SYSTEM_SPEC.md`
+
+### 12.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (task_ratings, user_rating_summary view)
+   - Verify table and view created
+
+2. **Backend Service:**
+   - Create `RatingService.ts`
+   - Implement rating submission
+   - Implement blind rating logic (hidden until both rate)
+   - Implement auto-rating after 7 days
+   - Integrate with TrustTierService (for Tier 4 ELITE requirement: 4.8+ rating)
+
+3. **API Endpoints:**
+   - `ratings.submitRating({ taskId, stars, comment, tags })`
+   - `ratings.getMyRatings({ limit, offset, taskId })`
+   - `ratings.getUserRatings({ userId })`
+   - `ratings.getTaskRatings({ taskId })`
+
+4. **Frontend:**
+   - Rating modal (after task completion)
+   - Profile rating display
+   - Rating history screen
+
+### 12.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Bidirectional ratings work | Both poster and worker can rate |
+| Blind ratings enforced | Ratings hidden until both submitted |
+| Auto-rating works | 7 days → auto 5-star |
+| Ratings immutable | Cannot edit/delete after submission |
+| Trust tier integration | Tier 4 requires 4.8+ rating |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §14. Phase 11: Analytics Infrastructure (High Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §13, `staging/ANALYTICS_SPEC.md`
+
+### 14.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (analytics_events)
+   - Verify table created
+   - Consider partitioning by month for performance
+
+2. **Backend Service:**
+   - Create `AnalyticsService.ts`
+   - Implement event tracking
+   - Implement conversion funnel calculation
+   - Implement cohort analysis
+   - Implement A/B testing framework
+
+3. **API Endpoints:**
+   - `analytics.track({ eventType, eventCategory, properties, ... })`
+   - `analytics.getFunnel({ funnelId, startDate, endDate })`
+   - `analytics.getCohort({ cohortType, startDate, endDate, period })`
+   - `analytics.getABTestResults({ testId })`
+
+4. **Dashboard (Optional, Post-Launch):**
+   - Real-time metrics dashboard
+   - Funnel visualization
+   - Cohort analysis visualization
+
+### 14.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Events tracked | All user actions logged |
+| Funnels calculated | Conversion rates computed |
+| Cohorts calculated | Retention rates computed |
+| A/B tests work | Variants assigned consistently |
+| Privacy compliant | GDPR export/deletion works |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §15. Phase 12: Fraud Detection System (Critical Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §14, `staging/FRAUD_DETECTION_SPEC.md`
+
+### 14.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (fraud_risk_scores, fraud_patterns)
+   - Verify tables created
+
+2. **Backend Service:**
+   - Create `FraudDetectionService.ts`
+   - Implement risk scoring algorithm
+   - Implement pattern detection
+   - Implement automated flagging
+   - Integrate with Stripe Radar (payment risk)
+
+3. **Background Jobs:**
+   - Risk score calculation job (daily)
+   - Pattern detection job (daily)
+   - Review queue processing
+
+4. **API Endpoints (Admin Only):**
+   - `fraud.getRiskScore({ entityType, entityId })`
+   - `fraud.getReviewQueue({ riskLevel, limit, offset })`
+   - `fraud.reviewFlag({ riskScoreId, decision, notes })`
+   - `fraud.detectPatterns({ userId, taskId, patternType })`
+
+5. **Admin UI (Post-Launch):**
+   - Review queue dashboard
+   - Pattern detection visualization
+
+### 14.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Risk scores calculated | All users/tasks/transactions scored |
+| Self-match detected | Self-match risk = 1.0, blocked |
+| High-risk flagged | Risk ≥ 0.6 → review queue |
+| Critical-risk auto-rejected | Risk ≥ 0.8 → auto-reject |
+| Stripe Radar integrated | Payment risk scores used |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §16. Phase 13: Content Moderation Workflow (High Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §15, `staging/CONTENT_MODERATION_SPEC.md`
+
+### 16.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (content_moderation_queue, content_reports, content_appeals)
+   - Verify tables created
+
+2. **Backend Service:**
+   - Create `ContentModerationService.ts`
+   - Implement automated content scanning (AI, A2 authority)
+   - Implement review queue management
+   - Implement user reporting system
+   - Implement appeal process
+
+3. **AI Integration (A2 Authority):**
+   - Content scanning AI (proposes: approve, flag, block)
+   - Confidence thresholds: ≥0.9 auto-block, 0.7-0.9 flag, <0.7 approve
+
+4. **API Endpoints (Admin Only):**
+   - `moderation.getQueue({ priority, status, limit, offset })`
+   - `moderation.reviewItem({ queueId, decision, notes, action })`
+   - `moderation.reportContent({ contentType, contentId, category, description })`
+   - `moderation.appealDecision({ moderationQueueId, reason })`
+
+5. **API Endpoints (User):**
+   - `moderation.reportContent({ contentType, contentId, category, description })`
+   - `moderation.appealDecision({ moderationQueueId, reason })`
+
+### 16.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Content scanned | All user-generated content analyzed |
+| CRITICAL auto-quarantined | Harassment/inappropriate removed immediately |
+| Review queue works | Items assigned, reviewed, resolved |
+| User reporting works | Reports create queue items |
+| Appeals work | Appeals reviewed by different admin |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §17. Phase 14: GDPR Compliance (Critical Priority, Pre-Launch)
+
+**Spec Reference:** PRODUCT_SPEC §16, `staging/GDPR_COMPLIANCE_SPEC.md`
+
+### 16.1 Implementation Steps
+
+1. **Schema:**
+   - Apply migration `002_critical_gaps_tables.sql` (gdpr_data_requests, user_consents)
+   - Verify tables created
+
+2. **Backend Service:**
+   - Create `GDPRService.ts`
+   - Implement data export (JSON/CSV/PDF)
+   - Implement data deletion (with 7-day grace period)
+   - Implement consent management
+   - Implement data breach notification workflow
+
+3. **Background Jobs:**
+   - Export generation job (async, within 30 days)
+   - Deletion processing job (after 7-day grace period)
+   - Consent cleanup job (expired consents)
+
+4. **API Endpoints:**
+   - `privacy.requestDataExport({ format, scope })`
+   - `privacy.requestAccountDeletion({ password, reason })`
+   - `privacy.cancelDeletion({ requestId })`
+   - `privacy.getConsents()`
+   - `privacy.updateConsent({ consentType, granted })`
+
+5. **Legal Documents (External):**
+   - Privacy Policy (legal review required)
+   - Terms of Service (legal review required)
+   - Cookie Policy (if web, legal review required)
+
+### 16.2 Gate Criteria
+
+| Criterion | Verification |
+|-----------|--------------|
+| Data export works | User receives export within 30 days |
+| Data deletion works | User data deleted within 7 days (after grace period) |
+| Consent management works | Users can grant/withdraw consent |
+| Legal retention enforced | Transactions kept 7 years (tax requirement) |
+| Data breach workflow documented | 72-hour notification procedure |
+
+**Gate Status:** ✅ PASS or ❌ FAIL
+
+---
+
+## §18. Definition of Done
 
 ### 10.1 Phase Completion
 
@@ -754,7 +1155,7 @@ An invariant is **verified** when:
 
 ---
 
-## §11. What Cannot Be Skipped
+## §19. What Cannot Be Skipped
 
 ### 11.1 Absolute Requirements
 
@@ -789,7 +1190,7 @@ If Phase N gate is not ✅ PASS, Phase N+1 work **must not begin**.
 
 ---
 
-## §12. Continuous Verification
+## §20. Continuous Verification
 
 ### 12.1 CI Pipeline Requirements
 
@@ -846,7 +1247,7 @@ npm run test:e2e
 
 ---
 
-## §13. Cross-Reference Matrix
+## §21. Cross-Reference Matrix
 
 | BUILD_GUIDE Section | PRODUCT_SPEC | ARCHITECTURE | UI_SPEC |
 |---------------------|--------------|--------------|---------|
