@@ -1,4 +1,4 @@
-# HustleXP Product Specification v1.2.0
+# HustleXP Product Specification v1.4.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
