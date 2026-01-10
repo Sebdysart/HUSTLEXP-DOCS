@@ -155,7 +155,7 @@ This code is **not production-ready**. It exists to:
 
 ## Schema
 
-The canonical database schema lives in [`schema.sql`](./schema.sql) (v1.1.0, ~1,900 lines).
+The canonical database schema lives in [`schema.sql`](./schema.sql) (v1.1.0, 1,935 lines).
 
 This schema enforces all core invariants (INV-1 through INV-5) at Layer 0 via PostgreSQL triggers.
 

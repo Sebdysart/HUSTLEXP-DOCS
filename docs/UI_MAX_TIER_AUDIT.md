@@ -1,14 +1,14 @@
 # UI_SPEC Max-Tier Status Audit
 
 **Date:** January 2025  
-**Current Version:** UI_SPEC.md v1.4.0  
-**Status:** ✅ **100% MAX-TIER COMPLETE** (All 7 gaps integrated)
+**Current Version:** UI_SPEC.md v1.5.0  
+**Status:** ✅ **100% MAX-TIER COMPLETE** (All 7 gaps integrated + Layered Hierarchy)
 
 ---
 
 ## Executive Summary
 
-UI_SPEC.md is **not yet max-tier**. It has 2 out of 7 max-tier human systems fully integrated, 1 partially integrated, and 4 completely missing.
+✅ **UPDATE**: UI_SPEC.md v1.5.0 is now **100% MAX-TIER COMPLETE** with all 7 human systems integrated plus Layered Influence Hierarchy (§2). This audit reflects the complete integration status.
 
 **Definition of Max-Tier:**
 - Fully integrated into constitutional law (PRODUCT_SPEC.md, UI_SPEC.md, BUILD_GUIDE.md)
@@ -485,7 +485,7 @@ Before UI_SPEC can be considered "max-tier":
 **Integration Summary:**
 - ✅ Phase 1 completed: GAP-3 (Session Forecast), GAP-6 (Poster Reputation)
 - ✅ Phase 2 completed: GAP-4 (Private Percentile), GAP-7 (Pause State)
-- ✅ UI_SPEC.md v1.4.0 released with all max-tier sections
+- ✅ UI_SPEC.md v1.5.0 released with all max-tier sections + Layered Influence Hierarchy (§2)
 
 **What Was Added:**
 - §16. Session Forecast (AI Earning Predictability)
@@ -497,4 +497,4 @@ Before UI_SPEC can be considered "max-tier":
 
 **Last Updated:** January 2025  
 **Status:** ✅ MAX-TIER COMPLETE  
-**Version:** UI_SPEC.md v1.4.0
+**Version:** UI_SPEC.md v1.5.0 (MAX-TIER + LAYERED HIERARCHY)
