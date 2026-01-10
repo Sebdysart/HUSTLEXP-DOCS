@@ -1,9 +1,11 @@
-# HustleXP UI Specification v1.3.0
+# HustleXP UI Specification v1.4.0
 
-**STATUS: CONSTITUTIONAL AUTHORITY**  
+**STATUS: CONSTITUTIONAL AUTHORITY — MAX-TIER COMPLETE**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  
 **Governance:** This document governs all visual expression. Violations are build failures.
+
+**Max-Tier Status:** ✅ All 7 human systems gaps integrated (GAP-1 through GAP-7, excluding global fatigue for GAP-5 per product decision)
 
 ---
 
@@ -597,6 +599,13 @@ If data may be stale (offline, cached):
 | §6 Screen Rules | §3, §4, §7 | — | §12, §13 | — |
 | §8 Enforcement | — | §9 (Invariants) | §0.1 (ONB-*) | — |
 | §9 State Display | — | §1.2 (Authority) | — | — |
+| §13 Live Mode | §7.2 | — | — | — |
+| §14 Money Timeline | §6.2 | — | — | escrows, tasks |
+| §15 Failure Recovery | §4.3 | — | — | disputes, proofs |
+| §16 Session Forecast | §6.3 | AI_INFRASTRUCTURE §3 | — | users, tasks |
+| §17 Private Percentile | §5.5 | — | — | users, tasks |
+| §18 Poster Reputation | §4.5 | — | — | poster_ratings |
+| §19 Pause State | §11 | — | — | users (account_status) |
 | §12 Onboarding | — | §2 (Layer Hierarchy) | §12-15 | — |
 
 ---
@@ -1135,6 +1144,549 @@ const REQUIRED_FAILURE_ELEMENTS = [
 
 ---
 
+## §16. Session Forecast (AI Earning Predictability)
+
+Hustlers earn and progress, but they don't **predict**. Best gig money apps answer: "If I open this app for 90 minutes, what happens?"
+
+### 16.1 Core Principle
+
+AI predicts earning potential based on:
+- Current location
+- Historical performance
+- Current demand
+- Time of day
+
+**AI authority: A1 (Advisory)** — forecasts are read-only, cannot make decisions.
+
+### 16.2 Session Forecast UI
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  🧠 SESSION FORECAST                                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Based on your location & history:                      │
+│                                                         │
+│  EXPECTED EARNINGS                                      │
+│  $35 – $55 in the next 90 minutes                      │
+│                                                         │
+│  BEST OPPORTUNITIES                                     │
+│  • Delivery tasks (high demand nearby)                  │
+│  • Moving help ($40+ tasks available)                   │
+│                                                         │
+│  CONDITIONS                                             │
+│  🟢 Good — 12 active posters within 3 miles            │
+│                                                         │
+│  This is an estimate, not a guarantee.                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 16.3 Forecast Rules
+
+| Rule | Description |
+|------|-------------|
+| **Forecasts are ranges** | "$35–$55" not "$45" (always show range) |
+| **No guarantees** | Always include disclaimer ("This is an estimate, not a guarantee.") |
+| **Accuracy improves** | More history = better predictions |
+| **AI is advisory** | Cannot auto-accept tasks, cannot change task visibility |
+
+### 16.4 Forecast Display Rules
+
+**REQUIRED:**
+- Always show earnings as a range (low-high)
+- Always include disclaimer
+- Show confidence level (LOW, MEDIUM, HIGH)
+- Show best opportunities (task categories)
+- Show conditions (POOR, FAIR, GOOD, EXCELLENT)
+
+**FORBIDDEN:**
+- Exact dollar amounts without ranges ("You will earn $45")
+- Guarantees or promises ("Guaranteed earnings", "You will definitely...")
+- Auto-accept suggestions ("Accept these tasks now!")
+- Manipulation ("Limited time forecast", "Act now!")
+
+### 16.5 Forecast Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **FORECAST-1** | Forecasts are always ranges, never exact numbers | UI component |
+| **FORECAST-2** | Disclaimers required on all forecasts | Copy review |
+| **FORECAST-3** | AI cannot auto-accept tasks based on forecast | Backend guard |
+| **FORECAST-4** | Forecasts are read-only (no user input) | UI component |
+| **FORECAST-5** | No guarantees or promises in forecast copy | Copy review |
+
+### 16.6 Session Forecast Component Rules
+
+**Display Context:**
+- ✅ HomeScreen (Hustler view, post-unlock)
+- ✅ Task Feed (optional, can be collapsed)
+- ❌ Task Detail (not relevant)
+- ❌ Wallet (financial context, not forecast)
+
+**Color Rules:**
+- Use INFO color (#3B82F6) for forecast header
+- Use neutral gray for earnings range (not XP or Money colors)
+- Use status colors for conditions (🟢 GOOD, 🟡 FAIR, 🔴 POOR)
+
+### 16.7 Forbidden Forecast Patterns
+
+```javascript
+const FORBIDDEN_FORECAST_COPY = [
+  // Guarantees
+  'Guaranteed', 'Definitely', 'Will earn', 'Promise',
+  
+  // Exact amounts
+  'You will earn $45', 'Exact earnings: $50',
+  
+  // Auto-suggestions
+  'Accept now', 'Take these tasks', 'Auto-accept',
+  
+  // Manipulation
+  'Limited time', 'Act now', 'Hurry', 'Don't miss'
+];
+
+const REQUIRED_FORECAST_ELEMENTS = [
+  'Earnings range',     // Always show low-high
+  'Disclaimer',         // Always include
+  'Best opportunities', // Task categories
+  'Conditions',         // Demand level
+  'Confidence level'    // LOW, MEDIUM, HIGH
+];
+```
+
+---
+
+## §17. Private Percentile Status
+
+Leaderboards destroy gig platforms through toxic competition. But **status** still matters for motivation.
+
+### 17.1 Core Principle
+
+Show users their relative standing **without** public ranks, usernames, or competition.
+
+**Private only** — never visible to other users.
+
+### 17.2 Private Percentile UI
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  YOUR STANDING (Private)                                │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  RELIABILITY                                            │
+│  Top 12% this week                                      │
+│  ████████████░░░░░░░░                                   │
+│                                                         │
+│  RESPONSE TIME                                          │
+│  Top 25% this week                                      │
+│  ████████░░░░░░░░░░░░                                   │
+│                                                         │
+│  COMPLETION RATE                                        │
+│  Top 8% all time                                        │
+│  █████████████░░░░░░░                                   │
+│                                                         │
+│  Only you can see this.                                 │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 17.3 Private Percentile Rules
+
+| Rule | Description |
+|------|-------------|
+| **No usernames** | Never compare to named users ("You're better than @username") |
+| **No rankings** | Never show "You are #47" or "Rank: 47th" |
+| **No competition** | Never "Beat X to unlock Y" or "Compete with others" |
+| **Only self-relative** | Compare to your own history, not others |
+| **Private only** | Never visible to other users (API guard) |
+
+### 17.4 Percentile Metrics
+
+| Metric | Calculation | Shown To |
+|--------|-------------|----------|
+| **Reliability** | Tasks completed / Tasks accepted | Hustler only |
+| **Response Time** | Avg time to accept tasks | Hustler only |
+| **Completion Rate** | Successful / Total tasks | Hustler only |
+| **Earnings Velocity** | Earnings / Active hours | Hustler only |
+
+**Display Format:**
+- "Top X%" (never "Bottom X%" or "Xth percentile")
+- Progress bar visualization (visual only, no numbers on bar)
+- "this week", "this month", "all time" context
+
+### 17.5 Percentile Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **PERC-1** | Percentiles are never public | API guard (403 if not own user) |
+| **PERC-2** | No comparison to named users | UI review |
+| **PERC-3** | Percentiles update weekly max | Backend job (not real-time) |
+| **PERC-4** | Minimum 100 users for percentile | Statistical validity (backend) |
+| **PERC-5** | No rankings or position numbers | UI component |
+
+### 17.6 Private Percentile Display Rules
+
+**Display Context:**
+- ✅ ProfileScreen (Hustler view, post-unlock)
+- ✅ HomeScreen (optional, can be collapsed)
+- ❌ Task Feed (not relevant)
+- ❌ Task Detail (not relevant)
+- ❌ Any public view (never visible to others)
+
+**Color Rules:**
+- Use XP_PRIMARY (#10B981) for progress bars (this is XP-related status)
+- Use neutral gray for text labels
+- Use SUCCESS color for "Top X%" text when X < 25 (high percentile)
+
+**Forbidden:**
+- Leaderboard-style lists
+- Comparison to other users
+- Competitive language
+- Public visibility
+
+### 17.7 Forbidden Percentile Patterns
+
+```javascript
+const FORBIDDEN_PERCENTILE_COPY = [
+  // Rankings
+  'You are #47', 'Rank: 47th', 'Position: 47',
+  
+  // Comparisons
+  'Better than @username', 'Top of your class', 'Beat others',
+  
+  // Competition
+  'Compete', 'Challenge', 'Leaderboard', 'Tournament',
+  
+  // Public visibility
+  'Visible to others', 'Public ranking', 'Your rank'
+];
+
+const REQUIRED_PERCENTILE_ELEMENTS = [
+  'Top X% format',       // Always "Top X%", never "Bottom X%"
+  'Privacy notice',      // "Only you can see this"
+  'Time context',        // "this week", "this month", "all time"
+  'Progress bar',        // Visual representation (no numbers on bar)
+  'Self-relative only'   // Compare to own history, not others
+];
+```
+
+---
+
+## §18. Poster Quality Filtering (Hustler-Only)
+
+Escrow protects hustlers from non-payment. But not yet from **bad posters** who dispute unfairly, communicate poorly, or create unclear tasks.
+
+### 18.1 Core Principle
+
+Surface poster history **only to hustlers**, not to posters themselves.
+
+**Never show to posters** — would change their behavior artificially.
+
+### 18.2 Poster Reputation UI (Task Card)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Deep cleaning needed                                   │
+│  Sarah K. • VERIFIED                                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  💰 $45.00 (you receive ~$38.25)                        │
+│  📍 2.1 miles away                                      │
+│  ✅ Escrow: FUNDED                                      │
+│                                                         │
+│  POSTER HISTORY                                         │
+│  • 12 tasks posted                                      │
+│  • 0 disputes                                           │
+│  • Avg response: 2h                                     │
+│  ⭐ Hustlers rate: Excellent                            │
+│                                                         │
+│  [ Accept Task ]                                        │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 18.3 Poster Reputation Metrics
+
+| Metric | Calculation | Visible To |
+|--------|-------------|------------|
+| **Tasks Posted** | COUNT(tasks) where poster_id = user.id | Hustlers only |
+| **Dispute Rate** | Disputes / Tasks (rolling 90-day) | Hustlers only |
+| **Avg Response Time** | Avg time to respond to proofs (hours) | Hustlers only |
+| **Hustler Rating** | Avg rating from workers (GREAT, OKAY, DIFFICULT) | Hustlers only |
+| **Repeat Hire Rate** | Rehired same hustler % | Hustlers only |
+
+**Display Format:**
+- Factual, neutral language ("12 tasks posted", not "12 successful tasks")
+- Hustler rating shown as emoji + text ("⭐ Excellent", "😐 Okay", "😕 Difficult")
+- No subjective labels ("bad poster", "problematic", etc.)
+
+### 18.4 Poster Reputation Rules
+
+| Rule | Rationale |
+|------|-----------|
+| **Never show to posters** | Would change their behavior artificially (gaming the system) |
+| **Minimum 5 tasks** | Statistical validity (don't show if < 5 tasks) |
+| **Rolling 90-day window** | Recent behavior matters more than lifetime |
+| **No "bad poster" label** | Just facts, hustler decides |
+| **Hustler-only visibility** | API guard (403 if poster tries to view own reputation) |
+
+### 18.5 Poster Rating System (Post-Task)
+
+After task completion (COMPLETED state), hustler can rate poster:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  How was working with Sarah?                            │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  [ 😊 Great ]  [ 😐 Okay ]  [ 😕 Difficult ]          │
+│                                                         │
+│  Optional: What could be better?                        │
+│  [ ] Clearer task description                           │
+│  [ ] Faster communication                               │
+│  [ ] More reasonable expectations                       │
+│  [ ] Better task location                               │
+│                                                         │
+│  [ Submit Rating ]                                      │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Rating Options:**
+- **😊 Great** — Smooth experience, would work with again
+- **😐 Okay** — Acceptable, no major issues
+- **😕 Difficult** — Issues with communication, clarity, or expectations
+
+**Feedback Flags (Optional):**
+- Clearer task description
+- Faster communication
+- More reasonable expectations
+- Better task location
+- Fair payment
+- Respectful interaction
+
+**Rating Rules:**
+- Only after task COMPLETED (not during dispute)
+- 7-day window (auto-rate as "Okay" after 7 days if no rating)
+- One rating per task per hustler
+- Poster never sees individual ratings (only aggregated reputation)
+
+### 18.6 Poster Reputation Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **POSTER-1** | Poster reputation never visible to posters | API guard (403) |
+| **POSTER-2** | Minimum 5 tasks required for reputation display | Backend query |
+| **POSTER-3** | Only rolling 90-day window (no lifetime stats) | Backend query |
+| **POSTER-4** | Facts only, no subjective labels | UI component |
+| **POSTER-5** | Poster ratings are aggregated, never individual | Backend aggregation |
+| **POSTER-6** | Rating only available after task COMPLETED | State machine guard |
+
+### 18.7 Poster Reputation Display Rules
+
+**Display Context:**
+- ✅ Task Card (Task Feed, Search results)
+- ✅ Task Detail Screen (before accepting)
+- ❌ ProfileScreen (posters never see own reputation)
+- ❌ Public views (never visible to anyone except hustlers viewing tasks)
+
+**Color Rules:**
+- Use INFO color (#3B82F6) for "POSTER HISTORY" header
+- Use neutral gray for metrics (tasks posted, disputes, response time)
+- Use status colors for hustler rating:
+  - 😊 Great → SUCCESS (#10B981)
+  - 😐 Okay → INFO (#3B82F6)
+  - 😕 Difficult → WARNING (#F59E0B)
+
+**Forbidden:**
+- Subjective labels ("bad poster", "problematic", "avoid this poster")
+- Lifetime stats (only 90-day rolling window)
+- Individual ratings (only aggregated)
+- Public visibility
+
+### 18.8 Forbidden Poster Reputation Patterns
+
+```javascript
+const FORBIDDEN_POSTER_COPY = [
+  // Subjective labels
+  'Bad poster', 'Problematic', 'Avoid', 'Unreliable',
+  
+  // Lifetime stats
+  'All-time stats', 'Lifetime reputation', 'Total history',
+  
+  // Individual ratings
+  'User X rated this poster', 'Individual feedback',
+  
+  // Public visibility
+  'Public reputation', 'Visible to all'
+];
+
+const REQUIRED_POSTER_ELEMENTS = [
+  'Tasks posted count',     // Always show if >= 5 tasks
+  'Dispute rate',           // Always show (0 disputes is good info)
+  'Avg response time',      // Always show
+  'Hustler rating',         // Aggregated (Great/Okay/Difficult)
+  '90-day window notice'    // "Based on last 90 days" (optional, subtle)
+];
+```
+
+---
+
+## §19. Exit With Dignity (Pause State)
+
+Most gig apps trap users psychologically through streak anxiety, FOMO notifications, and punitive decay. This destroys trust and increases churn.
+
+### 19.1 Core Principle
+
+Let users leave **cleanly** without losing progress. No psychological traps.
+
+**Your progress is safe** — XP, levels, trust tier, and badges are protected.
+
+### 19.2 Pause State UI
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Taking a break?                                        │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Your progress is safe.                                 │
+│                                                         │
+│  WHAT'S PROTECTED                                       │
+│  ✅ XP total: 1,247 (no decay)                         │
+│  ✅ Level: 5 (locked in)                               │
+│  ✅ Trust tier: VERIFIED (preserved)                    │
+│  ✅ Badges: 12 earned (permanent)                       │
+│                                                         │
+│  WHAT PAUSES                                            │
+│  ⏸️  Current streak: 14 days                            │
+│      Grace period: 14 days from now                     │
+│                                                         │
+│  Resume anytime to continue where you left off.         │
+│                                                         │
+│  [ Pause My Account ]  [ Stay Active ]                  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 19.3 Pause State Rules
+
+| Aspect | During Pause | After Resume |
+|--------|--------------|--------------|
+| **XP** | No decay | Intact |
+| **Level** | Frozen | Intact |
+| **Trust Tier** | Frozen | Intact |
+| **Badges** | Permanent (no change) | Intact |
+| **Streak** | Grace period (configurable) | Continues if resumed in time |
+| **Task Visibility** | Hidden from task feed | Restored |
+| **Notifications** | None | Restored |
+
+### 19.4 Pause Duration Tiers
+
+| Duration | Streak Grace | Trust Protection |
+|----------|--------------|------------------|
+| **Up to 14 days** | Full streak preserved | Full protection |
+| **15-30 days** | Streak resets to 1 | Trust tier preserved |
+| **31-90 days** | Streak resets to 1 | Trust tier preserved |
+| **90+ days** | Streak resets to 1 | Trust tier drops one level (max) |
+
+**Note:** Even after 90+ days, XP, Level, and Badges remain intact. Only streak and trust tier are affected.
+
+### 19.5 Paused Account Screen
+
+When account is paused, show:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Account Paused                                         │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Your account is on pause.                              │
+│                                                         │
+│  PROTECTED PROGRESS                                     │
+│  ✅ XP: 1,247                                           │
+│  ✅ Level: 5                                            │
+│  ✅ Trust Tier: VERIFIED                                │
+│  ✅ Badges: 12                                          │
+│                                                         │
+│  PAUSED SINCE                                           │
+│  January 8, 2025 (3 days ago)                          │
+│                                                         │
+│  STREAK STATUS                                          │
+│  ⏸️  Streak: 14 days (preserved until Jan 22)          │
+│                                                         │
+│  [ Resume Account ]                                     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Resume Rules:**
+- Resume is instant (no "reactivation" delay)
+- All protected progress restored immediately
+- Task visibility restored
+- Notifications restored
+- Streak continues if within grace period
+
+### 19.6 Pause Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **PAUSE-1** | XP never decays during pause | Backend logic (no XP decay job runs for paused users) |
+| **PAUSE-2** | Badges are permanent regardless | DB constraint (badges table has no expiry) |
+| **PAUSE-3** | Pause is always available | UI always shows option (Settings or Profile) |
+| **PAUSE-4** | Resume is instant | No "reactivation" delay, immediate restoration |
+| **PAUSE-5** | No punitive notifications | Notification service skips paused users |
+| **PAUSE-6** | Task visibility hidden during pause | Backend query filter (WHERE account_status != 'PAUSED') |
+
+### 19.7 Pause State Display Rules
+
+**Display Context:**
+- ✅ ProfileScreen (Pause button, always visible)
+- ✅ SettingsScreen (Pause option)
+- ✅ PausedAccountScreen (when paused)
+- ❌ HomeScreen (when paused, show paused screen instead)
+- ❌ Task Feed (hidden when paused)
+
+**Color Rules:**
+- Use SUCCESS color (#10B981) for "✅ Protected" items (XP, Level, Trust Tier, Badges)
+- Use INFO color (#3B82F6) for "⏸️ Paused" items (Streak)
+- Use neutral gray for paused account status
+- Use primary color for action buttons ("Resume Account", "Pause My Account")
+
+**Forbidden:**
+- Urgency language ("Act now to preserve your streak!", "Hurry!")
+- FOMO notifications ("You're missing out on tasks!")
+- Punitive language ("Your streak will expire", "Progress will decay")
+- Shame language ("You're taking a break", "You're inactive")
+
+### 19.8 Forbidden Pause Patterns
+
+```javascript
+const FORBIDDEN_PAUSE_COPY = [
+  // Urgency
+  'Act now', 'Hurry', 'Limited time', 'Expires soon',
+  
+  // FOMO
+  'Missing out', 'Others are earning', 'You're falling behind',
+  
+  // Punitive
+  'Progress will decay', 'Streak will expire', 'Lose your status',
+  
+  // Shame
+  'You're inactive', 'Taking a break', 'Not participating'
+];
+
+const REQUIRED_PAUSE_ELEMENTS = [
+  'Protected progress list',  // XP, Level, Trust Tier, Badges
+  'Paused items list',        // Streak (with grace period)
+  'Resume option',            // Always visible and accessible
+  'No urgency',               // Calm, supportive language
+  'Clear grace periods'       // When streak grace expires
+];
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
@@ -1143,7 +1695,8 @@ const REQUIRED_FAILURE_ELEMENTS = [
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: Onboarding Visual Rules (§12), cross-refs to ONBOARDING_SPEC |
 | 1.2.0 | Jan 2025 | HustleXP Core | Added: Live Mode UI Rules (§13), mode indicator colors, notification rules |
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: Money Timeline (§14), Failure Recovery UX (§15) |
+| 1.4.0 | Jan 2025 | HustleXP Core | Added: Session Forecast (§16), Private Percentile Status (§17), Poster Quality Filtering (§18), Exit With Dignity/Pause State (§19). UI_SPEC now MAX-TIER complete. |
 
 ---
 
-**END OF UI_SPEC v1.3.0**
+**END OF UI_SPEC v1.4.0 (MAX-TIER)**
