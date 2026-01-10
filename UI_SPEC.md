@@ -1,11 +1,13 @@
-# HustleXP UI Specification v1.4.0
+# HustleXP UI Specification v1.5.0
 
-**STATUS: CONSTITUTIONAL AUTHORITY — MAX-TIER COMPLETE**  
+**STATUS: CONSTITUTIONAL AUTHORITY — MAX-TIER COMPLETE + LAYERED HIERARCHY**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  
 **Governance:** This document governs all visual expression. Violations are build failures.
 
 **Max-Tier Status:** ✅ All 7 human systems gaps integrated (GAP-1 through GAP-7, excluding global fatigue for GAP-5 per product decision)
+
+**Layered Hierarchy:** ✅ The UI Stack (Apple Glass → Duolingo → COD/Clash Royale) is now constitutional law (§2). This non-negotiable order is enforced with 7 invariants (LAYER-1 through LAYER-7).
 
 ---
 
@@ -45,9 +47,289 @@ Those are implementation details. This spec defines **behavioral constraints**.
 
 ---
 
-## §2. Color Authority
+## §2. Layered Influence Hierarchy (The UI Stack)
 
-### 2.1 Semantic Color Categories
+**THIS IS NON-NEGOTIABLE ORDER. VIOLATION DEGRADES PRODUCT.**
+
+The UI must stack three design influences **in strict hierarchy**, never blend or average them:
+
+> **Apple Glass → Duolingo → Call of Duty / Clash Royale**
+
+### 2.1 Core Principle
+
+> **Trust is communicated through restraint.  
+> Progress is communicated through motion.  
+> Status is communicated through permanence.**
+
+If any screen violates that mapping, it's not max tier.
+
+**Most teams fail because they *average* these influences. You must **stack them**, not blend them.**
+
+### 2.2 Layer 1: Apple Glass — Authority Layer (Always On)
+
+This is the **base coat**. It is never turned off.
+
+#### What Apple Glass Means Here
+
+* Visual restraint
+* Optical clarity
+* Confidence without animation
+* "This system knows what it's doing"
+
+#### Where It Applies
+
+* Poster UI (100% — Apple Glass only)
+* Hustler UI (background, chrome, structure — always present)
+* Onboarding (foundational layer)
+* Payments (financial authority)
+* Disputes (neutral, trustworthy)
+* AI copy tone (professional, precise)
+
+#### Hard Rules
+
+* ❌ No visual noise
+* ❌ No decorative animation
+* ❌ No playful copy
+* ❌ No "assistant personality"
+* ❌ No emojis in functional UI
+* ✅ Clean typography
+* ✅ Generous whitespace
+* ✅ System fonts preferred
+* ✅ Subtle, professional color palette
+
+**If Apple Glass breaks, trust collapses.**
+
+### 2.3 Layer 2: Duolingo — Micro-Feedback Layer (Conditional)
+
+This is **not gamification**. This is *acknowledgment*.
+
+#### What Duolingo Contributes
+
+* Timing discipline
+* Micro-confirmations
+* Gentle progress cues
+* Emotional regulation
+
+#### Where It's Allowed
+
+* Button confirmations (after action)
+* Task accepted (state transition)
+* Proof submitted (acknowledgment)
+* State transitions (smooth, brief)
+* First-time success moments (single-use)
+* Form validation (immediate, clear)
+
+#### Strict Constraints
+
+* ≤150ms micro-feedback (brief, not extended)
+* No loops (animation plays once)
+* No streak obsession language ("Don't break your streak!" is forbidden)
+* No loss framing (positive framing only)
+* No countdowns (creates anxiety)
+* No urgency copy (remains calm)
+
+**Duolingo here is UX polish, not motivation.**
+
+### 2.4 Layer 3: COD / Clash Royale — Status & Artifact Layer (Earned Only)
+
+This layer is **locked** behind economic truth.
+
+#### What This Layer Is
+
+* Badges (material-based, permanent)
+* Trust tiers (VERIFIED, TRUSTED, ELITE)
+* XP displays (earned value)
+* Levels (progression markers)
+* Materials (visual weight: matte → alloy → gold → obsidian)
+* Permanence (never downgraded)
+* Rarity (earned, not purchased)
+
+#### Where It's Allowed
+
+* Hustler side only (posters never see this layer)
+* After first RELEASED escrow (unlocks after economic truth)
+* Profile screen (achievements, progression)
+* Badge unlock moments (one-time celebration)
+* Trust tier displays (status markers)
+
+#### What It Must Feel Like
+
+* Military insignia (earned, serious)
+* Competitive achievement (meaningful)
+* Serious accomplishment (not trivial)
+
+**Not:**
+* Toys (no playful animations)
+* Stickers (no decorative elements)
+* Emojis (no cartoon characters)
+* Slot machines (no randomized rewards)
+
+### 2.5 The Stack by User Type
+
+#### Poster UI — Apple Glass Only
+
+Posters should **never** see:
+* ❌ XP
+* ❌ Levels
+* ❌ Badges
+* ❌ Animations beyond fades
+* ❌ AI "personality"
+* ❌ Gamification elements
+* ❌ Status markers
+
+Poster UI is:
+
+> **"Infrastructure you trust with money."**
+
+If a poster ever thinks:
+
+> **"This feels like a game"**
+
+You failed.
+
+**Poster UI Invariant:** POSTER-UI-1 — Posters never see any Layer 3 (COD/Clash) elements. Violation: Build failure.
+
+#### Hustler UI — Stacked, Not Blended
+
+**Pre-Earning Hustler (Before First RELEASED):**
+* ✅ Apple Glass (structure, authority)
+* ✅ Duolingo (micro-feedback on actions)
+* ❌ No badges
+* ❌ No XP motion
+* ❌ No status displays
+
+This creates **anticipation without reward**.
+
+**First Completion Moment (Single-Use):**
+* ✅ Single Duolingo-style celebration (≤2000ms)
+* ✅ Brief XP count-up (smooth, not bouncy)
+* ✅ One-time haptic (system default)
+* ✅ Server-tracked (never repeat)
+
+No repeats. No spam.
+
+**Ongoing Hustler (Post-Unlock):**
+Now the full stack activates:
+* ✅ **Apple Glass** → structure, layout, authority (always present)
+* ✅ **Duolingo** → confirmations, pacing, micro-wins (conditional, brief)
+* ✅ **COD / Clash** → badges, tiers, materials (earned only)
+
+**But never all at once on the same surface.**
+
+Each layer has its domain:
+* Apple Glass: Background, chrome, structure
+* Duolingo: Micro-interactions, state transitions
+* COD/Clash: Status displays, achievements, progression
+
+### 2.6 Badge System: Where COD / Clash Actually Matters
+
+Badges are **objects**, not UI decorations.
+
+#### Max-Tier Badge Rules
+
+* **Material-based progression:**
+  * Matte (common) → Alloy (uncommon) → Gold (rare) → Obsidian (legendary)
+* **One-time unlock animation:**
+  * Server-tracked (`badge_unlocked_at`)
+  * Never animated again (static after first view)
+  * Maximum 2000ms duration
+* **Never downgraded:**
+  * Badges are permanent (append-only)
+  * Once earned, always displayed
+* **Always server-verified:**
+  * UI never shows unearned badges
+  * Server confirms before display
+
+These are **identity artifacts**. People screenshot these.
+
+#### Badge Display Rules
+
+* ✅ Profile screen (permanent display)
+* ✅ Badge unlock moment (single-use animation)
+* ✅ Achievement summary (static list)
+* ❌ Task cards (not relevant context)
+* ❌ Wallet (financial context, not achievement)
+* ❌ Onboarding (nothing earned yet)
+
+### 2.7 Layered Influence Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **LAYER-1** | Apple Glass layer always present (never disabled) | UI structure review |
+| **LAYER-2** | Duolingo layer only in allowed contexts (state transitions, confirmations) | Animation guard |
+| **LAYER-3** | COD/Clash layer only after first RELEASED escrow | Backend flag check |
+| **LAYER-4** | Poster UI: Apple Glass only (no Layer 2 or 3) | Role-based UI guard |
+| **LAYER-5** | Layers stack, never blend (each in its domain) | UI component review |
+| **LAYER-6** | Badge animations: one-time only, server-tracked | Animation guard + DB flag |
+| **LAYER-7** | No averaging of influences (strict hierarchy enforced) | Design review |
+
+### 2.8 Why This Combination Works
+
+* **Apple Glass** makes it credible (trust foundation)
+* **Duolingo** makes it humane (smooth, respectful)
+* **COD / Clash** makes it aspirational (earned status)
+
+Most apps pick **one**. HustleXP uses **all three — but in different layers**.
+
+That's why this works without becoming a casino.
+
+### 2.9 Forbidden Violations
+
+**Blending Layers (FORBIDDEN):**
+```javascript
+// ❌ FORBIDDEN: Mixing Apple Glass with playful elements
+<Button style={appleGlassStyle}>
+  🎉 Click here! 🎉  // Violates Apple Glass restraint
+</Button>
+
+// ❌ FORBIDDEN: Duolingo layer without restraint
+<TaskCard>
+  <CelebrationAnimation loop={true} />  // Violates Duolingo constraints
+</TaskCard>
+
+// ❌ FORBIDDEN: COD/Clash before economic truth
+{user.firstEscrowReleased ? (
+  <BadgeDisplay />  // ✅ OK
+) : (
+  <BadgeDisplay locked={true} />  // ✅ OK (locked)
+  <BadgeDisplay />  // ❌ FORBIDDEN (showing unearned)
+)}
+```
+
+**Averaging Influences (FORBIDDEN):**
+```javascript
+// ❌ FORBIDDEN: Averaging Apple Glass + Duolingo
+const blendedStyle = {
+  ...appleGlassStyle,      // Clean, restrained
+  animation: 'bounce',     // Playful (violates Apple Glass)
+  color: '#FF6B6B'         // Energetic (violates Apple Glass)
+};
+
+// ✅ CORRECT: Stacked, not blended
+const stackedStyle = {
+  ...appleGlassStyle,      // Base layer (always)
+  transition: 'fade 150ms' // Duolingo layer (brief, conditional)
+};
+```
+
+### 2.10 Enforcement
+
+**ESLint Rules:**
+* `enforce-layer-hierarchy` — Error if layers violate stacking order
+* `no-poster-gamification` — Error if Layer 3 elements appear in Poster UI
+* `no-unearned-status` — Error if Layer 3 displays before first RELEASED
+* `badge-animation-once` — Error if badge animation repeats
+
+**Runtime Guards:**
+* `LayerHierarchyGuard` — Checks role and economic state before rendering Layer 3
+* `BadgeAnimationGuard` — Prevents repeat badge animations (server flag check)
+* `PosterUIGuard` — Blocks Layer 2 and Layer 3 in Poster UI context
+
+---
+
+## §3. Color Authority
+
+### 3.1 Semantic Color Categories
 
 Colors in HustleXP have **meaning**. They are not decorative.
 
@@ -58,7 +340,7 @@ Colors in HustleXP have **meaning**. They are not decorative.
 | **STATUS** | System state | Success, warning, error, info |
 | **NEUTRAL** | No semantic meaning | Backgrounds, borders, disabled states |
 
-### 2.2 XP Colors
+### 3.2 XP Colors
 
 ```
 XP_PRIMARY:    #10B981 (Emerald 500)
@@ -83,7 +365,7 @@ XP_ACCENT:     #059669 (Emerald 600)
 
 **Violation:** Using XP colors outside XP context implies unearned value.
 
-### 2.3 Money Colors
+### 3.3 Money Colors
 
 ```
 MONEY_POSITIVE: #10B981 (Green - incoming)
@@ -106,7 +388,7 @@ MONEY_LOCKED:   #F59E0B (Amber - disputed)
 
 **Violation:** Using money colors decoratively trivializes financial state.
 
-### 2.4 Status Colors
+### 3.4 Status Colors
 
 ```
 SUCCESS: #10B981 (Confirmation, completion)
@@ -126,7 +408,7 @@ INFO:    #3B82F6 (Neutral information)
 - Using SUCCESS before server confirmation
 - Using WARNING for non-actionable decoration
 
-### 2.5 Color Authority Violations
+### 3.5 Color Authority Violations
 
 | Violation | Example | Consequence |
 |-----------|---------|-------------|
@@ -137,9 +419,9 @@ INFO:    #3B82F6 (Neutral information)
 
 ---
 
-## §3. Animation Constraints
+## §4. Animation Constraints
 
-### 3.1 Animation Authority
+### 4.1 Animation Authority
 
 Animations may **never**:
 - Imply state changes that haven't occurred
@@ -153,7 +435,7 @@ Animations may:
 - Guide attention appropriately
 - Enhance comprehension
 
-### 3.2 Forbidden Animation Patterns
+### 4.2 Forbidden Animation Patterns
 
 | Pattern | Why Forbidden | Alternative |
 |---------|---------------|-------------|
@@ -164,7 +446,7 @@ Animations may:
 | **Slot machine reveals** | Gambling association | Direct state display |
 | **Countdown urgency** | False scarcity manipulation | Static deadline display |
 
-### 3.3 Animation Duration Limits
+### 4.3 Animation Duration Limits
 
 | Animation Type | Maximum Duration | Notes |
 |----------------|------------------|-------|
@@ -175,7 +457,7 @@ Animations may:
 
 **Rule:** No animation may exceed 2 seconds without user-initiated continuation.
 
-### 3.4 Animation Sequencing
+### 4.4 Animation Sequencing
 
 When multiple animations could occur:
 
@@ -190,7 +472,7 @@ User completes task (celebration queued)
   → Celebration cancelled (not queued behind error)
 ```
 
-### 3.5 Celebration Constraints
+### 4.5 Celebration Constraints
 
 Celebrations are permitted for:
 - Level up (first time only)
@@ -206,7 +488,7 @@ Celebrations are **forbidden** during:
 
 **First-Time Rule:** Celebration animations play **exactly once** per achievement per user. Server tracks via `animation_shown_at` field.
 
-### 3.6 Reduced Motion
+### 4.6 Reduced Motion
 
 When user has `prefers-reduced-motion: reduce`:
 
@@ -219,9 +501,9 @@ When user has `prefers-reduced-motion: reduce`:
 
 ---
 
-## §4. Badge Visual System
+## §5. Badge Visual System
 
-### 4.1 Tier-Material Binding
+### 5.1 Tier-Material Binding
 
 Badge visuals are **permanently bound** to trust tiers.
 
@@ -233,7 +515,7 @@ Badge visuals are **permanently bound** to trust tiers.
 
 **Rule:** A ROOKIE badge may **never** have metallic or holographic treatment, regardless of "design preference."
 
-### 4.2 Badge State Rules
+### 5.2 Badge State Rules
 
 | State | Visual | Animation |
 |-------|--------|-----------|
@@ -242,7 +524,7 @@ Badge visuals are **permanently bound** to trust tiers.
 | Unlocked (seen) | Full color | None |
 | Highlighted | Full color + subtle pulse | On hover/focus only |
 
-### 4.3 Badge Permanence
+### 5.3 Badge Permanence
 
 Per ARCHITECTURE.md §5.2, badges cannot be revoked.
 
@@ -254,7 +536,7 @@ If a badge was granted in error:
 - Tooltip explains correction
 - Badge remains visible (transparency)
 
-### 4.4 Animation Replay Prevention
+### 5.4 Animation Replay Prevention
 
 Badge unlock animations are controlled server-side:
 
@@ -592,21 +874,24 @@ If data may be stale (offline, cached):
 
 | UI_SPEC Section | PRODUCT_SPEC | ARCHITECTURE | ONBOARDING_SPEC | schema.sql |
 |-----------------|--------------|--------------|-----------------|------------|
-| §2 Color Authority | §5 (XP) | §3 (XP Authority) | — | — |
-| §3 Animation | — | §2.5 (Layer 5) | §13.4 (First XP) | — |
-| §4 Badges | §5.4 | §5 (Badge Authority) | — | L464 |
-| §5 Copy | — | — | §12 (Divergent) | — |
-| §6 Screen Rules | §3, §4, §7 | — | §12, §13 | — |
-| §8 Enforcement | — | §9 (Invariants) | §0.1 (ONB-*) | — |
-| §9 State Display | — | §1.2 (Authority) | — | — |
-| §13 Live Mode | §7.2 | — | — | — |
-| §14 Money Timeline | §6.2 | — | — | escrows, tasks |
-| §15 Failure Recovery | §4.3 | — | — | disputes, proofs |
-| §16 Session Forecast | §6.3 | AI_INFRASTRUCTURE §3 | — | users, tasks |
-| §17 Private Percentile | §5.5 | — | — | users, tasks |
-| §18 Poster Reputation | §4.5 | — | — | poster_ratings |
-| §19 Pause State | §11 | — | — | users (account_status) |
-| §12 Onboarding | — | §2 (Layer Hierarchy) | §12-15 | — |
+| §2 Layered Influence Hierarchy | — | §2 (Layer Hierarchy) | — | — |
+| §3 Color Authority | §5 (XP) | §3 (XP Authority) | — | — |
+| §4 Animation | — | §2.5 (Layer 5) | §13.4 (First XP) | — |
+| §5 Badges | §5.4 | §5 (Badge Authority) | — | L464 |
+| §6 Copy | — | — | §12 (Divergent) | — |
+| §7 Screen Rules | §3, §4, §7 | — | §12, §13 | — |
+| §8 Accessibility | — | — | — | — |
+| §9 Enforcement | — | §9 (Invariants) | §0.1 (ONB-*) | — |
+| §10 State Display | — | §1.2 (Authority) | — | — |
+| §11 Component Constraints | — | — | — | — |
+| §13 Onboarding | — | §2 (Layer Hierarchy) | §12-15 | — |
+| §14 Live Mode | §7.2 | — | — | — |
+| §15 Money Timeline | §6.2 | — | — | escrows, tasks |
+| §16 Failure Recovery | §4.3 | — | — | disputes, proofs |
+| §17 Session Forecast | §6.3 | AI_INFRASTRUCTURE §3 | — | users, tasks |
+| §18 Private Percentile | §5.5 | — | — | users, tasks |
+| §19 Poster Reputation | §4.5 | — | — | poster_ratings |
+| §20 Pause State | §11 | — | — | users (account_status) |
 
 ---
 
@@ -1695,8 +1980,9 @@ const REQUIRED_PAUSE_ELEMENTS = [
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: Onboarding Visual Rules (§12), cross-refs to ONBOARDING_SPEC |
 | 1.2.0 | Jan 2025 | HustleXP Core | Added: Live Mode UI Rules (§13), mode indicator colors, notification rules |
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: Money Timeline (§14), Failure Recovery UX (§15) |
-| 1.4.0 | Jan 2025 | HustleXP Core | Added: Session Forecast (§16), Private Percentile Status (§17), Poster Quality Filtering (§18), Exit With Dignity/Pause State (§19). UI_SPEC now MAX-TIER complete. |
+| 1.4.0 | Jan 2025 | HustleXP Core | Added: Session Forecast (§17), Private Percentile Status (§18), Poster Quality Filtering (§19), Exit With Dignity/Pause State (§20). UI_SPEC now MAX-TIER complete. |
+| 1.5.0 | Jan 2025 | HustleXP Core | Added: Layered Influence Hierarchy (§2) — The UI Stack (Apple Glass → Duolingo → COD/Clash Royale). Non-negotiable order enforced with 7 invariants. This is the foundational design philosophy for all UI. |
 
 ---
 
-**END OF UI_SPEC v1.4.0 (MAX-TIER)**
+**END OF UI_SPEC v1.5.0 (MAX-TIER + LAYERED HIERARCHY)**
