@@ -42,7 +42,7 @@ HustleXP-Fresh/
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, **Human Systems** | ✅ v1.2.0 |
+| [PRODUCT_SPEC.md](./PRODUCT_SPEC.md) | Core invariants, state machines, **Human Systems, AI Task Completion** | ✅ v1.3.0 |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Layer hierarchy, authority model, **Live Mode authority** | ✅ v1.1.0 |
 | [UI_SPEC.md](./UI_SPEC.md) | Visual rules, **Money Timeline, Failure Recovery** | ✅ v1.3.0 |
 | [BUILD_GUIDE.md](./BUILD_GUIDE.md) | Implementation rules, testing requirements, phase gates | ✅ v1.0.0 |
@@ -56,15 +56,32 @@ HustleXP-Fresh/
 
 Staging documents are **reference/archive** after integration.
 
+### Integrated Specs (Reference)
+
 | Document | Purpose | Status |
 |----------|---------|--------|
 | [LIVE_MODE_SPEC.md](./staging/LIVE_MODE_SPEC.md) | Original real-time task spec | ✅ INTEGRATED |
 | [HUMAN_SYSTEMS_SPEC.md](./staging/HUMAN_SYSTEMS_SPEC.md) | Original human systems spec | ✅ INTEGRATED |
+| [AI_TASK_COMPLETION_SPEC.md](./staging/AI_TASK_COMPLETION_SPEC.md) | AI contract-completion engine spec | ✅ INTEGRATED |
 
-**All staging specs have been integrated into constitutional law.**
+### New Critical Gap Specs (Ready for Integration)
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| [TASK_DISCOVERY_SPEC.md](./staging/TASK_DISCOVERY_SPEC.md) | Task discovery & matching algorithm | ✅ v1.0.0 - Ready |
+| [MESSAGING_SPEC.md](./staging/MESSAGING_SPEC.md) | In-app messaging system | ✅ v1.0.0 - Ready |
+| [NOTIFICATION_SPEC.md](./staging/NOTIFICATION_SPEC.md) | Push notification system | ✅ v1.0.0 - Ready |
+| [RATING_SYSTEM_SPEC.md](./staging/RATING_SYSTEM_SPEC.md) | Bidirectional rating system | ✅ v1.0.0 - Ready |
+| [ANALYTICS_SPEC.md](./staging/ANALYTICS_SPEC.md) | Analytics & metrics infrastructure | ✅ v1.0.0 - Ready |
+| [FRAUD_DETECTION_SPEC.md](./staging/FRAUD_DETECTION_SPEC.md) | Fraud detection & risk scoring | ✅ v1.0.0 - Ready |
+| [CONTENT_MODERATION_SPEC.md](./staging/CONTENT_MODERATION_SPEC.md) | Content moderation workflow | ✅ v1.0.0 - Ready |
+| [GDPR_COMPLIANCE_SPEC.md](./staging/GDPR_COMPLIANCE_SPEC.md) | GDPR & privacy compliance | ✅ v1.0.0 - Ready |
+
+**These specs address all 9 critical gaps identified in the deep scan audit. Ready for integration into constitutional law.**
 
 ### Integration Map
 
+**Integrated:**
 | Original Spec | Integrated Into |
 |--------------|-----------------|
 | LIVE_MODE_SPEC | PRODUCT_SPEC §3.5-3.6, ARCHITECTURE §10, UI_SPEC §13, schema.sql |
@@ -75,6 +92,19 @@ Staging documents are **reference/archive** after integration.
 | HUMAN_SYSTEMS GAP-5 | PRODUCT_SPEC §3.7 (Global Fatigue), schema.sql |
 | HUMAN_SYSTEMS GAP-6 | PRODUCT_SPEC §8.4 (Poster Reputation), schema.sql |
 | HUMAN_SYSTEMS GAP-7 | PRODUCT_SPEC §11 (Account Pause), schema.sql |
+| AI_TASK_COMPLETION | PRODUCT_SPEC §8 (AI Task Completion), BUILD_GUIDE §4.6 |
+
+**Pending Integration (Critical Gaps):**
+| New Spec | Priority | Ready For Integration |
+|----------|----------|----------------------|
+| TASK_DISCOVERY_SPEC | 🔴 CRITICAL | ✅ Yes - Lock first |
+| MESSAGING_SPEC | 🔴 HIGH | ✅ Yes |
+| NOTIFICATION_SPEC | 🔴 HIGH | ✅ Yes |
+| RATING_SYSTEM_SPEC | 🟡 MEDIUM | ✅ Yes |
+| ANALYTICS_SPEC | 🔴 HIGH | ✅ Yes |
+| FRAUD_DETECTION_SPEC | 🔴 CRITICAL | ✅ Yes |
+| CONTENT_MODERATION_SPEC | 🔴 HIGH | ✅ Yes |
+| GDPR_COMPLIANCE_SPEC | 🔴 CRITICAL | ✅ Yes |
 
 ---
 
