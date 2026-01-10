@@ -729,16 +729,20 @@ The following custom ESLint rules **must** be implemented:
 
 | Rule | Enforces | Error Level |
 |------|----------|-------------|
-| `no-xp-color-outside-context` | §2.2 | Error |
-| `no-money-color-decorative` | §2.3 | Error |
-| `no-success-without-confirmation` | §2.4 | Error |
-| `no-forbidden-animation` | §3.2 | Error |
-| `max-animation-duration` | §3.3 | Warning |
-| `no-shame-copy` | §5.2 | Error |
-| `no-false-urgency` | §5.2 | Error |
-| `badge-tier-material-match` | §4.1 | Error |
-| `touch-target-minimum` | §7.1 | Error |
-| `color-contrast-minimum` | §7.1 | Warning |
+| `no-xp-color-outside-context` | §3.2 | Error |
+| `no-money-color-decorative` | §3.3 | Error |
+| `no-success-without-confirmation` | §3.4 | Error |
+| `no-forbidden-animation` | §4.2 | Error |
+| `max-animation-duration` | §4.3 | Warning |
+| `enforce-layer-hierarchy` | §2 | Error |
+| `no-poster-gamification` | §2.5 | Error |
+| `no-unearned-status` | §2.5 | Error |
+| `badge-animation-once` | §2.6 | Error |
+| `no-shame-copy` | §6.2 | Error |
+| `no-false-urgency` | §6.2 | Error |
+| `badge-tier-material-match` | §5.1 | Error |
+| `touch-target-minimum` | §8.1 | Error |
+| `color-contrast-minimum` | §8.1 | Warning |
 
 ### 8.2 Runtime Guards
 
@@ -746,10 +750,13 @@ The following runtime guards **must** be implemented:
 
 | Guard | Enforces | Behavior on Violation |
 |-------|----------|----------------------|
-| `AnimationContextGuard` | §3.5 (no celebration during dispute) | Block animation |
-| `ReducedMotionGuard` | §3.6 | Replace with static |
-| `FirstTimeAnimationGuard` | §3.5 | Check server flag before animating |
-| `ColorContextGuard` | §6.1 | Log warning, allow (soft enforcement) |
+| `LayerHierarchyGuard` | §2.7 | Checks role and economic state before rendering Layer 3 |
+| `BadgeAnimationGuard` | §2.6 | Prevents repeat badge animations (server flag check) |
+| `PosterUIGuard` | §2.5 | Blocks Layer 2 and Layer 3 in Poster UI context |
+| `AnimationContextGuard` | §4.5 (no celebration during dispute) | Block animation |
+| `ReducedMotionGuard` | §4.6 | Replace with static |
+| `FirstTimeAnimationGuard` | §4.5 | Check server flag before animating |
+| `ColorContextGuard` | §7.1 | Log warning, allow (soft enforcement) |
 | `StateConfirmationGuard` | §1.1 | Block render until server confirms |
 
 ### 8.3 Build-Time Checks
