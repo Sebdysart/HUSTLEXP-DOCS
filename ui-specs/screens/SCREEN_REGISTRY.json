@@ -1,0 +1,134 @@
+{
+  "01_HUSTLER_HOME": {
+    "status": "IMPLEMENTED",
+    "spec": "02-hustler-home-LOCKED.md",
+    "appPath": "hustlexp-app/screens/hustler/HustlerHomeScreen.tsx",
+    "components": ["GlassCard", "XP Ring", "Trust Tier Display"],
+    "locked": true,
+    "version": "v1"
+  },
+  "02_INSTANT_INTERRUPT": {
+    "status": "IMPLEMENTED",
+    "spec": "01-instant-interrupt-card-LOCKED.md",
+    "appPath": "hustlexp-app/screens/hustler/InstantInterruptCard.tsx",
+    "components": ["BlurView", "Modal"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Modal component - fully navigable"
+  },
+  "03_PINNED_INSTANT_CARD": {
+    "status": "IMPLEMENTED",
+    "spec": "03-pinned-instant-card.md",
+    "appPath": "hustlexp-app/screens/hustler/PinnedInstantCardScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": false,
+    "version": "v1"
+  },
+  "04_POSTER_TASK_CREATION": {
+    "status": "IMPLEMENTED",
+    "spec": "04-poster-task-creation.md",
+    "appPath": "hustlexp-app/screens/poster/TaskCreationScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": false,
+    "version": "v1"
+  },
+  "05_POSTER_HUSTLER_ON_WAY": {
+    "status": "IMPLEMENTED",
+    "spec": "05-poster-hustler-on-way-LOCKED.md",
+    "appPath": "hustlexp-app/screens/poster/HustlerOnWayScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1"
+  },
+  "06_TRUST_TIER_LADDER": {
+    "status": "IMPLEMENTED",
+    "spec": "06-trust-tier-ladder-LOCKED.md",
+    "appPath": "hustlexp-app/screens/shared/TrustTierLadderScreen.tsx",
+    "components": ["GlassCard", "SectionHeader"],
+    "locked": true,
+    "version": "v1"
+  },
+  "07_XP_BREAKDOWN": {
+    "status": "IMPLEMENTED",
+    "spec": "07-xp-breakdown-LOCKED.md",
+    "appPath": "hustlexp-app/screens/hustler/XPBreakdownScreen.tsx",
+    "components": ["GlassCard", "SectionHeader"],
+    "locked": true,
+    "version": "v1"
+  },
+  "08_HUSTLER_TASK_IN_PROGRESS": {
+    "status": "IMPLEMENTED",
+    "spec": "08-hustler-task-in-progress-LOCKED.md",
+    "appPath": "hustlexp-app/screens/hustler/TaskInProgressScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1"
+  },
+  "09_HUSTLER_TASK_COMPLETION": {
+    "status": "IMPLEMENTED",
+    "spec": "09-hustler-task-completion-LOCKED.md",
+    "appPath": "hustlexp-app/screens/hustler/TaskCompletionScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Three states: APPROVED, ACTION_REQUIRED, BLOCKED"
+  },
+  "10_POSTER_TASK_COMPLETION": {
+    "status": "IMPLEMENTED",
+    "spec": "10-poster-task-completion-LOCKED.md",
+    "appPath": "hustlexp-app/screens/poster/TaskCompletionScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1"
+  },
+  "11_POSTER_FEEDBACK": {
+    "status": "IMPLEMENTED",
+    "spec": "11-poster-feedback-LOCKED.md",
+    "appPath": "hustlexp-app/screens/poster/FeedbackScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1"
+  },
+  "12_TRUST_CHANGE_EXPLANATION": {
+    "status": "IMPLEMENTED",
+    "spec": "12-trust-change-explanation-LOCKED.md",
+    "appPath": "hustlexp-app/screens/shared/TrustChangeExplanationScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Used by both hustler and poster flows"
+  },
+  "13_DISPUTE_ENTRY": {
+    "status": "IMPLEMENTED",
+    "spec": "13-dispute-entry-LOCKED.md",
+    "appPath": "hustlexp-app/screens/shared/DisputeEntryScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Used by both hustler and poster flows"
+  },
+  "E1_NO_TASKS_AVAILABLE": {
+    "status": "IMPLEMENTED",
+    "spec": "E1-no-tasks-available.md",
+    "appPath": "hustlexp-app/screens/edge/NoTasksAvailableScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": false,
+    "version": "v1"
+  },
+  "E2_ELIGIBILITY_MISMATCH": {
+    "status": "IMPLEMENTED",
+    "spec": "E2-eligibility-mismatch-LOCKED.md",
+    "appPath": "hustlexp-app/screens/edge/EligibilityMismatchScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1"
+  },
+  "E3_TRUST_TIER_LOCKED": {
+    "status": "IMPLEMENTED",
+    "spec": "E3-trust-tier-locked.md",
+    "appPath": "hustlexp-app/screens/edge/TrustTierLockedScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1"
+  }
+}
