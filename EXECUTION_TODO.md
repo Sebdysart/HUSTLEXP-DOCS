@@ -887,10 +887,107 @@
 
 ---
 
+## Phase N1: Navigation Wiring (Frontend)
+
+**Completion Criteria:** Navigation structure implemented with React Navigation, all stacks wired, route guards defined, App.tsx integrated.  
+**Depends On:** All screens implemented (COMPLETE)  
+**Status:** ✅ COMPLETE
+
+### Phase N1.1: Navigation Architecture (COMPLETE)
+
+- [x] **Navigation Types Defined**
+  - **File:** `hustlexp-ai-backend/hustlexp-app/navigation/types.ts`
+  - **Spec:** `NAVIGATION_ARCHITECTURE.md` §Route Guards
+  - **Goal:** TypeScript types for all navigation stacks and state
+  - **Done Criteria:**
+    - [x] `RootStackParamList` defined (all 7 stacks)
+    - [x] `AuthStackParamList` defined
+    - [x] `CalibrationOnboardingStackParamList` defined
+    - [x] `CapabilityOnboardingStackParamList` defined
+    - [x] `HustlerStackParamList` defined
+    - [x] `PosterStackParamList` defined
+    - [x] `SettingsStackParamList` defined
+    - [x] `SharedModalsStackParamList` defined
+    - [x] `NavigationState` interface defined
+  - **Verification:** Types file exists, all param lists defined
+  - **Prerequisites:** Screen implementations complete
+
+---
+
+- [x] **Route Guards Defined**
+  - **File:** `hustlexp-ai-backend/hustlexp-app/navigation/guards.ts`
+  - **Spec:** `NAVIGATION_ARCHITECTURE.md` §Route Guards
+  - **Goal:** Declarative route guards that reference state (do not compute it)
+  - **Done Criteria:**
+    - [x] `getInitialRoute(state)` function implemented
+    - [x] Authentication guards: `isAuthenticated`, `isUnauthenticated`
+    - [x] Role-based guards: `canAccessHustlerStack`, `canAccessPosterStack`
+    - [x] Onboarding guards: `isCalibrationComplete`, `isCapabilityComplete`, `needsCalibration`, `needsCapability`
+    - [x] Task-state guards: `isTaskEnRoute`, `hasActiveTask`, etc.
+    - [x] Combined guards: `canAccessMainApp`
+  - **Verification:** Guards file exists, `getInitialRoute` implemented
+  - **Prerequisites:** Navigation types defined
+
+---
+
+- [x] **Stack Navigators Implemented**
+  - **File:** `hustlexp-ai-backend/hustlexp-app/navigation/*.tsx`
+  - **Spec:** `NAVIGATION_ARCHITECTURE.md` §Navigation Stack Structure
+  - **Goal:** All 7 navigation stacks implemented with React Navigation
+  - **Done Criteria:**
+    - [x] `AuthStack.tsx` implemented (Login, Signup, ForgotPassword)
+    - [x] `CalibrationOnboardingStack.tsx` implemented (System A: 4 screens)
+    - [x] `CapabilityOnboardingStack.tsx` implemented (System B: 8 screens)
+    - [x] `HustlerStack.tsx` implemented (9 screens)
+    - [x] `PosterStack.tsx` implemented (4 screens)
+    - [x] `SettingsStack.tsx` implemented (4 screens)
+    - [x] `SharedModalsStack.tsx` implemented (5 screens)
+    - [x] `RootNavigator.tsx` implemented (orchestrates all stacks)
+  - **Verification:** All stack files exist, screens wired correctly
+  - **Prerequisites:** Route guards defined, screens implemented
+
+---
+
+- [x] **App.tsx Integration**
+  - **File:** `hustlexp-ai-backend/hustlexp-app/App.tsx`
+  - **Spec:** `NAVIGATION_ARCHITECTURE.md` §Initial Route Determination
+  - **Goal:** RootNavigator integrated into App.tsx with mock state
+  - **Done Criteria:**
+    - [x] `RootNavigator` imported and rendered
+    - [x] `NavigationContainer` wrapped around RootNavigator
+    - [x] Mock `NavigationState` provided to guards
+    - [x] App launches and routes correctly with mock state
+  - **Verification:** App.tsx uses RootNavigator, app boots successfully
+  - **Prerequisites:** RootNavigator implemented
+
+---
+
+- [x] **Navigation Architecture Documentation**
+  - **File:** `HUSTLEXP-DOCS/NAVIGATION_ARCHITECTURE.md`
+  - **Spec:** Navigation wiring spec (LOCKED)
+  - **Goal:** Complete navigation architecture documentation
+  - **Done Criteria:**
+    - [x] Stack structure documented
+    - [x] Route guards documented with predicates
+    - [x] Canonical entry points documented
+    - [x] Forbidden transitions documented
+    - [x] Implementation status updated to COMPLETE
+  - **Verification:** NAVIGATION_ARCHITECTURE.md exists, Phase N1 marked COMPLETE
+  - **Prerequisites:** All navigation implemented
+
+---
+
+**Phase N1 Complete:** ✅ All navigation stacks wired, guards defined, App.tsx integrated, documentation complete.
+
+**Next Phase:** Phase N2 — Backend Handlers Integration (read-only handlers first)
+
+---
+
 ## Summary
 
-**Total Phases:** 8 (0-7)  
+**Total Phases:** 9 (0-7, N1)  
 **Phase 0 Status:** ✅ COMPLETE (Schema & Infrastructure)  
+**Phase N1 Status:** ✅ COMPLETE (Navigation Wiring - Frontend)  
 **Phases 1-7 Status:** ⏳ PENDING
 
 **Critical Blockers (Must Complete Before Launch):**
