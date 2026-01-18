@@ -22,6 +22,8 @@
 
 **Status:** ✅ COMPLETE  
 **Figma File:** [Work Eligibility Screen Design](https://www.figma.com/make/j2Bz26ckzSKI1dU7V8xkbz/Work-Eligibility-Screen-Design?t=WZBZYRo4AgknExg0-1)  
+**Figma Code:** `ui-specs/designs/FIGMA_WORK_ELIGIBILITY_CODE.md` (design reference)  
+**Figma Source Code:** `ui-specs/designs/WorkEligibility.figma.tsx` (web React export)  
 **Prompt Used:** FIGMA_DESIGN_PROMPTS.md — PROMPT 1  
 **Spec Reference:** `architecture/SETTINGS_VERIFICATION_AND_ELIGIBILITY_LOCKED.md`  
 **Design Tokens:** `ui-specs/tokens/colors.json`, `spacing.json`, `typography.json`  
@@ -40,6 +42,12 @@
 - ✅ 6-section structure (exact order from spec)
 - ✅ Design tokens applied (colors, spacing, typography)
 - ✅ Forbidden elements avoided (no progress bars, no emotional language)
+
+**Code Status:**
+- ⚠️ Figma exported **Web React** code (Tailwind CSS)
+- ⚠️ Must be adapted to **React Native** using FRONTEND_EXECUTION_PROMPTS.md PROMPT 1
+- ✅ React Native components already exist (GlassCard, PrimaryActionButton, SectionHeader)
+- ✅ Design tokens already exist (colors, spacing, typography)
 
 ---
 
