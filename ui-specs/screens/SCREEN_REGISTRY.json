@@ -140,5 +140,15 @@
     "locked": true,
     "version": "v1",
     "notes": "6-section structure: System Notice, Eligibility Summary, Verified Trades, Insurance, Background Checks, Upgrade Opportunities"
+  },
+  "TASK_FEED": {
+    "status": "IMPLEMENTED",
+    "spec": "FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md",
+    "figma": "ui-specs/FIGMA_DESIGN_PROMPTS.md (PROMPT 3)",
+    "appPath": "hustlexp-app/screens/hustler/TaskFeedScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Feed mode selector (Normal/Urgent/Nearby), Task cards, Empty state, Loading state. CRITICAL: All tasks in feed are eligible (backend guarantee). No disabled buttons, no eligibility checks, no warnings."
   }
 }
