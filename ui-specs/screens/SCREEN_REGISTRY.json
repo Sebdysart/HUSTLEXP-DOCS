@@ -130,5 +130,15 @@
     "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
     "locked": true,
     "version": "v1"
+  },
+  "SETTINGS_WORK_ELIGIBILITY": {
+    "status": "IMPLEMENTED",
+    "spec": "SETTINGS_VERIFICATION_AND_ELIGIBILITY_LOCKED.md",
+    "figma": "ui-specs/designs/WorkEligibility.figma.tsx",
+    "appPath": "hustlexp-app/screens/settings/WorkEligibilityScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton", "SectionHeader"],
+    "locked": true,
+    "version": "v1",
+    "notes": "6-section structure: System Notice, Eligibility Summary, Verified Trades, Insurance, Background Checks, Upgrade Opportunities"
   }
 }
