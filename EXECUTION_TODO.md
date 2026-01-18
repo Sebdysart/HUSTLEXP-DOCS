@@ -276,6 +276,175 @@
 
 ---
 
+## Phase 1.5: Authority Guardrails (MANDATORY)
+
+**Completion Criteria:** Authority boundary violations are impossible—enforced by tests, assertions, and code review rules.  
+**Depends On:** Phase 1 complete (all core services implemented)  
+**Status:** ⏳ PENDING
+
+**Purpose:** These are not features. They are **safety rails** that make authority boundary violations impossible to ship.
+
+---
+
+### Phase 1.5.1: Database-Level Authority Tests (CRITICAL)
+
+- [ ] **Create Database Constraint Tests for Capability Profile Immutability**
+  - **File:** `hustlexp-ai-backend/tests/invariants/capability-profile-immutability.test.ts` (new file)
+  - **Spec:** ARCHITECTURE.md §11.1 "Core Rule (Non-Negotiable)", PRODUCT_SPEC.md §2 (INV-ELIGIBILITY-8)
+  - **Goal:** Tests that FAIL if capability_profiles can be mutated directly (except updated_at)
+  - **Done Criteria:**
+    - [ ] Test: UPDATE capability_profiles SET verified_trades = ... fails (constraint violation or trigger)
+    - [ ] Test: UPDATE capability_profiles SET trust_tier = ... fails (constraint violation or trigger)
+    - [ ] Test: UPDATE capability_profiles SET insurance_valid = ... fails (constraint violation or trigger)
+    - [ ] Test: UPDATE capability_profiles SET updated_at = ... succeeds (only field allowed)
+    - [ ] All tests FAIL if direct mutation is possible
+    - [ ] Tests documented with "This test must FAIL if capability_profiles can be mutated directly"
+  - **Verification:** Test file exists, tests written, tests PASS (confirming immutability enforced)
+  - **Prerequisites:** Phase 1.1 complete (CapabilityProfileService created)
+
+---
+
+- [ ] **Create Database Trigger to Prevent Direct Capability Profile Mutation**
+  - **File:** `HUSTLEXP-DOCS/schema.sql` (add trigger) or `hustlexp-ai-backend/backend/database/triggers/capability-profile-immutability.sql` (new file)
+  - **Spec:** ARCHITECTURE.md §11.1 "Core Rule", schema.sql (add trigger function)
+  - **Goal:** Database trigger that REJECTS any UPDATE on capability_profiles (except updated_at)
+  - **Done Criteria:**
+    - [ ] Trigger function created: `prevent_capability_profile_direct_mutation()`
+    - [ ] Trigger fires BEFORE UPDATE on capability_profiles
+    - [ ] Trigger allows UPDATE updated_at only
+    - [ ] Trigger raises error for any other UPDATE attempt
+    - [ ] Error code: HX903 (or new code for this violation)
+  - **Verification:** Trigger exists in schema.sql or migration, tests verify trigger rejects mutations
+  - **Prerequisites:** Phase 0 complete (schema.sql exists)
+
+---
+
+### Phase 1.5.2: Service-Layer Authority Assertions (CRITICAL)
+
+- [ ] **Add Service Assertions: Verification Services Never Write Eligibility**
+  - **File:** `hustlexp-ai-backend/backend/src/services/LicenseVerificationService.ts`, `InsuranceVerificationService.ts`, `BackgroundCheckService.ts` (update existing when created)
+  - **Spec:** ARCHITECTURE.md §12.1 "Core Rule", §12.4 "Authority Boundaries"
+  - **Goal:** Runtime assertions in verification services that FAIL if they attempt to grant access
+  - **Done Criteria:**
+    - [ ] LicenseVerificationService has assertion: "This service NEVER updates capability_profiles directly"
+    - [ ] InsuranceVerificationService has assertion: "This service NEVER updates capability_profiles directly"
+    - [ ] BackgroundCheckService has assertion: "This service NEVER updates capability_profiles directly"
+    - [ ] All services call CapabilityProfileService.recompute() ONLY (no direct writes)
+    - [ ] Assertion comments at top of each service file
+  - **Verification:** All verification services have explicit comments/assertions, no direct capability_profiles writes
+  - **Prerequisites:** Phase 1.2 complete (all verification services created)
+
+---
+
+- [ ] **Add Service Assertions: Feed Query Never Post-Filters**
+  - **File:** `hustlexp-ai-backend/backend/src/services/FeedQueryService.ts` (update existing when created)
+  - **Spec:** ARCHITECTURE.md §13.2 "Feed Is a Join, Not a Filter", §13.7 "Forbidden Patterns"
+  - **Goal:** Runtime assertion that FAILS if feed query post-filters instead of SQL JOIN
+  - **Done Criteria:**
+    - [ ] FeedQueryService has assertion: "This service NEVER fetches all tasks then filters in JS"
+    - [ ] FeedQueryService uses SQL JOIN only (no WHERE clause post-filtering)
+    - [ ] Comment at top of getFeed() method: "SQL JOIN enforces eligibility. No post-filtering."
+    - [ ] Test verifies SQL query contains JOIN (not WHERE task.required_trade IN ...)
+  - **Verification:** FeedQueryService has assertions, SQL query uses JOIN, tests verify no post-filtering
+  - **Prerequisites:** Phase 1.3 complete (FeedQueryService created)
+
+---
+
+### Phase 1.5.3: Code Review & Lint Rules (HIGH)
+
+- [ ] **Create ESLint Rule: Forbid Client-Side Eligibility Computation**
+  - **File:** `hustlexp-ai-backend/.eslintrc.js` or `eslint-plugin-hustlexp/lib/rules/no-client-eligibility.js` (new file)
+  - **Spec:** ARCHITECTURE.md §13.7 "Forbidden Patterns", §1.2 "Why Smart Clients Are Forbidden"
+  - **Goal:** ESLint rule that FAILS build if client code computes eligibility
+  - **Done Criteria:**
+    - [ ] ESLint rule: `no-client-eligibility` created
+    - [ ] Rule detects patterns: `isEligible()`, `user.trust_tier >= task.required_tier`, `user.verified_trades.includes(...)`
+    - [ ] Rule applies to `hustlexp-app/` directory only (frontend)
+    - [ ] Rule error message: "Eligibility must be computed server-side. Use feed endpoints."
+    - [ ] CI fails build if rule violations found
+  - **Verification:** ESLint rule exists, detects violations, CI fails on violations
+  - **Prerequisites:** None (can be done in parallel with Phase 1)
+
+---
+
+- [ ] **Create Code Review Checklist: Authority Boundaries**
+  - **File:** `hustlexp-ai-backend/.github/PULL_REQUEST_TEMPLATE.md` or `CODE_REVIEW_CHECKLIST.md` (new file)
+  - **Spec:** ARCHITECTURE.md §11-13 (all authority boundaries)
+  - **Goal:** Code review checklist that must be verified before merge
+  - **Done Criteria:**
+    - [ ] Checklist item: "No direct UPDATE on capability_profiles (except updated_at)"
+    - [ ] Checklist item: "No client-side eligibility computation"
+    - [ ] Checklist item: "Feed query uses SQL JOIN, not post-filtering"
+    - [ ] Checklist item: "Verification services call recompute() only, no direct writes"
+    - [ ] Checklist item: "Apply endpoint rechecks eligibility (defense-in-depth)"
+    - [ ] Checklist item: "All authority violations are test failures, not warnings"
+  - **Verification:** Checklist file exists, all items verified, PRs require checklist completion
+  - **Prerequisites:** None (can be created immediately)
+
+---
+
+### Phase 1.5.4: Runtime Assertions for Feed (HIGH)
+
+- [ ] **Add Feed Assertion: If Task Appears, Eligibility Predicate Must Pass**
+  - **File:** `hustlexp-ai-backend/backend/src/services/FeedQueryService.ts` (update existing when created)
+  - **Spec:** ARCHITECTURE.md §13.1 "Core Rule", PRODUCT_SPEC.md §17.4 "Feed Shows Only Eligible Gigs"
+  - **Goal:** Runtime assertion in feed query that FAILS if ineligible task appears in feed
+  - **Done Criteria:**
+    - [ ] FeedQueryService.getFeed() calls isEligible() for each returned task (defense-in-depth)
+    - [ ] Assertion: `assert(isEligible(task, profile), "Feed contains ineligible task")`
+    - [ ] Assertion fails in development/test environments (throws error)
+    - [ ] Assertion logs warning in production (does not crash)
+    - [ ] Test verifies assertion fires if SQL query bug allows ineligible task
+  - **Verification:** Assertion exists, fires on ineligible task, tests verify assertion works
+  - **Prerequisites:** Phase 1.3 complete (FeedQueryService and isEligible() created)
+
+---
+
+- [ ] **Add Apply Endpoint Assertion: Recheck Must Pass**
+  - **File:** `hustlexp-ai-backend/backend/src/routers/task.ts` (update existing)
+  - **Spec:** ARCHITECTURE.md §13.4 "Defense-in-Depth", PRODUCT_SPEC.md §17.4 "Feed Shows Only Eligible Gigs"
+  - **Goal:** Runtime assertion in apply endpoint that FAILS if recheck fails
+  - **Done Criteria:**
+    - [ ] task.accept mutation calls isEligible(task, profile) before accepting
+    - [ ] Assertion: `assert(isEligible(task, profile), "Apply attempted on ineligible task")`
+    - [ ] Assertion fails in development/test environments (returns 403)
+    - [ ] Assertion logs warning in production if somehow bypassed
+    - [ ] Test verifies 403 returned if recheck fails
+  - **Verification:** Assertion exists, apply endpoint rechecks eligibility, tests verify 403 on ineligible
+  - **Prerequisites:** Phase 1.3 complete (isEligible() created), Phase 3.1 complete (apply endpoint updated)
+
+---
+
+### Phase 1.5.5: CI/CD Denylist Checks (MEDIUM)
+
+- [ ] **Add CI Check: Reject Forbidden SQL Patterns**
+  - **File:** `hustlexp-ai-backend/.github/workflows/ci.yml` or similar (update existing)
+  - **Spec:** ARCHITECTURE.md §11.5 "Anti-Patterns", schema.sql (triggers)
+  - **Goal:** CI check that FAILS build if forbidden SQL UPDATE patterns found in code
+  - **Done Criteria:**
+    - [ ] CI script checks for: `UPDATE capability_profiles SET verified_trades`
+    - [ ] CI script checks for: `UPDATE capability_profiles SET trust_tier` (except in recompute)
+    - [ ] CI script checks for: `UPDATE capability_profiles SET insurance_valid`
+    - [ ] CI script allows: `UPDATE capability_profiles SET updated_at` (in recompute only)
+    - [ ] CI fails build if forbidden patterns found (grep/pattern matching)
+  - **Verification:** CI script exists, fails on forbidden patterns, allows recompute-only updates
+  - **Prerequisites:** None (can be added immediately)
+
+---
+
+- [ ] **Add CI Check: Reject Client-Side Eligibility Logic**
+  - **File:** `hustlexp-ai-backend/.github/workflows/ci.yml` or similar (update existing)
+  - **Spec:** ARCHITECTURE.md §13.7 "Forbidden Patterns", ESLint rule from Phase 1.5.3
+  - **Goal:** CI check that FAILS build if client code contains eligibility computation
+  - **Done Criteria:**
+    - [ ] CI script runs ESLint rule `no-client-eligibility` on `hustlexp-app/` directory
+    - [ ] CI fails build if ESLint violations found
+    - [ ] CI check runs on every PR (not just main branch)
+  - **Verification:** CI script exists, ESLint rule runs in CI, CI fails on violations
+  - **Prerequisites:** Phase 1.5.3 complete (ESLint rule created)
+
+---
+
 ## Phase 2: Supporting Services
 
 **Completion Criteria:** TrustService, TaskService, and OnboardingService updated to support eligibility system.  
