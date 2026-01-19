@@ -2201,3 +2201,541 @@ ON CONFLICT (version) DO NOTHING;
 -- ============================================================================
 -- END OF CONSTITUTIONAL SCHEMA v1.2.0
 -- ============================================================================
+
+-- ============================================================================
+-- SCHEMA ADDITIONS (Merged from SCHEMA_ADDITIONS.sql)
+-- Date: January 19, 2025
+-- ============================================================================
+
+-- ============================================================================
+-- SCHEMA ADDITIONS — HUSTLEXP v1.0
+-- ============================================================================
+-- Purpose: Close all gaps identified in EXECUTION_REPO_GAP_ANALYSIS_V4.md
+-- Authority: FINISHED_STATE.md, TASK_CREATION_STATE_MACHINE.md, capability specs
+-- Date: January 2025
+-- 
+-- INSTRUCTIONS: Add these to the end of schema.sql
+-- ============================================================================
+
+-- ============================================================================
+-- SECTION 1: CAPABILITY SYSTEM TABLES
+-- Authority: CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md
+-- ============================================================================
+
+-- 1.1 CAPABILITY PROFILES — Single source of truth for user eligibility
+CREATE TABLE IF NOT EXISTS capability_profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  -- Trust & Risk
+  trust_tier INTEGER NOT NULL DEFAULT 1 CHECK (trust_tier >= 1 AND trust_tier <= 6),
+  risk_clearance VARCHAR(20) NOT NULL DEFAULT 'NONE' 
+    CHECK (risk_clearance IN ('NONE', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL')),
+  
+  -- Location
+  work_state VARCHAR(2), -- ISO 3166-2 state code
+  work_region VARCHAR(100),
+  
+  -- Verification Status
+  insurance_verified BOOLEAN DEFAULT FALSE,
+  insurance_expires_at TIMESTAMPTZ,
+  background_check_verified BOOLEAN DEFAULT FALSE,
+  background_check_expires_at TIMESTAMPTZ,
+  
+  -- Willingness Flags (from onboarding)
+  willing_physical_labor BOOLEAN DEFAULT FALSE,
+  willing_driving BOOLEAN DEFAULT FALSE,
+  willing_home_entry BOOLEAN DEFAULT FALSE,
+  willing_pet_handling BOOLEAN DEFAULT FALSE,
+  willing_height_work BOOLEAN DEFAULT FALSE,
+  
+  -- Computed
+  profile_complete BOOLEAN DEFAULT FALSE,
+  last_verified_at TIMESTAMPTZ,
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  
+  CONSTRAINT one_profile_per_user UNIQUE (user_id)
+);
+
+CREATE INDEX idx_capability_profiles_user ON capability_profiles(user_id);
+CREATE INDEX idx_capability_profiles_trust ON capability_profiles(trust_tier);
+CREATE INDEX idx_capability_profiles_state ON capability_profiles(work_state);
+
+-- 1.2 VERIFIED TRADES — Join table for user trades
+CREATE TABLE IF NOT EXISTS verified_trades (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  profile_id UUID NOT NULL REFERENCES capability_profiles(id) ON DELETE CASCADE,
+  
+  trade VARCHAR(100) NOT NULL, -- e.g., 'electrician', 'plumber', 'hvac'
+  verification_status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+    CHECK (verification_status IN ('PENDING', 'VERIFIED', 'EXPIRED', 'REJECTED')),
+  
+  -- Verification details
+  license_number VARCHAR(100),
+  license_state VARCHAR(2),
+  verified_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ,
+  verification_method VARCHAR(50), -- 'manual', 'api', 'document'
+  verification_provider VARCHAR(100),
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  
+  CONSTRAINT unique_trade_per_profile UNIQUE (profile_id, trade)
+);
+
+CREATE INDEX idx_verified_trades_profile ON verified_trades(profile_id);
+CREATE INDEX idx_verified_trades_trade ON verified_trades(trade);
+CREATE INDEX idx_verified_trades_status ON verified_trades(verification_status);
+
+-- 1.3 LICENSE VERIFICATIONS — Detailed license records
+CREATE TABLE IF NOT EXISTS license_verifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  trade VARCHAR(100) NOT NULL,
+  license_state VARCHAR(2) NOT NULL,
+  license_number VARCHAR(100) NOT NULL,
+  
+  -- Status
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+    CHECK (status IN ('PENDING', 'PROCESSING', 'VERIFIED', 'FAILED', 'EXPIRED')),
+  failure_reason TEXT,
+  
+  -- Verification
+  verified_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ,
+  verification_source VARCHAR(100), -- 'state_api', 'manual_review', etc.
+  confidence_score DECIMAL(3,2), -- 0.00 to 1.00
+  
+  -- Evidence
+  document_urls TEXT[],
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_license_verifications_user ON license_verifications(user_id);
+CREATE INDEX idx_license_verifications_status ON license_verifications(status);
+
+-- 1.4 INSURANCE VERIFICATIONS
+CREATE TABLE IF NOT EXISTS insurance_verifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  insurance_type VARCHAR(50) NOT NULL, -- 'general_liability', 'professional', etc.
+  provider_name VARCHAR(255),
+  policy_number VARCHAR(100),
+  coverage_amount INTEGER, -- in cents
+  
+  -- Status
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+    CHECK (status IN ('PENDING', 'PROCESSING', 'VERIFIED', 'FAILED', 'EXPIRED')),
+  failure_reason TEXT,
+  
+  -- Verification
+  verified_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ,
+  verification_source VARCHAR(100),
+  
+  -- Evidence
+  document_urls TEXT[],
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_insurance_verifications_user ON insurance_verifications(user_id);
+CREATE INDEX idx_insurance_verifications_status ON insurance_verifications(status);
+
+-- 1.5 BACKGROUND CHECKS
+CREATE TABLE IF NOT EXISTS background_check_records (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  provider VARCHAR(50) NOT NULL, -- 'checkr', 'sterling', etc.
+  provider_check_id VARCHAR(255),
+  
+  -- Status
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+    CHECK (status IN ('PENDING', 'PROCESSING', 'CLEAR', 'CONSIDER', 'FAILED')),
+  
+  -- Results (encrypted in production)
+  results_summary TEXT,
+  flags TEXT[],
+  
+  -- Timing
+  initiated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  completed_at TIMESTAMPTZ,
+  expires_at TIMESTAMPTZ,
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_background_checks_user ON background_check_records(user_id);
+CREATE INDEX idx_background_checks_status ON background_check_records(status);
+
+-- ============================================================================
+-- SECTION 2: TASK CREATION STATE MACHINE
+-- Authority: TASK_CREATION_STATE_MACHINE.md
+-- ============================================================================
+
+-- 2.1 TASK DRAFTS — For task creation flow
+CREATE TABLE IF NOT EXISTS task_drafts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  poster_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  -- State machine
+  state VARCHAR(20) NOT NULL DEFAULT 'DRAFT'
+    CHECK (state IN ('DRAFT', 'CLARIFYING', 'READY', 'POSTED', 'ABANDONED')),
+  
+  -- Task content (all nullable until READY)
+  title VARCHAR(255),
+  description TEXT,
+  category VARCHAR(50),
+  location VARCHAR(255),
+  location_verified BOOLEAN DEFAULT FALSE,
+  
+  -- Pricing
+  price INTEGER, -- in cents
+  ai_suggested_price_min INTEGER,
+  ai_suggested_price_max INTEGER,
+  
+  -- Requirements (populated during clarification)
+  requirements JSONB DEFAULT '{}',
+  
+  -- Time
+  desired_start_window TIMESTAMPTZ,
+  deadline TIMESTAMPTZ,
+  estimated_duration_minutes INTEGER,
+  
+  -- Risk classification
+  task_category VARCHAR(100), -- AI classified
+  risk_level VARCHAR(20),
+  required_trade VARCHAR(100),
+  required_trust_tier INTEGER,
+  insurance_required BOOLEAN DEFAULT FALSE,
+  background_check_required BOOLEAN DEFAULT FALSE,
+  
+  -- AI assistance
+  ai_assisted BOOLEAN DEFAULT FALSE,
+  ai_suggestions JSONB DEFAULT '{}',
+  clarity_score INTEGER CHECK (clarity_score >= 1 AND clarity_score <= 5),
+  
+  -- Progress
+  completion_percentage INTEGER DEFAULT 0 CHECK (completion_percentage >= 0 AND completion_percentage <= 100),
+  blocking_fields TEXT[], -- fields still needed
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expires_at TIMESTAMPTZ, -- drafts expire after 24h
+  posted_at TIMESTAMPTZ, -- when converted to real task
+  posted_task_id UUID REFERENCES tasks(id)
+);
+
+CREATE INDEX idx_task_drafts_poster ON task_drafts(poster_id);
+CREATE INDEX idx_task_drafts_state ON task_drafts(state);
+CREATE INDEX idx_task_drafts_expires ON task_drafts(expires_at) WHERE state != 'POSTED';
+
+-- 2.2 AI TASK CLARIFICATIONS — Follow-up questions and answers
+CREATE TABLE IF NOT EXISTS ai_task_clarifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  draft_id UUID NOT NULL REFERENCES task_drafts(id) ON DELETE CASCADE,
+  
+  -- Question
+  question_id VARCHAR(50) NOT NULL, -- e.g., 'delivery_pickup_address'
+  question_category VARCHAR(50) NOT NULL, -- e.g., 'LOCATION', 'TIME', 'SCOPE'
+  question_text TEXT NOT NULL,
+  
+  -- Answer
+  answer TEXT,
+  answer_validated BOOLEAN DEFAULT FALSE,
+  validation_error TEXT,
+  
+  -- Metadata
+  is_blocking BOOLEAN NOT NULL DEFAULT TRUE,
+  display_order INTEGER NOT NULL DEFAULT 0,
+  
+  -- Timestamps
+  asked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  answered_at TIMESTAMPTZ,
+  
+  CONSTRAINT unique_question_per_draft UNIQUE (draft_id, question_id)
+);
+
+CREATE INDEX idx_ai_clarifications_draft ON ai_task_clarifications(draft_id);
+CREATE INDEX idx_ai_clarifications_unanswered ON ai_task_clarifications(draft_id) 
+  WHERE answer IS NULL AND is_blocking = TRUE;
+
+-- ============================================================================
+-- SECTION 3: LOCATION TRACKING
+-- Authority: FINISHED_STATE.md §D (Maps & Location)
+-- ============================================================================
+
+-- 3.1 HUSTLER LOCATIONS — Real-time location during EN_ROUTE
+CREATE TABLE IF NOT EXISTS hustler_locations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  task_id UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  hustler_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  -- Location
+  latitude DECIMAL(10, 8) NOT NULL,
+  longitude DECIMAL(11, 8) NOT NULL,
+  accuracy_meters DECIMAL(6, 2),
+  heading DECIMAL(5, 2), -- degrees, 0-360
+  speed_mps DECIMAL(6, 2), -- meters per second
+  
+  -- ETA
+  eta_minutes INTEGER,
+  distance_remaining_meters INTEGER,
+  
+  -- Timestamps
+  recorded_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '5 minutes'),
+  
+  -- Only one active location per task
+  CONSTRAINT one_location_per_task UNIQUE (task_id)
+);
+
+CREATE INDEX idx_hustler_locations_task ON hustler_locations(task_id);
+CREATE INDEX idx_hustler_locations_hustler ON hustler_locations(hustler_id);
+CREATE INDEX idx_hustler_locations_expires ON hustler_locations(expires_at);
+
+-- 3.2 HUSTLER LOCATION HISTORY — For disputes and audits
+CREATE TABLE IF NOT EXISTS hustler_location_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  task_id UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  hustler_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  latitude DECIMAL(10, 8) NOT NULL,
+  longitude DECIMAL(11, 8) NOT NULL,
+  accuracy_meters DECIMAL(6, 2),
+  
+  recorded_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_location_history_task ON hustler_location_history(task_id);
+CREATE INDEX idx_location_history_time ON hustler_location_history(task_id, recorded_at);
+
+-- ============================================================================
+-- SECTION 4: RECURRING TASKS
+-- Authority: FINISHED_STATE.md §N
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS task_templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  poster_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  -- Source
+  original_task_id UUID REFERENCES tasks(id),
+  
+  -- Task content
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  category VARCHAR(50),
+  location VARCHAR(255),
+  price INTEGER NOT NULL CHECK (price > 0),
+  
+  -- Requirements (from original task)
+  requirements JSONB DEFAULT '{}',
+  
+  -- Risk classification (from original)
+  risk_level VARCHAR(20),
+  required_trade VARCHAR(100),
+  required_trust_tier INTEGER,
+  insurance_required BOOLEAN DEFAULT FALSE,
+  background_check_required BOOLEAN DEFAULT FALSE,
+  
+  -- Recurrence
+  repeat_frequency VARCHAR(20) CHECK (repeat_frequency IN ('weekly', 'bi-weekly', 'monthly')),
+  
+  -- Usage tracking
+  times_used INTEGER DEFAULT 0,
+  last_posted_at TIMESTAMPTZ,
+  
+  -- Status
+  is_active BOOLEAN DEFAULT TRUE,
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_task_templates_poster ON task_templates(poster_id);
+CREATE INDEX idx_task_templates_active ON task_templates(poster_id, is_active) WHERE is_active = TRUE;
+
+-- ============================================================================
+-- SECTION 5: PAYMENT METHODS
+-- Authority: FINISHED_STATE.md §J (Wallet)
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS payment_methods (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  
+  -- Stripe
+  stripe_payment_method_id VARCHAR(255) NOT NULL,
+  
+  -- Type
+  type VARCHAR(20) NOT NULL CHECK (type IN ('card', 'bank_account')),
+  
+  -- Card details (for display only)
+  last_four VARCHAR(4),
+  brand VARCHAR(50), -- visa, mastercard, amex, etc.
+  exp_month INTEGER CHECK (exp_month >= 1 AND exp_month <= 12),
+  exp_year INTEGER,
+  
+  -- Bank details (for display only)
+  bank_name VARCHAR(255),
+  account_type VARCHAR(20), -- checking, savings
+  
+  -- Status
+  is_default BOOLEAN DEFAULT FALSE,
+  is_verified BOOLEAN DEFAULT FALSE,
+  
+  -- Timestamps
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  
+  CONSTRAINT unique_stripe_pm UNIQUE (stripe_payment_method_id)
+);
+
+CREATE INDEX idx_payment_methods_user ON payment_methods(user_id);
+CREATE INDEX idx_payment_methods_default ON payment_methods(user_id, is_default) WHERE is_default = TRUE;
+
+-- Ensure only one default per user
+CREATE UNIQUE INDEX idx_one_default_payment ON payment_methods(user_id) 
+  WHERE is_default = TRUE;
+
+-- ============================================================================
+-- SECTION 6: TASK TABLE ADDITIONS
+-- Authority: TASK_EXECUTION_REQUIREMENTS.md, POSTER_TASK_CREATION_RISK_CLASSIFIER_LOCKED.md
+-- ============================================================================
+
+-- Add missing fields to tasks table
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS task_category VARCHAR(100);
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS risk_level VARCHAR(20) 
+  CHECK (risk_level IN ('low', 'medium', 'high', 'critical'));
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS required_trade VARCHAR(100);
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS required_trust_tier INTEGER 
+  CHECK (required_trust_tier >= 1 AND required_trust_tier <= 6);
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS insurance_required BOOLEAN DEFAULT FALSE;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS background_check_required BOOLEAN DEFAULT FALSE;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS location_state VARCHAR(2);
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS ai_assisted BOOLEAN DEFAULT FALSE;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS clarity_score INTEGER 
+  CHECK (clarity_score >= 1 AND clarity_score <= 5);
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS template_id UUID REFERENCES task_templates(id);
+
+-- Indexes for eligibility filtering
+CREATE INDEX IF NOT EXISTS idx_tasks_risk_level ON tasks(risk_level);
+CREATE INDEX IF NOT EXISTS idx_tasks_required_trade ON tasks(required_trade);
+CREATE INDEX IF NOT EXISTS idx_tasks_required_trust ON tasks(required_trust_tier);
+CREATE INDEX IF NOT EXISTS idx_tasks_location_state ON tasks(location_state);
+CREATE INDEX IF NOT EXISTS idx_tasks_eligibility ON tasks(state, required_trust_tier, required_trade, location_state) 
+  WHERE state = 'OPEN';
+
+-- ============================================================================
+-- SECTION 7: TRIGGERS FOR NEW TABLES
+-- ============================================================================
+
+-- Updated_at triggers
+CREATE TRIGGER capability_profiles_updated_at 
+  BEFORE UPDATE ON capability_profiles 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER verified_trades_updated_at 
+  BEFORE UPDATE ON verified_trades 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER license_verifications_updated_at 
+  BEFORE UPDATE ON license_verifications 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER insurance_verifications_updated_at 
+  BEFORE UPDATE ON insurance_verifications 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER background_checks_updated_at 
+  BEFORE UPDATE ON background_check_records 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER task_drafts_updated_at 
+  BEFORE UPDATE ON task_drafts 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER task_templates_updated_at 
+  BEFORE UPDATE ON task_templates 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+CREATE TRIGGER payment_methods_updated_at 
+  BEFORE UPDATE ON payment_methods 
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================================
+-- SECTION 8: TASK DRAFT STATE MACHINE ENFORCEMENT
+-- ============================================================================
+
+-- Enforce task draft state transitions
+CREATE OR REPLACE FUNCTION enforce_task_draft_transitions()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Valid transitions
+  IF OLD.state = 'DRAFT' AND NEW.state NOT IN ('CLARIFYING', 'ABANDONED') THEN
+    RAISE EXCEPTION 'Invalid transition: DRAFT can only go to CLARIFYING or ABANDONED';
+  END IF;
+  
+  IF OLD.state = 'CLARIFYING' AND NEW.state NOT IN ('READY', 'ABANDONED') THEN
+    RAISE EXCEPTION 'Invalid transition: CLARIFYING can only go to READY or ABANDONED';
+  END IF;
+  
+  IF OLD.state = 'READY' AND NEW.state NOT IN ('POSTED', 'CLARIFYING', 'ABANDONED') THEN
+    RAISE EXCEPTION 'Invalid transition: READY can only go to POSTED, CLARIFYING, or ABANDONED';
+  END IF;
+  
+  IF OLD.state IN ('POSTED', 'ABANDONED') THEN
+    RAISE EXCEPTION 'Cannot transition from terminal state: %', OLD.state;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER task_draft_state_machine
+  BEFORE UPDATE OF state ON task_drafts
+  FOR EACH ROW
+  WHEN (OLD.state IS DISTINCT FROM NEW.state)
+  EXECUTE FUNCTION enforce_task_draft_transitions();
+
+-- ============================================================================
+-- SECTION 9: LOCATION CLEANUP
+-- ============================================================================
+
+-- Auto-cleanup expired locations (run via cron)
+CREATE OR REPLACE FUNCTION cleanup_expired_locations()
+RETURNS void AS $$
+BEGIN
+  -- Move to history before deleting
+  INSERT INTO hustler_location_history (task_id, hustler_id, latitude, longitude, accuracy_meters, recorded_at)
+  SELECT task_id, hustler_id, latitude, longitude, accuracy_meters, recorded_at
+  FROM hustler_locations
+  WHERE expires_at < NOW();
+  
+  -- Delete expired
+  DELETE FROM hustler_locations WHERE expires_at < NOW();
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- END OF SCHEMA ADDITIONS
+-- ============================================================================

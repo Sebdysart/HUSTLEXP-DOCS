@@ -1,0 +1,308 @@
+# HustleXP Screen Registry v1.0.0
+
+**STATUS: CONSTITUTIONAL REFERENCE**  
+**Total Screens: 38**  
+**Functional: 37** (FramingScreen needs navigation fix)  
+**Last Updated: January 2025**
+
+---
+
+## Quick Reference
+
+| Category | Count | Location | Status |
+|----------|-------|----------|--------|
+| Auth | 3 | `screens/auth/` | ✅ All functional |
+| Hustler | 9 | `screens/hustler/` | ✅ All functional |
+| Poster | 4 | `screens/poster/` | ✅ All functional |
+| Onboarding | 12 | `screens/onboarding/` | ⚠️ 11/12 functional |
+| Settings | 3 | `screens/settings/` | ✅ All functional |
+| Shared | 4 | `screens/shared/` | ✅ All functional |
+| Edge | 3 | `screens/edge/` | ✅ All functional |
+
+---
+
+## §1. Auth Screens (3)
+
+Location: `hustlexp-app/screens/auth/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| A1 | Login | `LoginScreen.tsx` | ONBOARDING_SPEC §2 | ✅ | Entry point for existing users |
+| A2 | Signup | `SignupScreen.tsx` | ONBOARDING_SPEC §3 | ✅ | New user registration |
+| A3 | Forgot Password | `ForgotPasswordScreen.tsx` | ONBOARDING_SPEC §2.3 | ✅ | Password reset flow |
+
+### Auth Flow
+```
+App Launch → LoginScreen
+         ↓ (no account)
+      SignupScreen → Onboarding Flow
+         ↓ (forgot)
+      ForgotPasswordScreen → LoginScreen
+```
+
+---
+
+## §2. Hustler Screens (9)
+
+Location: `hustlexp-app/screens/hustler/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| H1 | Hustler Home | `HustlerHomeScreen.tsx` | UI_SPEC §5.1, PRODUCT_SPEC §3 | ✅ | Main dashboard for workers |
+| H2 | Task Feed | `TaskFeedScreen.tsx` | UI_SPEC §5.2, PRODUCT_SPEC §9 | ✅ | Browse available tasks |
+| H3 | Task History | `TaskHistoryScreen.tsx` | UI_SPEC §5.3 | ✅ | Past completed tasks |
+| H4 | Task Detail | `TaskDetailScreen.tsx` | UI_SPEC §5.4, PRODUCT_SPEC §3.1 | ✅ | Single task view before accepting |
+| H5 | Task In Progress | `TaskInProgressScreen.tsx` | UI_SPEC §5.5, PRODUCT_SPEC §3.2 | ✅ | Active task with map |
+| H6 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §5.6, PRODUCT_SPEC §3.3 | ✅ | Submit proof, mark complete |
+| H7 | En Route Map | `HustlerEnRouteMapScreen.tsx` | UI_SPEC §5.5.2 | ✅ | Full-screen navigation |
+| H8 | XP Breakdown | `XPBreakdownScreen.tsx` | UI_SPEC §7, PRODUCT_SPEC §5 | ✅ | Detailed XP history |
+| H9 | Instant Interrupt | `InstantInterruptCard.tsx` | UI_SPEC §14, PRODUCT_SPEC §3.5 | ✅ | Live Mode interrupt card |
+
+### Hustler Task Flow
+```
+HustlerHomeScreen → TaskFeedScreen → TaskDetailScreen
+                                          ↓ (accept)
+                               TaskInProgressScreen ←→ HustlerEnRouteMapScreen
+                                          ↓ (complete)
+                               TaskCompletionScreen → XPBreakdownScreen
+```
+
+
+---
+
+## §3. Poster Screens (4)
+
+Location: `hustlexp-app/screens/poster/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| P1 | Task Creation | `TaskCreationScreen.tsx` | UI_SPEC §6.1, PRODUCT_SPEC §3.1 | ✅ | Create & fund task |
+| P2 | Hustler On Way | `HustlerOnWayScreen.tsx` | UI_SPEC §6.2, PRODUCT_SPEC §3.2 | ✅ | Track worker en route |
+| P3 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §6.3, PRODUCT_SPEC §3.3 | ✅ | Review proof, release escrow |
+| P4 | Feedback | `FeedbackScreen.tsx` | UI_SPEC §6.4, PRODUCT_SPEC §12 | ✅ | Rate the hustler |
+
+### Poster Task Flow
+```
+PosterHomeScreen → TaskCreationScreen → (wait for acceptance)
+                          ↓ (accepted)
+                 HustlerOnWayScreen → (wait for completion)
+                          ↓ (proof submitted)
+                 TaskCompletionScreen → FeedbackScreen
+```
+
+---
+
+## §4. Onboarding Screens (12)
+
+Location: `hustlexp-app/screens/onboarding/`
+
+### §4.1 Core Calibration (4)
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| O1 | Framing | `FramingScreen.tsx` | ONBOARDING_SPEC §4.1 | ⚠️ | **BROKEN: Continue button missing useNavigation** |
+| O2 | Calibration | `CalibrationScreen.tsx` | ONBOARDING_SPEC §4.2 | ✅ | Trust calibration quiz |
+| O3 | Role Confirmation | `RoleConfirmationScreen.tsx` | ONBOARDING_SPEC §4.3 | ✅ | Hustler vs Poster vs Both |
+| O4 | Preference Lock | `PreferenceLockScreen.tsx` | ONBOARDING_SPEC §4.4 | ✅ | Lock initial preferences |
+
+### §4.2 Capability Screens (8)
+
+Location: `hustlexp-app/screens/onboarding/capability/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| O5 | Capability Intro | `CapabilityIntroScreen.tsx` | ONBOARDING_SPEC §5.1 | ✅ | What capabilities mean |
+| O6 | Location Setup | `LocationSetupScreen.tsx` | ONBOARDING_SPEC §5.2 | ✅ | Work location preferences |
+| O7 | Trade Verification | `TradeVerificationScreen.tsx` | ONBOARDING_SPEC §5.3 | ✅ | Professional license input |
+| O8 | Insurance Upload | `InsuranceUploadScreen.tsx` | ONBOARDING_SPEC §5.4 | ✅ | Liability insurance docs |
+| O9 | Background Check | `BackgroundCheckScreen.tsx` | ONBOARDING_SPEC §5.5 | ✅ | Consent & initiation |
+| O10 | Vehicle Setup | `VehicleSetupScreen.tsx` | ONBOARDING_SPEC §5.6 | ✅ | Vehicle info for delivery |
+| O11 | Availability | `AvailabilityScreen.tsx` | ONBOARDING_SPEC §5.7 | ✅ | Weekly availability slots |
+| O12 | Capability Summary | `CapabilitySummaryScreen.tsx` | ONBOARDING_SPEC §5.8 | ✅ | Review & confirm |
+
+### Onboarding Flow
+```
+SignupScreen → FramingScreen → CalibrationScreen → RoleConfirmationScreen
+                                                          ↓
+                    PreferenceLockScreen ← CapabilitySummaryScreen
+                           ↓                       ↑
+                    HustlerHomeScreen    (8 capability screens)
+```
+
+---
+
+## §5. Settings Screens (3)
+
+Location: `hustlexp-app/screens/settings/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| S1 | Profile | `ProfileScreen.tsx` | UI_SPEC §8.1 | ✅ | User profile management |
+| S2 | Wallet | `WalletScreen.tsx` | UI_SPEC §8.2, PRODUCT_SPEC §4 | ✅ | Payment methods, earnings |
+| S3 | Work Eligibility | `WorkEligibilityScreen.tsx` | UI_SPEC §8.3, PRODUCT_SPEC §17.5 | ✅ | **CRITICAL: Eligibility interpretability** |
+
+
+---
+
+## §6. Shared Screens (4)
+
+Location: `hustlexp-app/screens/shared/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| SH1 | Task Conversation | `TaskConversationScreen.tsx` | UI_SPEC §9.1, PRODUCT_SPEC §10 | ✅ | In-task messaging |
+| SH2 | Trust Tier Ladder | `TrustTierLadderScreen.tsx` | UI_SPEC §9.2, PRODUCT_SPEC §5.2 | ✅ | Visual trust progression |
+| SH3 | Trust Change | `TrustChangeExplanationScreen.tsx` | UI_SPEC §9.3, PRODUCT_SPEC §5.3 | ✅ | Why trust changed |
+| SH4 | Dispute Entry | `DisputeEntryScreen.tsx` | UI_SPEC §9.4, PRODUCT_SPEC §4.3 | ✅ | File a dispute |
+
+---
+
+## §7. Edge Screens (3)
+
+Location: `hustlexp-app/screens/edge/`
+
+| # | Screen | File | Spec Reference | Status | Notes |
+|---|--------|------|----------------|--------|-------|
+| E1 | No Tasks Available | `NoTasksAvailableScreen.tsx` | UI_SPEC §10.1 | ✅ | Empty feed state |
+| E2 | Eligibility Mismatch | `EligibilityMismatchScreen.tsx` | UI_SPEC §10.2 | ✅ | Why you can't see task |
+| E3 | Trust Tier Locked | `TrustTierLockedScreen.tsx` | UI_SPEC §10.3 | ✅ | Trust too low for task |
+
+---
+
+## §8. Screen Dependencies
+
+### Navigation Stacks
+
+```
+RootNavigator
+├── AuthStack (not authenticated)
+│   ├── LoginScreen
+│   ├── SignupScreen
+│   └── ForgotPasswordScreen
+│
+├── OnboardingStack (authenticated, not onboarded)
+│   ├── FramingScreen
+│   ├── CalibrationScreen
+│   ├── RoleConfirmationScreen
+│   ├── CapabilityStack (8 screens)
+│   └── PreferenceLockScreen
+│
+└── MainTabs (authenticated + onboarded)
+    ├── HustlerStack
+    │   ├── HustlerHomeScreen
+    │   ├── TaskFeedScreen
+    │   ├── TaskDetailScreen
+    │   ├── TaskInProgressScreen
+    │   ├── TaskCompletionScreen
+    │   └── XPBreakdownScreen
+    │
+    ├── PosterStack
+    │   ├── PosterHomeScreen
+    │   ├── TaskCreationScreen
+    │   ├── HustlerOnWayScreen
+    │   ├── TaskCompletionScreen
+    │   └── FeedbackScreen
+    │
+    └── SettingsStack
+        ├── ProfileScreen
+        ├── WalletScreen
+        └── WorkEligibilityScreen
+```
+
+### Shared Component Usage
+
+| Component | Used By Screens |
+|-----------|-----------------|
+| `GlassCard` | All screens |
+| `PrimaryActionButton` | All screens with actions |
+| `SectionHeader` | Settings, Details, History |
+| `TrustBadge` | Profile, TaskDetail, TaskCompletion |
+| `XPDisplay` | Home, XPBreakdown, TaskCompletion |
+| `MapView` | TaskInProgress, HustlerOnWay, EnRoute |
+
+---
+
+## §9. Known Issues
+
+| Screen | Issue | Priority | Fix |
+|--------|-------|----------|-----|
+| `FramingScreen.tsx` | Continue button doesn't navigate | 🔴 HIGH | Add `useNavigation` hook |
+
+### Fix for FramingScreen
+
+```tsx
+// BEFORE (broken)
+<PrimaryActionButton label="Continue" onPress={() => {}} />
+
+// AFTER (fixed)
+import { useNavigation } from '@react-navigation/native';
+
+const navigation = useNavigation();
+<PrimaryActionButton 
+  label="Continue" 
+  onPress={() => navigation.navigate('Calibration')} 
+/>
+```
+
+---
+
+## §10. Implementation Checklist
+
+Use this for tracking implementation status:
+
+```
+[ ] Auth (3/3)
+  [x] LoginScreen
+  [x] SignupScreen  
+  [x] ForgotPasswordScreen
+
+[ ] Hustler (9/9)
+  [x] HustlerHomeScreen
+  [x] TaskFeedScreen
+  [x] TaskHistoryScreen
+  [x] TaskDetailScreen
+  [x] TaskInProgressScreen
+  [x] TaskCompletionScreen
+  [x] HustlerEnRouteMapScreen
+  [x] XPBreakdownScreen
+  [x] InstantInterruptCard
+
+[ ] Poster (4/4)
+  [x] TaskCreationScreen
+  [x] HustlerOnWayScreen
+  [x] TaskCompletionScreen
+  [x] FeedbackScreen
+
+[ ] Onboarding (11/12)
+  [ ] FramingScreen ← NEEDS FIX
+  [x] CalibrationScreen
+  [x] RoleConfirmationScreen
+  [x] PreferenceLockScreen
+  [x] CapabilityIntroScreen
+  [x] LocationSetupScreen
+  [x] TradeVerificationScreen
+  [x] InsuranceUploadScreen
+  [x] BackgroundCheckScreen
+  [x] VehicleSetupScreen
+  [x] AvailabilityScreen
+  [x] CapabilitySummaryScreen
+
+[ ] Settings (3/3)
+  [x] ProfileScreen
+  [x] WalletScreen
+  [x] WorkEligibilityScreen
+
+[ ] Shared (4/4)
+  [x] TaskConversationScreen
+  [x] TrustTierLadderScreen
+  [x] TrustChangeExplanationScreen
+  [x] DisputeEntryScreen
+
+[ ] Edge (3/3)
+  [x] NoTasksAvailableScreen
+  [x] EligibilityMismatchScreen
+  [x] TrustTierLockedScreen
+```
+
+**Total: 37/38 functional**
+
