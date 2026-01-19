@@ -1,0 +1,515 @@
+{
+  "version": "1.0.0",
+  "generated": "2025-01-19",
+  "phases": ["BOOTSTRAP", "NAVIGATION", "SCREENS", "WIRING"],
+  "current_phase": "BOOTSTRAP",
+  
+  "screens": {
+    "A1_AuthLoginScreen": {
+      "file": "src/screens/auth/AuthLoginScreen.tsx",
+      "spec": "screens-spec/auth/AUTH_SCREENS.md",
+      "step": 20,
+      "phase": "SCREENS",
+      "depends_on": ["NavigationComplete"],
+      "blocks": ["A2_AuthSignupScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "A2_AuthSignupScreen": {
+      "file": "src/screens/auth/AuthSignupScreen.tsx",
+      "spec": "screens-spec/auth/AUTH_SCREENS.md",
+      "step": 21,
+      "phase": "SCREENS",
+      "depends_on": ["A1_AuthLoginScreen"],
+      "blocks": ["A3_AuthForgotPasswordScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "A3_AuthForgotPasswordScreen": {
+      "file": "src/screens/auth/AuthForgotPasswordScreen.tsx",
+      "spec": "screens-spec/auth/AUTH_SCREENS.md",
+      "step": 22,
+      "phase": "SCREENS",
+      "depends_on": ["A2_AuthSignupScreen"],
+      "blocks": ["A4_AuthPhoneVerificationScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "A4_AuthPhoneVerificationScreen": {
+      "file": "src/screens/auth/AuthPhoneVerificationScreen.tsx",
+      "spec": "screens-spec/auth/AUTH_SCREENS.md",
+      "step": 23,
+      "phase": "SCREENS",
+      "depends_on": ["A3_AuthForgotPasswordScreen"],
+      "blocks": ["O1_WelcomeScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "O1_WelcomeScreen": {
+      "file": "src/screens/onboarding/WelcomeScreen.tsx",
+      "spec": "screens-spec/onboarding/ONBOARDING_SCREENS.md",
+      "step": 24,
+      "phase": "SCREENS",
+      "depends_on": ["A4_AuthPhoneVerificationScreen"],
+      "blocks": ["O2_RoleSelectionScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "O2_RoleSelectionScreen": {
+      "file": "src/screens/onboarding/RoleSelectionScreen.tsx",
+      "spec": "screens-spec/onboarding/ONBOARDING_SCREENS.md",
+      "step": 25,
+      "phase": "SCREENS",
+      "depends_on": ["O1_WelcomeScreen"],
+      "blocks": ["O3_LocationPermissionScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "O3_LocationPermissionScreen": {
+      "file": "src/screens/onboarding/LocationPermissionScreen.tsx",
+      "spec": "screens-spec/onboarding/ONBOARDING_SCREENS.md",
+      "step": 26,
+      "phase": "SCREENS",
+      "depends_on": ["O2_RoleSelectionScreen"],
+      "blocks": ["O4_NotificationPermissionScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "O4_NotificationPermissionScreen": {
+      "file": "src/screens/onboarding/NotificationPermissionScreen.tsx",
+      "spec": "screens-spec/onboarding/ONBOARDING_SCREENS.md",
+      "step": 27,
+      "phase": "SCREENS",
+      "depends_on": ["O3_LocationPermissionScreen"],
+      "blocks": ["O5_ProfileSetupScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "O5_ProfileSetupScreen": {
+      "file": "src/screens/onboarding/ProfileSetupScreen.tsx",
+      "spec": "screens-spec/onboarding/ONBOARDING_SCREENS.md",
+      "step": 28,
+      "phase": "SCREENS",
+      "depends_on": ["O4_NotificationPermissionScreen"],
+      "blocks": ["O6_OnboardingCompleteScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "O6_OnboardingCompleteScreen": {
+      "file": "src/screens/onboarding/OnboardingCompleteScreen.tsx",
+      "spec": "screens-spec/onboarding/ONBOARDING_SCREENS.md",
+      "step": 29,
+      "phase": "SCREENS",
+      "depends_on": ["O5_ProfileSetupScreen"],
+      "blocks": ["H1_HustlerHomeScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H1_HustlerHomeScreen": {
+      "file": "src/screens/hustler/HustlerHomeScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 30,
+      "phase": "SCREENS",
+      "depends_on": ["O6_OnboardingCompleteScreen"],
+      "blocks": ["H2_TaskFeedScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H2_TaskFeedScreen": {
+      "file": "src/screens/hustler/TaskFeedScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 31,
+      "phase": "SCREENS",
+      "depends_on": ["H1_HustlerHomeScreen"],
+      "blocks": ["H3_TaskHistoryScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H3_TaskHistoryScreen": {
+      "file": "src/screens/hustler/TaskHistoryScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 32,
+      "phase": "SCREENS",
+      "depends_on": ["H2_TaskFeedScreen"],
+      "blocks": ["H4_HustlerProfileScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H4_HustlerProfileScreen": {
+      "file": "src/screens/hustler/HustlerProfileScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 33,
+      "phase": "SCREENS",
+      "depends_on": ["H3_TaskHistoryScreen"],
+      "blocks": ["H5_TaskInProgressScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H5_TaskInProgressScreen": {
+      "file": "src/screens/hustler/TaskInProgressScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 34,
+      "phase": "SCREENS",
+      "depends_on": ["H4_HustlerProfileScreen"],
+      "blocks": ["H6_HustlerEnRouteMapScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H6_HustlerEnRouteMapScreen": {
+      "file": "src/screens/hustler/HustlerEnRouteMapScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 35,
+      "phase": "SCREENS",
+      "depends_on": ["H5_TaskInProgressScreen"],
+      "blocks": ["H7_XPBreakdownScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H7_XPBreakdownScreen": {
+      "file": "src/screens/hustler/XPBreakdownScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 36,
+      "phase": "SCREENS",
+      "depends_on": ["H6_HustlerEnRouteMapScreen"],
+      "blocks": ["H8_TrustTierScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H8_TrustTierScreen": {
+      "file": "src/screens/hustler/TrustTierScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 37,
+      "phase": "SCREENS",
+      "depends_on": ["H7_XPBreakdownScreen"],
+      "blocks": ["H9_EarningsScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "H9_EarningsScreen": {
+      "file": "src/screens/hustler/EarningsScreen.tsx",
+      "spec": "screens-spec/hustler/HUSTLER_SCREENS.md",
+      "step": 38,
+      "phase": "SCREENS",
+      "depends_on": ["H8_TrustTierScreen"],
+      "blocks": ["P1_PosterHomeScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P1_PosterHomeScreen": {
+      "file": "src/screens/poster/PosterHomeScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 40,
+      "phase": "SCREENS",
+      "depends_on": ["H9_EarningsScreen"],
+      "blocks": ["P2_TaskCreationScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P2_TaskCreationScreen": {
+      "file": "src/screens/poster/TaskCreationScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 41,
+      "phase": "SCREENS",
+      "depends_on": ["P1_PosterHomeScreen"],
+      "blocks": ["P3_ActiveTasksScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P3_ActiveTasksScreen": {
+      "file": "src/screens/poster/ActiveTasksScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 42,
+      "phase": "SCREENS",
+      "depends_on": ["P2_TaskCreationScreen"],
+      "blocks": ["P4_PosterProfileScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P4_PosterProfileScreen": {
+      "file": "src/screens/poster/PosterProfileScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 43,
+      "phase": "SCREENS",
+      "depends_on": ["P3_ActiveTasksScreen"],
+      "blocks": ["P5_TaskManagementScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P5_TaskManagementScreen": {
+      "file": "src/screens/poster/TaskManagementScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 44,
+      "phase": "SCREENS",
+      "depends_on": ["P4_PosterProfileScreen"],
+      "blocks": ["P6_HustlerTrackingScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P6_HustlerTrackingScreen": {
+      "file": "src/screens/poster/HustlerTrackingScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 45,
+      "phase": "SCREENS",
+      "depends_on": ["P5_TaskManagementScreen"],
+      "blocks": ["P7_ProofReviewScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P7_ProofReviewScreen": {
+      "file": "src/screens/poster/ProofReviewScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 46,
+      "phase": "SCREENS",
+      "depends_on": ["P6_HustlerTrackingScreen"],
+      "blocks": ["P8_TaskCompletionScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "P8_TaskCompletionScreen": {
+      "file": "src/screens/poster/TaskCompletionScreen.tsx",
+      "spec": "screens-spec/poster/POSTER_SCREENS.md",
+      "step": 47,
+      "phase": "SCREENS",
+      "depends_on": ["P7_ProofReviewScreen"],
+      "blocks": ["SH1_TaskConversationScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "SH1_TaskConversationScreen": {
+      "file": "src/screens/shared/TaskConversationScreen.tsx",
+      "spec": "screens-spec/shared/SHARED_SCREENS.md",
+      "step": 50,
+      "phase": "SCREENS",
+      "depends_on": ["P8_TaskCompletionScreen"],
+      "blocks": ["SH2_TaskDetailScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "SH2_TaskDetailScreen": {
+      "file": "src/screens/shared/TaskDetailScreen.tsx",
+      "spec": "screens-spec/shared/SHARED_SCREENS.md",
+      "step": 51,
+      "phase": "SCREENS",
+      "depends_on": ["SH1_TaskConversationScreen"],
+      "blocks": ["SH3_ProofSubmissionScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "SH3_ProofSubmissionScreen": {
+      "file": "src/screens/shared/ProofSubmissionScreen.tsx",
+      "spec": "screens-spec/shared/SHARED_SCREENS.md",
+      "step": 52,
+      "phase": "SCREENS",
+      "depends_on": ["SH2_TaskDetailScreen"],
+      "blocks": ["SH4_DisputeScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "SH4_DisputeScreen": {
+      "file": "src/screens/shared/DisputeScreen.tsx",
+      "spec": "screens-spec/shared/SHARED_SCREENS.md",
+      "step": 53,
+      "phase": "SCREENS",
+      "depends_on": ["SH3_ProofSubmissionScreen"],
+      "blocks": ["S1_SettingsMainScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S1_SettingsMainScreen": {
+      "file": "src/screens/settings/SettingsMainScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 54,
+      "phase": "SCREENS",
+      "depends_on": ["SH4_DisputeScreen"],
+      "blocks": ["S2_AccountSettingsScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S2_AccountSettingsScreen": {
+      "file": "src/screens/settings/AccountSettingsScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 55,
+      "phase": "SCREENS",
+      "depends_on": ["S1_SettingsMainScreen"],
+      "blocks": ["S3_NotificationSettingsScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S3_NotificationSettingsScreen": {
+      "file": "src/screens/settings/NotificationSettingsScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 56,
+      "phase": "SCREENS",
+      "depends_on": ["S2_AccountSettingsScreen"],
+      "blocks": ["S4_PaymentSettingsScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S4_PaymentSettingsScreen": {
+      "file": "src/screens/settings/PaymentSettingsScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 57,
+      "phase": "SCREENS",
+      "depends_on": ["S3_NotificationSettingsScreen"],
+      "blocks": ["S5_PrivacySettingsScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S5_PrivacySettingsScreen": {
+      "file": "src/screens/settings/PrivacySettingsScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 58,
+      "phase": "SCREENS",
+      "depends_on": ["S4_PaymentSettingsScreen"],
+      "blocks": ["S6_VerificationScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S6_VerificationScreen": {
+      "file": "src/screens/settings/VerificationScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 59,
+      "phase": "SCREENS",
+      "depends_on": ["S5_PrivacySettingsScreen"],
+      "blocks": ["S7_SupportScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "S7_SupportScreen": {
+      "file": "src/screens/settings/SupportScreen.tsx",
+      "spec": "screens-spec/settings/SETTINGS_SCREENS.md",
+      "step": 60,
+      "phase": "SCREENS",
+      "depends_on": ["S6_VerificationScreen"],
+      "blocks": ["E1_NoTasksScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "E1_NoTasksScreen": {
+      "file": "src/screens/edge/NoTasksScreen.tsx",
+      "spec": "screens-spec/edge/EDGE_SCREENS.md",
+      "step": 61,
+      "phase": "SCREENS",
+      "depends_on": ["S7_SupportScreen"],
+      "blocks": ["E2_EligibilityMismatchScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "E2_EligibilityMismatchScreen": {
+      "file": "src/screens/edge/EligibilityMismatchScreen.tsx",
+      "spec": "screens-spec/edge/EDGE_SCREENS.md",
+      "step": 62,
+      "phase": "SCREENS",
+      "depends_on": ["E1_NoTasksScreen"],
+      "blocks": ["E3_NetworkErrorScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "E3_NetworkErrorScreen": {
+      "file": "src/screens/edge/NetworkErrorScreen.tsx",
+      "spec": "screens-spec/edge/EDGE_SCREENS.md",
+      "step": 63,
+      "phase": "SCREENS",
+      "depends_on": ["E2_EligibilityMismatchScreen"],
+      "blocks": ["E4_MaintenanceScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "E4_MaintenanceScreen": {
+      "file": "src/screens/edge/MaintenanceScreen.tsx",
+      "spec": "screens-spec/edge/EDGE_SCREENS.md",
+      "step": 64,
+      "phase": "SCREENS",
+      "depends_on": ["E3_NetworkErrorScreen"],
+      "blocks": ["E5_ForceUpdateScreen"],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    },
+    "E5_ForceUpdateScreen": {
+      "file": "src/screens/edge/ForceUpdateScreen.tsx",
+      "spec": "screens-spec/edge/EDGE_SCREENS.md",
+      "step": 65,
+      "phase": "SCREENS",
+      "depends_on": ["E4_MaintenanceScreen"],
+      "blocks": [],
+      "tokens": ["colors", "typography", "spacing"],
+      "status": "pending"
+    }
+  },
+
+  "navigation": {
+    "RootNavigator": {
+      "file": "src/navigation/RootNavigator.tsx",
+      "step": 10,
+      "phase": "NAVIGATION",
+      "depends_on": ["BootstrapComplete"],
+      "contains": ["AuthStack", "OnboardingStack", "HustlerTabs", "PosterTabs"],
+      "status": "pending"
+    },
+    "AuthStack": {
+      "file": "src/navigation/AuthStack.tsx",
+      "step": 11,
+      "phase": "NAVIGATION",
+      "depends_on": ["RootNavigator"],
+      "screens": ["A1", "A2", "A3", "A4"],
+      "status": "pending"
+    },
+    "OnboardingStack": {
+      "file": "src/navigation/OnboardingStack.tsx",
+      "step": 12,
+      "phase": "NAVIGATION",
+      "depends_on": ["RootNavigator"],
+      "screens": ["O1", "O2", "O3", "O4", "O5", "O6"],
+      "status": "pending"
+    },
+    "HustlerTabs": {
+      "file": "src/navigation/HustlerTabs.tsx",
+      "step": 13,
+      "phase": "NAVIGATION",
+      "depends_on": ["RootNavigator"],
+      "screens": ["H1", "H2", "H3", "H4"],
+      "status": "pending"
+    },
+    "PosterTabs": {
+      "file": "src/navigation/PosterTabs.tsx",
+      "step": 14,
+      "phase": "NAVIGATION",
+      "depends_on": ["RootNavigator"],
+      "screens": ["P1", "P2", "P3", "P4"],
+      "status": "pending"
+    },
+    "SettingsStack": {
+      "file": "src/navigation/SettingsStack.tsx",
+      "step": 15,
+      "phase": "NAVIGATION",
+      "depends_on": ["RootNavigator"],
+      "screens": ["S1", "S2", "S3", "S4", "S5", "S6", "S7"],
+      "status": "pending"
+    }
+  },
+
+  "gates": {
+    "BootstrapComplete": {
+      "step": 5,
+      "requires": ["App builds", "App launches", "Button logs to console", "30-second stability"],
+      "status": "pending"
+    },
+    "NavigationComplete": {
+      "step": 19,
+      "requires": ["All stacks created", "All screens stubbed", "Navigation compiles"],
+      "status": "pending"
+    },
+    "ScreensComplete": {
+      "step": 66,
+      "requires": ["All 38 screens implemented", "All screens compile", "Navigation works"],
+      "status": "pending"
+    }
+  },
+
+  "tokens": {
+    "colors": "reference/constants/colors.js",
+    "typography": "reference/constants/typography.js",
+    "spacing": "reference/constants/spacing.js",
+    "animations": "reference/constants/animations.js"
+  }
+}

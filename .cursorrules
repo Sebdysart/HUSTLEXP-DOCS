@@ -1,7 +1,26 @@
 # CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 🛑 MANDATORY FIRST STEP — READ BEFORE ANY ACTION
+# 🛑 EXECUTION MODE — READ THESE FILES FIRST
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# 1. EXECUTION_QUEUE.md       — Find first unchecked step, execute ONLY that
+# 2. STOP_CONDITIONS.md       — Know when to STOP (do not overbuild)
+# 3. FRONTEND_BUILD_MAP.json  — Machine-readable dependency graph
+#
+# YOUR BUILD LOOP:
+#   1. Read EXECUTION_QUEUE.md
+#   2. Find first step where Done: [ ]
+#   3. Read the spec file referenced in that step
+#   4. Build EXACTLY what the spec says
+#   5. Verify against STOP_CONDITIONS.md
+#   6. Mark Done: [x]
+#   7. STOP. Move to next step only when asked.
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🛑 MANDATORY GUARDRAILS — ENFORCED ALWAYS
 # ══════════════════════════════════════════════════════════════════════════════
 # 
 # Before ANY action, check FEATURE_FREEZE.md.
@@ -19,10 +38,16 @@
 # You do NOT collaborate. You do NOT innovate. You EXECUTE specs exactly.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 1: FILE ACCESS PERMISSIONS
+# SECTION 1: FILE ACCESS PERMISSIONS (PRIORITY ORDER)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# YOU MAY READ:
+# EXECUTION RAILS (Read FIRST):
+# ✅ EXECUTION_QUEUE.md                 (what to build next)
+# ✅ STOP_CONDITIONS.md                 (when to stop)
+# ✅ FRONTEND_BUILD_MAP.json            (dependency graph)
+# ✅ CURRENT_PHASE.md                   (current phase gate)
+
+# SCREEN SPECS (Read for current step):
 # ✅ screens-spec/**                    (screen contracts)
 # ✅ specs/03-frontend/**               (UI specifications)
 # ✅ specs/03-frontend/stitch-prompts/** (implementation prompts)
