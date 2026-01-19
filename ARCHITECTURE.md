@@ -1,8 +1,9 @@
-# HustleXP Architecture Specification v1.1.0
+# HustleXP Architecture Specification v1.2.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  
+**Version:** v1.2.0 (Added §11 Capability Profile Authority, §12 Verification Pipeline Authority, §13 Feed Eligibility Authority)  
 **Governance:** This document defines jurisdictional authority. Violations are system failures.
 
 ---
@@ -937,13 +938,749 @@ AI is **strictly advisory** (A1 authority per AI_INFRASTRUCTURE §3).
 
 ---
 
+## §11. Capability Profile Authority
+
+### 11.1 Core Rule (Non-Negotiable)
+
+> **Capability Profile is never mutated directly. It is always re-derived from verification records.**
+
+If this rule is violated, trust leaks and eligibility becomes inconsistent.
+
+**Cross-Reference:** PRODUCT_SPEC §17.2 (Capability Claims vs Capability Profile)
+
+### 11.2 Source Records vs Derived Records
+
+**Source Records (Mutable Authority):**
+- `license_verifications` table — License verification status and expiry
+- `insurance_verifications` table — Insurance verification status and expiry
+- `background_checks` table — Background check status and expiry
+- `users.trust_tier` — Trust tier (managed by TrustService)
+- These are the **only** layers that can be directly updated
+
+**Derived Record (Immutable After Recompute):**
+- `capability_profiles` table — Single source of truth for eligibility
+- **Never edited directly** — Always re-derived from source records
+- Recomputed atomically when source records change
+
+**Authority Hierarchy:**
+```
+Source Records (license_verifications, insurance_verifications, background_checks, users.trust_tier)
+  ↓
+Recompute Engine (CapabilityProfileService.recompute())
+  ↓
+Capability Profile (capability_profiles table)
+```
+
+Source records > Derived record.
+
+### 11.3 Recompute-Only Rule
+
+**Who Can Trigger Recomputation:**
+- Backend service (Layer 1) — `CapabilityProfileService.recompute()`
+- Admin (Layer 6) — Via backend service only, with audit
+- AI — ❌ No (cannot trigger recompute)
+- Frontend — ❌ No (cannot trigger recompute)
+
+**When Recomputation Happens:**
+1. License verification approved/rejected/expired
+2. Insurance verification approved/rejected/expired
+3. Background check approved/rejected/expired
+4. Trust tier promotion/demotion (via TrustService)
+5. Credential expiry detection (cron job)
+
+**Where Recomputation Happens:**
+- Backend service (`CapabilityProfileService.recompute()`)
+- Atomic transaction (same transaction as source record update)
+- Cannot bypass — No direct UPDATE on `capability_profiles` (except `updated_at` timestamp)
+
+**Recomputation Flow:**
+```
+Source record change (e.g., license verified)
+  → Same transaction: Trigger recompute
+  → Load all source records (licenses, insurance, background checks, trust tier)
+  → Re-evaluate verified_trades from license_verifications
+  → Re-evaluate risk_clearance from trust_tier
+  → Re-evaluate insurance_valid from insurance_verifications
+  → Re-evaluate background_check_valid from background_checks
+  → Update capability_profiles (atomic)
+  → Invalidate feed cache
+```
+
+### 11.4 Authority Distribution
+
+| Layer | Authority | Can/Cannot |
+|-------|-----------|------------|
+| Layer 0 (Database) | Enforces constraints | CHECK constraints on `risk_clearance` mapping, FK constraints, triggers preventing direct mutation |
+| Layer 1 (Backend) | Recompute engine | Can recompute (`CapabilityProfileService.recompute()`), cannot mutate directly (except `updated_at`) |
+| Layer 3 (AI) | Read-only | Can read for context (eligibility inference), cannot trigger recompute |
+| Layer 4 (Frontend) | Display only | Cannot compute eligibility, cannot cache profile for decisions (display only) |
+
+**Violation Behavior:**
+- Direct UPDATE on `capability_profiles` (except `updated_at`) → Transaction rollback (if constraint violated) or audit log (if application logic bypassed)
+- Client-side eligibility computation → Undefined behavior, trust leak
+- Caching profile for decision-making → Stale eligibility, unsafe matching
+
+### 11.5 Anti-Patterns (Never Allow)
+
+**❌ Direct UPDATE on `capability_profiles`:**
+```typescript
+// ILLEGAL: Direct mutation of capability profile
+await db.query(`
+  UPDATE capability_profiles 
+  SET verified_trades = ARRAY['electrician'] 
+  WHERE user_id = $1
+`, [userId]);
+```
+
+**Correct Pattern:**
+```typescript
+// LEGAL: Update source record, trigger recompute
+await db.query(`
+  UPDATE license_verifications 
+  SET status = 'verified' 
+  WHERE id = $1
+`, [verificationId]);
+await capabilityProfileService.recompute(userId); // Triggers recompute
+```
+
+**❌ Client-Side Eligibility Computation:**
+```javascript
+// ILLEGAL: Computing eligibility in frontend
+const isEligible = user.verified_trades.includes(task.required_trade);
+if (isEligible) {
+  showTask(task);
+}
+```
+
+**Correct Pattern:**
+```javascript
+// LEGAL: Server filters feed before sending
+const feed = await api.feed.get.query({ userId });
+// All tasks in feed are already eligible (server-filtered)
+```
+
+**❌ Caching Profile for Decision-Making:**
+```javascript
+// ILLEGAL: Using cached profile for eligibility decisions
+const cachedProfile = localStorage.get('capability_profile');
+if (cachedProfile.trust_tier >= task.required_tier) {
+  enableApplyButton();
+}
+```
+
+**Correct Pattern:**
+```javascript
+// LEGAL: Caching profile for display only
+const profile = await api.capabilityProfile.get.query({ userId });
+displayTrustTier(profile.trust_tier); // Display only
+// Eligibility decisions always made server-side
+```
+
+**✅ Caching Profile for Display Only:**
+```javascript
+// LEGAL: Caching profile for UI display (not decisions)
+const profile = await api.capabilityProfile.get.query({ userId });
+cacheForDisplay('capability_profile', profile);
+// Never use cached profile for eligibility logic
+```
+
+### 11.6 Database Schema Authority
+
+**Enforcement Mechanisms:**
+- CHECK constraint on `risk_clearance` mapping (INV-ELIGIBILITY-1)
+- Foreign key constraints on `verified_trades.verification_id`
+- Trigger preventing direct mutation (except `updated_at`)
+- Recomputation trigger (on source record changes)
+
+**Cross-Reference:**
+- `schema.sql` — `capability_profiles` table definition
+- `CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md` — Complete schema spec
+
+---
+
+## §12. Verification Pipeline Authority
+
+### 12.1 Core Rule (Non-Negotiable)
+
+> **Verification never grants access directly. Verification only updates source-of-truth records. Access is derived exclusively via recomputation.**
+
+If this rule is violated, trust leaks, legal compliance fails, and unsafe matching occurs.
+
+**Cross-Reference:** PRODUCT_SPEC §17.3 (Verification as Prerequisite, Not Access)
+
+### 12.2 Where Truth Lives
+
+**License Verifications:**
+- `license_verifications` table — Single source of truth for license verification status
+- Mutable layer — Only layer that can be directly updated for license status
+
+**Insurance Verifications:**
+- `insurance_verifications` table — Single source of truth for insurance verification status
+- Mutable layer — Only layer that can be directly updated for insurance status
+
+**Background Checks:**
+- `background_checks` table — Single source of truth for background check status
+- Mutable layer — Only layer that can be directly updated for background check status
+
+**These are the only mutable layers for verification status.**
+
+Verification records are the **authority**. Capability profiles are **derived**.
+
+### 12.3 What Triggers Recomputation
+
+**Recomputation is triggered by:**
+1. License verification approved/rejected/expired
+2. Insurance verification approved/rejected/expired
+3. Background check approved/rejected/expired
+4. Trust tier promotion/demotion (via TrustService)
+5. Credential expiry detection (cron job)
+
+**Recomputation Flow:**
+```
+Verification record updated (e.g., status = 'verified')
+  → Same transaction: Trigger recompute
+  → CapabilityProfileService.recompute(userId)
+  → Re-evaluate capability profile from all source records
+  → Update capability_profiles (atomic)
+  → Invalidate feed cache
+```
+
+**Rule:** Every verification state change triggers recompute **atomically** (same transaction). No exceptions.
+
+### 12.4 Verification Flow Authority
+
+**End-to-End Flow:**
+```
+User submits credential (via Settings → Work Eligibility)
+  → Backend service creates verification record (status = 'pending')
+  → Verification processor runs (automated registry lookup or manual review)
+  → Record updated (status = 'verified' or 'failed')
+  → Recompute triggered (atomic, same transaction)
+  → Feed cache invalidated
+```
+
+**Authority Boundaries:**
+
+| Actor | Can Create Verification | Can Approve Verification | Can Trigger Recompute |
+|-------|------------------------|--------------------------|----------------------|
+| User | ✅ Yes (via Settings UI) | ❌ No | ❌ No |
+| Backend Service | ✅ Yes | ✅ Yes (if automated) | ✅ Yes |
+| Admin | ✅ Yes | ✅ Yes (manual review) | ✅ Yes |
+| AI | ❌ No | ❌ No | ❌ No |
+| Frontend | ❌ No | ❌ No | ❌ No |
+
+**Verification Never Grants Access Directly:**
+- Verification updates `license_verifications.status`
+- Recompute reads `license_verifications` and updates `capability_profiles`
+- Feed reads `capability_profiles` to filter tasks
+- Access is **derived**, not **granted**
+
+### 12.5 Verification Record Authority
+
+**License Verification Record:**
+- Created by: Backend service (on user submission)
+- Updated by: Verification processor (automated or manual)
+- Cannot be: Created by AI, updated by frontend, bypassed by admin
+
+**Insurance Verification Record:**
+- Created by: Backend service (on user submission)
+- Updated by: Verification processor (automated OCR or manual review)
+- Cannot be: Created by AI, updated by frontend, bypassed without audit
+
+**Background Check Record:**
+- Created by: Backend service (on user opt-in + task requirement)
+- Updated by: Third-party provider (via webhook or polling)
+- Cannot be: Created by AI, updated by frontend, bypassed without audit
+
+### 12.6 Payment Gating (Reference)
+
+**Payment Authority:**
+- Payment is downstream of eligibility pre-check, upstream of verification execution
+- Payment UI appears only in Settings → Work Eligibility (not in feed, not in task cards)
+- Payment unlocks verification processing, not access (access comes from recompute)
+
+**Cross-Reference:**
+- `VERIFICATION_PAYMENT_UX_AND_COPY_LOCKED.md` — Payment UX authority spec
+- PRODUCT_SPEC §17.6 (No Appeals, No Overrides) — Payment cannot bypass eligibility
+
+**Payment Flow:**
+```
+User clicks "Verify License" (eligible pre-check passed)
+  → Payment screen shown (Settings → Work Eligibility)
+  → Payment processed (Stripe)
+  → Verification record created (status = 'pending')
+  → Verification processor runs (async)
+  → Record updated (status = 'verified' or 'failed')
+  → Recompute triggered (if verified)
+  → Access derived (via capability profile recompute)
+```
+
+Payment → Verification → Recomputation → Access (derived).
+
+### 12.7 Anti-Patterns (Never Allow)
+
+**❌ Verification Grants Access Directly:**
+```typescript
+// ILLEGAL: Granting access from verification service
+await db.query(`
+  UPDATE license_verifications SET status = 'verified' WHERE id = $1
+`, [verificationId]);
+await db.query(`
+  UPDATE capability_profiles 
+  SET verified_trades = ARRAY['electrician'] 
+  WHERE user_id = $2
+`, [verificationId, userId]); // Direct mutation, bypassing recompute
+```
+
+**Correct Pattern:**
+```typescript
+// LEGAL: Update verification, trigger recompute
+await db.query(`
+  UPDATE license_verifications SET status = 'verified' WHERE id = $1
+`, [verificationId]);
+await capabilityProfileService.recompute(userId); // Recompute triggers access
+```
+
+**❌ AI Approving Verifications:**
+```typescript
+// ILLEGAL: AI directly approving verification
+const aiResult = await aiService.verifyLicense(licenseDetails);
+if (aiResult.confidence > 0.9) {
+  await db.query(`
+    UPDATE license_verifications SET status = 'verified' WHERE id = $1
+  `, [verificationId]);
+}
+```
+
+**Correct Pattern:**
+```typescript
+// LEGAL: AI proposes, human/admin decides
+const aiProposal = await aiService.proposeLicenseVerification(licenseDetails);
+if (aiProposal.confidence > 0.95) {
+  // Still requires human/admin review for high-stakes verifications
+  await verificationService.submitForReview(verificationId, aiProposal);
+}
+```
+
+### 12.8 Database Schema Authority
+
+**Enforcement Mechanisms:**
+- Foreign key constraints on `verified_trades.verification_id`
+- CHECK constraints on verification status transitions
+- Trigger enforcing recompute on verification state change
+- Trigger preventing direct mutation of `capability_profiles`
+
+**Cross-Reference:**
+- `schema.sql` — `license_verifications`, `insurance_verifications`, `background_checks` tables
+- `VERIFICATION_PIPELINE_LOCKED.md` — Complete pipeline spec
+- §11 (Capability Profile Authority) — Recomputation destination
+
+---
+
+## §13. Feed Eligibility Authority
+
+### 13.1 Core Rule (Non-Negotiable)
+
+> **If a task appears in a user's feed, the user is eligible to accept it. There are no exceptions, warnings, disabled buttons, or soft blocks.**
+
+If this rule is violated, trust leaks, users experience rejection, and the system becomes untrustworthy.
+
+**Cross-Reference:** PRODUCT_SPEC §17.4 (Feed Shows Only Eligible Gigs)
+
+### 13.2 Feed Is a Join, Not a Filter
+
+**Feed Query Structure:**
+```sql
+SELECT t.* 
+FROM tasks t
+JOIN capability_profiles cp ON cp.user_id = :user_id
+WHERE t.location_state = cp.location_state
+  AND (t.required_trade IS NULL OR t.required_trade = ANY(cp.verified_trades))
+  AND cp.trust_tier >= t.required_trust_tier
+  AND (t.insurance_required = FALSE OR cp.insurance_valid = TRUE)
+  AND (t.background_check_required = FALSE OR cp.background_check_valid = TRUE)
+  AND t.status = 'open'
+ORDER BY t.created_at DESC
+LIMIT :limit;
+```
+
+**Join Conditions Enforce Eligibility:**
+- Location state match (`t.location_state = cp.location_state`)
+- Trade requirement match (`t.required_trade = ANY(cp.verified_trades)`)
+- Trust tier requirement (`cp.trust_tier >= t.required_trust_tier`)
+- Insurance requirement (`t.insurance_required = FALSE OR cp.insurance_valid = TRUE`)
+- Background check requirement (`t.background_check_required = FALSE OR cp.background_check_valid = TRUE`)
+
+**If Join Fails:**
+- Task doesn't appear in feed (doesn't exist for that user)
+- No post-filtering in application code
+- No "disabled" task cards
+- No "you don't qualify" messages
+
+**Feed is a SQL join. If the join fails, the task is invisible to that user.**
+
+### 13.3 Eligibility Predicate Location
+
+**Primary Location: SQL Query (WHERE Clause)**
+- Feed query filters tasks by eligibility at SQL level
+- Join conditions enforce all eligibility rules
+- No tasks are fetched if join fails
+- Authority: Layer 0 (Database) + Layer 1 (Backend service)
+
+**Secondary Location: `isEligible()` Pure Function (Defense-in-Depth)**
+- Pure function (deterministic, side-effect free)
+- Compares task requirements against capability profile
+- Returns boolean (eligible or not)
+- Used by: Feed query (SQL filter), task detail prefetch, apply endpoint
+- Authority: Layer 1 (Backend service)
+
+**Function Signature:**
+```typescript
+function isEligible(
+  task: Task,
+  capabilityProfile: CapabilityProfile
+): boolean
+```
+
+**Cannot Be in Client:**
+- Eligibility computation never happens in frontend
+- Client receives pre-filtered tasks (all eligible)
+- Client never decides eligibility
+- Client never shows disabled buttons
+
+### 13.4 Defense-in-Depth (Apply Endpoint Recheck)
+
+**Even Though Feed Is Filtered:**
+- Apply endpoint rechecks eligibility before accepting task
+- Protects against: Stale cache, race conditions, malicious clients
+- Location: Backend service (Layer 1)
+- Failure behavior: 403 Forbidden (not "try anyway")
+
+**Apply Endpoint Flow:**
+```
+Client requests task acceptance
+  → Backend service loads latest capability profile
+  → Backend service checks eligibility (isEligible(task, profile))
+  → If eligible: Accept task, update task.assigned_to
+  → If not eligible: Return 403 Forbidden (do not accept)
+```
+
+**Why Recheck?**
+- Feed cache may be stale (TTL: 60 seconds)
+- Capability profile may have changed between feed load and apply
+- Client may be malicious (attempting to accept ineligible tasks)
+- Race conditions (multiple users applying simultaneously)
+
+**Recheck Never Shows UI:**
+- If recheck fails, return 403 Forbidden
+- No "you're not eligible" message
+- No "try anyway" button
+- If task was in feed but recheck fails, feed cache was stale (refresh feed)
+
+### 13.5 Authority Chain
+
+**Eligibility Determination Flow:**
+```
+Tasks (immutable requirements: trade, trust tier, insurance, background check, location)
+  ↓
+Capability Profile (latest derived snapshot from §11)
+  ↓
+Eligibility Resolver (pure function isEligible(), SQL WHERE clause)
+  ↓
+Feed Query (SQL join: tasks JOIN capability_profiles)
+  ↓
+Client Render (dumb: displays pre-filtered tasks)
+```
+
+**Authority Distribution:**
+
+| Layer | Authority | Responsibility |
+|-------|-----------|----------------|
+| Layer 0 (Database) | SQL WHERE clause | Joins tasks with profiles, filters by eligibility |
+| Layer 1 (Backend) | `isEligible()` function | Defense-in-depth recheck (apply endpoint) |
+| Layer 2 (API) | Request routing | Routes feed request to backend service |
+| Layer 4 (Frontend) | Display only | Renders pre-filtered tasks (never computes eligibility) |
+
+**Client Never Decides Eligibility:**
+- Client receives feed (pre-filtered by server)
+- Client displays tasks (all eligible)
+- Client requests acceptance (server rechecks)
+- Client never computes eligibility
+
+### 13.6 Cache Strategy
+
+**Feed Cache Key:**
+```
+feed:{user_id}:{feed_mode}:{page_cursor_hash}
+```
+
+**Cache TTL:**
+- Normal feed: 60 seconds
+- Urgent feed: 15 seconds
+- Nearby feed: 60 seconds (location may change)
+
+**Cache Invalidation Triggers:**
+1. Capability profile recompute (verification change, trust tier change, expiry)
+2. Task created/closed (new tasks appear, closed tasks disappear)
+3. Verification expiry (credentials expire, tasks disappear)
+
+**Cache Invalidation Rule:**
+- If in doubt, invalidate. Freshness > cost.
+- Feed cache staleness can cause users to see ineligible tasks (apply endpoint recheck prevents acceptance, but feed should be accurate)
+
+**Cache Authority:**
+- Backend service (Layer 1) manages cache
+- Cache invalidation triggered by recompute (same transaction)
+- Frontend never caches feed for decisions (display only)
+
+### 13.7 Forbidden Patterns (Never Allow)
+
+**❌ Fetch All Tasks Then Filter in JS:**
+```typescript
+// ILLEGAL: Post-filtering in application code
+const allTasks = await db.query('SELECT * FROM tasks WHERE status = "open"');
+const eligibleTasks = allTasks.filter(task => isEligible(task, profile));
+return eligibleTasks;
+```
+
+**Correct Pattern:**
+```typescript
+// LEGAL: Filter at SQL level (join enforces eligibility)
+const eligibleTasks = await db.query(`
+  SELECT t.* FROM tasks t
+  JOIN capability_profiles cp ON cp.user_id = $1
+  WHERE t.location_state = cp.location_state
+    AND (t.required_trade IS NULL OR t.required_trade = ANY(cp.verified_trades))
+    -- ... other eligibility conditions
+`, [userId]);
+```
+
+**❌ "Show But Disable" UI:**
+```javascript
+// ILLEGAL: Showing ineligible tasks with disabled buttons
+const feed = await fetchAllTasks();
+feed.forEach(task => {
+  const isEligible = computeEligibility(task, userProfile);
+  if (isEligible) {
+    renderTask(task, { enableApply: true });
+  } else {
+    renderTask(task, { enableApply: false }); // Never show ineligible tasks
+  }
+});
+```
+
+**Correct Pattern:**
+```javascript
+// LEGAL: Server filters feed before sending (only eligible tasks)
+const feed = await api.feed.get.query({ userId });
+// All tasks in feed are eligible (server-filtered)
+feed.forEach(task => {
+  renderTask(task, { enableApply: true }); // All tasks are eligible
+});
+```
+
+**❌ "Apply Anyway" Flows:**
+```typescript
+// ILLEGAL: Allowing users to apply to ineligible tasks
+if (!isEligible(task, profile)) {
+  return {
+    error: 'You are not eligible for this task',
+    action: 'request_exception' // Never allow this
+  };
+}
+```
+
+**Correct Pattern:**
+```typescript
+// LEGAL: Return 403 Forbidden (no "try anyway")
+if (!isEligible(task, profile)) {
+  return new ForbiddenError('Task not eligible'); // No exception path
+}
+```
+
+**❌ Trust Logic in Client:**
+```javascript
+// ILLEGAL: Computing eligibility in frontend
+const canAccessHighRiskTasks = user.trust_tier >= 'D';
+if (canAccessHighRiskTasks) {
+  showHighRiskTasks();
+}
+```
+
+**Correct Pattern:**
+```javascript
+// LEGAL: Server filters feed (trust logic in SQL WHERE clause)
+const feed = await api.feed.get.query({ userId });
+// Feed only contains tasks user is eligible for (trust tier checked server-side)
+renderFeed(feed);
+```
+
+**❌ Eligibility Computation in Frontend:**
+```javascript
+// ILLEGAL: Computing eligibility client-side
+function isTaskEligible(task, user) {
+  return user.verified_trades.includes(task.required_trade)
+    && user.trust_tier >= task.required_trust_tier
+    && (task.insurance_required ? user.insurance_valid : true);
+}
+```
+
+**Correct Pattern:**
+```javascript
+// LEGAL: Server computes eligibility (SQL join filters feed)
+const feed = await api.feed.get.query({ userId });
+// Feed is pre-filtered (eligibility computed server-side)
+renderFeed(feed);
+```
+
+### 13.8 Database Schema Authority
+
+**Enforcement Mechanisms:**
+- SQL WHERE clause enforces eligibility (join conditions)
+- Foreign key constraints on task requirements (trade, trust tier, insurance, background check)
+- CHECK constraints on task requirements (immutable after creation)
+- Trigger preventing task requirement downgrade
+
+**Cross-Reference:**
+- `schema.sql` — `tasks` table definition, `capability_profiles` table definition
+- `FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md` — Complete feed query spec
+- §11 (Capability Profile Authority) — Profile source
+- §12 (Verification Pipeline Authority) — Recomputation triggers
+
+---
+
+## §14. Task State Machine Authority
+
+### 14.1 Canonical State Machine
+
+**Execution Flow (Canonical):**
+```
+OPEN → EN_ROUTE (ACCEPTED) → WORKING → COMPLETED
+```
+
+**Terminal States:**
+- `COMPLETED` - Task finished successfully
+- `CANCELLED` - Task terminated by poster/admin
+- `EXPIRED` - Task deadline exceeded
+
+**State Mappings:**
+- `OPEN` (schema) = `AVAILABLE` (conceptual)
+- `ACCEPTED` (schema) = `EN_ROUTE` (conceptual)
+- `WORKING` (schema) = `WORKING` (conceptual)
+- `COMPLETED` (schema) = `COMPLETED` (conceptual)
+
+**Legacy States (kept for compatibility):**
+- `PROOF_SUBMITTED` - Awaiting poster review (not used in execution flow)
+- `DISPUTED` - Under admin review (not used in execution flow)
+
+### 14.2 State Transitions (Server-Enforced)
+
+**Legal Transitions:**
+- `OPEN` → `ACCEPTED` (EN_ROUTE) - Hustler accepts task
+- `ACCEPTED` (EN_ROUTE) → `WORKING` - Hustler arrives onsite
+- `WORKING` → `COMPLETED` - Task completed
+
+**Terminal State Rule:**
+- Once a task reaches `COMPLETED`, `CANCELLED`, or `EXPIRED`, no further state changes are allowed
+- Database trigger `task_terminal_guard` enforces this at Layer 0
+
+### 14.3 Execution Timestamps (Canonical)
+
+**Timestamps (first-class fields):**
+- `accepted_at` - Hustler accepted task
+- `en_route_at` - Hustler started travel (set on accept)
+- `arrived_at` - Hustler arrived onsite
+- `completed_at` - Task completed
+
+**Purpose:**
+- Accurate SLAs (time tracking)
+- Dispute timelines (evidence of timestamps)
+- Analytics (execution duration analysis)
+- Future trust adjustments (performance metrics)
+
+**Rule:** Do not overload `updated_at` for execution events. Use dedicated timestamp fields.
+
+### 14.4 Assignment Field (Canonical)
+
+**Single Source of Truth:**
+- `assigned_hustler_id` - Canonical assignment field
+- `worker_id` - Deprecated (legacy, read-only for compatibility)
+
+**Authority:**
+- All execution authority checks reference `assigned_hustler_id`
+- Only `assigned_hustler_id` is written on task acceptance
+- `worker_id` is never written (leave untouched)
+
+### 14.5 State Transition Enforcement
+
+**Location:** Backend handlers (Layer 1) + Database triggers (Layer 0)
+
+**Enforcement Mechanisms:**
+1. **Handler-level validation:**
+   - State machine helper asserts legal transitions
+   - Illegal transitions rejected with 409 Conflict
+
+2. **Database-level enforcement:**
+   - CHECK constraint on `tasks.state`
+   - Trigger `task_terminal_guard` prevents terminal state mutations
+
+**Example (Handler Validation):**
+```typescript
+// Legal transitions are enforced server-side
+const LEGAL_TRANSITIONS: Record<TaskState, TaskState[]> = {
+  OPEN: ['ACCEPTED'],
+  ACCEPTED: ['WORKING'],
+  WORKING: ['COMPLETED'],
+  // ...
+};
+
+function assertTransition(from: TaskState, to: TaskState) {
+  if (!LEGAL_TRANSITIONS[from]?.includes(to)) {
+    throw new TRPCError({ code: 'CONFLICT', message: 'Illegal transition' });
+  }
+}
+```
+
+### 14.6 Maps Gate (Execution Visualization)
+
+**Unlock Condition:**
+- Maps render **only** when `tasks.getState === EN_ROUTE` (ACCEPTED in schema)
+
+**Hustler POV:**
+- Route to jobsite
+- ETA
+- **Forbidden:** Discovery, eligibility checks, task lists
+
+**Poster POV:**
+- Hustler live location
+- Status ("On the way")
+- **Forbidden:** Control, messaging that implies permission changes
+
+**Authority Rule:** Maps are **execution visualizations**, not navigation or discovery surfaces.
+
+### 14.7 Forbidden State Writes
+
+**Phase N2.2 Rules (Execution-Critical Writes Only):**
+- ✅ Task lifecycle state writes (accept, arrived, complete)
+- ❌ Capability profile writes (recomputed only)
+- ❌ Verification table writes (separate pipeline)
+- ❌ Payout logic (handled later)
+- ❌ XP grants (handled later)
+- ❌ Trust tier changes (handled later)
+
+**Reference:** Phase N2.2 Execution-Critical Writes Checklist
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
 | 1.0.0 | Jan 2025 | HustleXP Core | Initial authority specification |
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: §10 Live Mode Authority |
+| 1.2.0 | Jan 2025 | HustleXP Core | Added: §11 Capability Profile Authority, §12 Verification Pipeline Authority, §13 Feed Eligibility Authority |
+| 1.3.0 | Jan 2025 | HustleXP Core | Added: §14 Task State Machine Authority (Phase N2.2 cleanup) |
 
 ---
 
-**END OF ARCHITECTURE v1.1.0**
+**END OF ARCHITECTURE v1.3.0**

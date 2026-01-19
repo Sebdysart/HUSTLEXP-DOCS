@@ -1,8 +1,9 @@
-# HustleXP Product Specification v1.4.0
+# HustleXP Product Specification v1.5.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  
+**Version:** v1.5.0 (Added §17 Eligibility System, integrated 8 eligibility invariants)  
 **Governance:** This document is the root authority. All code, tests, and subsystems derive from it.
 
 ---
@@ -43,7 +44,11 @@ If this principle is violated anywhere in the system, the system is broken.
 
 ## §2. Core Invariants
 
-These five invariants are **mechanically enforced** at the database layer. They cannot be bypassed by application code, API calls, or UI interactions.
+These invariants are **mechanically enforced** at the database layer. They cannot be bypassed by application code, API calls, or UI interactions.
+
+**Core Invariants (INV-1 through INV-5):** Enforce the money→work→proof→XP chain.
+
+**Eligibility Invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8):** Enforce that task access is impossible without proper credentials and trust tier.
 
 ### INV-1: XP Requires Released Escrow
 
@@ -145,6 +150,151 @@ INSERT INTO xp_ledger (escrow_id, ...)
 VALUES ('already-awarded-escrow-id', ...);
 ```
 
+### INV-ELIGIBILITY-1: Trust Tier → Risk Clearance Mapping (Immutable)
+
+```
+Trust tier determines maximum risk clearance level. The mapping is immutable and cannot be overridden.
+```
+
+**Rationale:** Users can only access tasks that match their trust tier. Higher trust tiers unlock higher risk tasks. This mapping ensures legal compliance and prevents unsafe task matching.
+
+**Enforcement:**
+- Database check constraint on capability profiles
+- Trust tier A → low risk only
+- Trust tier B → low and medium risk
+- Trust tier C → low and medium risk
+- Trust tier D → low, medium, and high risk
+
+**Violation Behavior:**
+If violated, users could access tasks they are not legally or safely qualified for, leading to liability and trust erosion.
+
+---
+
+### INV-ELIGIBILITY-2: Verified Trades Must Have Active Verification
+
+```
+A verified trade cannot exist without an active, approved license verification.
+```
+
+**Rationale:** Users cannot claim to be qualified for a trade without proof. The system requires verified credentials before allowing access to trade-specific tasks.
+
+**Enforcement:**
+- Database foreign key constraint linking verified trades to license verifications
+- Capability profile recomputation validates all verified trades have active verifications
+
+**Violation Behavior:**
+If violated, users could access licensed trade tasks without valid credentials, leading to legal violations and safety risks.
+
+---
+
+### INV-ELIGIBILITY-3: Expired Credentials Invalidate Capabilities
+
+```
+Expired licenses, insurance, or background checks immediately remove access to tasks requiring those credentials.
+```
+
+**Rationale:** Credentials have expiry dates. Once expired, they are no longer valid for task eligibility. The system must enforce this automatically to maintain legal compliance.
+
+**Enforcement:**
+- Automated expiry detection checks credential expiration dates
+- Capability profile recomputation removes expired credentials from eligibility
+- Expired credentials are silently removed from user capabilities
+
+**Violation Behavior:**
+If violated, users with expired credentials could continue accessing tasks they are no longer qualified for, leading to legal liability and safety violations.
+
+---
+
+### INV-ELIGIBILITY-4: Insurance Validity Gated by Verification
+
+```
+Insurance can only be considered valid if an approved insurance verification record exists and is not expired.
+```
+
+**Rationale:** Insurance is required for certain high-risk tasks. Users cannot claim insurance without providing proof of coverage that has been verified by the system.
+
+**Enforcement:**
+- Database trigger prevents insurance verification without corresponding verified trade
+- Capability profile recomputation validates insurance status against verification records
+- Insurance validity is derived from verification status, never set directly
+
+**Violation Behavior:**
+If violated, users could access high-risk tasks without valid insurance coverage, exposing the platform and users to financial and legal risk.
+
+---
+
+### INV-ELIGIBILITY-5: Background Check Validity Gated by Verification
+
+```
+Background check can only be considered valid if an approved background check verification record exists and is not expired.
+```
+
+**Rationale:** Critical-risk tasks (such as in-home care) require background checks. Users cannot claim background check clearance without verified proof.
+
+**Enforcement:**
+- Database constraint ensures only one active background check per user
+- Capability profile recomputation validates background check status against verification records
+- Background check validity is derived from verification status, never set directly
+
+**Violation Behavior:**
+If violated, users could access critical-risk tasks without proper background checks, creating safety risks for vulnerable populations.
+
+---
+
+### INV-ELIGIBILITY-6: Location State Must Be Valid US State Code
+
+```
+User location state must be a valid 2-character US state code for task matching and jurisdiction enforcement.
+```
+
+**Rationale:** Licenses, insurance, and task requirements are state-scoped. The system must validate location states to ensure proper jurisdiction matching and legal compliance.
+
+**Enforcement:**
+- Database check constraint ensures location state is exactly 2 characters
+- Application-level validation ensures state code is in valid US state list
+- Tasks also require valid state codes for matching
+
+**Violation Behavior:**
+If violated, users could be matched to tasks in incorrect jurisdictions, leading to legal violations (e.g., working without proper state licensing).
+
+---
+
+### INV-ELIGIBILITY-7: Willingness Flags Cannot Override Eligibility
+
+```
+User preferences (willingness to do in-home work, high-risk tasks, etc.) cannot grant access if eligibility requirements are not met.
+```
+
+**Rationale:** Willingness flags are user preferences, not permissions. Eligibility is determined by verified credentials, trust tier, and risk clearance—not by user preferences alone.
+
+**Enforcement:**
+- Feed query logic checks eligibility requirements before considering willingness flags
+- Settings UI disables willingness flags if prerequisites are not met
+- Willingness flags only filter among eligible tasks; they never create eligibility
+
+**Violation Behavior:**
+If violated, users could access tasks they are not qualified for by simply stating they are willing, bypassing credential and trust requirements.
+
+---
+
+### INV-ELIGIBILITY-8: Capability Profile Is Never Mutated Directly
+
+```
+Capability profiles are always derived from verification records. They cannot be edited directly by users or administrators.
+```
+
+**Rationale:** Capability profiles are computed snapshots of user eligibility. Direct mutation would allow inconsistency between profiles and verification records, breaking trust and legal compliance.
+
+**Enforcement:**
+- Application logic prevents direct UPDATE statements on capability profiles (except timestamp fields)
+- Profile updates only occur through recomputation function triggered by verification changes
+- Code review enforces "no direct profile mutations" rule
+
+**Violation Behavior:**
+If violated, capability profiles could drift out of sync with verification records, allowing users to access tasks they should not be eligible for, or blocking access they should have.
+
+---
+
 ### Invariant Chain
 
 The invariants form a strict dependency chain:
@@ -158,6 +308,8 @@ Task acceptance depends on escrow funding
 ```
 
 This means: **XP is mathematically impossible without the full chain completing.**
+
+The eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8) enforce that **task access is impossible without proper credentials and trust tier**. See §17 for complete eligibility system behavior.
 
 ---
 
@@ -215,6 +367,27 @@ UPDATE tasks SET title = 'Hacked' WHERE state = 'COMPLETED';
 ```
 
 **Exception:** Only `updated_at` timestamp may change (for audit purposes).
+
+### 3.4.1 Task Requirements (System-Determined)
+
+Tasks declare their requirements. Posters describe the work; the system determines eligibility requirements based on risk classification.
+
+**What This Means:**
+- Tasks have risk levels (low, medium, high, critical) determined by the system based on task description and category
+- Tasks declare required trade (if licensed work), required trust tier, insurance requirement, and background check requirement
+- These requirements are **immutable after task creation**—they cannot be modified even by administrators
+- Posters cannot choose who is qualified; the system enforces requirements automatically
+
+**Feed Behavior:**
+- Users only see tasks they are eligible for (see §17 for eligibility system)
+- There are no "disabled" task cards or "you don't qualify" messages in the feed
+- If a user cannot see a task, they are not eligible—this is by design, not a bug
+
+**Why This Matters:**
+- Prevents unsafe task matching (users cannot accept work they're not qualified for)
+- Ensures legal compliance (licensed trades require verified credentials)
+- Eliminates rejection friction (users never experience "apply and get rejected")
+- Maintains trust with posters (only qualified workers can see their tasks)
 
 ---
 
@@ -628,15 +801,34 @@ AI may **propose** resolutions. Humans **decide**. Database **enforces**.
 
 Role is determined during onboarding (see ONBOARDING_SPEC.md).
 
+**Onboarding and Capability Claims:**
+- During onboarding, users declare capabilities (trades they claim to be qualified for, location, willingness flags)
+- These declarations create **capability claims**—historical records of what users stated, not permissions
+- Capability claims unlock **verification paths**—the ability to verify licenses, insurance, and credentials
+- Verification is a separate step after onboarding (see §17 for verification and eligibility system)
+- Capability claims do not grant task access; only verified credentials and trust tier determine eligibility
+
 ### 8.2 Trust Tiers
 
-| Tier | Requirements | Benefits |
-|------|--------------|----------|
-| `ROOKIE` | New user | Base rates |
-| `VERIFIED` | 5 completed tasks, ID verified | 1.5× XP multiplier |
-| `TRUSTED` | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching |
+| Tier | Requirements | Benefits | Risk Clearance |
+|------|--------------|----------|----------------|
+| `A` (ROOKIE) | New user | Base rates | Low risk only |
+| `B` (VERIFIED) | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
+| `C` (TRUSTED) | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
+| `D` (ELITE) | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
 
 Trust tier changes are logged in `trust_ledger` (append-only).
+
+**Risk Clearance Mapping:**
+- Trust tier determines the maximum risk level of tasks a user can access (see INV-ELIGIBILITY-1 in §2)
+- This mapping is **immutable**—trust tier A cannot access high-risk tasks, even if the user is willing
+- Risk clearance is derived from trust tier, not stored separately, ensuring consistency
+- Users with trust tier D can access all risk levels (low, medium, high); users with trust tier A can only access low-risk tasks
+
+**What This Prevents:**
+- New users accepting high-risk tasks they're not yet trusted to complete
+- Legal violations (high-risk tasks may require higher trust for liability reasons)
+- Safety issues (critical-risk tasks require highest trust tier)
 
 ### 8.3 Private Percentile Status
 
@@ -1318,15 +1510,244 @@ GDPR compliance is not optional. It's a legal requirement. Users have the right 
 
 ---
 
-## §17. Monetary Rules
+## §17. Capability-Driven Eligibility System
 
-### 17.1 Minimum Task Value
+### 17.1 Core Principle (Non-Negotiable)
+
+> **Users do not apply to gigs.  
+> Gigs appear only if the user is eligible.**
+
+This is the fundamental rule. Everything else is implementation detail.
+
+**What This Means:**
+- Users never see tasks they cannot accept
+- There are no "disabled" task cards or "you don't qualify" messages in the feed
+- If a task appears in a user's feed, they are eligible to accept it—no exceptions
+- Rejection never happens at the task level; eligibility is determined before tasks are shown
+
+**Why This Matters:**
+- Prevents unsafe task matching (users cannot attempt work they're not qualified for)
+- Eliminates rejection friction (users never experience "apply and get rejected")
+- Ensures legal compliance (licensed tasks only shown to verified workers)
+- Maintains trust with posters (only qualified workers see their tasks)
+
+---
+
+### 17.2 Capability Claims vs Capability Profile
+
+**Capability Claims (Historical Record):**
+- Created during onboarding when users declare their capabilities
+- Stores what users stated: claimed trades, location, willingness flags
+- Immutable after creation—never changes, never expires
+- Does not grant access—claims are historical facts, not permissions
+
+**Capability Profile (Eligibility Authority):**
+- Derived from verification records, trust tier, and credential status
+- Single source of truth for feed eligibility
+- Recomputed automatically when verifications change
+- Never edited directly—always derived from source data
+
+**The Flow:**
+```
+Onboarding → Capability Claims (historical record)
+  ↓
+Verification → Capability Profile recomputed
+  ↓
+Feed Query → Only eligible tasks shown
+```
+
+Claims unlock verification paths. Verifications update the profile. Profile determines feed.
+
+---
+
+### 17.3 Verification as Prerequisite, Not Access
+
+**Verification does not grant immediate access.**
+
+Verification:
+- Validates facts (license exists, insurance is active, background check passed)
+- Updates capability profile (derived snapshot of eligibility)
+- Unlocks task visibility (tasks requiring those credentials now appear in feed)
+
+Verification does not:
+- Grant access directly (access is derived via profile recomputation)
+- Override trust tier requirements (trust tier caps risk clearance)
+- Bypass location matching (tasks must match user's work state)
+
+**Example:**
+- User verifies electrician license → License verification status = "verified"
+- Capability profile recomputed → Verified trades updated
+- Feed query runs → Electrical tasks in user's state now appear
+- User did not "unlock access"—access was computed from verified facts
+
+---
+
+### 17.4 Feed Shows Only Eligible Gigs
+
+**The Feed Promise:**
+If a task appears in your feed, you can accept it. Period.
+
+**What Users See:**
+- Only tasks they are eligible for (based on capability profile)
+- No disabled buttons
+- No "requires verification" messages
+- No "upgrade to unlock" prompts
+
+**What Users Do Not See:**
+- Tasks requiring licenses they don't have
+- Tasks requiring trust tiers above their current tier
+- Tasks requiring insurance they haven't verified
+- Tasks in states where their credentials aren't valid
+
+**If a user cannot see a task:**
+- They are not eligible (by design, not a bug)
+- They can check Settings → Work Eligibility to see what they're missing
+- They can complete verification to become eligible
+- The system never shows tasks they cannot accept
+
+---
+
+### 17.5 Expiry Behavior (Silent Removal)
+
+**When Credentials Expire:**
+- Capability profile recomputed automatically (expired credentials removed)
+- Feed cache invalidated
+- Tasks requiring those credentials disappear from feed
+- User sees notification in Settings (not in feed)
+
+**What Users Experience:**
+- Tasks silently disappear from feed (no warnings, no countdown)
+- Settings shows expired credential alert
+- Clear renewal path (Settings → Work Eligibility → Renew)
+- Feed updates within 60 seconds (cache TTL)
+
+**Why Silent Removal:**
+- Prevents confusion (no "task locked" messages)
+- Maintains trust (users never see tasks they can't access)
+- Encourages renewal (clear upgrade path in Settings)
+- Legal compliance (expired credentials cannot grant access)
+
+---
+
+### 17.6 No Appeals, No Overrides
+
+**Eligibility is deterministic.**
+- Eligibility is computed from verified facts, not preferences
+- There are no exceptions, appeals, or temporary overrides
+- Support cannot "unlock" access without verification
+- Administrators cannot grant access bypassing requirements
+
+**Why This Matters:**
+- Prevents trust leaks (no special cases, no favoritism)
+- Ensures legal compliance (credentials cannot be bypassed)
+- Maintains system integrity (eligibility is computed, not negotiated)
+- Protects users (no unsafe task matching)
+
+**What Support Can Do:**
+- Help users complete verification
+- Explain why eligibility requirements exist
+- Guide users through Settings → Work Eligibility
+- Process verification renewals
+
+**What Support Cannot Do:**
+- Override eligibility requirements
+- Grant access without verification
+- Bypass trust tier restrictions
+- Create special exceptions
+
+---
+
+### 17.7 Eligibility Components
+
+**Verified Trades:**
+- Derived from license verifications (see INV-ELIGIBILITY-2)
+- Required for tasks in licensed trades (electrical, plumbing, HVAC, etc.)
+- Expiry-triggered removal (see INV-ELIGIBILITY-3)
+
+**Trust Tier:**
+- Determines maximum risk clearance level (see INV-ELIGIBILITY-1)
+- Trust tier A → low risk only
+- Trust tier B/C → low and medium risk
+- Trust tier D → low, medium, and high risk
+
+**Insurance:**
+- Required for high-risk tasks (in-home work, property damage risk)
+- Derived from insurance verifications (see INV-ELIGIBILITY-4)
+- Cannot be valid without verified trade (insurance is trade-scoped)
+
+**Background Checks:**
+- Required for critical-risk tasks (in-home care, vulnerable populations)
+- Derived from background check verifications (see INV-ELIGIBILITY-5)
+- Expires on schedule, requires renewal
+
+**Location State:**
+- Must match task location state (see INV-ELIGIBILITY-6)
+- Licenses are state-scoped (cannot use WA license for CA tasks)
+- Legal compliance requires jurisdiction matching
+
+**Willingness Flags:**
+- User preferences (in-home work, high-risk tasks, urgent jobs)
+- Cannot override eligibility (see INV-ELIGIBILITY-7)
+- Only filter among eligible tasks; never create eligibility
+
+---
+
+### 17.8 Settings as Eligibility Control Room
+
+**Settings → Work Eligibility is the single place users understand their eligibility.**
+
+**What Users See:**
+- Current trust tier and risk clearance level
+- Verified trades (with expiry dates)
+- Insurance status (valid/expired)
+- Background check status (valid/expired)
+- Upgrade opportunities (computed, not estimated)
+
+**What Users Can Do:**
+- Start verification for trades they've claimed
+- Renew expired credentials
+- View eligibility summary (what they can/cannot access)
+
+**What Users Cannot Do:**
+- Toggle eligibility (eligibility is derived, not editable)
+- Request exceptions (no "enable anyway" buttons)
+- Bypass requirements (no shortcuts)
+
+---
+
+### 17.9 Integration with Existing Systems
+
+**Tasks (§3):**
+- Tasks declare requirements (risk level, trade, trust tier, insurance, background check)
+- Requirements are immutable after creation (see §3.4.1)
+- Feed only shows tasks matching user's capability profile
+
+**Trust Tiers (§8.2):**
+- Trust tier determines risk clearance level (see INV-ELIGIBILITY-1)
+- Risk clearance caps task visibility (high-risk tasks require trust tier D)
+- Trust tier changes trigger capability profile recomputation
+
+**Onboarding (§8.1):**
+- Onboarding collects capability claims (historical record)
+- Claims unlock verification paths, not task access
+- Verification (separate step) updates capability profile
+
+**For Implementation Details:**
+- See `architecture/CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md`
+- See `architecture/CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md`
+- See `architecture/FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md`
+
+---
+
+## §18. Monetary Rules
+
+### 18.1 Minimum Task Value
 
 - Minimum: $5.00 (500 cents)
 - Platform fee: 15% (deducted from escrow before release)
 - Worker receives: 85% of posted amount
 
-### 17.2 Currency
+### 18.2 Currency
 
 All amounts stored in **USD cents** (integers). No floating point.
 
@@ -1334,7 +1755,7 @@ All amounts stored in **USD cents** (integers). No floating point.
 amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 ```
 
-### 17.3 Payment Flow
+### 18.3 Payment Flow
 
 1. Poster creates task with price
 2. Stripe PaymentIntent created for `price + platform_fee`
@@ -1345,7 +1766,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 
 ---
 
-## §18. Error Codes
+## §19. Error Codes
 
 | Code | Meaning | Trigger |
 |------|---------|---------|
@@ -1400,11 +1821,11 @@ All HX error codes are raised by database triggers or backend validation. Applic
 
 ---
 
-## §19. Account Pause State
+## §20. Account Pause State
 
 Users can **pause their account** without losing progress.
 
-### 19.1 Account States
+### 20.1 Account States
 
 ```typescript
 type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
@@ -1416,7 +1837,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | `PAUSED` | View only | Hidden from feed | Disabled |
 | `SUSPENDED` | None (admin action) | Hidden | Disabled |
 
-### 19.2 What's Protected During Pause
+### 20.2 What's Protected During Pause
 
 | Aspect | During Pause | After Resume |
 |--------|--------------|--------------|
@@ -1427,7 +1848,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | Earnings History | Preserved | Intact |
 | Task History | Preserved | Intact |
 
-### 19.3 Streak Grace Period
+### 20.3 Streak Grace Period
 
 | Pause Duration | Streak Effect | Trust Effect |
 |----------------|---------------|--------------|
@@ -1436,7 +1857,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | 31-90 days | Streak resets to 1 | Trust tier preserved |
 | 90+ days | Streak resets to 1 | Trust tier drops one level |
 
-### 19.4 Pause Invariants
+### 20.4 Pause Invariants
 
 | ID | Invariant | Enforcement |
 |----|-----------|-------------|
@@ -1446,7 +1867,7 @@ type AccountStatus = 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
 | **PAUSE-4** | Resume is instant | No "reactivation" delay |
 | **PAUSE-5** | No punitive notifications during pause | Notification service |
 
-### 19.5 Pause Tracking
+### 20.5 Pause Tracking
 
 ```typescript
 interface PauseState {
@@ -1470,7 +1891,8 @@ interface PauseState {
 | 1.2.0 | Jan 2025 | HustleXP Core | Added: §3.7 Global Fatigue, §8.3 Private Percentile, §8.4 Poster Reputation, §19 Account Pause |
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: §8 AI Task Completion System (contract-completion engine) |
 | 1.4.0 | Jan 2025 | HustleXP Core | Added: §9 Task Discovery, §10 Messaging, §11 Notifications, §12 Ratings, §13 Analytics, §14 Fraud Detection, §15 Content Moderation, §16 GDPR Compliance |
+| 1.5.0 | Jan 2025 | HustleXP Core | Added: §17 Capability-Driven Eligibility System, integrated 8 eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8), updated §3 (Task Requirements), §8 (Trust Tiers + Onboarding), renumbered sections 17→18, 18→19, 19→20 |
 
 ---
 
-**END OF PRODUCT_SPEC v1.4.0**
+**END OF PRODUCT_SPEC v1.5.0**

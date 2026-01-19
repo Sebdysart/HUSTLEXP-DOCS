@@ -150,5 +150,167 @@
     "locked": true,
     "version": "v1",
     "notes": "Feed mode selector (Normal/Urgent/Nearby), Task cards, Empty state, Loading state. CRITICAL: All tasks in feed are eligible (backend guarantee). No disabled buttons, no eligibility checks, no warnings."
+  },
+  "ONBOARDING_FRAMING": {
+    "status": "IMPLEMENTED",
+    "spec": "ONBOARDING_SPEC.md §14 (Phase 0 Framing Screen)",
+    "appPath": "hustlexp-app/screens/onboarding/FramingScreen.tsx",
+    "components": ["PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "White/neutral background, no motion, no progress indicator, single CTA. Establishes system authority."
+  },
+  "ONBOARDING_CALIBRATION": {
+    "status": "IMPLEMENTED",
+    "spec": "ONBOARDING_SPEC.md §3 (Phase 1: Calibration Prompts)",
+    "appPath": "hustlexp-app/screens/onboarding/CalibrationScreen.tsx",
+    "components": [],
+    "locked": true,
+    "version": "v1",
+    "notes": "5 behavioral questions with binary/ternary choices. Fade transitions ≤300ms. No explanations, no emojis."
+  },
+  "ONBOARDING_ROLE_CONFIRMATION": {
+    "status": "IMPLEMENTED",
+    "spec": "ONBOARDING_SPEC.md §3 (Phase 3: Authority Confirmation)",
+    "appPath": "hustlexp-app/screens/onboarding/RoleConfirmationScreen.tsx",
+    "components": ["PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Certainty tier behavior: STRONG/MODERATE/WEAK. Role confirmation or explicit choice based on confidence."
+  },
+  "ONBOARDING_PREFERENCE_LOCK": {
+    "status": "IMPLEMENTED",
+    "spec": "ONBOARDING_SPEC.md §3 (Phase 4: Preference Lock-In)",
+    "appPath": "hustlexp-app/screens/onboarding/PreferenceLockScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Role-specific preferences: Worker (task types, availability) or Poster (categories, urgency)."
+  },
+  "AUTH_LOGIN": {
+    "status": "IMPLEMENTED",
+    "spec": "Standard authentication flow",
+    "appPath": "hustlexp-app/screens/auth/LoginScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Email/password login. A4 touch targets, C3 no gradients, A2 focus states visible."
+  },
+  "AUTH_SIGNUP": {
+    "status": "IMPLEMENTED",
+    "spec": "Standard authentication flow + BUILD_GUIDE requirements",
+    "appPath": "hustlexp-app/screens/auth/SignupScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "User registration with full name, email, password, user type selection. BUILD_GUIDE: user_type, email, full_name required."
+  },
+  "AUTH_FORGOT_PASSWORD": {
+    "status": "IMPLEMENTED",
+    "spec": "Standard authentication flow",
+    "appPath": "hustlexp-app/screens/auth/ForgotPasswordScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Password reset request with email input. Shows success state after reset email sent."
+  },
+  "SETTINGS_PROFILE": {
+    "status": "IMPLEMENTED",
+    "spec": "UI_SPEC.md §6 + §4 (Badge System)",
+    "appPath": "hustlexp-app/screens/settings/ProfileScreen.tsx",
+    "components": ["GlassCard"],
+    "locked": true,
+    "version": "v1",
+    "notes": "XP progress, badges, statistics. Badge rules: never scale beyond 1.0, no pulse, glow only obsidian tier max 12% opacity."
+  },
+  "SETTINGS_WALLET": {
+    "status": "IMPLEMENTED",
+    "spec": "UI_SPEC.md §2 (Color Authority)",
+    "appPath": "hustlexp-app/screens/settings/WalletScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Earnings, payouts, payment settings. Money colors ONLY for escrow states (held/released/disputed)."
+  },
+  "HUSTLER_TASK_HISTORY": {
+    "status": "IMPLEMENTED",
+    "spec": "Canonical screen taxonomy (feed authority enforcement)",
+    "appPath": "hustlexp-app/screens/hustler/TaskHistoryScreen.tsx",
+    "components": ["GlassCard", "PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "HARD-SCOPED: Shows ONLY past tasks (COMPLETED, CANCELLED, EXPIRED). NEVER queries available tasks (TaskFeedScreen is canonical feed). Never shares feed query logic. Never shows eligibility-gated content. Feed authority: PRODUCT_SPEC §17, ARCHITECTURE §13."
+  },
+  "CAPABILITY_PHASE_0": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 0",
+    "appPath": "hustlexp-app/screens/onboarding/capability/RoleDeclarationScreen.tsx",
+    "components": ["PrimaryActionButton"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Branching gate: Determine user intent (hustler/poster/both). Single selection required. Cannot skip or go back (first step)."
+  },
+  "CAPABILITY_PHASE_1": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 1",
+    "appPath": "hustlexp-app/screens/onboarding/capability/LocationSelectionScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Legal jurisdiction (state/city) for licenses/insurance. State required, city/ZIP optional. Location cannot be changed after onboarding."
+  },
+  "CAPABILITY_PHASE_2": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 2",
+    "appPath": "hustlexp-app/screens/onboarding/capability/CapabilityDeclarationScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard", "SectionHeader"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Trade selection (claims only, no permissions). Regulated trades marked with 'License required' badge. Selection does NOT unlock gigs (only verification paths)."
+  },
+  "CAPABILITY_PHASE_3": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 3",
+    "appPath": "hustlexp-app/screens/onboarding/capability/CredentialClaimScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard"],
+    "locked": true,
+    "version": "v1",
+    "notes": "CONDITIONAL: Only shown if regulated_trades.length > 0. License holding status (pre-check). 'No' or 'I'm not sure' does NOT block onboarding."
+  },
+  "CAPABILITY_PHASE_4": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 4",
+    "appPath": "hustlexp-app/screens/onboarding/capability/LicenseMetadataScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard"],
+    "locked": true,
+    "version": "v1",
+    "notes": "CONDITIONAL: Only shown if has_license === true. License metadata capture (NO payment yet). Can skip individual licenses. No trust granted, no feed changes at this stage."
+  },
+  "CAPABILITY_PHASE_5": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 5",
+    "appPath": "hustlexp-app/screens/onboarding/capability/InsuranceClaimScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard"],
+    "locked": true,
+    "version": "v1",
+    "notes": "CONDITIONAL: Shown if regulated trades OR risk preferences require it. Insurance status (risk-class gating). 'No' does NOT block onboarding (low-risk work still available)."
+  },
+  "CAPABILITY_PHASE_6": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 6",
+    "appPath": "hustlexp-app/screens/onboarding/capability/RiskWillingnessScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Risk preferences (NOT access, affects verification paths). All options optional. Selection does not unlock gigs (only tailors prompts)."
+  },
+  "CAPABILITY_PHASE_7": {
+    "status": "IMPLEMENTED",
+    "spec": "CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md §PHASE 7",
+    "appPath": "hustlexp-app/screens/onboarding/capability/CapabilitySummaryScreen.tsx",
+    "components": ["PrimaryActionButton", "GlassCard", "SectionHeader"],
+    "locked": true,
+    "version": "v1",
+    "notes": "Summary & Next Actions. Shows verification paths, summary of collected data. Primary action: 'Start Verification' (if paths unlocked). Secondary action: 'Explore Feed' (always visible)."
   }
 }

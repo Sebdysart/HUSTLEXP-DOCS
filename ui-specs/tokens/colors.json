@@ -1,0 +1,11 @@
+{
+  "textPrimary": "#FFFFFF",
+  "textSecondary": "#E5E5EA",
+  "muted": "#8E8E93",
+  "background": "#000000",
+  "glassPrimary": "rgba(28, 28, 30, 0.6)",
+  "glassSecondary": "rgba(28, 28, 30, 0.4)",
+  "glassBorderPrimary": "rgba(255, 255, 255, 0.08)",
+  "glassBorderSecondary": "rgba(255, 255, 255, 0.05)",
+  "primaryAction": "#8E8E93"
+}

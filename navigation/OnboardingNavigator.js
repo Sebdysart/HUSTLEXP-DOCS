@@ -14,6 +14,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { 
+  FramingScreen,
   CalibrationScreen, 
   RoleConfirmationScreen, 
   PreferenceLockScreen,
@@ -31,6 +32,10 @@ export function OnboardingNavigator() {
         animation: 'fade', // Subtle, professional
       }}
     >
+      <Stack.Screen 
+        name="Framing" 
+        component={FramingScreen}
+      />
       <Stack.Screen 
         name="Calibration" 
         component={CalibrationScreen}

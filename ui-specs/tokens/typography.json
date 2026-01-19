@@ -1,0 +1,9 @@
+{
+  "header": {
+    "fontSize": 28,
+    "fontWeight": "700"
+  },
+  "body": {
+    "fontSize": 14
+  }
+}

@@ -1,39 +1,39 @@
 /**
- * HustleXP Design Tokens v1.0.1
+ * HustleXP Design Tokens v1.3.0
  * 
- * SOURCE: tokens.css from HUSTLEXP-DOCS repo
- * AUTHORITY: UI Spec v1.0.1 — these values are constitutional.
+ * AUTHORITY: UI_SPEC.md v1.3.0 §2 — these values are constitutional.
  * 
- * COLOR AUTHORITY RULES (from UI_SPEC.md):
- * - C1: Money colors may ONLY be used for escrow/payment states
- * - C2: XP purple may ONLY appear when XP is displayed or awarded
- * - C3: No gradients on actionable buttons
- * - B0: Gold hues only in Tier 3+ badge materials
+ * COLOR AUTHORITY RULES (from UI_SPEC.md §2):
+ * - XP colors may ONLY be used for XP displays, level indicators, streak counters, progression bars, level-up celebrations
+ * - Money colors may ONLY be used for escrow state indicators, payment amounts, wallet balances, transaction history
+ * - Status colors may ONLY be used for system state (success, warning, error, info)
+ * - No decorative use of semantic colors
  */
 
 // SEMANTIC COLORS (Legal Meaning)
 
-/** Money Colors — ONLY for escrow states */
-export const MONEY = {
-  held: '#FF9500',      // Escrow FUNDED
-  released: '#30D158',  // Escrow RELEASED
-  disputed: '#FF3B30',  // LOCKED_DISPUTE
-  pending: '#8E8E93',   // Escrow PENDING
-};
-
-/** XP Colors — ONLY when XP displayed/awarded */
+/** XP Colors — ONLY when XP displayed/awarded (UI_SPEC §2.2) */
 export const XP = {
-  primary: '#BF5AF2',   // Main XP purple
-  secondary: '#DA8FFF', // XP progress bars
-  tertiary: '#E8D4F8',  // XP backgrounds
+  PRIMARY: '#10B981',    // Emerald 500
+  SECONDARY: '#34D399',  // Emerald 400
+  BACKGROUND: '#D1FAE5', // Emerald 100
+  ACCENT: '#059669',     // Emerald 600
 };
 
-/** Status Colors */
+/** Money Colors — ONLY for escrow/payment states (UI_SPEC §2.3) */
+export const MONEY = {
+  POSITIVE: '#10B981',  // Green - incoming
+  NEGATIVE: '#EF4444',  // Red - outgoing
+  NEUTRAL: '#6B7280',   // Gray - pending
+  LOCKED: '#F59E0B',    // Amber - disputed
+};
+
+/** Status Colors — ONLY for system state (UI_SPEC §2.4) */
 export const STATUS = {
-  success: '#30D158',
-  warning: '#FF9F0A',
-  error: '#FF3B30',
-  info: '#0A84FF',
+  SUCCESS: '#10B981',   // Confirmation, completion
+  WARNING: '#F59E0B',   // Attention needed, caution
+  ERROR: '#EF4444',     // Failure, rejection, danger
+  INFO: '#3B82F6',      // Neutral information
 };
 
 // NEUTRAL PALETTE
@@ -51,27 +51,63 @@ export const GRAY = {
   900: '#111827',
 };
 
-// BADGE MATERIALS
+// BADGE MATERIALS (UI_SPEC §4.1 - Tier-Material Binding)
 
 export const BADGE = {
-  steel: { start: '#71717A', end: '#A1A1AA' },
-  alloy: { start: '#A8A29E', end: '#D6D3D1' },
-  gold: { start: '#F59E0B', end: '#FCD34D' },
-  obsidian: { start: '#18181B', end: '#3F3F46', glow: '#BF5AF2' },
+  // ROOKIE tier - Matte (flat color, no effects)
+  ROOKIE: {
+    color: '#6B7280', // Gray-500
+  },
+  // VERIFIED tier - Metallic (subtle gradient, soft shine)
+  VERIFIED: {
+    start: '#71717A', // Zinc-500
+    end: '#A1A1AA',   // Zinc-400
+  },
+  // TRUSTED tier - Holographic (animated gradient, premium)
+  TRUSTED: {
+    start: '#F59E0B', // Amber-500
+    end: '#FCD34D',   // Amber-300
+    glow: '#10B981',  // Emerald-500
+  },
 };
 
-// COMMON COLORS (for general UI)
+// LIVE MODE COLORS (UI_SPEC §13.1)
+
+export const LIVE_MODE = {
+  INDICATOR: '#EF4444',      // Red-500 - Live badge, active broadcast
+  STANDARD: '#6B7280',       // Gray-500 - Standard mode, neutral
+  ACTIVE: '#22C55E',         // Green-500 - Hustler Live Mode active
+  COOLDOWN: '#F59E0B',       // Amber-500 - Hustler in cooldown
+};
+
+// NEUTRAL COLORS (No semantic meaning - UI_SPEC §2.1)
+
+export const NEUTRAL = {
+  BACKGROUND: '#FFFFFF',
+  BACKGROUND_SECONDARY: GRAY[50],
+  BACKGROUND_TERTIARY: GRAY[100],
+  TEXT: GRAY[900],
+  TEXT_SECONDARY: GRAY[600],
+  TEXT_TERTIARY: GRAY[400],
+  TEXT_INVERSE: '#FFFFFF',
+  BORDER: GRAY[200],
+  BORDER_STRONG: GRAY[300],
+  DISABLED: GRAY[300],
+  DISABLED_TEXT: GRAY[400],
+};
+
+// COMMON COLORS (for general UI - deprecated, use NEUTRAL)
 
 export const COLORS = {
-  background: '#FFFFFF',
-  backgroundSecondary: GRAY[50],
-  backgroundTertiary: GRAY[100],
-  text: GRAY[900],
-  textSecondary: GRAY[600],
-  textTertiary: GRAY[400],
-  textInverse: '#FFFFFF',
-  border: GRAY[200],
-  borderStrong: GRAY[300],
-  disabled: GRAY[300],
-  disabledText: GRAY[400],
+  background: NEUTRAL.BACKGROUND,
+  backgroundSecondary: NEUTRAL.BACKGROUND_SECONDARY,
+  backgroundTertiary: NEUTRAL.BACKGROUND_TERTIARY,
+  text: NEUTRAL.TEXT,
+  textSecondary: NEUTRAL.TEXT_SECONDARY,
+  textTertiary: NEUTRAL.TEXT_TERTIARY,
+  textInverse: NEUTRAL.TEXT_INVERSE,
+  border: NEUTRAL.BORDER,
+  borderStrong: NEUTRAL.BORDER_STRONG,
+  disabled: NEUTRAL.DISABLED,
+  disabledText: NEUTRAL.DISABLED_TEXT,
 };

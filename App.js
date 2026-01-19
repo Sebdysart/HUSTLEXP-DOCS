@@ -12,14 +12,22 @@
  * - isAuthenticated = true, isOnboarded = true → Main app
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TabNavigator, AuthNavigator, OnboardingNavigator } from './navigation';
+import initRuntimeGuards from './utils/initGuards';
 
 const RootStack = createNativeStackNavigator();
 
 export default function App() {
+  // Initialize runtime guards on mount
+  useEffect(() => {
+    initRuntimeGuards().catch((error) => {
+      console.error('[App] Failed to initialize runtime guards', error);
+    });
+  }, []);
+
   // Auth state (TODO: Replace with real auth)
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   

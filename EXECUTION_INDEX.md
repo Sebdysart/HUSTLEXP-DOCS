@@ -716,16 +716,18 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| TaskDiscoveryService | PRODUCT_SPEC §9 | ❌ | ❌ |
-| TaskExplanationService | PRODUCT_SPEC §9.5 | ❌ | ❌ |
+| TaskDiscoveryService | PRODUCT_SPEC §9 | backend/src/services/TaskDiscoveryService.ts | ✅ |
+| TaskExplanationService | PRODUCT_SPEC §9.5 | Integrated in TaskDiscoveryService | ✅ |
 
 ### 12.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `taskDiscovery.getFeed` | query | PRODUCT_SPEC §9 | ❌ | ❌ |
-| `taskDiscovery.search` | query | PRODUCT_SPEC §9 | ❌ | ❌ |
-| `taskDiscovery.getExplanation` | query | PRODUCT_SPEC §9.5 | ❌ | ❌ |
+| `taskDiscovery.getFeed` | query | PRODUCT_SPEC §9 | backend/src/routers/taskDiscovery.ts | ✅ |
+| `taskDiscovery.search` | query | PRODUCT_SPEC §9 | backend/src/routers/taskDiscovery.ts | ✅ |
+| `taskDiscovery.getExplanation` | query | PRODUCT_SPEC §9.5 | backend/src/routers/taskDiscovery.ts | ✅ |
+| `taskDiscovery.calculateMatchingScore` | query | PRODUCT_SPEC §9 | backend/src/routers/taskDiscovery.ts | ✅ |
+| `taskDiscovery.calculateFeedScores` | mutation | PRODUCT_SPEC §9 | backend/src/routers/taskDiscovery.ts | ✅ |
 
 ### 12.4 Invariants
 
@@ -751,15 +753,18 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| MessagingService | PRODUCT_SPEC §10 | ❌ | ❌ |
+| MessagingService | PRODUCT_SPEC §10 | backend/src/services/MessagingService.ts | ✅ |
 
 ### 13.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `messaging.getThread` | query | MESSAGING_SPEC §9 | ❌ | ❌ |
-| `messaging.sendMessage` | mutation | MESSAGING_SPEC §9 | ❌ | ❌ |
-| `messaging.markRead` | mutation | MESSAGING_SPEC §9 | ❌ | ❌ |
+| `messaging.getTaskMessages` | query | MESSAGING_SPEC §9 | backend/src/routers/messaging.ts | ✅ |
+| `messaging.sendMessage` | mutation | MESSAGING_SPEC §9 | backend/src/routers/messaging.ts | ✅ |
+| `messaging.sendPhotoMessage` | mutation | MESSAGING_SPEC §9 | backend/src/routers/messaging.ts | ✅ |
+| `messaging.markAsRead` | mutation | MESSAGING_SPEC §9 | backend/src/routers/messaging.ts | ✅ |
+| `messaging.markAllAsRead` | mutation | MESSAGING_SPEC §9 | backend/src/routers/messaging.ts | ✅ |
+| `messaging.getUnreadCount` | query | MESSAGING_SPEC §9 | backend/src/routers/messaging.ts | ✅ |
 
 ### 13.4 Invariants
 
@@ -787,17 +792,19 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| NotificationService | PRODUCT_SPEC §11 | ❌ | ❌ |
+| NotificationService | PRODUCT_SPEC §11 | backend/src/services/NotificationService.ts | ✅ |
 
 ### 14.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `notifications.getList` | query | NOTIFICATION_SPEC §8 | ❌ | ❌ |
-| `notifications.markRead` | mutation | NOTIFICATION_SPEC §8 | ❌ | ❌ |
-| `notifications.markAllRead` | mutation | NOTIFICATION_SPEC §8 | ❌ | ❌ |
-| `notifications.getPreferences` | query | NOTIFICATION_SPEC §8 | ❌ | ❌ |
-| `notifications.updatePreferences` | mutation | NOTIFICATION_SPEC §8 | ❌ | ❌ |
+| `notifications.getList` | query | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
+| `notifications.markRead` | mutation | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
+| `notifications.markAllRead` | mutation | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
+| `notifications.getPreferences` | query | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
+| `notifications.updatePreferences` | mutation | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
+| `notifications.markAsClicked` | mutation | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
+| `notifications.getUnreadCount` | query | NOTIFICATION_SPEC §8 | 🟡 | 🟡 In Progress |
 
 ### 14.4 Invariants
 
@@ -825,16 +832,16 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| RatingService | PRODUCT_SPEC §12 | ❌ | ❌ |
+| RatingService | PRODUCT_SPEC §12 | backend/src/services/RatingService.ts | ✅ |
 
 ### 15.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `ratings.submitRating` | mutation | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
-| `ratings.getMyRatings` | query | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
-| `ratings.getUserRatings` | query | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
-| `ratings.getTaskRatings` | query | RATING_SYSTEM_SPEC §9 | ❌ | ❌ |
+| `ratings.submitRating` | mutation | RATING_SYSTEM_SPEC §9 | 🟡 | 🟡 In Progress |
+| `ratings.getTaskRatings` | query | RATING_SYSTEM_SPEC §9 | 🟡 | 🟡 In Progress |
+| `ratings.getUserRatingSummary` | query | RATING_SYSTEM_SPEC §9 | 🟡 | 🟡 In Progress |
+| `ratings.processAutoRatings` | mutation | RATING_SYSTEM_SPEC §9 | 🟡 | 🟡 In Progress (Admin) |
 
 ### 15.4 Invariants
 
@@ -863,16 +870,17 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| AnalyticsService | PRODUCT_SPEC §13 | ❌ | ❌ |
+| AnalyticsService | PRODUCT_SPEC §13 | backend/src/services/AnalyticsService.ts | ✅ |
 
 ### 16.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `analytics.track` | mutation | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
-| `analytics.getFunnel` | query | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
-| `analytics.getCohort` | query | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
-| `analytics.getABTestResults` | query | ANALYTICS_SPEC §7.1 | ❌ | ❌ |
+| `analytics.trackEvent` | mutation | ANALYTICS_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `analytics.getEventCount` | query | ANALYTICS_SPEC §7.1 | 🟡 | 🟡 In Progress (Admin) |
+| `analytics.getConversionRate` | query | ANALYTICS_SPEC §7.1 | 🟡 | 🟡 In Progress (Admin) |
+| `analytics.getRetentionCohort` | query | ANALYTICS_SPEC §7.1 | 🟡 | 🟡 In Progress (Admin) |
+| `analytics.getABTestResults` | query | ANALYTICS_SPEC §7.1 | 🟡 | 🟡 In Progress (Admin) |
 
 ### 16.4 Metrics to Track
 
@@ -900,16 +908,19 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| FraudDetectionService | PRODUCT_SPEC §14 | ❌ | ❌ |
+| FraudDetectionService | PRODUCT_SPEC §14 | backend/src/services/FraudDetectionService.ts | ✅ |
 
 ### 17.3 API Endpoints (Admin Only)
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `fraud.getRiskScore` | query | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
-| `fraud.getReviewQueue` | query | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
-| `fraud.reviewFlag` | mutation | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
-| `fraud.detectPatterns` | query | FRAUD_DETECTION_SPEC §7.1 | ❌ | ❌ |
+| `fraud.getLatestRiskScore` | query | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `fraud.getRiskAssessment` | query | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `fraud.getHighRiskScores` | query | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `fraud.updateRiskScoreStatus` | mutation | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `fraud.detectPattern` | mutation | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `fraud.getDetectedPatterns` | query | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
+| `fraud.updatePatternStatus` | mutation | FRAUD_DETECTION_SPEC §7.1 | 🟡 | 🟡 In Progress |
 
 ### 17.4 Background Jobs
 
@@ -946,16 +957,17 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| ContentModerationService | PRODUCT_SPEC §15 | ❌ | ❌ |
+| ContentModerationService | PRODUCT_SPEC §15 | backend/src/services/ContentModerationService.ts | ✅ |
 
 ### 18.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `moderation.getQueue` | query | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
-| `moderation.reviewItem` | mutation | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
-| `moderation.reportContent` | mutation | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
-| `moderation.appealDecision` | mutation | CONTENT_MODERATION_SPEC §8.1 | ❌ | ❌ |
+| `moderation.getPendingQueue` | query | CONTENT_MODERATION_SPEC §8.1 | 🟡 | 🟡 In Progress (Admin) |
+| `moderation.reviewQueueItem` | mutation | CONTENT_MODERATION_SPEC §8.1 | 🟡 | 🟡 In Progress (Admin) |
+| `moderation.createReport` | mutation | CONTENT_MODERATION_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `moderation.createAppeal` | mutation | CONTENT_MODERATION_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `moderation.getPendingAppeals` | query | CONTENT_MODERATION_SPEC §8.1 | 🟡 | 🟡 In Progress (Admin) |
 
 ### 18.4 AI Integration (A2 Authority)
 
@@ -990,13 +1002,18 @@ LIMIT 1;
 
 | Service | Spec Reference | File Path | Status |
 |---------|----------------|-----------|--------|
-| GDPRService | PRODUCT_SPEC §16 | ❌ | ❌ |
+| GDPRService | PRODUCT_SPEC §16 | backend/src/services/GDPRService.ts | ✅ |
 
 ### 19.3 API Endpoints
 
 | Endpoint | Method | Spec Reference | File Path | Status |
 |----------|--------|----------------|-----------|--------|
-| `privacy.requestDataExport` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
+| `gdpr.requestDataExport` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `gdpr.requestAccountDeletion` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `gdpr.cancelRequest` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `gdpr.getRequestStatus` | query | GDPR_COMPLIANCE_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `gdpr.getConsent` | query | GDPR_COMPLIANCE_SPEC §8.1 | 🟡 | 🟡 In Progress |
+| `gdpr.updateConsent` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | 🟡 | 🟡 In Progress |
 | `privacy.requestAccountDeletion` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
 | `privacy.cancelDeletion` | mutation | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
 | `privacy.getConsents` | query | GDPR_COMPLIANCE_SPEC §8.1 | ❌ | ❌ |
