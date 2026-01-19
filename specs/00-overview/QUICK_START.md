@@ -117,17 +117,28 @@ Full list: `screens-spec/SCREEN_REGISTRY.md`
 
 ## Next Steps
 
+### If you're doing frontend work:
+1. Clone the frontend repo: `git clone https://github.com/Sebdysart/HUSTLEXPFINAL1`
+2. Read `EXECUTION_QUEUE.md` — find first unchecked step
+3. Read `STOP_CONDITIONS.md` — know when to stop
+4. Read `.cursorrules` — understand file access rules
+5. Execute steps in order, never skip
+
 ### If you're doing backend work:
 1. Read `.claude/instructions.md`
 2. Understand the 5 invariants
 3. Study `schema.sql`
 4. Follow BUILD_GUIDE phases
 
-### If you're doing frontend work:
-1. Read `.cursorrules`
-2. Study `SCREEN_REGISTRY.md`
-3. Use existing shared components
-4. Never compute business logic client-side
+---
+
+## Repositories
+
+| Repo | Purpose | Link |
+|------|---------|------|
+| **HUSTLEXP-DOCS** | This repo (specs, docs) | You're here |
+| **HUSTLEXPFINAL1** | React Native frontend | [GitHub](https://github.com/Sebdysart/HUSTLEXPFINAL1) |
+| **hustlexp-ai-backend** | Backend services | [GitHub](https://github.com/Sebdysart/hustlexp-ai-backend) |
 
 ---
 

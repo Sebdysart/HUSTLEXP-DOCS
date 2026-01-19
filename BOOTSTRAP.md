@@ -2,7 +2,8 @@
 
 **STATUS: BLOCKING — Nothing else proceeds until this passes**  
 **Owner: Frontend (Cursor)**  
-**Validator: Xcode Simulator**
+**Validator: Xcode Simulator**  
+**Frontend Repo: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)**
 
 ---
 

@@ -1,5 +1,7 @@
 # CURRENT PHASE: BOOTSTRAP
 
+**Frontend Repo: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)**
+
 ## Frontend (Cursor)
 
 **ALLOWED RIGHT NOW:**

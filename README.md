@@ -161,8 +161,9 @@ HUSTLEXP-DOCS/
 
 | Repository | Purpose |
 |------------|---------|
+| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | **React Native Frontend (ACTIVE)** |
 | [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend) | Backend services |
-| [hustlexp-app](https://github.com/Sebdysart/hustlexp-app) | React Native app |
+| ~~hustlexp-app~~ | ~~Deprecated - use HUSTLEXPFINAL1~~ |
 
 ---
 

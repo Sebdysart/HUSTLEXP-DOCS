@@ -1,6 +1,7 @@
 # EXECUTION QUEUE — HUSTLEXP v1.0 FRONTEND
 
 **STATUS: ACTIVE — This is the ONLY file Cursor reads during build**  
+**Frontend Repo: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)**  
 **Rule: Execute steps in order. No skipping. No inventing. No "improving."**
 
 ---
