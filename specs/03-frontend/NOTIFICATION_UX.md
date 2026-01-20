@@ -729,15 +729,191 @@ POST /api/notifications/send
 
 ---
 
+## 11. Poster Notifications
+
+### 11.1 Poster Notification Philosophy
+
+Poster notifications are **transactional, not celebratory**. They inform, not gamify.
+
+> **Core Principle:** Posters are paying customers. Notifications should feel like **professional service updates**, not achievements.
+
+### 11.2 Poster Notification Types
+
+| Type | Template | Priority | Sound |
+|------|----------|----------|-------|
+| **HUSTLER_ACCEPTED** | "{name} accepted your task" | High | `poster_hustler_accepted` |
+| **HUSTLER_EN_ROUTE** | "{name} is on the way — ETA {min} min" | High | None |
+| **HUSTLER_ARRIVED** | "{name} has arrived at your location" | High | `poster_hustler_arrived` |
+| **PROOF_SUBMITTED** | "Proof submitted — Review required" | High | `poster_proof_submitted` |
+| **PAYMENT_SENT** | "Payment of ${amount} sent to {name}" | High | `poster_payment_sent` |
+| **MESSAGE** | "New message from {name}" | Medium | `poster_message` |
+| **TASK_EXPIRED** | "Your task expired — No one accepted" | Medium | None |
+| **DISPUTE_UPDATE** | "Update on your dispute" | High | None |
+
+### 11.3 Poster Push Templates
+
+#### Hustler Accepted (Poster)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  HustleXP                                          just now    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ✓ Hustler accepted                                            │
+│  Marcus accepted "Help moving furniture"                       │
+│                                                                 │
+│  ⭐ VERIFIED • 47 tasks completed                              │
+│                                                                 │
+│  [ View Details ]              [ Message ]                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Hustler Arrived (Poster)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  HustleXP                                          just now    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  📍 Hustler arrived                                            │
+│  Marcus has arrived at your location                           │
+│                                                                 │
+│  Help moving furniture                                          │
+│                                                                 │
+│  [ View Task ]                 [ Message ]                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Proof Submitted (Poster)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  HustleXP                                          2m ago      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  📷 Proof submitted                                            │
+│  Marcus submitted proof for "Help moving furniture"            │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │              [Proof Image Thumbnail]                      │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  [ View Proof ]                [ Approve ]                     │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Payment Sent (Poster)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  HustleXP                                          just now    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ✓ Payment sent                                                │
+│  $35.00 sent to Marcus for "Help moving furniture"             │
+│                                                                 │
+│  [ View Receipt ]                                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 11.4 Forbidden Poster Notifications
+
+| Notification Type | Reason |
+|-------------------|--------|
+| **XP earned** | Posters don't earn XP |
+| **Badge unlocked** | Posters don't earn badges |
+| **Level up** | No levels for posters |
+| **Streak** | No streaks for posters |
+| **Leaderboard** | No leaderboards for posters |
+| **"Great job!" celebrations** | No gamification language |
+
+### 11.5 Poster Notification Settings
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  NOTIFICATION SETTINGS                                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  TASK UPDATES                                                   │
+│                                                                 │
+│  [ Hustler accepted          [ON] ]                            │
+│  [ Hustler en route          [ON] ]                            │
+│  [ Hustler arrived           [ON] ]                            │
+│  [ Proof submitted           [ON] ]                            │
+│                                                                 │
+│  PAYMENTS                                                       │
+│                                                                 │
+│  [ Payment confirmations     [ON] ]                            │
+│                                                                 │
+│  MESSAGES                                                       │
+│                                                                 │
+│  [ New messages              [ON] ]                            │
+│                                                                 │
+│  QUIET HOURS                                                    │
+│                                                                 │
+│  [ Enable quiet hours        [OFF] ]                           │
+│    From: 10:00 PM                                               │
+│    To: 7:00 AM                                                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Note:** No "Achievement" section for posters.
+
+### 11.6 Poster Notification Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **NOTIF-POSTER-1** | No gamification notifications to posters | Role guard |
+| **NOTIF-POSTER-2** | No celebration language in poster notifications | Copy guard |
+| **NOTIF-POSTER-3** | Poster sound palette only (max 300ms) | Audio guard |
+| **NOTIF-POSTER-4** | Payment notifications always include amount | Template validation |
+| **NOTIF-POSTER-5** | Hustler trust tier visible in acceptance notifications | Template validation |
+
+### 11.7 Implementation Guard
+
+```typescript
+const canSendNotification = (
+  userId: string,
+  type: NotificationType,
+  userRole: 'hustler' | 'poster'
+): boolean => {
+  // Poster cannot receive gamification notifications
+  if (userRole === 'poster') {
+    const FORBIDDEN_POSTER_TYPES = [
+      'XP_EARNED',
+      'BADGE_UNLOCKED',
+      'LEVEL_UP',
+      'STREAK_UPDATE',
+      'LEADERBOARD_UPDATE',
+    ];
+
+    if (FORBIDDEN_POSTER_TYPES.includes(type)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+```
+
+---
+
 ## Cross-Reference
 
 | Section | Reference |
 |---------|-----------|
 | Sound Design | SOUND_DESIGN.md |
+| Poster UI Spec | POSTER_UI_SPEC.md |
+| Hustler UI Spec | HUSTLER_UI_SPEC.md |
 | Push Infrastructure | (To be added to Backend specs) |
 | UI_SPEC | UI_SPEC.md §13.5 (Live Mode Notifications) |
 | API Contract | API_CONTRACT.md |
 
 ---
 
-**END OF NOTIFICATION_UX.md v1.0.0**
+**END OF NOTIFICATION_UX.md v1.1.0**

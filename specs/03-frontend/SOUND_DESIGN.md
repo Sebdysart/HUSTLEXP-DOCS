@@ -490,11 +490,87 @@ assets/
 
 ---
 
+## 10. Poster Sound Rules
+
+### 10.1 Poster Sound Philosophy
+
+Posters use **Apple Glass only** (Layer 1). Their sound palette is **minimal and transactional**.
+
+> **Core Principle:** Posters are paying customers. Sound should confirm actions, not celebrate them.
+
+### 10.2 Allowed Poster Sounds
+
+| Sound ID | Trigger | Duration | Volume |
+|----------|---------|----------|--------|
+| `poster_task_posted` | Task successfully posted | 200ms | 0.3 |
+| `poster_hustler_accepted` | Hustler accepts task | 300ms | 0.4 |
+| `poster_hustler_arrived` | Hustler at location | 250ms | 0.4 |
+| `poster_proof_submitted` | Proof ready for review | 200ms | 0.3 |
+| `poster_payment_sent` | Payment released | 300ms | 0.4 |
+| `poster_message` | New message received | 150ms | 0.3 |
+
+### 10.3 Poster Sound Characteristics
+
+| Attribute | Specification |
+|-----------|---------------|
+| **Max duration** | 300ms |
+| **Volume range** | 0.3 - 0.4 (subtle) |
+| **Tonality** | Neutral, professional |
+| **Style** | Clean confirmation tones |
+
+### 10.4 Forbidden Poster Sounds
+
+| Sound Type | Reason |
+|------------|--------|
+| `celebration_*` | No gamification |
+| `xp_*` | No XP in Poster UI |
+| `badge_*` | No badges in Poster UI |
+| `streak_*` | No streaks in Poster UI |
+| `level_*` | No levels in Poster UI |
+| Any sound > 300ms | Keep brief and professional |
+
+### 10.5 Implementation Guard
+
+```typescript
+const canPlaySound = (soundId: string, userRole: 'hustler' | 'poster'): boolean => {
+  if (userRole === 'poster') {
+    const POSTER_ALLOWED_SOUNDS = [
+      'poster_task_posted',
+      'poster_hustler_accepted',
+      'poster_hustler_arrived',
+      'poster_proof_submitted',
+      'poster_payment_sent',
+      'poster_message',
+    ];
+    return POSTER_ALLOWED_SOUNDS.includes(soundId);
+  }
+  return true; // Hustlers can play all sounds
+};
+```
+
+### 10.6 Poster Sound Directory
+
+```
+assets/
+  sounds/
+    poster/
+      poster_task_posted.mp3
+      poster_hustler_accepted.mp3
+      poster_hustler_arrived.mp3
+      poster_proof_submitted.mp3
+      poster_payment_sent.mp3
+      poster_message.mp3
+```
+
+---
+
 ## Cross-Reference
 
 | Section | Reference |
 |---------|-----------|
 | Layered Hierarchy | UI_SPEC.md §2 |
+| Poster UI Spec | POSTER_UI_SPEC.md |
+| Hustler UI Spec | HUSTLER_UI_SPEC.md |
 | Celebration Constraints | UI_SPEC.md §4.5 |
 | Haptic Integration | UI_SPEC.md §21 (Haptics) |
 | Notification UX | NOTIFICATION_UX.md |
