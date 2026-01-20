@@ -4,22 +4,31 @@
 
 ---
 
-## Quick Start for Cursor
+## Quick Start for Cursor (Frontend)
 
 ### READ THESE FILES IN ORDER:
 ```
-1. CURSOR_INSTRUCTIONS.md     ← Master guide for implementation
-2. BUILD_READINESS.md         ← What's ready to build + build order
-3. specs/04-backend/BUILD_GUIDE.md  ← Authority hierarchy
-4. specs/02-architecture/schema.sql  ← All database tables
-5. specs/04-backend/API_CONTRACT.md  ← All API endpoints
+1. CURSOR_INSTRUCTIONS.md              ← MASTER GUIDE (frontend only)
+2. specs/03-frontend/DESIGN_SYSTEM.md  ← Colors, typography, spacing
+3. specs/03-frontend/HUSTLER_UI_SPEC.md ← Hustler screens
+4. specs/03-frontend/POSTER_UI_SPEC.md  ← Poster screens
+5. specs/03-frontend/ONBOARDING_FLOW.md ← Onboarding screens
 ```
 
 ### THE ONE RULE:
 ```
-IMPLEMENT EXACTLY WHAT THE SPECS SAY.
-DO NOT INVENT. DO NOT IMPROVE. DO NOT ASSUME.
+YOU BUILD UI SHELLS THAT DISPLAY DATA FROM PROPS.
+YOU DO NOT FETCH DATA.
+YOU DO NOT COMPUTE BUSINESS LOGIC.
+YOU DO NOT INVENT FEATURES.
 IF UNCLEAR, STOP AND ASK.
+```
+
+### Files Cursor CANNOT Touch:
+```
+❌ specs/01-product/**        ← Backend concern
+❌ specs/02-architecture/**   ← Backend concern
+❌ specs/04-backend/**        ← Backend concern
 ```
 
 ---
@@ -37,36 +46,31 @@ IF UNCLEAR, STOP AND ASK.
 
 ## Key Files
 
-### Implementation Guides
+### For Cursor (Frontend Only)
 | File | Purpose |
 |------|---------|
-| `CURSOR_INSTRUCTIONS.md` | Step-by-step guide for Cursor |
-| `BUILD_READINESS.md` | Build order + completeness assessment |
-| `.cursorrules` | Enforcement rules for Cursor |
-
-### Constitutional Specs (Must Read)
-| File | Purpose |
-|------|---------|
-| `specs/04-backend/BUILD_GUIDE.md` | Master authority hierarchy |
-| `specs/02-architecture/schema.sql` | Database schema (31 tables) |
-| `specs/04-backend/API_CONTRACT.md` | All API endpoints (35+ endpoints) |
-| `specs/SPEC_CLARIFICATIONS.md` | Conflict resolutions |
-
-### Backend Implementation
-| File | Purpose |
-|------|---------|
-| `specs/04-backend/MATCHING_ALGORITHMS.md` | Task-hustler matching formulas |
-| `specs/04-backend/AI_SERVICE_INTERFACES.md` | AI service I/O types |
-| `specs/04-backend/STRIPE_INTEGRATION.md` | Payment implementation |
-| `specs/04-backend/STORAGE_SPEC.md` | File upload patterns |
-
-### Frontend Implementation
-| File | Purpose |
-|------|---------|
-| `specs/03-frontend/HUSTLER_UI_SPEC.md` | Hustler role UI |
-| `specs/03-frontend/POSTER_UI_SPEC.md` | Poster role UI |
+| `CURSOR_INSTRUCTIONS.md` | **START HERE** — Frontend implementation guide |
+| `.cursorrules` | Enforcement rules (auto-loaded by Cursor) |
 | `specs/03-frontend/DESIGN_SYSTEM.md` | Colors, typography, spacing |
-| `specs/03-frontend/ONBOARDING_FLOW.md` | Onboarding screens |
+| `specs/03-frontend/HUSTLER_UI_SPEC.md` | Hustler role screens |
+| `specs/03-frontend/POSTER_UI_SPEC.md` | Poster role screens |
+| `specs/03-frontend/ONBOARDING_FLOW.md` | Onboarding flow |
+| `specs/03-frontend/NOTIFICATION_UX.md` | Push notification templates |
+| `specs/03-frontend/SOUND_DESIGN.md` | Audio feedback specs |
+| `specs/03-frontend/stitch-prompts/` | Individual screen specs |
+| `prompts/CURSOR_FRONTEND.md` | Copy-paste execution prompts |
+
+### For Claude Code (Backend Only)
+| File | Purpose |
+|------|---------|
+| `BUILD_READINESS.md` | Full-stack build order |
+| `specs/04-backend/BUILD_GUIDE.md` | Authority hierarchy |
+| `specs/02-architecture/schema.sql` | Database schema (31 tables) |
+| `specs/04-backend/API_CONTRACT.md` | All API endpoints |
+| `specs/04-backend/MATCHING_ALGORITHMS.md` | Matching formulas |
+| `specs/04-backend/AI_SERVICE_INTERFACES.md` | AI service I/O |
+| `specs/04-backend/STRIPE_INTEGRATION.md` | Payment integration |
+| `specs/SPEC_CLARIFICATIONS.md` | Conflict resolutions |
 
 ---
 

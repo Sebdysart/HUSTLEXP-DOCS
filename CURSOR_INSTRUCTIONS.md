@@ -1,469 +1,532 @@
-# CURSOR IMPLEMENTATION INSTRUCTIONS
+# CURSOR FRONTEND INSTRUCTIONS
 
-**Purpose:** Step-by-step guide for Cursor to build HustleXP MVP without hallucination
-**Status:** ACTIVE — Follow these instructions exactly
-**Last Updated:** January 2025
-
----
-
-## CRITICAL: Read Before Building Anything
-
-### The One Rule
-```
-IMPLEMENT EXACTLY WHAT THE SPECS SAY.
-DO NOT INVENT. DO NOT IMPROVE. DO NOT ASSUME.
-IF UNCLEAR, STOP AND ASK.
-```
-
-### Your Role
-You are an **executor**, not a designer. The specs are complete. Your job is to translate them into working code.
+**Purpose:** Step-by-step guide for Cursor to build HustleXP frontend WITHOUT hallucination
+**Scope:** FRONTEND ONLY — React Native / Expo
+**Status:** ACTIVE
 
 ---
 
-## Step 0: Understand the Architecture
+## THE ONE RULE
 
-### File Hierarchy (Read in Order)
 ```
-1. BUILD_READINESS.md         ← Start here (overview + build order)
-2. specs/04-backend/BUILD_GUIDE.md  ← Master authority hierarchy
-3. specs/02-architecture/schema.sql  ← All database tables
-4. specs/04-backend/API_CONTRACT.md  ← All API endpoints
-5. specs/SPEC_CLARIFICATIONS.md      ← Conflict resolutions
-```
-
-### Authority Layers (Never Violate)
-```
-Layer 0: PostgreSQL constraints     ← HIGHEST (immutable)
-Layer 1: Backend state machines     ← Business logic
-Layer 2: Temporal enforcement       ← Time rules
-Layer 3: Stripe integration         ← Payments
-Layer 4: AI proposals               ← Suggestions only
-Layer 5: Frontend state             ← UI state
-Layer 6: Client rendering           ← Display only
-```
-
-**Rule:** Higher layers cannot override lower layers. Frontend NEVER computes eligibility, XP, or trust.
-
----
-
-## Step 1: Set Up the Project
-
-### Tech Stack (Required)
-```
-Frontend:
-  - React Native with Expo
-  - TypeScript (strict mode)
-  - React Query for server state
-  - Zustand for UI state only
-
-Backend:
-  - Node.js + TypeScript
-  - tRPC for API
-  - PostgreSQL (use Supabase or Neon)
-  - Redis for caching + Live Mode
-
-Auth: Firebase Auth
-Payments: Stripe Connect
-Storage: Cloudflare R2
-```
-
-### Directory Structure
-```
-hustlexp/
-├── apps/
-│   └── mobile/           ← React Native app
-│       ├── src/
-│       │   ├── screens/  ← Screen components
-│       │   ├── components/ ← Shared UI
-│       │   ├── hooks/    ← React hooks
-│       │   ├── api/      ← tRPC client
-│       │   └── types/    ← TypeScript types
-│       └── app.json
-│
-├── packages/
-│   ├── api/              ← tRPC router definitions
-│   │   ├── src/
-│   │   │   ├── routers/  ← task.ts, user.ts, etc.
-│   │   │   └── trpc.ts   ← tRPC setup
-│   │   └── package.json
-│   │
-│   └── db/               ← Database utilities
-│       ├── src/
-│       │   ├── schema.ts ← Drizzle/Prisma schema
-│       │   └── client.ts ← DB client
-│       └── package.json
-│
-└── package.json          ← Workspace root
+YOU ARE A FRONTEND ENGINEER.
+YOU BUILD UI SHELLS THAT DISPLAY DATA FROM PROPS.
+YOU DO NOT COMPUTE BUSINESS LOGIC.
+YOU DO NOT FETCH DATA.
+YOU DO NOT INVENT FEATURES.
 ```
 
 ---
 
-## Step 2: Implement Database Schema
+## Your Role
 
-### Source File
-```
-specs/02-architecture/schema.sql
-```
+You are a **frontend executor**. Your job is to:
+1. Read UI specs
+2. Build screens that accept props
+3. Display data from props
+4. Call callbacks passed as props
+5. Style using design tokens
 
-### Instructions
-1. Read the entire schema.sql file
-2. Create all tables in the exact order they appear
-3. Create all triggers and functions
-4. Run the schema against your PostgreSQL instance
-5. Verify all constraints are active
+You are NOT responsible for:
+- Database
+- API endpoints
+- Business logic
+- Eligibility computation
+- XP calculation
+- Trust tier logic
+- Matching algorithms
+- Payment processing
 
-### Validation Checklist
-```
-[ ] users table created with all columns
-[ ] tasks table created with state CHECK constraint
-[ ] escrows table created with terminal state trigger
-[ ] xp_ledger table created with INV-1 trigger
-[ ] All 31 tables created
-[ ] All indexes created
-[ ] All triggers created
-```
-
-### DO NOT
-- Modify column names
-- Add columns not in the spec
-- Remove constraints
-- Skip triggers
+**If you need backend data, it comes via props. You never fetch.**
 
 ---
 
-## Step 3: Implement API Endpoints
+## Files You MUST Read
 
-### Source File
+### Before Building Any Screen
 ```
-specs/04-backend/API_CONTRACT.md
-```
-
-### Implementation Order
-```
-Phase 1: Core CRUD
-  1. user.getProfile
-  2. user.updateProfile
-  3. task.create
-  4. task.getById
-  5. task.list
-
-Phase 2: Task Lifecycle
-  6. task.accept
-  7. task.submitProof
-  8. proof.accept / proof.reject
-  9. task.complete
-  10. task.cancel
-
-Phase 3: Escrow
-  11. escrow.createIntent
-  12. escrow.release
-  13. escrow.refund
-  14. Stripe webhook handler
-
-Phase 4: Onboarding
-  15. onboarding.getProgress
-  16. onboarding.setRole
-  17. onboarding.submitCapabilities
-  18. onboarding.completeStep
-  19. onboarding.complete
-
-Phase 5: Verification
-  20. verification.submitLicense
-  21. verification.submitInsurance
-  22. verification.initiateBackgroundCheck
-  23. verification.getStatus
-  24. verification.getCapabilityProfile
-
-Phase 6: Feed & Matching
-  25. task.getFeed
-  26. task.getMatchingScore
-
-Phase 7: Live Mode
-  27. liveMode.activate
-  28. liveMode.deactivate
-  29. liveMode.getStatus
-  30. liveMode.updateLocation
-  31. liveMode.respondToBroadcast
-
-Phase 8: Messaging & Notifications
-  32. messaging.getThread
-  33. messaging.sendMessage
-  34. messaging.markRead
-  35. notification.list
-  36. notification.markRead
-
-Phase 9: Disputes & Ratings
-  37. dispute.create
-  38. dispute.resolve
-  39. rating endpoints
+1. specs/03-frontend/DESIGN_SYSTEM.md      ← Colors, typography, spacing
+2. specs/03-frontend/HUSTLER_UI_SPEC.md    ← Hustler role screens
+3. specs/03-frontend/POSTER_UI_SPEC.md     ← Poster role screens
+4. specs/03-frontend/ONBOARDING_FLOW.md    ← Onboarding screens
 ```
 
-### For Each Endpoint
-1. Copy the Input type from API_CONTRACT.md
-2. Copy the Output type from API_CONTRACT.md
-3. Implement the handler
-4. Validate input against the schema
-5. Return exact output shape
-6. Handle all documented error codes
+### For Specific Screens
+```
+specs/03-frontend/stitch-prompts/          ← Individual screen specs
+prompts/CURSOR_FRONTEND.md                 ← Execution prompts
+```
 
-### DO NOT
-- Add fields not in the spec
-- Remove required fields
-- Change field types
-- Invent new endpoints
+### Files You MAY NOT Read (Backend Concern)
+```
+❌ specs/01-product/**           ← Product requirements (backend decides)
+❌ specs/02-architecture/**      ← Database schema (backend concern)
+❌ specs/04-backend/**           ← API contracts (backend builds these)
+❌ BUILD_READINESS.md            ← Full-stack guide (not your concern)
+```
 
 ---
 
-## Step 4: Implement Matching Algorithm
+## The Screen Contract
 
-### Source File
-```
-specs/04-backend/MATCHING_ALGORITHMS.md
-```
+**Every screen you build MUST follow this exact pattern:**
 
-### Instructions
-1. Implement the master formula exactly:
-   ```
-   matchingScore = Σ(component × weight) × eligibilityMultiplier
-   ```
-2. Implement all 6 component calculations
-3. Use the exact weights specified
-4. Implement eligibility checks in order
-5. Implement feed sorting with tie-breakers
-
-### DO NOT
-- Change the weights
-- Add new components
-- Skip eligibility checks
-- Modify the formula
-
----
-
-## Step 5: Implement AI Services (Optional for MVP)
-
-### Source File
-```
-specs/04-backend/AI_SERVICE_INTERFACES.md
-```
-
-### Key Rule
-**AI proposes, deterministic systems decide, database enforces.**
-
-### For MVP
-- Implement **fallback functions only** (no AI calls needed)
-- Fallbacks are provided in the spec
-- AI integration can come later
-
-### DO NOT
-- Let AI write directly to database
-- Let AI bypass eligibility checks
-- Let AI award XP or change trust tier
-
----
-
-## Step 6: Implement Frontend Screens
-
-### Source Files
-```
-specs/03-frontend/HUSTLER_UI_SPEC.md   ← Hustler role
-specs/03-frontend/POSTER_UI_SPEC.md    ← Poster role
-specs/03-frontend/DESIGN_SYSTEM.md     ← Colors, typography, spacing
-specs/03-frontend/ONBOARDING_FLOW.md   ← Onboarding screens
-```
-
-### The Screen Contract
-Every screen follows this pattern:
 ```typescript
-interface ScreenProps {
-  data?: DataType;        // From parent, never fetched in screen
-  isLoading?: boolean;    // Loading state
-  error?: Error;          // Error state
-  onAction?: () => void;  // Callbacks to parent
+/**
+ * Screen: [SCREEN_NAME]
+ * Spec: specs/03-frontend/[SPEC_FILE].md
+ *
+ * CRITICAL: UI-only. All data from props. No business logic.
+ */
+
+interface ScreenNameProps {
+  // Data (comes from parent, you NEVER fetch)
+  data?: DataType;
+
+  // Loading state
+  isLoading?: boolean;
+
+  // Error state
+  error?: Error | null;
+
+  // Callbacks (parent handles logic)
+  onAction?: () => void;
+  onNavigate?: (screen: string) => void;
 }
 
-export function Screen({ data, isLoading, error, onAction }: ScreenProps) {
-  if (isLoading) return <LoadingState />;
-  if (error) return <ErrorState error={error} />;
-  if (!data) return <EmptyState />;
-  return <Content data={data} onAction={onAction} />;
+export function ScreenName({
+  data,
+  isLoading,
+  error,
+  onAction
+}: ScreenNameProps) {
+  // Loading state
+  if (isLoading) {
+    return <LoadingState />;
+  }
+
+  // Error state
+  if (error) {
+    return <ErrorState message={error.message} />;
+  }
+
+  // Empty state
+  if (!data) {
+    return <EmptyState />;
+  }
+
+  // Content state - DISPLAY ONLY
+  return (
+    <SafeAreaView style={styles.container}>
+      <Content data={data} />
+      <Button onPress={onAction} title="Action" />
+    </SafeAreaView>
+  );
 }
 ```
 
-### CRITICAL Frontend Rules
-```
-1. Screens NEVER fetch data (props only)
-2. Screens NEVER compute eligibility
-3. Screens NEVER compute XP or trust
-4. Screens NEVER filter tasks
-5. All business logic lives in backend
-6. Frontend is DISPLAY ONLY
+---
+
+## FORBIDDEN Patterns (NEVER Do These)
+
+### ❌ Fetching Data
+```typescript
+// FORBIDDEN - Screens don't fetch
+const [data, setData] = useState();
+useEffect(() => {
+  fetch('/api/tasks').then(res => setData(res));
+}, []);
+
+// CORRECT - Data comes from props
+function TaskScreen({ tasks }: { tasks: Task[] }) {
+  return <TaskList tasks={tasks} />;
+}
 ```
 
-### Forbidden Patterns
+### ❌ Computing Eligibility
 ```typescript
-// ❌ NEVER DO THIS
+// FORBIDDEN - Business logic
 const isEligible = user.trustTier >= task.requiredTier;
+const canAccept = checkEligibility(user, task);
 
-// ❌ NEVER DO THIS
-const xp = calculateXP(task);
+// CORRECT - Display what props say
+function TaskCard({ task, isEligible }: Props) {
+  return (
+    <Card>
+      <Text>{task.title}</Text>
+      {!isEligible && <Text>Not eligible</Text>}
+    </Card>
+  );
+}
+```
 
-// ❌ NEVER DO THIS
-const filteredTasks = tasks.filter(t => canAccept(t));
+### ❌ Computing XP or Trust
+```typescript
+// FORBIDDEN - Backend computes this
+const xpEarned = calculateXP(task.price, user.streak);
+const newTier = computeTrustTier(user.completedTasks);
 
-// ❌ NEVER DO THIS
-fetch('/api/tasks').then(setTasks);
+// CORRECT - Display from props
+function XPDisplay({ xpTotal, currentLevel }: Props) {
+  return <Text>Level {currentLevel} • {xpTotal} XP</Text>;
+}
+```
 
-// ✅ CORRECT - Display what props provide
-return <TaskCard task={props.task} />;
+### ❌ Filtering Tasks
+```typescript
+// FORBIDDEN - Backend filters
+const eligibleTasks = tasks.filter(t => canAccept(user, t));
+const nearbyTasks = tasks.filter(t => t.distance < 25);
 
-// ✅ CORRECT - Call parent callback
-<Button onPress={props.onAcceptTask} />;
+// CORRECT - Display what backend sent (already filtered)
+function TaskFeed({ tasks }: { tasks: Task[] }) {
+  return tasks.map(task => <TaskCard key={task.id} task={task} />);
+}
+```
+
+### ❌ Making Decisions
+```typescript
+// FORBIDDEN - Logic decisions
+if (user.verified && task.requiresVerification) {
+  showAcceptButton();
+}
+
+// CORRECT - Props tell you what to show
+function TaskCard({ task, showAcceptButton }: Props) {
+  return (
+    <Card>
+      {showAcceptButton && <Button title="Accept" />}
+    </Card>
+  );
+}
+```
+
+### ❌ Inventing Fields
+```typescript
+// FORBIDDEN - Field not in spec
+<Text>{task.estimatedDuration}</Text>  // Where did this come from?
+
+// CORRECT - Only use fields from spec
+<Text>{task.title}</Text>
+<Text>${task.price / 100}</Text>
 ```
 
 ---
 
-## Step 7: Handle Edge Cases
+## ALLOWED Patterns (Do These)
 
-### Source File
-```
-specs/SPEC_CLARIFICATIONS.md
-```
-
-### Key Clarifications
-
-**Eligibility Precedence:**
-```
-1. Location State Match (REQUIRED)
-2. Trade Verification (IF REQUIRED)
-3. Trust Tier (ALWAYS)
-4. Risk Clearance (ALWAYS)
-5. Insurance (IF REQUIRED)
-6. Background Check (IF REQUIRED)
+### ✅ Props Interface
+```typescript
+interface TaskCardProps {
+  task: {
+    id: string;
+    title: string;
+    price: number;
+    category: string;
+  };
+  onAccept?: () => void;
+  isLoading?: boolean;
+}
 ```
 
-**Rating Reveal Timing:**
-```
-Reveal when: (both_parties_rated) OR (7_days_elapsed)
-```
-
-**XP Award Timing:**
-```
-XP awarded when: escrow.state = 'RELEASED'
-NOT when: funds settle or hustler withdraws
-```
-
-**Price Minimums:**
-```
-STANDARD mode: $5.00 minimum (500 cents)
-LIVE mode: $15.00 minimum (1500 cents)
+### ✅ Loading States
+```typescript
+if (isLoading) {
+  return (
+    <View style={styles.loading}>
+      <ActivityIndicator />
+      <Text>Loading tasks...</Text>
+    </View>
+  );
+}
 ```
 
----
-
-## Step 8: Testing
-
-### Unit Tests Required
-```
-- All API endpoint handlers
-- Matching algorithm calculations
-- Eligibility check logic
-- XP calculation formulas
-- State machine transitions
-```
-
-### Integration Tests Required
-```
-- Task lifecycle: create → accept → proof → complete
-- Escrow flow: create → fund → release
-- Live mode: broadcast → accept
-- Rating reveal: both rate → reveal
+### ✅ Empty States
+```typescript
+if (!tasks || tasks.length === 0) {
+  return (
+    <View style={styles.empty}>
+      <Text>No tasks available</Text>
+      <Text>Check back later</Text>
+    </View>
+  );
+}
 ```
 
-### E2E Tests Required
+### ✅ Error States
+```typescript
+if (error) {
+  return (
+    <View style={styles.error}>
+      <Text>Something went wrong</Text>
+      <Button title="Retry" onPress={onRetry} />
+    </View>
+  );
+}
 ```
-- Complete hustler journey
-- Complete poster journey
-- Dispute flow
-- Onboarding flow
+
+### ✅ Callbacks to Parent
+```typescript
+<Button
+  title="Accept Task"
+  onPress={() => onAccept?.(task.id)}
+/>
 ```
 
----
-
-## Anti-Hallucination Checklist
-
-Before committing any code, verify:
-
-```
-[ ] Code matches spec exactly (no additions)
-[ ] No invented fields or endpoints
-[ ] No client-side business logic
-[ ] No eligibility computation in frontend
-[ ] No XP/trust computation in frontend
-[ ] All types match API_CONTRACT.md
-[ ] All database writes match schema.sql
-[ ] All invariants respected (INV-1 through INV-5)
-[ ] Error codes match spec
-[ ] State transitions match spec
+### ✅ Conditional Display (from props)
+```typescript
+{props.showPrice && <Text>${props.task.price / 100}</Text>}
+{props.isEligible ? <AcceptButton /> : <IneligibleBadge />}
 ```
 
 ---
 
-## When to Stop and Ask
+## Design Tokens (Use Exactly)
 
-**STOP and ask the user if:**
+### Colors
+```typescript
+// From specs/03-frontend/DESIGN_SYSTEM.md
+const colors = {
+  primary: '#FF6B35',
+  background: '#0D0D0D',
+  surface: '#1A1A1A',
+  surfaceElevated: '#242424',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#9CA3AF',
+  textTertiary: '#6B7280',
+  success: '#10B981',
+  warning: '#F59E0B',
+  error: '#EF4444',
+  divider: '#2D2D2D',
+};
 ```
-1. Spec seems incomplete
-2. Spec seems contradictory
-3. You think the spec is wrong
-4. You want to add something not in spec
-5. You want to improve something
-6. Implementation requires external dependency not listed
-7. You need to modify database constraints
-8. You need to add a new endpoint
+
+### Typography
+```typescript
+const typography = {
+  display: { fontSize: 32, fontWeight: '700' },
+  title: { fontSize: 24, fontWeight: '600' },
+  headline: { fontSize: 20, fontWeight: '600' },
+  body: { fontSize: 16, fontWeight: '400' },
+  caption: { fontSize: 14, fontWeight: '400' },
+  micro: { fontSize: 12, fontWeight: '500' },
+};
+```
+
+### Spacing
+```typescript
+const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+};
+```
+
+### Border Radius
+```typescript
+const radius = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  full: 9999,
+};
+```
+
+**DO NOT invent new tokens. Use only what exists.**
+
+---
+
+## Screen Categories
+
+### Hustler Screens (specs/03-frontend/HUSTLER_UI_SPEC.md)
+```
+- Task Feed
+- Task Detail
+- Accept Task
+- Active Task
+- Submit Proof
+- Task Complete (XP animation)
+- Earnings Dashboard
+- Profile
+- Settings
+```
+
+### Poster Screens (specs/03-frontend/POSTER_UI_SPEC.md)
+```
+- Create Task
+- My Posted Tasks
+- Task Detail (poster view)
+- Review Proof
+- Approve/Reject
+- Payment History
+- Profile
+- Settings
+```
+
+### Onboarding Screens (specs/03-frontend/ONBOARDING_FLOW.md)
+```
+- Role Selection
+- Location Setup
+- Capability Declaration
+- License Claim
+- Insurance Claim
+- Risk Preferences
+- Summary
+```
+
+### Shared Screens
+```
+- Login/Signup (Firebase Auth UI)
+- Messaging Thread
+- Notifications
+- Dispute Flow
+- Rating Screen
+```
+
+---
+
+## Implementation Checklist
+
+Before committing ANY screen, verify:
+
+```
+[ ] Data comes from props (not fetched)
+[ ] No business logic in component
+[ ] No eligibility computation
+[ ] No XP/trust calculation
+[ ] No task filtering
+[ ] Loading state implemented
+[ ] Empty state implemented
+[ ] Error state implemented
+[ ] Uses design tokens only
+[ ] All fields exist in spec
+[ ] Callbacks go to parent
+[ ] Header comment references spec file
+```
+
+---
+
+## When to STOP and ASK
+
+**STOP immediately and ask the user if:**
+
+```
+1. Screen is not in the spec
+2. You need a field not defined in the spec
+3. You need to compute something
+4. You need to fetch data
+5. You need to add a dependency
+6. The spec seems incomplete
+7. You want to "improve" the design
+8. You're unsure about anything
 ```
 
 **DO NOT:**
 ```
 1. Guess what the spec meant
 2. Fill in gaps with assumptions
-3. "Improve" the spec
-4. Add features not requested
-5. Change the architecture
+3. Add features not in spec
+4. "Improve" the UI beyond spec
+5. Make it "better" than specified
 ```
 
 ---
 
-## Quick Reference: File → Purpose
+## Stitch Prompts
 
-| File | When to Read |
-|------|--------------|
-| `BUILD_READINESS.md` | Starting a new phase |
-| `specs/04-backend/BUILD_GUIDE.md` | Understanding authority |
-| `specs/02-architecture/schema.sql` | Creating/modifying tables |
-| `specs/04-backend/API_CONTRACT.md` | Implementing endpoints |
-| `specs/04-backend/MATCHING_ALGORITHMS.md` | Implementing feed |
-| `specs/04-backend/AI_SERVICE_INTERFACES.md` | Implementing AI |
-| `specs/SPEC_CLARIFICATIONS.md` | Resolving ambiguities |
-| `specs/03-frontend/DESIGN_SYSTEM.md` | Styling components |
-| `specs/03-frontend/HUSTLER_UI_SPEC.md` | Building hustler screens |
-| `specs/03-frontend/POSTER_UI_SPEC.md` | Building poster screens |
+For detailed screen implementations, use the stitch prompts:
+
+```
+specs/03-frontend/stitch-prompts/
+├── 01-instant-interrupt-card.md
+├── 04-poster-task-creation.md
+├── 09-hustler-task-completion.md
+├── 11-poster-feedback.md
+├── 12-trust-change-explanation.md
+├── E1-no-tasks-available.md
+├── E2-eligibility-mismatch.md
+└── ...
+```
+
+Each stitch prompt contains:
+- Exact layout specifications
+- Pixel-perfect measurements
+- Copy text to use
+- Component hierarchy
+- Interaction states
+
+**Follow stitch prompts EXACTLY.**
+
+---
+
+## File Structure
+
+```
+hustlexp-app/
+├── src/
+│   ├── screens/
+│   │   ├── hustler/
+│   │   │   ├── TaskFeedScreen.tsx
+│   │   │   ├── TaskDetailScreen.tsx
+│   │   │   ├── ActiveTaskScreen.tsx
+│   │   │   └── ...
+│   │   ├── poster/
+│   │   │   ├── CreateTaskScreen.tsx
+│   │   │   ├── ReviewProofScreen.tsx
+│   │   │   └── ...
+│   │   ├── onboarding/
+│   │   │   ├── RoleSelectionScreen.tsx
+│   │   │   ├── LocationScreen.tsx
+│   │   │   └── ...
+│   │   └── shared/
+│   │       ├── MessagingScreen.tsx
+│   │       ├── NotificationsScreen.tsx
+│   │       └── ...
+│   │
+│   ├── components/
+│   │   ├── GlassCard.tsx
+│   │   ├── PrimaryButton.tsx
+│   │   ├── SectionHeader.tsx
+│   │   ├── LoadingState.tsx
+│   │   ├── EmptyState.tsx
+│   │   └── ...
+│   │
+│   ├── constants/
+│   │   ├── colors.ts
+│   │   ├── typography.ts
+│   │   ├── spacing.ts
+│   │   └── ...
+│   │
+│   └── types/
+│       ├── task.ts
+│       ├── user.ts
+│       └── ...
+│
+└── app.json
+```
 
 ---
 
 ## Summary
 
 ```
-1. Read the spec
-2. Implement exactly what it says
-3. Do not add anything
-4. Do not improve anything
-5. If unclear, ask
-6. Verify against checklist
-7. Commit
+1. You build UI shells
+2. Data comes from props
+3. You never fetch
+4. You never compute
+5. You display what you're given
+6. You call callbacks for actions
+7. You use design tokens exactly
+8. You follow specs exactly
+9. If unclear, you ask
 ```
 
-**The specs are complete. Your job is execution, not design.**
+**You are a frontend executor. The specs are complete. Build exactly what they say.**
 
 ---
 
-**END OF CURSOR INSTRUCTIONS**
+**END OF CURSOR FRONTEND INSTRUCTIONS**
