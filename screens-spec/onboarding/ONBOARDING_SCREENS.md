@@ -1,39 +1,35 @@
 # Onboarding Screens Specification
 
-**Location:** `hustlexp-app/screens/onboarding/`  
-**Count:** 12 screens  
-**Status:** ⚠️ 11/12 functional (FramingScreen needs fix)
+**Location:** `hustlexp-app/screens/onboarding/`
+**Count:** 12 screens
+**Status:** ✅ All screens have stitch-prompts
 
 ---
 
 ## Core Calibration Screens (4)
 
-### O1: FramingScreen ⚠️ NEEDS FIX
+### O1: FramingScreen ✅
 
-**File:** `FramingScreen.tsx`  
-**Spec:** ONBOARDING_SPEC §4.1  
-**Issue:** Continue button missing useNavigation hook
+**File:** `FramingScreen.tsx`
+**Spec:** ONBOARDING_SPEC §4.1
+**Stitch-Prompt:** `O1-framing-screen.md`
 
 ### Purpose
 Welcome and frame the HustleXP value proposition.
 
 ### Required Elements
-- [ ] Welcome message
-- [ ] Value proposition cards
-- [ ] How it works explanation
-- [ ] Continue button → CalibrationScreen
+- [x] Welcome message
+- [x] Value proposition cards
+- [x] How it works explanation
+- [x] Continue button → CalibrationScreen
 
-### Fix Required
+### Props Interface
 ```typescript
-// Add to component:
-import { useNavigation } from '@react-navigation/native';
-const navigation = useNavigation();
-
-// Change button:
-<PrimaryActionButton 
-  label="Continue" 
-  onPress={() => navigation.navigate('Calibration')} 
-/>
+interface FramingScreenProps {
+  onContinue?: () => void;
+  currentStep?: number;
+  totalSteps?: number;
+}
 ```
 
 ---
