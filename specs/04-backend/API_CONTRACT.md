@@ -20,6 +20,10 @@
 9. [Messaging Endpoints](#messaging-endpoints)
 10. [Notification Endpoints](#notification-endpoints)
 11. [Webhook Endpoints](#webhook-endpoints)
+12. [Onboarding Endpoints](#onboarding-endpoints)
+13. [Verification Endpoints](#verification-endpoints)
+14. [Live Mode Endpoints](#live-mode-endpoints)
+15. [Task Feed Endpoints](#task-feed-endpoints)
 
 ---
 
@@ -117,7 +121,7 @@ Create a new task.
   location_lat?: number;   // Latitude
   location_lng?: number;   // Longitude
   category: string;        // From TASK_CATEGORIES
-  price: number;           // USD cents, min 100 ($1.00)
+  price: number;           // USD cents, min 500 ($5.00)
   deadline: string;        // ISO 8601 datetime
   mode?: 'STANDARD' | 'LIVE'; // Default: STANDARD
   requires_proof?: boolean;   // Default: true
@@ -908,7 +912,7 @@ Send a message in a task thread.
   task_id: string;
   message_type: 'TEXT' | 'PHOTO' | 'LOCATION';
   content: string;          // Max 2000 chars for TEXT
-  photo_url?: string;       // Required for PHOTO
+  photo_urls?: string[];    // Required for PHOTO, max 3
   location?: {              // Required for LOCATION
     lat: number;
     lng: number;
@@ -1186,11 +1190,600 @@ interface ProofSummary {
 
 ---
 
+## Onboarding Endpoints
+
+### onboarding.getProgress
+
+Get current user's onboarding progress.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  phase: 'NOT_STARTED' | 'ROLE_SELECTION' | 'PROFILE_SETUP' | 'CAPABILITY_CLAIMS' | 'TUTORIAL' | 'COMPLETED';
+  completed_steps: string[];
+  next_step: string | null;
+  role: 'worker' | 'poster' | null;
+  profile_percent_complete: number;
+  started_at: string | null;
+  completed_at: string | null;
+}
+```
+
+---
+
+### onboarding.setRole
+
+Set user's primary role during onboarding.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  role: 'worker' | 'poster';
+  confidence: 'STRONG' | 'MODERATE' | 'WEAK';
+}
+```
+
+**Output:**
+```typescript
+{
+  role: 'worker' | 'poster';
+  next_step: string;
+}
+```
+
+---
+
+### onboarding.submitCapabilities
+
+Submit capability claims during onboarding.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  claimed_trades: string[];           // e.g., ['electrician', 'plumber']
+  license_claims: {
+    trade: string;
+    state: string;                    // 2-letter state code
+    license_number: string;
+  }[];
+  insurance_claimed: boolean;
+  work_state: string;                 // 2-letter state code
+  work_region?: string;
+  risk_preferences: {
+    in_home_work: boolean;
+    high_risk_tasks: boolean;
+    urgent_jobs: boolean;
+  };
+}
+```
+
+**Output:**
+```typescript
+{
+  claim_id: string;
+  trades_requiring_verification: string[];
+  next_step: string;
+}
+```
+
+---
+
+### onboarding.completeStep
+
+Mark an onboarding step as complete.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  step_id: string;
+  data?: Record<string, any>;         // Step-specific data
+}
+```
+
+**Output:**
+```typescript
+{
+  completed_steps: string[];
+  next_step: string | null;
+  phase: string;
+}
+```
+
+---
+
+### onboarding.complete
+
+Complete the entire onboarding flow.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  skip_tutorial?: boolean;            // Default: false
+}
+```
+
+**Output:**
+```typescript
+{
+  success: boolean;
+  profile: UserProfile;
+  capability_profile: CapabilityProfile;
+  onboarding_completed_at: string;
+}
+```
+
+---
+
+## Verification Endpoints
+
+### verification.submitLicense
+
+Submit a license for verification.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  trade: string;                      // e.g., 'electrician'
+  state: string;                      // 2-letter state code
+  license_number: string;
+  license_type?: string;              // e.g., 'journeyman', 'master'
+  document_urls?: string[];           // Optional supporting documents
+}
+```
+
+**Output:**
+```typescript
+{
+  verification_id: string;
+  status: 'pending' | 'processing';
+  estimated_completion: string;       // ISO 8601 datetime
+}
+```
+
+---
+
+### verification.submitInsurance
+
+Submit insurance for verification.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  trade: string;
+  policy_number?: string;
+  coverage_amount: number;            // in cents
+  document_urls: string[];            // COI uploads required
+}
+```
+
+**Output:**
+```typescript
+{
+  verification_id: string;
+  status: 'pending' | 'processing';
+  estimated_completion: string;
+}
+```
+
+---
+
+### verification.initiateBackgroundCheck
+
+Initiate a background check.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  consent_given: boolean;             // Must be true
+  consent_timestamp: string;          // ISO 8601
+}
+```
+
+**Output:**
+```typescript
+{
+  check_id: string;
+  provider: string;
+  status: 'initiated';
+  redirect_url?: string;              // If provider requires user action
+}
+```
+
+**Errors:**
+- `VALIDATION_ERROR` - Consent not given
+- `CONFLICT` - Check already in progress
+
+---
+
+### verification.getStatus
+
+Get verification status for current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  type?: 'license' | 'insurance' | 'background_check';  // Optional filter
+}
+```
+
+**Output:**
+```typescript
+{
+  licenses: {
+    id: string;
+    trade: string;
+    state: string;
+    status: 'pending' | 'processing' | 'verified' | 'failed' | 'expired';
+    verified_at: string | null;
+    expires_at: string | null;
+    failure_reason: string | null;
+  }[];
+  insurance: {
+    id: string;
+    trade: string;
+    status: 'pending' | 'processing' | 'verified' | 'failed' | 'expired';
+    coverage_amount: number;
+    verified_at: string | null;
+    expires_at: string | null;
+  }[];
+  background_check: {
+    id: string;
+    status: 'pending' | 'processing' | 'verified' | 'failed' | 'expired';
+    provider: string;
+    verified_at: string | null;
+    expires_at: string | null;
+  } | null;
+}
+```
+
+---
+
+### verification.getCapabilityProfile
+
+Get computed capability profile.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  user_id: string;
+  trust_tier: 'A' | 'B' | 'C' | 'D';  // Maps to 1-4 numeric
+  risk_clearance: ('low' | 'medium' | 'high')[];
+  verified_trades: {
+    trade: string;
+    state: string;
+    verified_at: string;
+    expires_at: string | null;
+  }[];
+  insurance_valid: boolean;
+  insurance_expires_at: string | null;
+  background_check_valid: boolean;
+  background_check_expires_at: string | null;
+  location_state: string;
+  willingness_flags: {
+    in_home_work: boolean;
+    high_risk_tasks: boolean;
+    urgent_jobs: boolean;
+  };
+  derived_at: string;
+}
+```
+
+---
+
+## Live Mode Endpoints
+
+### liveMode.activate
+
+Activate live mode for the current user.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  location: {
+    lat: number;
+    lng: number;
+  };
+  radius_miles?: number;              // Default: 5, max: 25
+  categories?: string[];              // Optional category filter
+}
+```
+
+**Output:**
+```typescript
+{
+  session_id: string;
+  state: 'ACTIVE';
+  started_at: string;
+  location: { lat: number; lng: number };
+  radius_miles: number;
+  categories: string[] | null;
+}
+```
+
+**Errors:**
+- `FORBIDDEN` - User in COOLDOWN or BANNED state
+- `VALIDATION_ERROR` - Invalid location
+
+---
+
+### liveMode.deactivate
+
+Deactivate live mode.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  reason?: 'MANUAL' | 'FATIGUE';      // Default: MANUAL
+}
+```
+
+**Output:**
+```typescript
+{
+  session_id: string;
+  state: 'OFF';
+  ended_at: string;
+  end_reason: string;
+  session_stats: {
+    duration_minutes: number;
+    tasks_accepted: number;
+    tasks_declined: number;
+    tasks_completed: number;
+    earnings_cents: number;
+  };
+}
+```
+
+---
+
+### liveMode.getStatus
+
+Get current live mode status.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  state: 'OFF' | 'ACTIVE' | 'COOLDOWN' | 'PAUSED';
+  session: {
+    id: string;
+    started_at: string;
+    location: { lat: number; lng: number };
+    radius_miles: number;
+    tasks_accepted: number;
+    earnings_cents: number;
+  } | null;
+  cooldown_ends_at: string | null;
+  ban_ends_at: string | null;
+  stats_today: {
+    sessions: number;
+    total_minutes: number;
+    tasks_completed: number;
+    earnings_cents: number;
+  };
+}
+```
+
+---
+
+### liveMode.updateLocation
+
+Update location while in live mode.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
+```
+
+**Output:**
+```typescript
+{
+  location: { lat: number; lng: number };
+  updated_at: string;
+  nearby_broadcast_count: number;
+}
+```
+
+**Errors:**
+- `CONFLICT` - Not in ACTIVE state
+
+---
+
+### liveMode.respondToBroadcast
+
+Respond to a live task broadcast.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  broadcast_id: string;
+  response: 'ACCEPT' | 'DECLINE' | 'SKIP';
+  decline_reason?: string;            // Required if DECLINE
+}
+```
+
+**Output:**
+```typescript
+{
+  success: boolean;
+  task?: {                            // Only if ACCEPT succeeded
+    id: string;
+    title: string;
+    price: number;
+    location: string;
+    deadline: string;
+  };
+  message?: string;                   // If already claimed by another
+}
+```
+
+---
+
+## Task Feed Endpoints
+
+### task.getFeed
+
+Get personalized task feed for hustlers.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  location?: {
+    lat: number;
+    lng: number;
+  };
+  radius_miles?: number;              // Default: 25, max: 100
+  categories?: string[];
+  min_price?: number;                 // in cents
+  max_price?: number;
+  sort_by?: 'relevance' | 'distance' | 'price_desc' | 'price_asc' | 'deadline';
+  pagination?: {
+    limit?: number;                   // Default: 20, max: 50
+    cursor?: string;                  // Cursor-based pagination
+  };
+}
+```
+
+**Output:**
+```typescript
+{
+  tasks: {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    price: number;
+    location: string;
+    distance_miles: number | null;
+    deadline: string;
+    mode: 'STANDARD' | 'LIVE';
+    poster: UserSummary;
+    matching_score: number;           // 0.0 to 1.0
+    eligibility: {
+      eligible: boolean;
+      blockers: string[];             // e.g., ['requires_license_electrician']
+    };
+    created_at: string;
+  }[];
+  pagination: {
+    next_cursor: string | null;
+    has_more: boolean;
+    total_estimate: number;
+  };
+  feed_metadata: {
+    location_used: { lat: number; lng: number } | null;
+    radius_miles: number;
+    applied_filters: string[];
+    personalization_factors: string[];
+  };
+}
+```
+
+---
+
+### task.getMatchingScore
+
+Get detailed matching score breakdown for a task.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  task_id: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  overall_score: number;              // 0.0 to 1.0
+  components: {
+    distance_score: number;           // 0.0 to 1.0, weight: 0.25
+    price_attractiveness: number;     // 0.0 to 1.0, weight: 0.20
+    category_match: number;           // 0.0 to 1.0, weight: 0.20
+    poster_rating: number;            // 0.0 to 1.0, weight: 0.15
+    urgency_fit: number;              // 0.0 to 1.0, weight: 0.10
+    trust_compatibility: number;      // 0.0 to 1.0, weight: 0.10
+  };
+  eligibility: {
+    eligible: boolean;
+    checks: {
+      name: string;
+      passed: boolean;
+      requirement?: string;
+    }[];
+  };
+}
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
 |---------|------|---------|
 | 1.0.0 | Jan 2025 | Initial API contract |
+| 1.1.0 | Jan 2025 | Added onboarding, verification, liveMode, task.getFeed endpoints. Fixed photo_urls array type. Fixed price minimum to 500 cents. |
 
 ---
 
