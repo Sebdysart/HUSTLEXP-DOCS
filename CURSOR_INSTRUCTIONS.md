@@ -49,6 +49,9 @@ You are NOT responsible for:
 2. specs/03-frontend/HUSTLER_UI_SPEC.md    ← Hustler role screens
 3. specs/03-frontend/POSTER_UI_SPEC.md     ← Poster role screens
 4. specs/03-frontend/ONBOARDING_FLOW.md    ← Onboarding screens
+5. specs/03-frontend/WALLET_UI_SPEC.md     ← Wallet & payments
+6. specs/03-frontend/LIVE_MODE_UI_SPEC.md  ← Live mode (hustler)
+7. specs/03-frontend/MESSAGING_UI_SPEC.md  ← In-task messaging
 ```
 
 ### For Specific Screens
@@ -350,9 +353,24 @@ const radius = {
 - Active Task
 - Submit Proof
 - Task Complete (XP animation)
-- Earnings Dashboard
 - Profile
 - Settings
+```
+
+### Hustler Wallet (specs/03-frontend/WALLET_UI_SPEC.md)
+```
+- Wallet Home (balance, transactions)
+- Withdrawal Flow (3 steps)
+- Payout Settings
+```
+
+### Hustler Live Mode (specs/03-frontend/LIVE_MODE_UI_SPEC.md)
+```
+- Live Mode Toggle
+- Active Session Header
+- Live Task Broadcast Card
+- Session Summary
+- Cooldown Display
 ```
 
 ### Poster Screens (specs/03-frontend/POSTER_UI_SPEC.md)
@@ -360,11 +378,17 @@ const radius = {
 - Create Task
 - My Posted Tasks
 - Task Detail (poster view)
+- Hustler On Way (tracking)
 - Review Proof
 - Approve/Reject
-- Payment History
 - Profile
 - Settings
+```
+
+### Poster Payments (specs/03-frontend/WALLET_UI_SPEC.md)
+```
+- Payment Methods
+- Transaction History
 ```
 
 ### Onboarding Screens (specs/03-frontend/ONBOARDING_FLOW.md)
@@ -378,10 +402,16 @@ const radius = {
 - Summary
 ```
 
+### Messaging (specs/03-frontend/MESSAGING_UI_SPEC.md)
+```
+- Message List
+- Thread View
+- Closed Thread State
+```
+
 ### Shared Screens
 ```
 - Login/Signup (Firebase Auth UI)
-- Messaging Thread
 - Notifications
 - Dispute Flow
 - Rating Screen

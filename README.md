@@ -54,6 +54,9 @@ IF UNCLEAR, STOP AND ASK.
 | `specs/03-frontend/DESIGN_SYSTEM.md` | Colors, typography, spacing |
 | `specs/03-frontend/HUSTLER_UI_SPEC.md` | Hustler role screens |
 | `specs/03-frontend/POSTER_UI_SPEC.md` | Poster role screens |
+| `specs/03-frontend/WALLET_UI_SPEC.md` | Wallet & payment screens |
+| `specs/03-frontend/LIVE_MODE_UI_SPEC.md` | Live mode UI (hustler) |
+| `specs/03-frontend/MESSAGING_UI_SPEC.md` | In-task messaging |
 | `specs/03-frontend/ONBOARDING_FLOW.md` | Onboarding flow |
 | `specs/03-frontend/NOTIFICATION_UX.md` | Push notification templates |
 | `specs/03-frontend/SOUND_DESIGN.md` | Audio feedback specs |
