@@ -805,8 +805,457 @@ Done: [ ]
 
 > This phase connects screens to mock data and state.
 > Backend integration is NOT in scope for this phase.
+> Mock data source: `mock-data/` directory
 
-(To be detailed after Screens Phase complete)
+---
+
+### MOCK DATA SETUP (Steps 070-072)
+
+### STEP 070: Install Mock Data Module
+```
+Input: mock-data/MOCK_DATA_SPEC.md
+Output: src/mock-data/ directory copied from HUSTLEXP-DOCS
+Depends: STEP 066
+Constraints:
+  - Copy all files from HUSTLEXP-DOCS/mock-data/ to src/mock-data/
+  - Verify imports work
+  - No modifications to mock data files
+Done: [ ]
+```
+
+### STEP 071: Create Data Service Layer
+```
+Input: mock-data/index.js, FRONTEND_ARCHITECTURE.md §6
+Output: src/services/dataService.js
+Depends: STEP 070
+Constraints:
+  - Single file that wraps mock data access
+  - Async functions that simulate API calls
+  - mockDelay() for realistic loading states
+  - Easy to swap for real API later
+Done: [ ]
+```
+
+### STEP 072: Create Current User Context
+```
+Input: FRONTEND_ARCHITECTURE.md §5
+Output: src/contexts/UserContext.js
+Depends: STEP 071
+Constraints:
+  - React Context for current user
+  - Default to 'user-hustler-active' for testing
+  - Provider wraps app
+  - useCurrentUser() hook
+Done: [ ]
+```
+
+---
+
+### AUTH SCREENS WIRING (Steps 073-074)
+
+### STEP 073: Wire A1 AuthLoginScreen
+```
+Input: screens-spec/auth/AUTH_SCREENS.md §A1, dataService.js
+Output: src/screens/auth/AuthLoginScreen.tsx (modified)
+Depends: STEP 072
+Constraints:
+  - Form validation (email format, password min length)
+  - Loading state during "login"
+  - Mock login sets user context
+  - Navigate to main app on success
+  - Error state for invalid credentials
+Done: [ ]
+```
+
+### STEP 074: Wire A2-A4 Auth Screens
+```
+Input: screens-spec/auth/AUTH_SCREENS.md §A2-A4
+Output: AuthSignupScreen, AuthForgotPasswordScreen, AuthPhoneVerificationScreen (modified)
+Depends: STEP 073
+Constraints:
+  - Form validation on all inputs
+  - Loading states
+  - Mock success flows
+  - Navigation between screens
+Done: [ ]
+```
+
+---
+
+### HUSTLER SCREENS WIRING (Steps 075-082)
+
+### STEP 075: Wire H1 HustlerHomeScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H1, mock-data/users.js
+Output: src/screens/hustler/HustlerHomeScreen.tsx (modified)
+Depends: STEP 074
+Constraints:
+  - Fetch current user from context
+  - Display XP, level, trust tier from mock data
+  - Show active task card (if any)
+  - Show available tasks count
+  - Loading skeleton while fetching
+Done: [ ]
+```
+
+### STEP 076: Wire H2 TaskFeedScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H2, mock-data/tasks.js
+Output: src/screens/hustler/TaskFeedScreen.tsx (modified)
+Depends: STEP 075
+Constraints:
+  - Fetch OPEN tasks from mock data
+  - Filter by category, price range
+  - Sort by newest, highest pay, closest
+  - Pull-to-refresh (re-fetch mock data)
+  - Empty state when no tasks
+  - Navigate to TaskDetail on tap
+Done: [ ]
+```
+
+### STEP 077: Wire H3 TaskHistoryScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H3, mock-data/tasks.js
+Output: src/screens/hustler/TaskHistoryScreen.tsx (modified)
+Depends: STEP 076
+Constraints:
+  - Fetch completed/cancelled tasks for current user
+  - Show earnings per task
+  - Show completion date
+  - Filter by date range
+  - Empty state
+Done: [ ]
+```
+
+### STEP 078: Wire H4 TaskDetailScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H4, mock-data/tasks.js
+Output: src/screens/hustler/TaskDetailScreen.tsx (modified)
+Depends: STEP 077
+Constraints:
+  - Receive taskId via navigation params
+  - Fetch task details from mock data
+  - Show poster info
+  - Show escrow state
+  - Accept button (updates task state locally)
+  - Eligibility check against user trust tier
+Done: [ ]
+```
+
+### STEP 079: Wire H5 TaskInProgressScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H5, mock-data/tasks.js
+Output: src/screens/hustler/TaskInProgressScreen.tsx (modified)
+Depends: STEP 078
+Constraints:
+  - Show task details
+  - Timer counting up
+  - Chat button navigates to TaskConversation
+  - Map placeholder with task location
+  - Complete button navigates to TaskCompletion
+  - Cancel button with confirmation modal
+Done: [ ]
+```
+
+### STEP 080: Wire H6 TaskCompletionScreen (Hustler)
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H6, mock-data/proofs.js
+Output: src/screens/hustler/TaskCompletionScreen.tsx (modified)
+Depends: STEP 079
+Constraints:
+  - Photo upload placeholder
+  - Description input
+  - Submit button creates mock proof
+  - Loading state during submission
+  - Success state shows "Awaiting Review"
+Done: [ ]
+```
+
+### STEP 081: Wire H8 XPBreakdownScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H8, mock-data/xp-ledger.js
+Output: src/screens/hustler/XPBreakdownScreen.tsx (modified)
+Depends: STEP 080
+Constraints:
+  - Fetch XP ledger for current user
+  - Show total XP, current level
+  - Level progress bar
+  - Recent XP entries list
+  - Streak multiplier display
+Done: [ ]
+```
+
+### STEP 082: Wire H9 TrustTierScreen
+```
+Input: screens-spec/hustler/HUSTLER_SCREENS.md §H8 (Trust Tier), mock-data/users.js
+Output: src/screens/hustler/TrustTierScreen.tsx (modified)
+Depends: STEP 081
+Constraints:
+  - Show current trust tier
+  - Show requirements for next tier
+  - Visual tier progression
+  - Benefits per tier
+Done: [ ]
+```
+
+---
+
+### POSTER SCREENS WIRING (Steps 083-088)
+
+### STEP 083: Wire P1 PosterHomeScreen
+```
+Input: screens-spec/poster/POSTER_SCREENS.md §P1, mock-data/tasks.js
+Output: src/screens/poster/PosterHomeScreen.tsx (modified)
+Depends: STEP 082
+Constraints:
+  - Fetch tasks posted by current user
+  - Active tasks count
+  - Pending reviews count
+  - Quick create button
+Done: [ ]
+```
+
+### STEP 084: Wire P2 TaskCreationScreen
+```
+Input: screens-spec/poster/POSTER_SCREENS.md §P2, mock-data/tasks.js
+Output: src/screens/poster/TaskCreationScreen.tsx (modified)
+Depends: STEP 083
+Constraints:
+  - Title, description inputs with validation
+  - Category selector
+  - Price input (USD)
+  - Location input placeholder
+  - Post button creates mock task
+  - Navigate to ActiveTasks on success
+Done: [ ]
+```
+
+### STEP 085: Wire P3 ActiveTasksScreen
+```
+Input: screens-spec/poster/POSTER_SCREENS.md §P3, mock-data/tasks.js
+Output: src/screens/poster/ActiveTasksScreen.tsx (modified)
+Depends: STEP 084
+Constraints:
+  - List tasks in OPEN, ACCEPTED, PROOF_SUBMITTED states
+  - Status indicators (color coded)
+  - Navigate to TaskManagement on tap
+  - Empty state
+Done: [ ]
+```
+
+### STEP 086: Wire P5 TaskManagementScreen
+```
+Input: screens-spec/poster/POSTER_SCREENS.md §P5, mock-data/tasks.js
+Output: src/screens/poster/TaskManagementScreen.tsx (modified)
+Depends: STEP 085
+Constraints:
+  - Show task details
+  - Worker info (when assigned)
+  - Cancel button (if not completed)
+  - Edit button (if still OPEN)
+Done: [ ]
+```
+
+### STEP 087: Wire P7 ProofReviewScreen
+```
+Input: screens-spec/poster/POSTER_SCREENS.md §P7, mock-data/proofs.js
+Output: src/screens/poster/ProofReviewScreen.tsx (modified)
+Depends: STEP 086
+Constraints:
+  - Show submitted proof (photos, description)
+  - Approve button (transitions task to COMPLETED)
+  - Dispute button (transitions task to DISPUTED)
+  - Request revision button
+Done: [ ]
+```
+
+### STEP 088: Wire P8 TaskCompletionScreen (Poster)
+```
+Input: screens-spec/poster/POSTER_SCREENS.md §P8, mock-data/tasks.js
+Output: src/screens/poster/TaskCompletionScreen.tsx (modified)
+Depends: STEP 087
+Constraints:
+  - Completion summary
+  - Rating input (1-5 stars)
+  - Optional review text
+  - Submit button
+Done: [ ]
+```
+
+---
+
+### SHARED SCREENS WIRING (Steps 089-092)
+
+### STEP 089: Wire SH1 TaskConversationScreen
+```
+Input: screens-spec/shared/SHARED_SCREENS.md §SH1, mock-data/messages.js
+Output: src/screens/shared/TaskConversationScreen.tsx (modified)
+Depends: STEP 088
+Constraints:
+  - Fetch messages for task
+  - Message list (scrollable)
+  - Message input
+  - Send button (adds to mock messages)
+  - Task context header
+Done: [ ]
+```
+
+### STEP 090: Wire SH2 TaskDetailScreen (Shared)
+```
+Input: screens-spec/shared/SHARED_SCREENS.md §SH2, mock-data/tasks.js
+Output: src/screens/shared/TaskDetailScreen.tsx (modified)
+Depends: STEP 089
+Constraints:
+  - Task title, description
+  - Category, location, price
+  - Poster info
+  - Accept button (for hustlers viewing)
+  - Role-aware UI (different for poster vs hustler)
+Done: [ ]
+```
+
+### STEP 091: Wire SH3 ProofSubmissionScreen
+```
+Input: screens-spec/shared/SHARED_SCREENS.md §SH3, mock-data/proofs.js
+Output: src/screens/shared/ProofSubmissionScreen.tsx (modified)
+Depends: STEP 090
+Constraints:
+  - Photo upload placeholder
+  - Text description
+  - Submit button
+  - Validation (photo required)
+Done: [ ]
+```
+
+### STEP 092: Wire SH4 DisputeScreen
+```
+Input: screens-spec/shared/SHARED_SCREENS.md §SH4, mock-data/tasks.js
+Output: src/screens/shared/DisputeScreen.tsx (modified)
+Depends: STEP 091
+Constraints:
+  - Dispute reason selector
+  - Description input
+  - Evidence upload placeholder
+  - Submit button
+Done: [ ]
+```
+
+---
+
+### SETTINGS SCREENS WIRING (Steps 093-095)
+
+### STEP 093: Wire S1 SettingsMainScreen
+```
+Input: screens-spec/settings/SETTINGS_SCREENS.md §S1, mock-data/users.js
+Output: src/screens/settings/SettingsMainScreen.tsx (modified)
+Depends: STEP 092
+Constraints:
+  - Account section (email, phone)
+  - Preferences section
+  - About section
+  - Logout button (clears user context)
+Done: [ ]
+```
+
+### STEP 094: Wire S4 PaymentSettingsScreen
+```
+Input: screens-spec/settings/SETTINGS_SCREENS.md §S4
+Output: src/screens/settings/PaymentSettingsScreen.tsx (modified)
+Depends: STEP 093
+Constraints:
+  - Saved payment methods list (mock)
+  - Add payment method button (placeholder)
+  - Default payment indicator
+Done: [ ]
+```
+
+### STEP 095: Wire S5-S7 Remaining Settings
+```
+Input: screens-spec/settings/SETTINGS_SCREENS.md §S5-S7
+Output: PrivacySettingsScreen, VerificationScreen, SupportScreen (modified)
+Depends: STEP 094
+Constraints:
+  - Toggle controls with mock state
+  - Verification status from mock user
+  - FAQ list (static)
+  - Contact support button (placeholder)
+Done: [ ]
+```
+
+---
+
+### EDGE SCREENS WIRING (Steps 096-097)
+
+### STEP 096: Wire E1-E3 Edge Screens
+```
+Input: screens-spec/edge/EDGE_SCREENS.md §E1-E3
+Output: NoTasksScreen, EligibilityMismatchScreen, NetworkErrorScreen (modified)
+Depends: STEP 095
+Constraints:
+  - Static content with appropriate messaging
+  - Action buttons (retry, expand search, etc.)
+  - Navigation back to main screens
+Done: [ ]
+```
+
+### STEP 097: Wire E4-E5 System Edge Screens
+```
+Input: screens-spec/edge/EDGE_SCREENS.md §E4-E5
+Output: MaintenanceScreen, ForceUpdateScreen (modified)
+Depends: STEP 096
+Constraints:
+  - Static maintenance message
+  - App Store link button
+Done: [ ]
+```
+
+---
+
+### NOTIFICATIONS & BADGES WIRING (Steps 098-099)
+
+### STEP 098: Wire Notifications Component
+```
+Input: mock-data/notifications.js
+Output: src/components/NotificationBell.tsx, src/screens/NotificationsScreen.tsx
+Depends: STEP 097
+Constraints:
+  - Bell icon with unread count badge
+  - Notifications list screen
+  - Mark as read on tap
+  - Navigate to relevant screen on tap
+Done: [ ]
+```
+
+### STEP 099: Wire Badges Display
+```
+Input: mock-data/badges.js
+Output: src/components/BadgeDisplay.tsx, src/screens/BadgesScreen.tsx
+Depends: STEP 098
+Constraints:
+  - Badge grid showing earned badges
+  - Locked badge silhouettes for unearned
+  - Badge detail modal
+  - Progress toward next badge
+Done: [ ]
+```
+
+---
+
+### WIRING PHASE GATE (Step 100)
+
+### STEP 100: Wiring Gate Complete
+```
+Input: All WIRING steps
+Output: CURRENT_PHASE.md updated to "INTEGRATION"
+Depends: STEP 099
+Constraints:
+  - All screens display mock data
+  - All state transitions work locally
+  - No console errors
+  - Navigation flows complete
+  - User confirms advancement
+Done: [ ]
+```
 
 ---
 
