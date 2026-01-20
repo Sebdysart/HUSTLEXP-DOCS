@@ -160,10 +160,10 @@ Trust tier determines maximum risk clearance level. The mapping is immutable and
 
 **Enforcement:**
 - Database check constraint on capability profiles
-- Trust tier A → low risk only
-- Trust tier B → low and medium risk
-- Trust tier C → low and medium risk
-- Trust tier D → low, medium, and high risk
+- Trust tier 1 (ROOKIE) → low risk only
+- Trust tier 2 (VERIFIED) → low and medium risk
+- Trust tier 3 (TRUSTED) → low and medium risk
+- Trust tier 4 (ELITE) → low, medium, and high risk
 
 **Violation Behavior:**
 If violated, users could access tasks they are not legally or safely qualified for, leading to liability and trust erosion.
@@ -821,9 +821,9 @@ Trust tier changes are logged in `trust_ledger` (append-only).
 
 **Risk Clearance Mapping:**
 - Trust tier determines the maximum risk level of tasks a user can access (see INV-ELIGIBILITY-1 in §2)
-- This mapping is **immutable**—trust tier A cannot access high-risk tasks, even if the user is willing
+- This mapping is **immutable**—trust tier 1 (ROOKIE) cannot access high-risk tasks, even if the user is willing
 - Risk clearance is derived from trust tier, not stored separately, ensuring consistency
-- Users with trust tier D can access all risk levels (low, medium, high); users with trust tier A can only access low-risk tasks
+- Users with trust tier 4 (ELITE) can access all risk levels (low, medium, high); users with trust tier 1 (ROOKIE) can only access low-risk tasks
 
 **What This Prevents:**
 - New users accepting high-risk tasks they're not yet trusted to complete
@@ -1134,7 +1134,7 @@ Every message is **task-scoped**. No general chat. No DMs. Only task-specific co
 
 ### 10.3 Message Types
 
-- **Text Messages:** Maximum 2000 characters, no links
+- **Text Messages:** Maximum 500 characters, no links
 - **Auto-Messages:** Quick responses ("On my way", "Running late", "Completed")
 - **Photo Sharing:** Maximum 3 photos per message, stored in evidence table
 - **Location Sharing:** One-time "I'm here" location (optional, expires after 15 minutes)
@@ -1153,7 +1153,7 @@ All messages scanned via AI (A2 authority):
 | **MSG-1** | Messages only allowed during ACCEPTED/PROOF_SUBMITTED/DISPUTED | Backend validation |
 | **MSG-2** | Sender must be poster or worker for task | Backend validation |
 | **MSG-3** | Maximum 3 photos per message | DB constraint |
-| **MSG-4** | Maximum 2000 characters per text message | Backend validation |
+| **MSG-4** | Maximum 500 characters per text message | DB constraint (schema.sql line 1485) |
 | **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation |
 
 **Detailed specification:** See `staging/MESSAGING_SPEC.md`
@@ -1666,9 +1666,9 @@ If a task appears in your feed, you can accept it. Period.
 
 **Trust Tier:**
 - Determines maximum risk clearance level (see INV-ELIGIBILITY-1)
-- Trust tier A → low risk only
-- Trust tier B/C → low and medium risk
-- Trust tier D → low, medium, and high risk
+- Trust tier 1 (ROOKIE) → low risk only
+- Trust tier 2/3 (VERIFIED/TRUSTED) → low and medium risk
+- Trust tier 4 (ELITE) → low, medium, and high risk
 
 **Insurance:**
 - Required for high-risk tasks (in-home work, property damage risk)
@@ -1724,7 +1724,7 @@ If a task appears in your feed, you can accept it. Period.
 
 **Trust Tiers (§8.2):**
 - Trust tier determines risk clearance level (see INV-ELIGIBILITY-1)
-- Risk clearance caps task visibility (high-risk tasks require trust tier D)
+- Risk clearance caps task visibility (high-risk tasks require trust tier 4/ELITE)
 - Trust tier changes trigger capability profile recomputation
 
 **Onboarding (§8.1):**
@@ -1800,7 +1800,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX801` | Message sent outside allowed task states | MSG-1 violation |
 | `HX802` | Message sender not task participant | MSG-2 violation |
 | `HX803` | Message photo count exceeds limit (3) | MSG-3 violation |
-| `HX804` | Message content exceeds limit (2000 chars) | MSG-4 violation |
+| `HX804` | Message content exceeds limit (500 chars) | MSG-4 violation |
 | `HX805` | Notification sent to non-participant | NOTIF-1 violation |
 | `HX806` | Notification frequency limit exceeded | NOTIF-3 violation |
 | `HX807` | Rating submitted before task COMPLETED | RATE-1 violation |

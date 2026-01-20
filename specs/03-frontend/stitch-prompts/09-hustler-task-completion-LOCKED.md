@@ -33,7 +33,7 @@
 - ❌ Cannot bypass correction to appeal (support is visually de-emphasized, feels like last resort)
 
 **Backend States Represented:**
-- `task.state === 'COMPLETION_REVIEW'`
+- `task.state === 'PROOF_SUBMITTED'`
 - `proof_status: APPROVED | REJECTED | NEEDS_CORRECTION`
 - `proof_rejection_reasons[]` (explicit bullet list)
 - `xp_eligible: true | false`

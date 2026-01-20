@@ -141,7 +141,7 @@ interface PosterTaskCreationProps {
   };
 
   // Callbacks
-  onFieldChange: (field: string, value: any) => void;
+  onFieldChange: (field: keyof TaskCreationFormData, value: string | number | boolean | string[]) => void;
   onToggleInstantMode: () => void;
   onSubmit: () => void;
   onCancel: () => void;
