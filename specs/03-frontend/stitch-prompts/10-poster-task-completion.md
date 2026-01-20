@@ -189,3 +189,70 @@ Constraints:
 - Disputes feel exceptional (not routine, system is authoritative)
 
 ---
+
+## Props Interface
+
+```typescript
+interface PosterTaskCompletionProps {
+  // Task data
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    contractId: string;               // e.g., "#820-A4"
+    completedAt: string;              // ISO 8601
+  };
+
+  // Worker info
+  worker: {
+    id: string;
+    displayName: string;              // e.g., "Alex M."
+    initials: string;                 // e.g., "AM"
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
+    };
+    stats: {
+      tasksCompleted: number;
+      averageRating: number;
+    };
+    isVerified: boolean;
+  };
+
+  // Verification summary
+  verification: {
+    workCompleted: boolean;
+    proofVerified: boolean;
+    locationConfirmed: boolean;
+    method: 'AUTO' | 'MANUAL';
+    timestamp: string;                // ISO 8601
+  };
+
+  // Payment
+  payment: {
+    amount: number;                   // In cents
+    status: 'RELEASED';
+    releasedAt: string;               // ISO 8601
+  };
+
+  // Proof (collapsible)
+  proof: {
+    itemCount: number;
+    available: boolean;
+  };
+
+  // Callbacks
+  onLeaveFeedback: () => void;
+  onReportIssue: () => void;
+  onViewProof: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task and worker data from `task.getById` with completion state
+- Verification summary computed by backend
+- Payment status from escrow table
+- Proof viewable but not downloadable

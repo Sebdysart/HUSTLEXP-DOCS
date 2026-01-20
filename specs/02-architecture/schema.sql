@@ -131,8 +131,10 @@ CREATE TABLE tasks (
     description TEXT NOT NULL,
     requirements TEXT,
     location VARCHAR(255),
+    location_lat NUMERIC(10, 7),     -- Latitude for geo-matching
+    location_lng NUMERIC(10, 7),     -- Longitude for geo-matching
     category VARCHAR(50),
-    
+
     -- Pricing (in USD cents — PRODUCT_SPEC §4.3)
     price INTEGER NOT NULL CHECK (price > 0),
     

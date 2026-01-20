@@ -1186,6 +1186,30 @@ interface ProofSummary {
   state: ProofState;
   submitted_at: string | null;
 }
+
+/**
+ * Eligibility Blocker Format
+ * Used in task.getFeed to explain why a user cannot accept a task
+ * Format: {type}_{requirement}
+ */
+interface EligibilityBlocker {
+  type:
+    | 'TRUST_TIER'      // User's trust tier too low
+    | 'LICENSE'         // Missing required license
+    | 'INSURANCE'       // Missing required insurance
+    | 'BACKGROUND'      // Missing background check
+    | 'LOCATION'        // Outside service area
+    | 'VERIFICATION';   // Account not verified
+  requirement: string;  // e.g., 'electrician', 'tier_3', 'TX'
+  message: string;      // Human-readable explanation
+}
+
+// Example blockers:
+// { type: 'TRUST_TIER', requirement: 'tier_3', message: 'Requires Trusted tier (Tier 3)' }
+// { type: 'LICENSE', requirement: 'electrician', message: 'Requires verified electrician license' }
+// { type: 'INSURANCE', requirement: 'liability', message: 'Requires liability insurance' }
+// { type: 'BACKGROUND', requirement: 'standard', message: 'Requires background check' }
+// { type: 'LOCATION', requirement: 'TX', message: 'Task is in Texas, your license is for CA' }
 ```
 
 ---
@@ -1480,7 +1504,7 @@ Get computed capability profile.
 ```typescript
 {
   user_id: string;
-  trust_tier: 'A' | 'B' | 'C' | 'D';  // Maps to 1-4 numeric
+  trust_tier: 1 | 2 | 3 | 4;  // 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
   risk_clearance: ('low' | 'medium' | 'high')[];
   verified_trades: {
     trade: string;
@@ -1719,7 +1743,7 @@ Get personalized task feed for hustlers.
     matching_score: number;           // 0.0 to 1.0
     eligibility: {
       eligible: boolean;
-      blockers: string[];             // e.g., ['requires_license_electrician']
+      blockers: EligibilityBlocker[]; // See format below
     };
     created_at: string;
   }[];
@@ -1778,12 +1802,290 @@ Get detailed matching score breakdown for a task.
 
 ---
 
+## Rating Endpoints
+
+### rating.submit
+
+Submit a rating after task completion.
+
+**Auth:** Protected (must be poster or worker on the task)
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  task_id: string;
+  stars: number;           // 1-5, required
+  comment?: string;        // Max 500 chars, optional
+  tags?: string[];         // Optional, from predefined list
+}
+```
+
+**Predefined Tags:**
+- Worker rating poster: `['clear_instructions', 'responsive', 'fair_expectations', 'prompt_payment']`
+- Poster rating worker: `['on_time', 'professional', 'high_quality', 'good_communication', 'went_above']`
+
+**Output:**
+```typescript
+{
+  id: string;
+  task_id: string;
+  rater_id: string;
+  ratee_id: string;
+  stars: number;
+  comment: string | null;
+  tags: string[];
+  created_at: string;
+}
+```
+
+**Errors:**
+- `FORBIDDEN` - Task not in COMPLETED state
+- `FORBIDDEN` - User is not poster or worker for task
+- `CONFLICT` - User already rated this task
+- `VALIDATION_ERROR` - Rating window expired (7 days after completion)
+- `VALIDATION_ERROR` - Stars must be 1-5
+
+---
+
+### rating.getForTask
+
+Get ratings for a specific task.
+
+**Auth:** Protected (must be poster or worker on the task)
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  task_id: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  poster_rating: {
+    id: string;
+    stars: number;
+    comment: string | null;
+    tags: string[];
+    created_at: string;
+  } | null;
+  worker_rating: {
+    id: string;
+    stars: number;
+    comment: string | null;
+    tags: string[];
+    created_at: string;
+  } | null;
+  both_submitted: boolean;
+  rating_window_expires_at: string | null;
+}
+```
+
+---
+
+### rating.getForUser
+
+Get aggregated ratings for a user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  user_id: string;
+  role?: 'poster' | 'worker';  // Filter by role
+  limit?: number;              // Recent ratings, default 10, max 50
+}
+```
+
+**Output:**
+```typescript
+{
+  user_id: string;
+  aggregate: {
+    average_stars: number;       // 0.0 to 5.0
+    total_ratings: number;
+    star_distribution: {
+      '1': number;
+      '2': number;
+      '3': number;
+      '4': number;
+      '5': number;
+    };
+    common_tags: { tag: string; count: number }[];
+  };
+  recent_ratings: {
+    id: string;
+    task_id: string;
+    stars: number;
+    comment: string | null;
+    tags: string[];
+    rater: UserSummary;
+    created_at: string;
+  }[];
+}
+```
+
+---
+
+## WebSocket Events (Live Mode)
+
+### Connection
+
+**Endpoint:** `wss://api.hustlexp.com/ws`
+**Auth:** Firebase JWT token in query param or header
+
+```typescript
+// Connection URL
+wss://api.hustlexp.com/ws?token=<firebase_jwt>
+```
+
+### Event Types
+
+#### Server → Client Events
+
+```typescript
+// Live task broadcast
+interface LiveTaskBroadcast {
+  type: 'LIVE_TASK_BROADCAST';
+  data: {
+    broadcast_id: string;
+    task: {
+      id: string;
+      title: string;
+      description: string;
+      price: number;
+      location: string;
+      distance_miles: number;
+      deadline: string;
+      xp_multiplier: number;    // 1.25x for live tasks
+    };
+    expires_at: string;         // Countdown deadline
+    poster: UserSummary;
+  };
+}
+
+// Broadcast expired/claimed
+interface LiveTaskUnavailable {
+  type: 'LIVE_TASK_UNAVAILABLE';
+  data: {
+    broadcast_id: string;
+    reason: 'EXPIRED' | 'CLAIMED' | 'CANCELLED';
+  };
+}
+
+// Live mode state change
+interface LiveModeStateChange {
+  type: 'LIVE_MODE_STATE_CHANGE';
+  data: {
+    state: 'OFF' | 'ACTIVE' | 'COOLDOWN' | 'PAUSED';
+    reason?: string;
+    cooldown_ends_at?: string;
+  };
+}
+
+// Task status update
+interface TaskStatusUpdate {
+  type: 'TASK_STATUS_UPDATE';
+  data: {
+    task_id: string;
+    state: TaskState;
+    updated_at: string;
+  };
+}
+
+// New message notification
+interface NewMessage {
+  type: 'NEW_MESSAGE';
+  data: {
+    task_id: string;
+    message: Message;
+  };
+}
+```
+
+#### Client → Server Events
+
+```typescript
+// Subscribe to live mode broadcasts
+interface SubscribeLiveMode {
+  type: 'SUBSCRIBE_LIVE_MODE';
+  data: {
+    location: { lat: number; lng: number };
+    radius_miles: number;
+    categories?: string[];
+  };
+}
+
+// Unsubscribe from live mode
+interface UnsubscribeLiveMode {
+  type: 'UNSUBSCRIBE_LIVE_MODE';
+}
+
+// Update location
+interface UpdateLocation {
+  type: 'UPDATE_LOCATION';
+  data: {
+    location: { lat: number; lng: number };
+  };
+}
+
+// Respond to broadcast
+interface RespondToBroadcast {
+  type: 'RESPOND_TO_BROADCAST';
+  data: {
+    broadcast_id: string;
+    response: 'ACCEPT' | 'DECLINE' | 'SKIP';
+    decline_reason?: string;
+  };
+}
+
+// Subscribe to task updates
+interface SubscribeTask {
+  type: 'SUBSCRIBE_TASK';
+  data: {
+    task_id: string;
+  };
+}
+```
+
+### Connection Lifecycle
+
+```typescript
+// Heartbeat (client must send every 30 seconds)
+interface Heartbeat {
+  type: 'PING';
+}
+
+// Server response
+interface HeartbeatResponse {
+  type: 'PONG';
+  timestamp: string;
+}
+
+// Connection error
+interface ConnectionError {
+  type: 'ERROR';
+  data: {
+    code: string;
+    message: string;
+  };
+}
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
 |---------|------|---------|
 | 1.0.0 | Jan 2025 | Initial API contract |
 | 1.1.0 | Jan 2025 | Added onboarding, verification, liveMode, task.getFeed endpoints. Fixed photo_urls array type. Fixed price minimum to 500 cents. |
+| 1.2.0 | Jan 2025 | Added rating.* endpoints (§12 compliance). Added WebSocket events schema for Live Mode. |
 
 ---
 

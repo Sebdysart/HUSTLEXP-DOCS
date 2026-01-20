@@ -109,3 +109,57 @@ Constraints:
 - Hustler name de-emphasized = system state is hero, not individual
 
 ---
+
+## Props Interface
+
+```typescript
+interface PosterHustlerOnWayProps {
+  // Task data
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    state: 'ACCEPTED' | 'PROOF_SUBMITTED';
+  };
+
+  // Worker info
+  worker: {
+    id: string;
+    displayName: string;              // e.g., "Alex M."
+    avatarUrl?: string;
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
+    };
+    stats: {
+      tasksCompleted: number;
+      averageRating: number;
+    };
+  };
+
+  // Progress
+  currentStep: 'ACCEPTED' | 'EN_ROUTE' | 'WORKING' | 'COMPLETED';
+
+  // ETA
+  eta?: {
+    minutes: number;
+    basedOn: 'current_location' | 'estimate';
+  };
+
+  // Escrow
+  escrowState: 'FUNDED' | 'LOCKED_DISPUTE';
+
+  // Callbacks
+  onContactWorker: () => void;
+  onViewTaskDetails: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task and worker data from `task.getById` with worker relation
+- ETA computed from worker location updates (if available)
+- Progress steps derived from task state
+- Contact opens task conversation screen

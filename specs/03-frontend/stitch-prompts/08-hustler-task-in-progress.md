@@ -179,3 +179,75 @@ Constraints:
 - Dispute reviewer can reconstruct intent (auditable trail, proof timestamps)
 
 ---
+
+## Props Interface
+
+```typescript
+interface HustlerTaskInProgressProps {
+  // Task data
+  task: {
+    id: string;
+    title: string;
+    description: string;
+    location: string;
+    price: number;                    // In cents
+    mode: 'STANDARD' | 'LIVE';
+    state: 'ACCEPTED' | 'PROOF_SUBMITTED';
+    deadline: string;                 // ISO 8601
+    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    requiredTrustTier: 1 | 2 | 3 | 4;
+  };
+
+  // Time tracking
+  timeRemaining: {
+    minutes: number;
+    isLate: boolean;
+    warningMessage?: string;
+  };
+
+  // Checklist steps
+  steps: {
+    id: string;
+    label: string;
+    status: 'COMPLETED' | 'ACTIVE' | 'PENDING';
+    timestamp?: string;               // ISO 8601 for completed steps
+    verificationDetails?: string;     // e.g., "GPS Verified: 10:48 AM"
+  }[];
+
+  // Proof requirements
+  proofRequirements: {
+    contractId: string;               // e.g., "#820-A4"
+    badges: { icon: string; label: string; emphasized?: boolean }[];
+    visibilityRequirements: string[];
+    rules: string;
+    warningMessage: string;
+  };
+
+  // Escrow state
+  escrowState: 'FUNDED' | 'LOCKED_DISPUTE';
+
+  // Poster info (minimal)
+  poster: {
+    displayName: string;
+    isVerified: boolean;
+  };
+
+  // Callbacks
+  onCaptureProof: () => void;
+  onReportIssue: () => void;
+  onContactPoster: () => void;
+
+  // Loading states
+  isUploadingProof?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task data fetched via `task.getById`
+- Time remaining computed from deadline
+- Steps derived from task state and proof status
+- Proof requirements defined by task category/risk level
+- UI blocks completion until proof uploaded

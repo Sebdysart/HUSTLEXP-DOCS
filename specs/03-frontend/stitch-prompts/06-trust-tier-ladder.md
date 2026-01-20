@@ -126,3 +126,50 @@ Constraints:
 - System is in control
 
 ---
+
+## Props Interface
+
+```typescript
+interface TrustTierLadderProps {
+  // User's current tier
+  currentTier: {
+    level: 1 | 2 | 3 | 4;
+    name: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
+  };
+
+  // Progress towards next tier
+  progress: {
+    xpCurrent: number;
+    xpRequired: number;
+    tasksCompleted: number;
+    tasksRequired: number;
+    averageRating: number;
+    ratingRequired: number;
+    noDisputesDays: number;
+    noDisputesDaysRequired: number;
+  };
+
+  // All tiers data
+  tiers: {
+    level: 1 | 2 | 3 | 4;
+    name: string;
+    description: string;
+    status: 'LOCKED' | 'CURRENT' | 'ACHIEVED' | 'NEXT';
+    requirements: { label: string; met: boolean }[];
+    benefits: string[];
+  }[];
+
+  // Callbacks
+  onTierPress?: (tierLevel: number) => void;
+  onBackPress: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Tier data fetched via `user.getTrustTier` endpoint
+- Progress calculated from user profile stats
+- Tier requirements are constitutional (defined in PRODUCT_SPEC)
+- UI only displays, never computes eligibility

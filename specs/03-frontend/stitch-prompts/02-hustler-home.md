@@ -96,3 +96,63 @@ Constraints:
 - System is in control (Instant Mode ON, not optional)
 
 ---
+
+## Props Interface
+
+```typescript
+interface HustlerHomeProps {
+  // XP & Level data
+  xp: {
+    total: number;
+    currentLevel: number;
+    nextLevelThreshold: number;
+    progressPercent: number;
+  };
+
+  // Trust tier
+  trustTier: {
+    level: 1 | 2 | 3 | 4;
+    name: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
+    tasksCompleted: number;
+  };
+
+  // Streak
+  streak: {
+    currentDays: number;
+    isActive: boolean;
+  };
+
+  // Earnings
+  earnings: {
+    today: number;              // In cents
+    todayTaskCount: number;
+    thisWeek: number;
+    thisWeekTaskCount: number;
+    allTime: number;
+    allTimeTaskCount: number;
+  };
+
+  // Live Mode status
+  liveModeState: 'OFF' | 'ACTIVE' | 'COOLDOWN' | 'PAUSED';
+  liveModeSessionStartedAt?: string;
+
+  // Callbacks
+  onNavigateToFeed: () => void;
+  onNavigateToHistory: () => void;
+  onNavigateToProfile: () => void;
+  onNavigateToWallet: () => void;
+  onToggleLiveMode: () => void;
+
+  // Loading states
+  isLoading?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- All data fetched via `user.getProfile` and `user.getXP` endpoints
+- Earnings calculated from completed tasks with RELEASED escrow
+- Live Mode state from user profile
+- Parent handles navigation and Live Mode toggle

@@ -442,9 +442,15 @@ async function partialRefundEscrow(
   escrowId: string,
   workerPercent: number  // 0-100
 ) {
+  // Fetch escrow with task relation to get worker_id
   const { data: escrow } = await supabase
     .from('escrows')
-    .select('*')
+    .select(`
+      *,
+      tasks!inner (
+        worker_id
+      )
+    `)
     .eq('id', escrowId)
     .single();
 
@@ -457,11 +463,11 @@ async function partialRefundEscrow(
     amount: refundAmount,
   });
 
-  // 2. Transfer worker portion
+  // 2. Transfer worker portion (via task relation)
   const { data: connectedAccount } = await supabase
     .from('stripe_connected_accounts')
     .select('stripe_account_id')
-    .eq('user_id', escrow.worker_id)
+    .eq('user_id', escrow.tasks.worker_id)
     .single();
 
   const transfer = await stripe.transfers.create({

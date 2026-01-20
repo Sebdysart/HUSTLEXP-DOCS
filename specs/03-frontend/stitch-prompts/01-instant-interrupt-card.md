@@ -88,3 +88,43 @@ Constraints:
 - No spammy or aggressive copy
 
 ---
+
+## Props Interface
+
+```typescript
+interface InstantInterruptCardProps {
+  // Task data (from parent)
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    location: string;
+    distanceMiles: number;
+    requiredTrustTier: 1 | 2 | 3 | 4;
+    xpMultiplier: number;             // e.g., 1.8
+  };
+
+  // Countdown
+  expiresAt: string;                  // ISO 8601 timestamp
+
+  // User context
+  userTrustTier: 1 | 2 | 3 | 4;
+  userMeetsRequirements: boolean;
+
+  // Callbacks
+  onAccept: (taskId: string) => void;
+  onSkip: (taskId: string) => void;
+
+  // Loading states
+  isAccepting?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task data comes from LiveTaskBroadcast WebSocket event
+- Countdown computed from `expiresAt` vs current time
+- Parent handles accept/skip API calls
+- Card auto-dismisses when countdown reaches 0

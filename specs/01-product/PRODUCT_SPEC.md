@@ -895,7 +895,7 @@ Optional feedback flags:
 
 ---
 
-## §8. AI Task Completion System
+## §8a. AI Task Completion System
 
 ### 8.1 Core Principle (LOCK THIS)
 
@@ -1134,7 +1134,7 @@ Every message is **task-scoped**. No general chat. No DMs. Only task-specific co
 
 ### 10.3 Message Types
 
-- **Text Messages:** Maximum 500 characters, no links
+- **Text Messages:** Maximum 2000 characters, no links
 - **Auto-Messages:** Quick responses ("On my way", "Running late", "Completed")
 - **Photo Sharing:** Maximum 3 photos per message, stored in evidence table
 - **Location Sharing:** One-time "I'm here" location (optional, expires after 15 minutes)
@@ -1153,7 +1153,7 @@ All messages scanned via AI (A2 authority):
 | **MSG-1** | Messages only allowed during ACCEPTED/PROOF_SUBMITTED/DISPUTED | Backend validation |
 | **MSG-2** | Sender must be poster or worker for task | Backend validation |
 | **MSG-3** | Maximum 3 photos per message | DB constraint |
-| **MSG-4** | Maximum 500 characters per text message | Backend validation |
+| **MSG-4** | Maximum 2000 characters per text message | Backend validation |
 | **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation |
 
 **Detailed specification:** See `staging/MESSAGING_SPEC.md`
@@ -1795,7 +1795,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX801` | Message sent outside allowed task states | MSG-1 violation |
 | `HX802` | Message sender not task participant | MSG-2 violation |
 | `HX803` | Message photo count exceeds limit (3) | MSG-3 violation |
-| `HX804` | Message content exceeds limit (500 chars) | MSG-4 violation |
+| `HX804` | Message content exceeds limit (2000 chars) | MSG-4 violation |
 | `HX805` | Notification sent to non-participant | NOTIF-1 violation |
 | `HX806` | Notification frequency limit exceeded | NOTIF-3 violation |
 | `HX807` | Rating submitted before task COMPLETED | RATE-1 violation |
