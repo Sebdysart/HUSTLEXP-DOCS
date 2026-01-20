@@ -1,177 +1,219 @@
-# HustleXP Product Requirements Repository
+# HustleXP — Product Execution Repository
 
-> **The single source of truth for building HustleXP v1.0**
-
----
-
-## ⚠️ PRODUCT IS FROZEN
-
-| Document | Purpose | Status |
-|----------|---------|--------|
-| **[FINISHED_STATE.md](FINISHED_STATE.md)** | What "done" means | 🔒 FROZEN |
-| **[FEATURE_FREEZE.md](FEATURE_FREEZE.md)** | No new features | 🔒 ACTIVE |
-| **[AI_GUARDRAILS.md](AI_GUARDRAILS.md)** | AI behavior rules | 🔒 ACTIVE |
-| **[SCREEN_FEATURE_MATRIX.md](SCREEN_FEATURE_MATRIX.md)** | What each screen does | 🔒 FROZEN |
-
-**No feature may be added without modifying FINISHED_STATE.md first.**
+> **The single source of truth for building HustleXP MVP**
 
 ---
 
-## ⚠️ CURRENT PHASE: BOOTSTRAP
+## Quick Start for Cursor
 
-**Nothing proceeds until Bootstrap passes.**
-
-| Check | Status |
-|-------|--------|
-| App builds in Xcode | ❌ |
-| App launches without crash | ❌ |
-| BootstrapScreen renders | ❌ |
-| Button logs to console | ❌ |
-| 30-second stability | ❌ |
-
-📋 **[BOOTSTRAP.md](BOOTSTRAP.md)** — The runtime baseline  
-📋 **[CURRENT_PHASE.md](CURRENT_PHASE.md)** — What's allowed right now
-
----
-
-## 🚀 Quick Start
-
-### For Cursor (Frontend)
+### READ THESE FILES IN ORDER:
 ```
-READ IN ORDER:
-1. .cursorrules              ← ENFORCEMENT (not guidance)
-2. FINISHED_STATE.md         ← What the product IS
-3. SCREEN_FEATURE_MATRIX.md  ← What each screen does
-4. BOOTSTRAP.md              ← Your ONLY task right now
+1. CURSOR_INSTRUCTIONS.md     ← Master guide for implementation
+2. BUILD_READINESS.md         ← What's ready to build + build order
+3. specs/04-backend/BUILD_GUIDE.md  ← Authority hierarchy
+4. specs/02-architecture/schema.sql  ← All database tables
+5. specs/04-backend/API_CONTRACT.md  ← All API endpoints
 ```
 
-### For Claude Code (Backend)
+### THE ONE RULE:
 ```
-READ IN ORDER:
-1. .claude/instructions.md   ← ENFORCEMENT (not guidance)
-2. FINISHED_STATE.md         ← What the product IS
-3. AI_GUARDRAILS.md          ← Your behavior rules
-4. CURRENT_PHASE.md          ← Wait for frontend bootstrap
+IMPLEMENT EXACTLY WHAT THE SPECS SAY.
+DO NOT INVENT. DO NOT IMPROVE. DO NOT ASSUME.
+IF UNCLEAR, STOP AND ASK.
 ```
 
 ---
 
-## 📁 Repository Structure
+## Repository Status
+
+| Metric | Value |
+|--------|-------|
+| Spec Completeness | **92%** |
+| Cursor Buildability | **90%** |
+| Critical Blockers | **0** |
+| Ready for MVP | **YES** |
+
+---
+
+## Key Files
+
+### Implementation Guides
+| File | Purpose |
+|------|---------|
+| `CURSOR_INSTRUCTIONS.md` | Step-by-step guide for Cursor |
+| `BUILD_READINESS.md` | Build order + completeness assessment |
+| `.cursorrules` | Enforcement rules for Cursor |
+
+### Constitutional Specs (Must Read)
+| File | Purpose |
+|------|---------|
+| `specs/04-backend/BUILD_GUIDE.md` | Master authority hierarchy |
+| `specs/02-architecture/schema.sql` | Database schema (31 tables) |
+| `specs/04-backend/API_CONTRACT.md` | All API endpoints (35+ endpoints) |
+| `specs/SPEC_CLARIFICATIONS.md` | Conflict resolutions |
+
+### Backend Implementation
+| File | Purpose |
+|------|---------|
+| `specs/04-backend/MATCHING_ALGORITHMS.md` | Task-hustler matching formulas |
+| `specs/04-backend/AI_SERVICE_INTERFACES.md` | AI service I/O types |
+| `specs/04-backend/STRIPE_INTEGRATION.md` | Payment implementation |
+| `specs/04-backend/STORAGE_SPEC.md` | File upload patterns |
+
+### Frontend Implementation
+| File | Purpose |
+|------|---------|
+| `specs/03-frontend/HUSTLER_UI_SPEC.md` | Hustler role UI |
+| `specs/03-frontend/POSTER_UI_SPEC.md` | Poster role UI |
+| `specs/03-frontend/DESIGN_SYSTEM.md` | Colors, typography, spacing |
+| `specs/03-frontend/ONBOARDING_FLOW.md` | Onboarding screens |
+
+---
+
+## Repository Structure
 
 ```
 HUSTLEXP-DOCS/
 │
-├── 🔒 PRODUCT DEFINITION (Frozen)
-│   ├── FINISHED_STATE.md         ← What "done" means
-│   ├── FEATURE_FREEZE.md         ← No new features
-│   ├── AI_GUARDRAILS.md          ← AI behavior rules
-│   └── SCREEN_FEATURE_MATRIX.md  ← What each screen does/doesn't do
-│
-├── 🚨 PHASE CONTROL
-│   ├── BOOTSTRAP.md              ← Runtime baseline
-│   └── CURRENT_PHASE.md          ← Current phase gate
-│
-├── 🤖 AI ENFORCEMENT
-│   ├── .cursorrules              ← Cursor hard constraints
-│   └── .claude/instructions.md   ← Claude Code hard constraints
+├── 🎯 IMPLEMENTATION GUIDES
+│   ├── CURSOR_INSTRUCTIONS.md    ← Start here
+│   ├── BUILD_READINESS.md        ← Build order
+│   └── .cursorrules              ← Enforcement
 │
 ├── 📚 SPECIFICATIONS
 │   └── specs/
-│       ├── 00-overview/          ← Quick start
-│       ├── 01-product/           ← Product specs
-│       ├── 02-architecture/      ← Backend specs
-│       ├── 03-frontend/          ← UI specs
-│       └── 04-backend/           ← Build phases
+│       ├── 01-product/           ← Product requirements
+│       ├── 02-architecture/      ← Database + architecture
+│       │   ├── schema.sql        ← THE database schema
+│       │   └── AI_INFRASTRUCTURE.md
+│       ├── 03-frontend/          ← UI specifications
+│       │   ├── HUSTLER_UI_SPEC.md
+│       │   ├── POSTER_UI_SPEC.md
+│       │   ├── DESIGN_SYSTEM.md
+│       │   └── stitch-prompts/
+│       └── 04-backend/           ← Backend specifications
+│           ├── BUILD_GUIDE.md    ← Authority hierarchy
+│           ├── API_CONTRACT.md   ← All endpoints
+│           ├── MATCHING_ALGORITHMS.md
+│           ├── AI_SERVICE_INTERFACES.md
+│           └── STRIPE_INTEGRATION.md
 │
-├── 📱 SCREEN SPECIFICATIONS
-│   └── screens-spec/
-│       ├── SCREEN_REGISTRY.md    ← All 38 screens
-│       └── [category]/           ← Per-category specs
+├── 📋 CLARIFICATIONS
+│   └── specs/SPEC_CLARIFICATIONS.md
 │
-├── 🤖 prompts/                   ← AI execution prompts
-├── 📊 tracking/                  ← Implementation status
+├── 🤖 prompts/                   ← Cursor execution prompts
 ├── 📦 reference/                 ← Scaffold code
 └── 🗄️ _archive/                  ← Historical specs
 ```
 
 ---
 
-## 🔐 The Rules
+## Tech Stack
 
-### Rule 1: Product is Frozen
-- 38 screens defined (no more)
-- 32 tables defined (no more)
-- Features listed in FINISHED_STATE.md (no more)
+```
+Frontend:
+  - React Native + Expo
+  - TypeScript
+  - React Query
+  - Zustand (UI state only)
 
-### Rule 2: AI Executes, Not Designs
-- Claude Code: Layers 0-2 only
-- Cursor: UI shells only, no business logic
-- Both: No inventing features
+Backend:
+  - Node.js + TypeScript
+  - tRPC
+  - PostgreSQL
+  - Redis
 
-### Rule 3: Sequential Phases
-- Bootstrap must pass first
-- Then Phase 0, then Phase 1, etc.
-- No skipping
-
-### Rule 4: Stop on Uncertainty
-- If unclear, STOP and ASK
-- Do not guess
-- Do not "help" by filling gaps
+Auth: Firebase
+Payments: Stripe Connect
+Storage: Cloudflare R2
+```
 
 ---
 
-## 📱 Product Summary (v1.0)
+## Build Order (Summary)
 
-### Includes:
-- ✅ Core marketplace (task lifecycle)
-- ✅ Trust & eligibility system
-- ✅ Messaging (in-task)
-- ✅ Maps & location (EN_ROUTE only)
-- ✅ Disputes & safety
-- ✅ Notifications (push + email)
-- ✅ Ratings (1-5 stars)
-- ✅ Admin operations
+```
+Phase 1: Foundation      → Database + basic endpoints
+Phase 2: Task Flow       → Create, accept, proof, complete
+Phase 3: Escrow          → Stripe integration
+Phase 4: XP & Trust      → Gamification
+Phase 5: Onboarding      → Capability claims
+Phase 6: Feed & Matching → Personalized task feed
+Phase 7: Live Mode       → Real-time broadcasts
+Phase 8: Messaging       → In-app chat
+Phase 9: Disputes        → Resolution system
+Phase 10: Polish         → AI integration + optimization
+```
 
-### Does NOT Include (v2+):
-- ❌ AI task suggestions
-- ❌ Smart pricing
-- ❌ Gamified streaks
-- ❌ Text reviews
-- ❌ Tipping
-- ❌ Recurring tasks
-- ❌ Team tasks
-- ❌ Video proof
-
-**Full list: [FINISHED_STATE.md](FINISHED_STATE.md)**
+See `BUILD_READINESS.md` for detailed breakdown.
 
 ---
 
-## 📊 Counts (Frozen)
+## Key Counts
 
-| Artifact | Count | Status |
-|----------|-------|--------|
-| Screens | 38 | 🔒 Frozen |
-| Tables | 32 | 🔒 Frozen |
-| Views | 4 | 🔒 Frozen |
-| Invariants | 5 | 🔒 Frozen |
-
----
-
-## 🔗 Related Repositories
-
-| Repository | Purpose |
-|------------|---------|
-| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | **React Native Frontend (ACTIVE)** |
-| [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend) | Backend services |
-| ~~hustlexp-app~~ | ~~Deprecated - use HUSTLEXPFINAL1~~ |
+| Artifact | Count |
+|----------|-------|
+| Database Tables | 31 |
+| API Endpoints | 35+ |
+| Frontend Screens | ~40 |
+| Invariants | 5 core + 8 eligibility |
 
 ---
 
-## 👤 Contact
+## Critical Rules
 
-**Owner:** Sebastian Dysart  
+### 1. Authority Hierarchy
+```
+Layer 0: PostgreSQL constraints  ← HIGHEST (immutable)
+Layer 1: Backend state machines
+Layer 2: Temporal enforcement
+Layer 3: Stripe integration
+Layer 4: AI proposals
+Layer 5: Frontend state
+Layer 6: Client rendering         ← LOWEST
+```
+
+### 2. Frontend Rules
+```
+- Screens NEVER fetch data (props only)
+- Screens NEVER compute eligibility
+- Screens NEVER compute XP or trust
+- All business logic lives in backend
+```
+
+### 3. AI Rules
+```
+AI proposes → Deterministic systems decide → Database enforces
+```
+
+---
+
+## Invariants (Enforced by Database)
+
+| Code | Rule |
+|------|------|
+| INV-1 | XP requires RELEASED escrow |
+| INV-2 | RELEASED requires COMPLETED task |
+| INV-3 | COMPLETED requires ACCEPTED proof |
+| INV-4 | Escrow amount is immutable after funding |
+| INV-5 | XP issuance is idempotent per escrow |
+
+---
+
+## Contact
+
+**Owner:** Sebastian Dysart
 **Project:** HustleXP v1.0
 
 ---
 
-**The product is defined. The scope is frozen. Build exactly this.**
+## Getting Started
+
+1. Clone this repo
+2. Read `CURSOR_INSTRUCTIONS.md`
+3. Read `BUILD_READINESS.md`
+4. Start with Phase 1 in the build order
+5. Implement exactly what specs say
+6. If unclear, ask — don't guess
+
+**The specs are complete. Execute them exactly.**
