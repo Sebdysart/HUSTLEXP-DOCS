@@ -86,6 +86,58 @@ export {
   markNotificationRead,
 } from './notifications.js';
 
+// Ratings
+export {
+  MOCK_RATINGS,
+  RatingTags,
+  getRating,
+  getRatingsForTask,
+  getRatingsGivenByUser,
+  getRatingsReceivedByUser,
+  getAverageRatingForUser,
+  getRecentRatingsForUser,
+  getTopTagsForUser,
+  hasUserRatedTask,
+} from './ratings.js';
+
+// Verifications
+export {
+  MOCK_VERIFICATIONS,
+  MOCK_CAPABILITY_CLAIMS,
+  MOCK_CAPABILITY_PROFILES,
+  VerificationType,
+  VerificationStatus,
+  LicensedTrades,
+  getVerification,
+  getVerificationsForUser,
+  getActiveVerificationsForUser,
+  getCapabilityProfile,
+  getCapabilityClaims,
+  hasVerifiedTrade,
+  canAccessRiskLevel,
+  getPendingVerificationsCount,
+  getExpiringVerifications,
+} from './verifications.js';
+
+// AI Outputs
+export {
+  MOCK_AI_TASK_COMPLETION,
+  MOCK_AI_MATCHING_SCORES,
+  MOCK_AI_MODERATION,
+  MOCK_AI_FRAUD_SCORES,
+  AIAuthority,
+  TaskAIState,
+  AIQuestionType,
+  ModerationCategory,
+  getAICompletionForTask,
+  getMatchingScore,
+  getMatchingScoresForUser,
+  getModerationResult,
+  getFraudScoreForUser,
+  getFraudScoreForTask,
+  isContentApproved,
+} from './ai-outputs.js';
+
 /**
  * Mock API delay simulator
  * Use to simulate network latency in development
