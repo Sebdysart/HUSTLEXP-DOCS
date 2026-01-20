@@ -170,3 +170,44 @@ When locked, this screen **must not change** without backend changes.
 - User blame (system speaks factually, not user-blaming)
 
 ---
+
+## Props Interface
+
+```typescript
+interface NoTasksAvailableProps {
+  // System status
+  systemStatus: {
+    accountActive: boolean;
+    matchingAutomatic: boolean;
+    reason: 'NO_DEMAND' | 'LOCATION' | 'TIME_WINDOW' | 'SYSTEM_IDLE';
+  };
+
+  // Time expectation (optional)
+  timeExpectation?: {
+    typicalAppearanceHours: number;   // e.g., 24
+    message: string;                   // Backend-provided message
+  };
+
+  // Current settings (read-only display)
+  currentSettings: {
+    location: string;                  // e.g., "UW Campus + 2mi"
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: string;                    // e.g., "Trusted"
+    };
+    liveModeEnabled: boolean;
+  };
+
+  // Callbacks
+  onReturnToDashboard: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- System status from task.getFeed empty response
+- Settings chips are read-only (no interaction)
+- Single action: return to dashboard
+- No refresh, no retry buttons

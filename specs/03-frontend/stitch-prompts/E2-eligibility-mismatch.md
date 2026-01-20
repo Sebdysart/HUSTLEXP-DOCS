@@ -244,3 +244,50 @@ Once E2 is locked, the **only remaining high-risk edge state** is:
 Short-lived, emotionally charged, must feel **final but fair**.
 
 ---
+
+## Props Interface
+
+```typescript
+interface EligibilityMismatchProps {
+  // System status confirmation
+  systemStatus: {
+    accountActive: boolean;
+    matchingNormal: boolean;
+    tasksExist: boolean;              // true (tasks available, just not eligible)
+    noPenalties: boolean;
+  };
+
+  // Eligibility breakdown (collapsed by default)
+  eligibilityBlockers: {
+    type: 'TRUST_TIER' | 'TASK_TYPE_CLEARANCE' | 'LOCATION_RADIUS' | 'TIMING_WINDOW' | 'LIVE_MODE_CONSTRAINTS';
+    description: string;               // Backend-provided explanation
+    isExpanded?: boolean;
+  }[];
+
+  // What this does NOT mean (explicit denial)
+  denials: string[];                   // e.g., ["You are not restricted", "Your trust score has not changed"]
+
+  // Current settings (read-only)
+  currentSettings: {
+    location: string;
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: string;
+    };
+    liveModeEnabled: boolean;
+  };
+
+  // Callbacks
+  onReturnToDashboard: () => void;
+  onToggleBreakdown?: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Only shown when: tasks exist, user eligible for none, no penalties
+- Eligibility blockers map 1:1 to backend gates
+- Explicit denials prevent support escalation
+- All settings read-only, no actions except return

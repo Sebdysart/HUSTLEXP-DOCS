@@ -368,11 +368,13 @@ CREATE TABLE proofs (
     
     -- Timestamps
     submitted_at TIMESTAMPTZ,
+    review_deadline TIMESTAMPTZ,         -- Deadline for poster to review proof
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_proofs_task ON proofs(task_id);
+CREATE INDEX idx_proofs_review_deadline ON proofs(review_deadline) WHERE state = 'SUBMITTED';
 CREATE INDEX idx_proofs_submitter ON proofs(submitter_id);
 CREATE INDEX idx_proofs_state ON proofs(state);
 
@@ -2188,7 +2190,123 @@ CREATE INDEX IF NOT EXISTS idx_tasks_risk_level ON tasks(risk_level) WHERE risk_
 CREATE INDEX IF NOT EXISTS idx_tasks_required_trust_tier ON tasks(required_trust_tier) WHERE required_trust_tier IS NOT NULL;
 
 -- ============================================================================
--- SCHEMA VERSION UPDATE (v1.2.0)
+-- SECTION 13: OPERATIONS SUPPORT TABLES (v1.3.0)
+-- Authority: BACKEND_EXECUTION_QUEUE.md, STRIPE_INTEGRATION.md
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 13.1 USER_TASK_DRAFTS (Poster Task Drafts)
+-- Purpose: Store incomplete task drafts for posters to resume later
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS user_task_drafts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Draft content (same structure as tasks but nullable)
+    title VARCHAR(255),
+    description TEXT,
+    requirements TEXT,
+    location VARCHAR(255),
+    location_lat NUMERIC(10, 7),
+    location_lng NUMERIC(10, 7),
+    category VARCHAR(50),
+    price INTEGER CHECK (price IS NULL OR price > 0),
+    deadline TIMESTAMPTZ,
+    mode VARCHAR(20) CHECK (mode IS NULL OR mode IN ('STANDARD', 'LIVE')),
+    requires_proof BOOLEAN,
+    proof_instructions TEXT,
+
+    -- Draft metadata
+    last_step_completed VARCHAR(50),          -- e.g., 'basics', 'location', 'pricing'
+    draft_data JSONB DEFAULT '{}'::JSONB,     -- Additional draft state
+
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '30 days') NOT NULL,
+
+    -- Only one active draft per user
+    CONSTRAINT user_task_drafts_user_unique UNIQUE (user_id) WHERE expires_at > NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_task_drafts_user ON user_task_drafts(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_task_drafts_expires ON user_task_drafts(expires_at) WHERE expires_at > NOW();
+
+-- ----------------------------------------------------------------------------
+-- 13.2 TRANSFER_RETRY_QUEUE (Stripe Transfer Retries)
+-- Purpose: Track failed Stripe transfers for automated retry
+-- Authority: STRIPE_INTEGRATION.md §4.3
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS transfer_retry_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- Reference
+    escrow_id UUID NOT NULL REFERENCES escrows(id),
+    task_id UUID NOT NULL REFERENCES tasks(id),
+    worker_id UUID NOT NULL REFERENCES users(id),
+
+    -- Transfer details
+    amount INTEGER NOT NULL CHECK (amount > 0),
+    stripe_transfer_id VARCHAR(255),           -- NULL until successful
+
+    -- Retry state
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+        CHECK (status IN ('PENDING', 'PROCESSING', 'SUCCEEDED', 'FAILED_PERMANENT', 'CANCELLED')),
+    attempt_count INTEGER DEFAULT 0 NOT NULL,
+    max_attempts INTEGER DEFAULT 5 NOT NULL,
+
+    -- Error tracking
+    last_error_code VARCHAR(100),
+    last_error_message TEXT,
+    error_history JSONB DEFAULT '[]'::JSONB,
+
+    -- Timing
+    next_retry_at TIMESTAMPTZ,
+    last_attempt_at TIMESTAMPTZ,
+
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    completed_at TIMESTAMPTZ,
+
+    -- One active retry per escrow
+    CONSTRAINT transfer_retry_queue_escrow_unique UNIQUE (escrow_id) WHERE status IN ('PENDING', 'PROCESSING')
+);
+
+CREATE INDEX IF NOT EXISTS idx_transfer_retry_queue_status ON transfer_retry_queue(status, next_retry_at)
+    WHERE status = 'PENDING';
+CREATE INDEX IF NOT EXISTS idx_transfer_retry_queue_escrow ON transfer_retry_queue(escrow_id);
+CREATE INDEX IF NOT EXISTS idx_transfer_retry_queue_worker ON transfer_retry_queue(worker_id, status);
+
+-- Trigger: Update updated_at on transfer_retry_queue
+CREATE TRIGGER transfer_retry_queue_updated_at
+    BEFORE UPDATE ON transfer_retry_queue
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
+
+-- Trigger: Update updated_at on user_task_drafts
+CREATE TRIGGER user_task_drafts_updated_at
+    BEFORE UPDATE ON user_task_drafts
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================================
+-- SCHEMA VERSION UPDATE (v1.3.0)
+-- ============================================================================
+
+INSERT INTO schema_versions (version, applied_by, checksum, notes)
+VALUES (
+    '1.3.0',
+    'system',
+    'OPERATIONS_SUPPORT_V1',
+    'Added user_task_drafts table for poster draft persistence, transfer_retry_queue for Stripe transfer retry automation, proof review_deadline column.'
+)
+ON CONFLICT (version) DO NOTHING;
+
+-- ============================================================================
+-- SCHEMA VERSION UPDATE (v1.2.0) - Retained for migration history
 -- ============================================================================
 
 INSERT INTO schema_versions (version, applied_by, checksum, notes)
@@ -2201,5 +2319,5 @@ VALUES (
 ON CONFLICT (version) DO NOTHING;
 
 -- ============================================================================
--- END OF CONSTITUTIONAL SCHEMA v1.2.0
+-- END OF CONSTITUTIONAL SCHEMA v1.3.0
 -- ============================================================================

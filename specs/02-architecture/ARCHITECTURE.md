@@ -365,9 +365,12 @@ XP decay (if implemented) follows these rules:
 
 | Tier | Name | Requirements |
 |------|------|--------------|
-| 0 | ROOKIE | Default for new users |
-| 1 | VERIFIED | 5 completed tasks + ID verification |
-| 2 | TRUSTED | 20 completed tasks + 95% approval rate |
+| 1 | ROOKIE | Default for new users |
+| 2 | VERIFIED | 5 completed tasks + ID verification |
+| 3 | TRUSTED | 20 completed tasks + 95% approval rate |
+| 4 | ELITE | 50 completed tasks + 98% approval rate + verified insurance |
+
+**Note:** Tiers are 1-indexed (1-4) to match database schema and API contract. See schema.sql `users.trust_tier` column.
 
 ### 4.2 Promotion Authority
 

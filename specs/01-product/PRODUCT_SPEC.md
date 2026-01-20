@@ -1784,10 +1784,15 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |
 | `HX904` | Live Mode toggle cooldown | Toggle attempt within 5 minutes |
 | `HX905` | Live Mode banned | Attempt to enable while banned |
-| `HX601` | Fatigue break bypass | FATIGUE-4 violation (reserved) |
-| `HX602` | Pause state violation | PAUSE-* violation (reserved) |
-| `HX603` | Poster rep access by poster | POSTER-1 violation (reserved) |
-| `HX604` | Percentile public exposure | PERC-1 violation (reserved) |
+| `HX601` | Fatigue break bypass | FATIGUE-4 violation |
+| `HX602` | Pause state violation | PAUSE-* violation |
+| `HX603` | Poster rep access by poster | POSTER-1 violation |
+| `HX604` | Percentile public exposure | PERC-1 violation |
+| `HX605` | Trust tier / risk clearance mismatch | INV-ELIGIBILITY-1 violation |
+| `HX606` | Verified trade without active license | INV-ELIGIBILITY-2 violation |
+| `HX607` | Expired credential access attempt | INV-ELIGIBILITY-3 violation |
+| `HX608` | Insurance without verified trade | INV-ELIGIBILITY-4 violation |
+| `HX609` | Ineligible task access attempt | INV-ELIGIBILITY-5 through INV-ELIGIBILITY-8 violation |
 | `HX701` | AI question attempted after LOCKED | COMPLETE-3 violation |
 | `HX702` | Escrow funding attempted before COMPLETE | COMPLETE-4 violation |
 | `HX703` | Invalid question type (not in 4 allowed types) | COMPLETE-5 violation |

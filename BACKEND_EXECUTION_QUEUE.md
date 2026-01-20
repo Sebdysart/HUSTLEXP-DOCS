@@ -697,4 +697,193 @@ Stop
 
 ---
 
+## BACKGROUND JOBS SPECIFICATION
+
+Background jobs run on scheduled intervals or event triggers. These are required for system health.
+
+### JOB-001: Transfer Retry Processor
+```
+Schedule: Every 5 minutes
+Table: transfer_retry_queue
+Authority: STRIPE_INTEGRATION.md §4.3
+
+Actions:
+  1. Query: SELECT * FROM transfer_retry_queue WHERE status = 'PENDING' AND next_retry_at <= NOW()
+  2. For each item:
+     a. Set status = 'PROCESSING'
+     b. Attempt Stripe transfer
+     c. On success: Set status = 'SUCCEEDED', stripe_transfer_id, completed_at
+     d. On failure: Increment attempt_count, set last_error, calculate next_retry_at
+     e. If attempt_count >= max_attempts: Set status = 'FAILED_PERMANENT'
+  3. Log all attempts to admin_actions
+
+Retry Schedule:
+  - Attempt 1: Immediate
+  - Attempt 2: +5 minutes
+  - Attempt 3: +30 minutes
+  - Attempt 4: +2 hours
+  - Attempt 5: +24 hours
+  - After 5: FAILED_PERMANENT (requires admin intervention)
+```
+
+### JOB-002: Proof Review Deadline Expiration
+```
+Schedule: Every 15 minutes
+Table: proofs
+Authority: PRODUCT_SPEC.md §3.2
+
+Actions:
+  1. Query: SELECT * FROM proofs WHERE state = 'SUBMITTED' AND review_deadline < NOW()
+  2. For each expired proof:
+     a. Set proof.state = 'ACCEPTED' (auto-approve on deadline)
+     b. Trigger task completion flow
+     c. Log to admin_actions with reason 'AUTO_ACCEPTED_DEADLINE'
+  3. Send notification to poster
+
+Deadline Calculation:
+  - review_deadline = submitted_at + 48 hours (configurable)
+```
+
+### JOB-003: Credential Expiration Check
+```
+Schedule: Daily at 00:00 UTC
+Tables: license_verifications, insurance_verifications, background_checks
+Authority: VERIFICATION_PIPELINE_LOCKED.md
+
+Actions:
+  1. Query all verifications where status = 'verified' AND expires_at < NOW()
+  2. For each expired:
+     a. Set status = 'expired'
+     b. Trigger capability profile recompute for user
+     c. Send notification to user
+  3. Query all verifications expiring within 14 days
+  4. Send reminder notifications
+
+Warning Schedule:
+  - 14 days before: First warning
+  - 7 days before: Second warning
+  - 1 day before: Final warning
+  - Expired: Access immediately revoked
+```
+
+### JOB-004: Task Expiration Processor
+```
+Schedule: Every 5 minutes
+Table: tasks
+Authority: PRODUCT_SPEC.md §3.1
+
+Actions:
+  1. Query: SELECT * FROM tasks WHERE state = 'OPEN' AND deadline < NOW()
+  2. For each expired task:
+     a. Set task.state = 'EXPIRED'
+     b. Trigger escrow refund
+     c. Send notification to poster
+  3. Query: SELECT * FROM tasks WHERE state = 'ACCEPTED' AND deadline < NOW()
+  4. For each overdue accepted task:
+     a. Send warning notification to worker
+     b. If overdue > 24 hours: Trigger dispute review
+```
+
+### JOB-005: Live Broadcast Expiration
+```
+Schedule: Every 1 minute
+Table: live_broadcasts
+Authority: PRODUCT_SPEC.md §3.6
+
+Actions:
+  1. Query: SELECT * FROM live_broadcasts WHERE expired_at IS NULL AND started_at < NOW() - INTERVAL '10 minutes'
+  2. For each expired broadcast:
+     a. Set expired_at = NOW()
+     b. Send notification to poster
+     c. Optionally: Rebroadcast with expanded radius (if configured)
+```
+
+### JOB-006: Draft Cleanup
+```
+Schedule: Daily at 03:00 UTC
+Table: user_task_drafts
+Authority: BACKEND_EXECUTION_QUEUE.md
+
+Actions:
+  1. DELETE FROM user_task_drafts WHERE expires_at < NOW()
+  2. Log count of deleted drafts
+```
+
+### JOB-007: Session Forecast Accuracy Tracker
+```
+Schedule: Hourly
+Table: session_forecasts
+Authority: AI_INFRASTRUCTURE.md §21
+
+Actions:
+  1. Query: SELECT * FROM session_forecasts WHERE actual_earnings_cents IS NULL AND created_at < NOW() - INTERVAL '4 hours'
+  2. For each forecast:
+     a. Calculate actual earnings from completed tasks in session
+     b. Update actual_earnings_cents
+     c. Feed accuracy data to AI model improvement pipeline
+```
+
+### JOB-008: Moderation SLA Monitor
+```
+Schedule: Every 15 minutes
+Table: content_moderation_queue
+Authority: PRODUCT_SPEC.md §15
+
+Actions:
+  1. Query: SELECT * FROM content_moderation_queue WHERE status = 'pending' AND sla_deadline < NOW()
+  2. For each SLA breach:
+     a. Auto-escalate to admin
+     b. Send alert to admin dashboard
+  3. Generate daily SLA compliance report
+```
+
+### JOB-009: GDPR Deadline Monitor
+```
+Schedule: Daily at 09:00 UTC
+Table: gdpr_data_requests
+Authority: PRODUCT_SPEC.md §16
+
+Actions:
+  1. Query: SELECT * FROM gdpr_data_requests WHERE status IN ('pending', 'processing') AND deadline < NOW() + INTERVAL '3 days'
+  2. For approaching deadlines:
+     a. Send escalation notification to admin
+  3. For breached deadlines:
+     a. Auto-escalate to legal review
+     b. Log compliance incident
+```
+
+### JOB-010: Fatigue Break Enforcer
+```
+Schedule: Every 10 minutes
+Table: users, live_sessions
+Authority: PRODUCT_SPEC.md §3.7
+
+Actions:
+  1. Query users with daily_active_minutes >= 300 (5 hours)
+  2. For each fatigued user in ACTIVE live mode:
+     a. Force deactivate live mode
+     b. Set live_mode_state = 'COOLDOWN'
+     c. Send mandatory break notification
+  3. Reset daily_active_minutes at midnight UTC
+```
+
+---
+
+## JOB IMPLEMENTATION PRIORITY
+
+| Priority | Job ID | Reason |
+|----------|--------|--------|
+| P0 (Critical) | JOB-001 | Worker payments must succeed |
+| P0 (Critical) | JOB-004 | Task lifecycle must complete |
+| P1 (High) | JOB-002 | Proof auto-approval prevents stuck tasks |
+| P1 (High) | JOB-005 | Live Mode must expire properly |
+| P2 (Medium) | JOB-003 | Credential expiration affects eligibility |
+| P2 (Medium) | JOB-008 | Moderation SLA compliance |
+| P2 (Medium) | JOB-009 | GDPR compliance |
+| P3 (Low) | JOB-006 | Draft cleanup is housekeeping |
+| P3 (Low) | JOB-007 | AI accuracy tracking is optimization |
+| P3 (Low) | JOB-010 | Fatigue enforcement is optional in MVP |
+
+---
+
 **END OF BACKEND EXECUTION QUEUE**

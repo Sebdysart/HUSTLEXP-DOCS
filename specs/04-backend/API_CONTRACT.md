@@ -121,7 +121,7 @@ Create a new task.
   location_lat?: number;   // Latitude
   location_lng?: number;   // Longitude
   category: string;        // From TASK_CATEGORIES
-  price: number;           // USD cents, min 500 ($5.00)
+  price: number;           // USD cents, min 500 ($5.00), min 1500 ($15.00) for LIVE mode
   deadline: string;        // ISO 8601 datetime
   mode?: 'STANDARD' | 'LIVE'; // Default: STANDARD
   requires_proof?: boolean;   // Default: true
@@ -846,7 +846,7 @@ Get dispute for a task.
   reason: string;
   description: string;
   evidence: Evidence[];
-  state: 'OPEN' | 'RESOLVED';
+  state: 'OPEN' | 'EVIDENCE_REQUESTED' | 'ESCALATED' | 'RESOLVED';
   resolution: string | null;
   resolved_by: string | null;
   resolved_at: string | null;
@@ -2079,6 +2079,280 @@ interface ConnectionError {
 
 ---
 
+## Admin Endpoints
+
+Admin endpoints require admin authentication (validated admin role in token).
+
+### admin.getUser
+
+Get detailed user information (admin view).
+
+**Auth:** Admin
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  user_id: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  user: UserProfile;
+  account_status: 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
+  admin_notes: string | null;
+  trust_history: TrustLedgerEntry[];
+  dispute_history: DisputeSummary[];
+  verification_status: VerificationStatus;
+  created_at: string;
+  last_active_at: string;
+}
+```
+
+---
+
+### admin.updateUserStatus
+
+Update a user's account status.
+
+**Auth:** Admin
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  user_id: string;
+  status: 'ACTIVE' | 'PAUSED' | 'SUSPENDED';
+  reason: string;
+  notes?: string;
+  duration_days?: number;       // For temporary suspensions
+}
+```
+
+**Output:**
+```typescript
+{
+  user_id: string;
+  previous_status: string;
+  new_status: string;
+  action_id: string;            // Audit log ID
+  updated_at: string;
+}
+```
+
+---
+
+### admin.resolveDispute
+
+Resolve a dispute (already documented in dispute.resolve, but included here for admin reference).
+
+**Auth:** Admin
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  dispute_id: string;
+  resolution: 'HUSTLER_WINS' | 'CLIENT_WINS' | 'SPLIT';
+  split_percentage?: number;    // Required if SPLIT (0-100, hustler's share)
+  notes: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  dispute_id: string;
+  resolution: string;
+  escrow_action: 'RELEASE' | 'REFUND' | 'REFUND_PARTIAL';
+  resolved_at: string;
+}
+```
+
+---
+
+### admin.updateTrustTier
+
+Manually adjust a user's trust tier.
+
+**Auth:** Admin
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  user_id: string;
+  new_tier: 1 | 2 | 3 | 4;
+  reason: string;
+  notes?: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  user_id: string;
+  previous_tier: number;
+  new_tier: number;
+  action_id: string;
+  updated_at: string;
+}
+```
+
+---
+
+### admin.getModerationQueue
+
+Get content moderation queue.
+
+**Auth:** Admin
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  status?: 'pending' | 'reviewing' | 'escalated';
+  severity?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  limit?: number;               // Default: 20, max: 100
+  offset?: number;
+}
+```
+
+**Output:**
+```typescript
+{
+  items: ModerationQueueItem[];
+  total_pending: number;
+  total_escalated: number;
+}
+```
+
+---
+
+### admin.reviewContent
+
+Review flagged content.
+
+**Auth:** Admin
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  moderation_id: string;
+  decision: 'approve' | 'reject' | 'escalate';
+  notes: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  moderation_id: string;
+  decision: string;
+  action_id: string;
+  reviewed_at: string;
+}
+```
+
+---
+
+### admin.getSystemMetrics
+
+Get system health and metrics.
+
+**Auth:** Admin
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  period?: '1h' | '24h' | '7d' | '30d';
+}
+```
+
+**Output:**
+```typescript
+{
+  active_users: number;
+  tasks_created: number;
+  tasks_completed: number;
+  disputes_opened: number;
+  disputes_resolved: number;
+  escrow_volume_cents: number;
+  moderation_queue_size: number;
+  avg_response_time_ms: number;
+  error_rate: number;
+}
+```
+
+---
+
+### admin.getTransferRetryQueue
+
+Get failed transfers pending retry.
+
+**Auth:** Admin
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  status?: 'PENDING' | 'PROCESSING' | 'FAILED_PERMANENT';
+  limit?: number;
+  offset?: number;
+}
+```
+
+**Output:**
+```typescript
+{
+  items: {
+    id: string;
+    escrow_id: string;
+    worker_id: string;
+    amount: number;
+    attempt_count: number;
+    last_error: string | null;
+    next_retry_at: string | null;
+    created_at: string;
+  }[];
+  total_pending: number;
+  total_failed: number;
+}
+```
+
+---
+
+### admin.retryTransfer
+
+Manually retry a failed transfer.
+
+**Auth:** Admin
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  retry_id: string;
+  force?: boolean;              // Override automatic retry schedule
+}
+```
+
+**Output:**
+```typescript
+{
+  retry_id: string;
+  status: 'PROCESSING' | 'SUCCEEDED' | 'FAILED';
+  stripe_transfer_id?: string;
+  error?: string;
+}
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
@@ -2086,6 +2360,7 @@ interface ConnectionError {
 | 1.0.0 | Jan 2025 | Initial API contract |
 | 1.1.0 | Jan 2025 | Added onboarding, verification, liveMode, task.getFeed endpoints. Fixed photo_urls array type. Fixed price minimum to 500 cents. |
 | 1.2.0 | Jan 2025 | Added rating.* endpoints (§12 compliance). Added WebSocket events schema for Live Mode. |
+| 1.3.0 | Jan 2025 | Added Admin Endpoints section. Added dispute states (EVIDENCE_REQUESTED, ESCALATED). Added Live Mode $15 minimum validation. |
 
 ---
 
