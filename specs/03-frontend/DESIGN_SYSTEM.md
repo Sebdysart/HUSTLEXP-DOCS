@@ -3,7 +3,7 @@
 **STATUS: CONSTITUTIONAL AUTHORITY**
 **Owner:** Design/Frontend Team
 **Last Updated:** January 2025
-**Version:** v1.0.0
+**Version:** v1.1.0
 **Governance:** All UI implementation must use these design tokens. No hardcoded values.
 
 ---
@@ -756,4 +756,285 @@ export const trustTierColors = {
 
 ---
 
-**END OF DESIGN_SYSTEM v1.0.0**
+## 11. Celebration Moments
+
+Celebration animations are **earned, not given**. They follow the COD/Clash Royale layer (Layer 3) rules.
+
+### Celebration Types
+
+| Type | Trigger | Duration | Elements |
+|------|---------|----------|----------|
+| **Task Complete** | First task RELEASED | 2000ms | XP count-up, progress bar fill, haptic |
+| **Badge Unlock** | Badge earned | 1500ms | Badge reveal, glow pulse, haptic burst |
+| **Level Up** | XP threshold reached | 1800ms | Level number scale, shine sweep, haptic |
+| **Payment Received** | Escrow RELEASED | 1200ms | Amount float, balance roll, haptic |
+| **Streak Milestone** | 7/30/100/365 days | 1500ms | Fire icon, badge reveal, haptic |
+
+### Celebration Animation Tokens
+
+```typescript
+export const celebrations = {
+  // Task Complete
+  taskComplete: {
+    duration: 2000,
+    sequence: [
+      { element: 'xp', animation: 'countUp', delay: 0, duration: 800 },
+      { element: 'progressBar', animation: 'fill', delay: 300, duration: 500 },
+      { element: 'label', animation: 'fadeIn', delay: 800, duration: 400 },
+      { element: 'settle', animation: 'scale', delay: 1600, duration: 400 },
+    ],
+    haptic: 'taskComplete',
+    sound: 'celebration_first_task',
+    serverFlag: 'xp_first_celebration_shown_at',
+  },
+
+  // Badge Unlock
+  badgeUnlock: {
+    duration: 1500,
+    sequence: [
+      { element: 'badge', animation: 'scaleIn', delay: 0, duration: 300 },
+      { element: 'glow', animation: 'pulse', delay: 300, duration: 600 },
+      { element: 'name', animation: 'fadeIn', delay: 600, duration: 300 },
+      { element: 'settle', animation: 'none', delay: 900, duration: 600 },
+    ],
+    haptic: 'badgeUnlock',
+    sound: 'celebration_badge_unlock',
+    serverFlag: 'animation_shown_at',
+  },
+
+  // Level Up
+  levelUp: {
+    duration: 1800,
+    sequence: [
+      { element: 'levelNumber', animation: 'scaleUp', delay: 0, duration: 400 },
+      { element: 'shine', animation: 'sweep', delay: 200, duration: 600 },
+      { element: 'label', animation: 'fadeIn', delay: 600, duration: 400 },
+      { element: 'settle', animation: 'scale', delay: 1200, duration: 600 },
+    ],
+    haptic: 'levelUp',
+    sound: 'celebration_level_up',
+    serverFlag: 'level_animation_shown_at',
+  },
+
+  // Payment Received
+  paymentReceived: {
+    duration: 1200,
+    sequence: [
+      { element: 'amount', animation: 'slideUp', delay: 0, duration: 100 },
+      { element: 'amount', animation: 'floatUp', delay: 100, duration: 300 },
+      { element: 'balance', animation: 'countUp', delay: 400, duration: 600 },
+      { element: 'balance', animation: 'pulse', delay: 1000, duration: 200 },
+    ],
+    haptic: 'paymentReceived',
+    sound: 'money_incoming',
+    serverFlag: null, // Always plays on payment
+  },
+
+  // Streak Milestone
+  streakMilestone: {
+    duration: 1500,
+    sequence: [
+      { element: 'fire', animation: 'scaleUp', delay: 0, duration: 300 },
+      { element: 'count', animation: 'countUp', delay: 200, duration: 400 },
+      { element: 'badge', animation: 'reveal', delay: 600, duration: 500 },
+      { element: 'settle', animation: 'none', delay: 1100, duration: 400 },
+    ],
+    haptic: 'badgeUnlock',
+    sound: 'streak_milestone_30', // or _7, _100
+    serverFlag: 'streak_milestone_shown_at',
+  },
+};
+```
+
+### Celebration Easing
+
+```typescript
+export const celebrationEasing = {
+  // Scale in (badges, levels)
+  scaleIn: {
+    from: { scale: 0, opacity: 0 },
+    to: { scale: 1, opacity: 1 },
+    easing: easing.spring,
+  },
+
+  // Float up (payment amount)
+  floatUp: {
+    from: { translateY: 0, opacity: 1 },
+    to: { translateY: -50, opacity: 0 },
+    easing: easing.decelerate,
+  },
+
+  // Shine sweep (level up)
+  shineSweep: {
+    from: { translateX: -100, opacity: 0 },
+    to: { translateX: 100, opacity: 0 },
+    via: { translateX: 0, opacity: 0.8 },
+    easing: Easing.linear,
+  },
+
+  // Glow pulse (badges)
+  glowPulse: {
+    from: { scale: 1, shadowRadius: 4 },
+    via: { scale: 1.05, shadowRadius: 16 },
+    to: { scale: 1, shadowRadius: 4 },
+    easing: easing.standard,
+  },
+
+  // Count up (XP, balance)
+  countUp: {
+    easing: Easing.out(Easing.cubic),
+    stepDuration: 30, // ms per increment
+  },
+};
+```
+
+### Celebration Colors
+
+```typescript
+export const celebrationColors = {
+  // XP celebrations
+  xp: {
+    primary: colors.accent[500],    // Orange
+    glow: colors.accent[300],
+    text: colors.accent[700],
+  },
+
+  // Badge celebrations
+  badge: {
+    matte: colors.neutral[500],
+    metallic: colors.secondary[500],
+    holographic: `linear-gradient(45deg, ${colors.primary[400]}, ${colors.accent[400]}, ${colors.secondary[400]})`,
+    obsidian: colors.neutral[900],
+    glow: 'rgba(255, 255, 255, 0.3)',
+  },
+
+  // Level up
+  level: {
+    primary: colors.primary[500],
+    shine: 'rgba(255, 255, 255, 0.6)',
+    text: colors.primary[700],
+  },
+
+  // Payment
+  payment: {
+    amount: colors.success,
+    background: colors.success + '10', // 10% opacity
+    balance: colors.neutral[900],
+  },
+
+  // Streak
+  streak: {
+    fire: '#FF6B35',
+    fireGlow: '#FF6B3550',
+    milestone: colors.accent[500],
+  },
+};
+```
+
+### Celebration Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **CELEB-1** | Celebrations play EXACTLY once per achievement | Server flag check |
+| **CELEB-2** | Max duration 2000ms | Animation config |
+| **CELEB-3** | No confetti (forbidden per UI_SPEC) | Code review |
+| **CELEB-4** | Poster UI has NO celebrations | Role guard |
+| **CELEB-5** | Reduced motion: instant state change | Accessibility check |
+| **CELEB-6** | Server must confirm before celebration | State guard |
+
+### Reduced Motion Alternatives
+
+When `prefers-reduced-motion: reduce`:
+
+| Celebration | Standard | Reduced Motion |
+|-------------|----------|----------------|
+| Task Complete | Full sequence | Static XP display + "First Task Complete!" label |
+| Badge Unlock | Scale + glow | Static badge with "New" label |
+| Level Up | Scale + shine | Static level number with "Level Up!" label |
+| Payment | Float + count | Static balance with "+$X" indicator |
+| Streak | Fire + count | Static streak count with milestone badge |
+
+---
+
+## 12. Loading & Progress Tokens
+
+### Progress Indicators
+
+```typescript
+export const progressTokens = {
+  // Linear progress bar
+  linearProgress: {
+    height: 4,
+    backgroundColor: colors.neutral[200],
+    fillColor: colors.primary[500],
+    borderRadius: radius.full,
+    animationDuration: duration.normal,
+  },
+
+  // Circular progress
+  circularProgress: {
+    size: 48,
+    strokeWidth: 4,
+    backgroundColor: colors.neutral[200],
+    fillColor: colors.primary[500],
+    animationDuration: duration.slow,
+  },
+
+  // XP progress bar
+  xpProgress: {
+    height: 8,
+    backgroundColor: colors.neutral[200],
+    fillColor: colors.accent[500],
+    borderRadius: radius.full,
+    glowColor: colors.accent[300],
+    animationDuration: duration.slow,
+  },
+};
+```
+
+### Skeleton Tokens
+
+```typescript
+export const skeletonTokens = {
+  // Base skeleton
+  base: {
+    backgroundColor: colors.neutral[200],
+    shimmerColor: colors.neutral[100],
+    borderRadius: radius.md,
+  },
+
+  // Shimmer animation
+  shimmer: {
+    duration: 1500,
+    direction: 'ltr',
+    gradient: `linear-gradient(90deg, transparent, ${colors.neutral[100]}, transparent)`,
+  },
+
+  // Component-specific
+  text: {
+    height: 16,
+    borderRadius: radius.sm,
+    widthPercent: 75,
+  },
+
+  avatar: {
+    size: 48,
+    borderRadius: radius.full,
+  },
+
+  card: {
+    height: 120,
+    borderRadius: radius.lg,
+  },
+
+  button: {
+    height: 44,
+    borderRadius: radius.md,
+    widthPercent: 100,
+  },
+};
+```
+
+---
+
+**END OF DESIGN_SYSTEM v1.1.0**
