@@ -810,12 +810,12 @@ Role is determined during onboarding (see ONBOARDING_SPEC.md).
 
 ### 8.2 Trust Tiers
 
-| Tier | Requirements | Benefits | Risk Clearance |
-|------|--------------|----------|----------------|
-| `A` (ROOKIE) | New user | Base rates | Low risk only |
-| `B` (VERIFIED) | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
-| `C` (TRUSTED) | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
-| `D` (ELITE) | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
+| Tier | Name | Requirements | Benefits | Risk Clearance |
+|------|------|--------------|----------|----------------|
+| 1 | ROOKIE | New user | Base rates | Low risk only |
+| 2 | VERIFIED | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
+| 3 | TRUSTED | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
+| 4 | ELITE | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
 
 Trust tier changes are logged in `trust_ledger` (append-only).
 
