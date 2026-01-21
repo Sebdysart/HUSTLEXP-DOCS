@@ -386,20 +386,43 @@ CREATE INDEX idx_proofs_state ON proofs(state);
 CREATE TABLE proof_photos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     proof_id UUID NOT NULL REFERENCES proofs(id) ON DELETE CASCADE,
-    
+
     -- Storage
     storage_key VARCHAR(500) NOT NULL,
     content_type VARCHAR(100) NOT NULL,
     file_size_bytes BIGINT NOT NULL,
     checksum_sha256 VARCHAR(64) NOT NULL,
-    
+
     -- Metadata
     capture_time TIMESTAMPTZ,
-    sequence_number INTEGER DEFAULT 1,
-    
+    sequence_number INTEGER DEFAULT 1 CHECK (sequence_number >= 1 AND sequence_number <= 5),
+
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
+
+-- PROOF-PHOTO-1: Enforce 1-5 photos per proof (PRODUCT_SPEC §7.2)
+CREATE OR REPLACE FUNCTION enforce_proof_photo_limit()
+RETURNS TRIGGER AS $$
+DECLARE
+    photo_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO photo_count
+    FROM proof_photos
+    WHERE proof_id = NEW.proof_id;
+
+    IF photo_count >= 5 THEN
+        RAISE EXCEPTION 'Maximum 5 photos per proof (PROOF-PHOTO-1)';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_proof_photo_limit
+    BEFORE INSERT ON proof_photos
+    FOR EACH ROW
+    EXECUTE FUNCTION enforce_proof_photo_limit();
 
 CREATE INDEX idx_proof_photos_proof ON proof_photos(proof_id);
 

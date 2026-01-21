@@ -1214,6 +1214,146 @@ interface EligibilityBlocker {
 
 ---
 
+## Shared Type Definitions
+
+These types are referenced across multiple endpoints.
+
+```typescript
+// User profile data (user.getProfile, admin.getUser)
+interface UserProfile {
+  id: string;
+  email: string;
+  display_name: string;
+  avatar_url?: string;
+  phone?: string;
+  bio?: string;
+  primary_role: 'worker' | 'poster';
+  trust_tier: 1 | 2 | 3 | 4;  // 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
+  xp_total: number;
+  level: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Capability profile for eligibility (verification.getCapabilityProfile)
+interface CapabilityProfile {
+  user_id: string;
+  profile_id: string;
+  trust_tier: 1 | 2 | 3 | 4;
+  trust_tier_updated_at: string;
+  risk_clearance: ('low' | 'medium' | 'high')[];
+  insurance_valid: boolean;
+  insurance_expires_at?: string;
+  background_check_valid: boolean;
+  background_check_expires_at?: string;
+  location_state: string;  // 2-char state code
+  location_city?: string;
+  willingness_flags: {
+    in_home_work: boolean;
+    high_risk_tasks: boolean;
+    urgent_jobs: boolean;
+  };
+  verification_status: Record<string, boolean>;
+  derived_at: string;
+}
+
+// Verification status summary (admin.getUser)
+interface VerificationStatus {
+  email_verified: boolean;
+  phone_verified: boolean;
+  id_verified: boolean;
+  background_check_status: 'NOT_STARTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED';
+  insurance_status: 'NOT_UPLOADED' | 'PENDING' | 'VERIFIED' | 'EXPIRED';
+}
+
+// Dispute summary (admin.getUser, dispute.getByTaskId)
+interface DisputeSummary {
+  id: string;
+  task_id: string;
+  status: 'OPEN' | 'EVIDENCE_REQUESTED' | 'ESCALATED' | 'RESOLVED_POSTER' | 'RESOLVED_WORKER' | 'RESOLVED_SPLIT';
+  opened_by: 'poster' | 'worker';
+  reason: string;
+  created_at: string;
+  resolved_at?: string;
+  resolution_notes?: string;
+}
+
+// Trust ledger entry (admin.getUser)
+interface TrustLedgerEntry {
+  id: string;
+  user_id: string;
+  event_type: 'TIER_UPGRADE' | 'TIER_DOWNGRADE' | 'TASK_COMPLETED' | 'DISPUTE_LOST' | 'REVIEW_RECEIVED';
+  previous_tier?: number;
+  new_tier?: number;
+  reason: string;
+  created_at: string;
+}
+
+// Badge definition (user.getBadges)
+interface BadgeDefinition {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  icon_url: string;
+  category: 'achievement' | 'milestone' | 'special' | 'seasonal';
+  rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+  earned_at: string;
+}
+
+// Proof photo (proof.getByTaskId)
+interface ProofPhoto {
+  id: string;
+  proof_id: string;
+  storage_key: string;
+  content_type: string;
+  file_size_bytes: number;
+  sequence_number: number;
+  capture_time?: string;
+  created_at: string;
+}
+
+// Moderation queue item (admin.getModerationQueue)
+interface ModerationQueueItem {
+  id: string;
+  content_type: 'task' | 'message' | 'rating' | 'profile' | 'photo';
+  content_id: string;
+  content_preview: string;
+  flagged_reason: string;
+  ai_confidence: number;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'ESCALATED';
+  created_at: string;
+  assigned_to?: string;
+}
+
+// Evidence attachment (dispute.getByTaskId)
+interface Evidence {
+  id: string;
+  dispute_id: string;
+  submitted_by: string;
+  evidence_type: 'PHOTO' | 'MESSAGE' | 'LOCATION' | 'DOCUMENT';
+  storage_key: string;
+  description?: string;
+  created_at: string;
+}
+
+// XP ledger entry (user.getXP)
+interface XPLedgerEntry {
+  id: string;
+  user_id: string;
+  task_id?: string;
+  amount: number;
+  reason: string;
+  decay_factor: number;
+  effective_amount: number;
+  balance_after: number;
+  created_at: string;
+}
+```
+
+---
+
 ## Onboarding Endpoints
 
 ### onboarding.getProgress
