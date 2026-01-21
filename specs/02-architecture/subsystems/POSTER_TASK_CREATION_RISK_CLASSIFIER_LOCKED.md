@@ -441,7 +441,7 @@ function getRequirementsForRiskLevel(
       return {
         risk_level: 'low',
         required_trade: trade, // May be null
-        required_trust_tier: 'A', // Tier 0 (Unverified)
+        required_trust_tier: 1, // Tier 1 (ROOKIE)
         insurance_required: false,
         background_check_required: false,
         location_state: locationState,
@@ -451,7 +451,7 @@ function getRequirementsForRiskLevel(
       return {
         risk_level: 'medium',
         required_trade: trade, // May be null
-        required_trust_tier: 'B', // Tier 1-2
+        required_trust_tier: 2, // Tier 2 (VERIFIED)
         insurance_required: trade !== null, // Required if regulated trade
         background_check_required: false,
         location_state: locationState,
@@ -461,7 +461,7 @@ function getRequirementsForRiskLevel(
       return {
         risk_level: 'high',
         required_trade: trade, // Required (cannot be null)
-        required_trust_tier: 'C', // Tier ≥2
+        required_trust_tier: 3, // Tier 3 (TRUSTED)
         insurance_required: true, // Always required
         background_check_required: false,
         location_state: locationState,
@@ -471,7 +471,7 @@ function getRequirementsForRiskLevel(
       return {
         risk_level: 'critical',
         required_trade: trade, // Required (cannot be null)
-        required_trust_tier: 'D', // Tier ≥3
+        required_trust_tier: 4, // Tier 4 (ELITE)
         insurance_required: true, // Always required
         background_check_required: true, // Always required
         location_state: locationState,
@@ -650,7 +650,7 @@ CREATE TABLE tasks (
   task_category VARCHAR(255) NOT NULL,
   risk_level VARCHAR(20) NOT NULL CHECK (risk_level IN ('low', 'medium', 'high', 'critical')),
   required_trade VARCHAR(255), -- NULL if no trade required
-  required_trust_tier VARCHAR(1) NOT NULL CHECK (required_trust_tier IN ('A', 'B', 'C', 'D')),
+  required_trust_tier INTEGER NOT NULL CHECK (required_trust_tier IN (1, 2, 3, 4)),  -- 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
   insurance_required BOOLEAN NOT NULL,
   background_check_required BOOLEAN NOT NULL,
 

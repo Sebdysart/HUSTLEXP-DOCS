@@ -182,10 +182,10 @@ interface VerifiedTrade {
    - `verification_status[trade]` is set to `'expired'`
 
 3. **Trust tier determines risk clearance**
-   - `trust_tier === 'A'` → `risk_clearance: ['low']`
-   - `trust_tier === 'B'` → `risk_clearance: ['low', 'medium']`
-   - `trust_tier === 'C'` → `risk_clearance: ['low', 'medium']`
-   - `trust_tier === 'D'` → `risk_clearance: ['low', 'medium', 'high']`
+   - `trust_tier === 1` (ROOKIE) → `risk_clearance: ['low']`
+   - `trust_tier === 2` (VERIFIED) → `risk_clearance: ['low', 'medium']`
+   - `trust_tier === 3` (TRUSTED) → `risk_clearance: ['low', 'medium']`
+   - `trust_tier === 4` (ELITE) → `risk_clearance: ['low', 'medium', 'high']`
 
 4. **Insurance requirement gates in-home tasks**
    - If `insurance_required === true` and `insurance_valid === false`, in-home tasks are excluded
@@ -747,10 +747,10 @@ async function checkCredentialExpiry() {
    - `capability_profiles.verified_trades[].verification_id` → `verifications.id` (foreign key, if applicable)
 
 3. **Trust Tier → Risk Clearance (Immutable Mapping)**
-   - `trust_tier = 'A'` → `risk_clearance` must contain only `['low']`
-   - `trust_tier = 'B'` → `risk_clearance` must contain `['low', 'medium']`
-   - `trust_tier = 'C'` → `risk_clearance` must contain `['low', 'medium']`
-   - `trust_tier = 'D'` → `risk_clearance` must contain `['low', 'medium', 'high']`
+   - `trust_tier = 1` (ROOKIE) → `risk_clearance` must contain only `['low']`
+   - `trust_tier = 2` (VERIFIED) → `risk_clearance` must contain `['low', 'medium']`
+   - `trust_tier = 3` (TRUSTED) → `risk_clearance` must contain `['low', 'medium']`
+   - `trust_tier = 4` (ELITE) → `risk_clearance` must contain `['low', 'medium', 'high']`
 
 4. **Task Requirements → Capability Profile Matching**
    - Feed query enforces matching (no database constraint, but query filter)

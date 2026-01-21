@@ -161,8 +161,8 @@ Not eligible for:
 {
   eligibility_summary: {
     trust_tier: {
-      current: TrustTier; // 'A' | 'B' | 'C' | 'D'
-      display: string; // "Tier B (Verified)"
+      current: TrustTier; // 1 | 2 | 3 | 4 (ROOKIE/VERIFIED/TRUSTED/ELITE)
+      display: string; // "Tier 2 (Verified)"
       description: string; // "You can accept low and medium-risk gigs"
     };
     risk_clearance: RiskLevel[]; // ["low", "medium"]

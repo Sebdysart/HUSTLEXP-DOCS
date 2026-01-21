@@ -193,9 +193,9 @@ function hasSufficientTrustTier(
   userTier: TrustTier,
   requiredTier: TrustTier
 ): boolean {
-  // Trust tier hierarchy: A < B < C < D
-  const tierOrder = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
-  return tierOrder[userTier] >= tierOrder[requiredTier];
+  // Trust tier hierarchy: 1 (ROOKIE) < 2 (VERIFIED) < 3 (TRUSTED) < 4 (ELITE)
+  // Both are integers, direct comparison works
+  return userTier >= requiredTier;
 }
 ```
 
@@ -221,8 +221,8 @@ describe('isEligible', () => {
   });
 
   it('returns false if trust tier insufficient', () => {
-    const task = { required_trust_tier: 'C', ... };
-    const profile = { trust_tier: 'A', ... };
+    const task = { required_trust_tier: 3, ... };  // TRUSTED
+    const profile = { trust_tier: 1, ... };  // ROOKIE
     expect(isEligible(task, profile)).toBe(false);
   });
 
@@ -321,21 +321,8 @@ WHERE
     OR vt.trade IS NOT NULL
   )
 
-  -- Rule 3: Trust tier must be sufficient
-  AND (
-    CASE cp.trust_tier
-      WHEN 'A' THEN 0
-      WHEN 'B' THEN 1
-      WHEN 'C' THEN 2
-      WHEN 'D' THEN 3
-    END >=
-    CASE t.required_trust_tier
-      WHEN 'A' THEN 0
-      WHEN 'B' THEN 1
-      WHEN 'C' THEN 2
-      WHEN 'D' THEN 3
-    END
-  )
+  -- Rule 3: Trust tier must be sufficient (both are INTEGER, direct comparison)
+  AND cp.trust_tier >= t.required_trust_tier
 
   -- Rule 4: Insurance must be valid (if insurance required)
   AND (
@@ -771,21 +758,21 @@ it('removes task from feed when license expires', async () => {
 **3. Trust Tier Downgrade → Feed Shrinks**
 ```typescript
 it('removes high-tier tasks when trust tier downgrades', async () => {
-  const user = await createUser({ trust_tier: 'C' });
-  const highTierTask = await createTask({ required_trust_tier: 'C' });
-  const lowTierTask = await createTask({ required_trust_tier: 'A' });
+  const user = await createUser({ trust_tier: 3 });  // TRUSTED
+  const highTierTask = await createTask({ required_trust_tier: 3 });  // TRUSTED
+  const lowTierTask = await createTask({ required_trust_tier: 1 });  // ROOKIE
 
-  // Feed should include both tasks (tier C >= C and A)
+  // Feed should include both tasks (tier 3 >= 3 and 1)
   const feedBefore = await getFeed(user.id);
   expect(feedBefore.tasks).toContainEqual(highTierTask);
   expect(feedBefore.tasks).toContainEqual(lowTierTask);
 
   // Downgrade trust tier
-  await downgradeTrustTier(user.id, 'A');
+  await downgradeTrustTier(user.id, 1);  // ROOKIE
   await recomputeCapabilityProfile(user.id);
   await invalidateFeedCache(user.id);
 
-  // Feed should exclude high-tier task (tier A < C)
+  // Feed should exclude high-tier task (tier 1 < 3)
   const feedAfter = await getFeed(user.id);
   expect(feedAfter.tasks).not.toContainEqual(highTierTask);
   expect(feedAfter.tasks).toContainEqual(lowTierTask);
