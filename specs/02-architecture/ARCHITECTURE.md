@@ -1504,7 +1504,7 @@ if (!isEligible(task, profile)) {
 **❌ Trust Logic in Client:**
 ```javascript
 // ILLEGAL: Computing eligibility in frontend
-const canAccessHighRiskTasks = user.trust_tier >= 'D';
+const canAccessHighRiskTasks = user.trust_tier >= 4;  // 4=ELITE
 if (canAccessHighRiskTasks) {
   showHighRiskTasks();
 }

@@ -293,23 +293,20 @@ Different parts of spec used different tier numbering (1-4 numeric vs A-D letter
 
 **Migration Required:**
 ```sql
--- Standardize capability_profiles to use numeric trust_tier
-ALTER TABLE capability_profiles
-  DROP CONSTRAINT IF EXISTS capability_profiles_trust_tier_check;
+-- Trust tier is now INTEGER (1/2/3/4) throughout the system
+-- No migration needed - schema.sql defines it as INTEGER from the start
+-- Mapping: 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
 
-ALTER TABLE capability_profiles
-  ALTER COLUMN trust_tier TYPE INTEGER
-  USING CASE
-    WHEN trust_tier = 'A' THEN 1
-    WHEN trust_tier = 'B' THEN 2
-    WHEN trust_tier = 'C' THEN 3
-    WHEN trust_tier = 'D' THEN 4
-    ELSE trust_tier::INTEGER
-  END;
-
-ALTER TABLE capability_profiles
-  ADD CONSTRAINT capability_profiles_trust_tier_check
-  CHECK (trust_tier >= 1 AND trust_tier <= 4);
+-- If you have legacy VARCHAR data, use this one-time migration:
+-- ALTER TABLE capability_profiles
+--   ALTER COLUMN trust_tier TYPE INTEGER
+--   USING CASE
+--     WHEN trust_tier = 'A' THEN 1
+--     WHEN trust_tier = 'B' THEN 2
+--     WHEN trust_tier = 'C' THEN 3
+--     WHEN trust_tier = 'D' THEN 4
+--     ELSE trust_tier::INTEGER
+--   END;
 ```
 
 ---

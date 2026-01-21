@@ -424,6 +424,32 @@ CREATE TRIGGER trigger_proof_photo_limit
     FOR EACH ROW
     EXECUTE FUNCTION enforce_proof_photo_limit();
 
+-- PROOF-PHOTO-2: Enforce minimum 1 photo when submitting proof (PRODUCT_SPEC §7.2)
+CREATE OR REPLACE FUNCTION enforce_proof_photo_minimum()
+RETURNS TRIGGER AS $$
+DECLARE
+    photo_count INTEGER;
+BEGIN
+    -- Only check when transitioning to SUBMITTED state
+    IF NEW.state = 'SUBMITTED' AND (OLD.state IS NULL OR OLD.state = 'PENDING') THEN
+        SELECT COUNT(*) INTO photo_count
+        FROM proof_photos
+        WHERE proof_id = NEW.id;
+
+        IF photo_count < 1 THEN
+            RAISE EXCEPTION 'Minimum 1 photo required per proof (PROOF-PHOTO-2)';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_proof_photo_minimum
+    BEFORE UPDATE ON proofs
+    FOR EACH ROW
+    EXECUTE FUNCTION enforce_proof_photo_minimum();
+
 CREATE INDEX idx_proof_photos_proof ON proof_photos(proof_id);
 
 -- ============================================================================

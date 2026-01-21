@@ -138,7 +138,7 @@ interface CapabilityProfile {
   verified_trades: VerifiedTrade[];
 
   // Trust & Risk
-  trust_tier: TrustTier; // A | B | C | D
+  trust_tier: TrustTier; // 1 | 2 | 3 | 4 (ROOKIE/VERIFIED/TRUSTED/ELITE)
   trust_tier_updated_at: string;
   risk_clearance: RiskLevel[]; // ["low", "medium"] | ["low", "medium", "high"]
 
@@ -419,7 +419,7 @@ interface TaskRequirements {
 
 **Validation Rules:**
 1. `required_trade` must exist in system trade list
-2. `required_trust_tier` must be valid (`A | B | C | D`)
+2. `required_trust_tier` must be valid (1 | 2 | 3 | 4)
 3. `risk_level` must be valid (`low | medium | high`)
 4. If `insurance_required === true`, task must have `requires_in_home === true` or `risk_level === 'high'`
 5. If `requires_high_risk_clearance === true`, `risk_level` must be `'medium'` or `'high'`

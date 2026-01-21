@@ -83,7 +83,7 @@ CREATE INDEX IF NOT EXISTS idx_license_verifications_user_trade ON license_verif
 CREATE TABLE IF NOT EXISTS capability_profiles (
     user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     profile_id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
-    trust_tier VARCHAR(1) NOT NULL CHECK (trust_tier IN ('A', 'B', 'C', 'D')),
+    trust_tier INTEGER NOT NULL CHECK (trust_tier IN (1, 2, 3, 4)),  -- 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
     trust_tier_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     risk_clearance TEXT[] NOT NULL DEFAULT ARRAY['low']::TEXT[],
     insurance_valid BOOLEAN NOT NULL DEFAULT FALSE,
@@ -100,11 +100,12 @@ CREATE TABLE IF NOT EXISTS capability_profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     
     -- INV-ELIGIBILITY-1: Trust tier → risk clearance mapping (immutable)
+    -- 1=ROOKIE (low), 2=VERIFIED (low+medium), 3=TRUSTED (low+medium), 4=ELITE (low+medium+high)
     CONSTRAINT capability_profiles_risk_clearance_check CHECK (
-        (trust_tier = 'A' AND risk_clearance = ARRAY['low']::TEXT[]) OR
-        (trust_tier = 'B' AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
-        (trust_tier = 'C' AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
-        (trust_tier = 'D' AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance))
+        (trust_tier = 1 AND risk_clearance = ARRAY['low']::TEXT[]) OR
+        (trust_tier = 2 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
+        (trust_tier = 3 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
+        (trust_tier = 4 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance))
     )
 );
 
