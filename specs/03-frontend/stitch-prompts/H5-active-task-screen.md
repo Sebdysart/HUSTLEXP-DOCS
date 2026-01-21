@@ -98,7 +98,10 @@ interface ActiveTaskScreenProps {
 interface ActiveTask {
   id: string;
   title: string;
-  status: 'ACCEPTED' | 'EN_ROUTE' | 'ARRIVED' | 'IN_PROGRESS' | 'PROOF_SUBMITTED';
+  // Backend task.state is ACCEPTED or PROOF_SUBMITTED
+  // uiPhase is a UI-only display state computed from worker location/actions
+  taskState: 'ACCEPTED' | 'PROOF_SUBMITTED';
+  uiPhase: 'EN_ROUTE' | 'ARRIVED' | 'WORKING' | 'SUBMITTING';  // Display state only, not persisted
   startedAt: string;
 
   location: {

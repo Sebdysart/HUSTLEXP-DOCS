@@ -687,17 +687,17 @@ DELETE FROM xp_ledger WHERE id = 'any-id';
 | Level | XP Required | Title |
 |-------|-------------|-------|
 | 1 | 0 | Rookie |
-| 2 | 100 | Beginner |
-| 3 | 300 | Apprentice |
-| 4 | 600 | Journeyman |
-| 5 | 1,000 | Skilled |
-| 6 | 1,500 | Expert |
-| 7 | 2,100 | Master |
-| 8 | 2,800 | Grandmaster |
-| 9 | 3,600 | Legend |
-| 10 | 4,500 | Mythic |
+| 2 | 100 | Apprentice |
+| 3 | 300 | Hustler |
+| 4 | 700 | Pro |
+| 5 | 1,500 | Expert |
+| 6 | 2,700 | Veteran |
+| 7 | 4,500 | Master |
+| 8 | 7,000 | Elite |
+| 9 | 10,500 | Legend |
+| 10 | 18,500 | Mythic |
 
-Level calculation: `floor(sqrt(total_xp / 25)) + 1` capped at 10.
+Level calculation: See `schema.sql:calculate_level()` function. Thresholds designed for balanced progression curve.
 
 ### 5.5 Streaks
 
@@ -1261,6 +1261,7 @@ Both worker and poster rate each other after task completion. Ratings cannot be 
 | **RATE-4** | Ratings are immutable (cannot edit/delete) | DB constraint + backend validation |
 | **RATE-5** | One rating per pair per task | DB UNIQUE constraint |
 | **RATE-6** | Stars must be 1-5 | DB CHECK constraint |
+| **RATE-7** | Comment must be ≤500 characters | DB CHECK constraint (schema.sql line 1594) |
 
 **Detailed specification:** See `staging/RATING_SYSTEM_SPEC.md`
 
@@ -1778,7 +1779,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX201` | Release without completed task | INV-2 violation |
 | `HX301` | Complete without accepted proof | INV-3 violation |
 | `HX401` | Badge deletion attempt | Append-only violation |
-| `HX801` | Admin action audit violation | Append-only violation |
+| `HX501` | Admin action audit violation | Append-only violation |
 | `HX901` | Live broadcast without funded escrow | LIVE-1 violation |
 | `HX902` | Live task below price floor | LIVE-2 violation |
 | `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |
@@ -1808,10 +1809,10 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX809` | Rating edit/delete attempted | RATE-4 violation |
 | `HX810` | Rating stars out of range (1-5) | RATE-6 violation |
 | `HX811` | Rating comment exceeds limit (500 chars) | RATE-7 violation |
-| `HX901` | Risk score calculation failed | FRAUD-1 violation |
-| `HX902` | High-risk entity bypassed review | FRAUD-2 violation |
-| `HX903` | Critical-risk entity not auto-rejected | FRAUD-3 violation |
-| `HX904` | Self-match not blocked | FRAUD-4 violation |
+| `HX911` | Risk score calculation failed | FRAUD-1 violation |
+| `HX912` | High-risk entity bypassed review | FRAUD-2 violation |
+| `HX913` | Critical-risk entity not auto-rejected | FRAUD-3 violation |
+| `HX914` | Self-match not blocked | FRAUD-4 violation |
 | `HX951` | Content moderation scan failed | MOD-1 violation |
 | `HX952` | CRITICAL content not auto-quarantined | MOD-2 violation |
 | `HX953` | Review queue SLA deadline missing | MOD-3 violation |

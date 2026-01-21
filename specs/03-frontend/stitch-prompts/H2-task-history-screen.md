@@ -111,7 +111,9 @@ interface TaskGroup {
 interface HistoryTask {
   id: string;
   title: string;
-  status: 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'DISPUTED';
+  // Maps to task.state from schema: ACCEPTED→active, PROOF_SUBMITTED→pending review
+  // COMPLETED/CANCELLED/DISPUTED are terminal states shown directly
+  status: 'ACCEPTED' | 'PROOF_SUBMITTED' | 'COMPLETED' | 'CANCELLED' | 'DISPUTED';
   price: number;
   completedAt?: string;
   cancelledAt?: string;
@@ -119,7 +121,7 @@ interface HistoryTask {
   rating?: number;
   raterName?: string;
   cancelReason?: string;
-  statusDetail?: string;  // "En route to location"
+  statusDetail?: string;  // UI display text: "En route to location", "Working on task"
 }
 ```
 
