@@ -131,8 +131,8 @@ interface ProfileScreenProps {
     level: number;
     currentXP: number;
     xpForNextLevel: number;
-    trustTier: number;
-    trustTierName: string;
+    trustTier: 1 | 2 | 3 | 4;
+    trustTierName: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
     trustProgress: number;  // 0-100
     tasksToNextTier: number;
     monthlyTasks: number;

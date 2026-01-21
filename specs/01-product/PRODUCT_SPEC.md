@@ -1153,7 +1153,7 @@ All messages scanned via AI (A2 authority):
 | **MSG-1** | Messages only allowed during ACCEPTED/PROOF_SUBMITTED/DISPUTED | Backend validation |
 | **MSG-2** | Sender must be poster or worker for task | Backend validation |
 | **MSG-3** | Maximum 3 photos per message | DB constraint |
-| **MSG-4** | Maximum 500 characters per text message | DB constraint (schema.sql line 1485) |
+| **MSG-4** | Maximum 500 characters per text message | DB constraint (schema.sql line 1535) |
 | **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation |
 
 **Detailed specification:** See `staging/MESSAGING_SPEC.md`
@@ -1261,7 +1261,7 @@ Both worker and poster rate each other after task completion. Ratings cannot be 
 | **RATE-4** | Ratings are immutable (cannot edit/delete) | DB constraint + backend validation |
 | **RATE-5** | One rating per pair per task | DB UNIQUE constraint |
 | **RATE-6** | Stars must be 1-5 | DB CHECK constraint |
-| **RATE-7** | Comment must be ≤500 characters | DB CHECK constraint (schema.sql line 1594) |
+| **RATE-7** | Comment must be ≤500 characters | DB CHECK constraint (schema.sql line 1644) |
 
 **Detailed specification:** See `staging/RATING_SYSTEM_SPEC.md`
 
