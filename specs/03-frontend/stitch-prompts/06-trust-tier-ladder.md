@@ -25,43 +25,43 @@ Content Layout (Top to Bottom):
 
 2. TIER LADDER (Vertical list, scrollable)
 
-   TIER A — UNVERIFIED (Bottom tier)
+   TIER 1 — ROOKIE (Bottom tier)
    - Card: Glassmorphic, greyed out if locked
-   - Badge: "TIER A" (size: 16px, weight: 700)
+   - Badge: "TIER 1" (size: 16px, weight: 700)
    - Status: "Starting point" (size: 14px, color: #8E8E93)
    - Requirements: "Complete profile verification" (size: 12px, color: #8E8E93)
    - Visual: Lock icon if not current tier
 
-   TIER B — VERIFIED (Current tier, highlighted)
+   TIER 2 — VERIFIED (Current tier, highlighted)
    - Card: Glassmorphic, blue accent border (#007AFF, 2px)
    - Badge: "✓ You are here" (size: 14px, color: #34C759)
    - "Verified" (size: 24px, weight: 700, color: white) — REFINEMENT: Name carries meaning (primary)
-   - "Tier B" (size: 14px, weight: 500, color: #007AFF, opacity: 0.8) — REFINEMENT: Letter de-emphasized (secondary, system transparency)
+   - "Tier 2" (size: 14px, weight: 500, color: #007AFF, opacity: 0.8) — REFINEMENT: Number de-emphasized (secondary, system transparency)
    - Requirements: "✓ 10+ completed tasks" (size: 12px, color: white)
    - Benefits: "• Accept standard tasks" (size: 12px, color: #8E8E93)
    - Visual: Checkmark, highlighted background
 
-   TIER C — TRUSTED (Next tier, unlocked but not achieved)
+   TIER 3 — TRUSTED (Next tier, unlocked but not achieved)
    - Card: Glassmorphic, amber accent border (#FF9500, 2px)
    - Badge: "NEXT GOAL" (amber pill, top-left)
    - "Trusted" (size: 28px, weight: 700, color: white) — REFINEMENT: Name carries meaning (primary)
-   - "Tier C" (size: 14px, weight: 500, color: #FF9500, opacity: 0.8) — REFINEMENT: Letter de-emphasized (secondary, system transparency)
+   - "Tier 3" (size: 14px, weight: 500, color: #FF9500, opacity: 0.8) — REFINEMENT: Number de-emphasized (secondary, system transparency)
    - Status: "2,847 / 3,200 XP needed" (size: 14px, color: #FF9500)
    - "Requirements are evaluated automatically." (size: 12px, color: #8E8E93, opacity: 0.7, below progress) — REFINEMENT: Preempts support questions without opening debate
-   - Requirements: 
+   - Requirements:
      * "50+ completed tasks" (size: 12px, color: white)
      * "3.5+ average rating" (size: 12px, color: white)
      * "No disputes in 30 days" (size: 12px, color: white)
-   - Benefits: 
+   - Benefits:
      * "• Accept Instant tasks" (size: 12px, color: #34C759)
      * "• Higher visibility" (size: 12px, color: #8E8E93)
    - Visual: Progress indicator, unlockable
 
-   TIER D — IN-HOME (Locked tier)
+   TIER 4 — ELITE (Locked tier)
    - Card: Glassmorphic, greyed out (opacity: 0.5)
-   - Badge: "TIER D — IN-HOME" (size: 16px, weight: 700, grey)
+   - Badge: "TIER 4 — ELITE" (size: 16px, weight: 700, grey)
    - Status: "🔒 Locked" (size: 14px, color: #8E8E93)
-   - Requirements: "Complete Tier C first" (size: 12px, color: #8E8E93)
+   - Requirements: "Complete Tier 3 first" (size: 12px, color: #8E8E93)
    - Benefits: "• Accept in-home tasks" (size: 12px, color: #8E8E93, greyed)
    - Visual: Lock icon, greyed out
 
@@ -114,9 +114,9 @@ Constraints:
 - Current tier highlighted = you are here
 - Locked tiers greyed = can't skip ahead
 - Requirements clear = earned, not requested
-- Tier names carry meaning (primary), letters are secondary (system transparency)
+- Tier names carry meaning (primary), numbers are secondary (system transparency)
 - "Requirements are evaluated automatically" = preempts support questions, reinforces system authority
-- Tier names carry meaning (primary), letters are secondary (system transparency)
+- Tier names carry meaning (primary), numbers are secondary (system transparency)
 - "Requirements are evaluated automatically" = preempts support questions, reinforces system authority
 
 **Trust Signals:**

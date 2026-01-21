@@ -314,7 +314,7 @@ Display:
 **Current Tier Display:**
 ```
 Label: "Trust Tier"
-Value: "Verified (Tier B)"
+Value: "VERIFIED (Tier 2)"
 Badge: Current tier color/icon
 Link: "View Trust Tier Ladder" (navigates to ladder screen)
 Hint: "Tier determines available risk levels"

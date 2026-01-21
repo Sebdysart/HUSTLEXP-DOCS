@@ -561,10 +561,10 @@ function getRequirementsForRiskLevel(
    - Critical: Trade always required (cannot be null)
 
 2. **Trust Tier:**
-   - Low: Tier A (Unverified, default)
-   - Medium: Tier B (Verified, tier 1-2)
-   - High: Tier C (Trusted, tier ≥2)
-   - Critical: Tier D (Elite, tier ≥3)
+   - Low: Tier 1 (ROOKIE, default)
+   - Medium: Tier 2 (VERIFIED)
+   - High: Tier 3 (TRUSTED)
+   - Critical: Tier 4 (ELITE)
 
 3. **Insurance:**
    - Low: Not required

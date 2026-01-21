@@ -93,7 +93,7 @@ Hustler UI has two states based on economic truth:
 │                    │                 │                         │
 │                    └─────────────────┘                         │
 │                                                                 │
-│           [ TIER B — TRUSTED ]  ← Trust Badge (Layer 3)        │
+│           [ TIER 2 — VERIFIED ]  ← Trust Badge (Layer 3)       │
 │           47 tasks • $4,231 earned                              │
 │                                                                 │
 │  ─────────────────────────────────────────────────────────────  │
@@ -340,7 +340,7 @@ Hustler UI has two states based on economic truth:
 │                    └─────────────────┘                         │
 │                                                                 │
 │                        Marcus J.                                │
-│                   [ TIER B — TRUSTED ]                         │
+│                   [ TIER 2 — VERIFIED ]                        │
 │                   Member since Jan 2024                         │
 │                                                                 │
 │  ─────────────────────────────────────────────────────────────  │
@@ -349,7 +349,7 @@ Hustler UI has two states based on economic truth:
 │                    ┌─────────────────┐                         │
 │                    │    2,847 XP     │                         │
 │                    │   ██████████░░░ │                         │
-│                    │  353 to Tier C  │                         │
+│                    │  353 to Tier 3  │                         │
 │                    └─────────────────┘                         │
 │                                                                 │
 │  ─────────────────────────────────────────────────────────────  │
@@ -570,7 +570,7 @@ Before first RELEASED escrow, Hustler UI shows locked gamification:
 │                    │                 │                         │
 │                    └─────────────────┘                         │
 │                                                                 │
-│           [ TIER A — ROOKIE ]                                  │
+│           [ TIER 1 — ROOKIE ]                                  │
 │           Complete your first task to unlock XP                 │
 │                                                                 │
 │  ─────────────────────────────────────────────────────────────  │

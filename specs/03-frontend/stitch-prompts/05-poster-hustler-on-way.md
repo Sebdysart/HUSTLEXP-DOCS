@@ -26,7 +26,7 @@ Content Layout (Centered, Vertical):
 2. HUSTLER AVATAR (Middle 30%, centered)
    - Circular avatar (diameter: 120px)
    - Abstract design (geometric, not photo)
-   - Trust tier badge overlay: "Trusted (Tier B)" (bottom-right of avatar, pill-shaped, blue #007AFF) — REFINEMENT: Human-readable "Trusted" with system transparency "Tier B"
+   - Trust tier badge overlay: "VERIFIED (Tier 2)" (bottom-right of avatar, pill-shaped, blue #007AFF) — REFINEMENT: Human-readable "VERIFIED" with system transparency "Tier 2"
    - Subtle glow effect (not animated, just visual depth)
 
 3. HUSTLER INFO (Below avatar)
@@ -93,7 +93,7 @@ Constraints:
 
 **Visual Authority:**
 - Large avatar = human connection (abstract, not creepy)
-- Trust tier badge = earned status ("Trusted" human-readable, "Tier B" system-transparent)
+- Trust tier badge = earned status ("VERIFIED" human-readable, "Tier 2" system-transparent)
 - Progress steps = system is working
 - ETA = transparency
 - System assurance line = accountability and institutional presence

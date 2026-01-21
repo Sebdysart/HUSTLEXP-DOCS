@@ -114,12 +114,12 @@ Content Layout (Top to Bottom):
    - Label: "Trust Tier" (size: 16px, weight: 600, color: white)
    - Value: "Unchanged" (size: 18px, weight: 600, color: #8E8E93)
    - Explanation (size: 12px, color: #8E8E93, margin-top: 4px):
-     "Current tier: Trusted (Tier C). You are 3 completed tasks away from Tier D promotion."
-   
+     "Current tier: TRUSTED (Tier 3). You are 3 completed tasks away from Tier 4 promotion."
+
    If trust tier promoted:
    - Icon: Shield icon (size: 20px, color: #34C759)
    - Label: "Trust Tier" (size: 16px, weight: 600, color: white)
-   - Value: "Promoted to Tier D" (size: 18px, weight: 700, color: #34C759)
+   - Value: "Promoted to Tier 4" (size: 18px, weight: 700, color: #34C759)
    - Explanation (size: 12px, color: #8E8E93, margin-top: 4px):
      "Requirements met: 10 completed tasks, 0 disputes, verified ID"
 

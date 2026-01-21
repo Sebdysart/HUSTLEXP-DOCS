@@ -229,14 +229,14 @@ This audit identifies gaps between architectural claims (PRODUCT_SPEC.md, ARCHIT
 
 ### 4.1 Trust Tier Definitions
 
-**Concept:** Trust tier names and values  
-**Conflicting Files:**
-- `ARCHITECTURE.md` §4.1: Tier 0 (ROOKIE), Tier 1 (VERIFIED), Tier 2 (TRUSTED)
-- `PRODUCT_SPEC.md` §8.2: Tier A (ROOKIE), Tier B (VERIFIED), Tier C (TRUSTED), Tier D (ELITE)
-- `PRODUCT_SPEC.md` §17.7: Trust tier A/B/C/D with risk clearance mapping
-**Nature of Conflict:** Numeric tiers (0/1/2) vs letter tiers (A/B/C/D)  
-**Impact:** CRITICAL — Inconsistency prevents correct implementation  
-**Resolution Required:** Standardize on letter tiers (A/B/C/D) per PRODUCT_SPEC v1.5.0
+**Concept:** Trust tier names and values
+**RESOLVED:** All specs now use INTEGER tiers (1/2/3/4):
+- Tier 1 = ROOKIE (default)
+- Tier 2 = VERIFIED
+- Tier 3 = TRUSTED
+- Tier 4 = ELITE
+**Standard:** Numeric tiers (1/2/3/4) per schema.sql and PRODUCT_SPEC v1.6.0
+**Impact:** RESOLVED — All files standardized
 
 ---
 

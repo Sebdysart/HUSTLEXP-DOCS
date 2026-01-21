@@ -407,7 +407,7 @@ async function recomputeOnBackgroundCheckVerificationChange(
 
 ### Trigger 4: Trust Tier Promotion/Demotion
 
-**Event:** Trust tier changed (A → B, B → C, C → D, or demotion)
+**Event:** Trust tier changed (1→2, 2→3, 3→4, or demotion)
 
 **Source Data:**
 - `trust_scores` table (trust score updated)

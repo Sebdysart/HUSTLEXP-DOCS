@@ -91,8 +91,8 @@ Provide high-level overview of eligibility without overwhelming detail.
 ```typescript
 {
   label: "Trust Tier",
-  value: "Tier B (Verified)",
-  badge: "B", // Color-coded badge
+  value: "Tier 2 (VERIFIED)",
+  badge: "2", // Color-coded badge (displays tier number)
   description: "You can accept low and medium-risk gigs",
   read_only: true, // No edit action
 }

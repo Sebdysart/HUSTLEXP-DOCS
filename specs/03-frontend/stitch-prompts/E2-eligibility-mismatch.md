@@ -118,7 +118,7 @@ Content Layout (Top to Bottom):
    - Title: "Current Settings" (size: 12px, uppercase, tracking: 1.5px, color: #8E8E93, weight: 700)
    - Chips (horizontal flex, gap: 8px, margin-top: 12px):
      - Location: "📍 UW Campus + 2mi" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
-     - Trust Tier: "🛡️ Tier B — Trusted" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
+     - Trust Tier: "🛡️ VERIFIED (Tier 2)" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
      - Instant Mode: "⚡ Instant Mode: ON" or "⚡ Instant Mode: OFF" (background: rgba(66, 188, 240, 0.2) if ON, rgba(255, 255, 255, 0.1) if OFF, padding: 6px 12px, rounded: 8px, size: 12px, color: #42bcf0 if ON, color: white if OFF)
    - All chips are read-only (no interaction, no toggles, no edits, no CTAs)
 

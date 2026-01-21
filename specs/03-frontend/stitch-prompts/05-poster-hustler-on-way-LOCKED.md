@@ -13,7 +13,7 @@
 **Required Refinements Applied:**
 - ✅ "Message Hustler" → "Contact via HustleXP" (reinforces system mediation, reduces poster anxiety)
 - ✅ Hustler name de-emphasized (18px, opacity: 0.9 — system state is hero, not individual)
-- ✅ Trust tier label: "TIER B" → "Trusted (Tier B)" (human-readable with system transparency)
+- ✅ Trust tier label: "TIER 2" → "VERIFIED (Tier 2)" (human-readable with system transparency)
 - ✅ System assurance line added: "HustleXP monitors this task end-to-end" (12px, secondary text — reinforces accountability)
 
 **This screen is LOCKED (v1). Do not iterate further.**

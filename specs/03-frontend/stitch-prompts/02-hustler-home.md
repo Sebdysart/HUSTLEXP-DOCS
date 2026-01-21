@@ -21,13 +21,13 @@ Content Hierarchy (Top to Bottom):
 1. XP RING (Top 30% of visible area, centered)
    - Large circular progress ring (diameter: 200px)
    - Current XP: "2,847" (inside ring, size: 48px, weight: 800, color: white)
-   - Next level: "3,200 XP to Tier C" (below ring, size: 14px, color: #8E8E93)
+   - Next level: "3,200 XP to Tier 3" (below ring, size: 14px, color: #8E8E93)
    - Progress fill: 68% (visual arc, color: #34C759, stroke width: 8px)
    - Background ring: subtle grey (#1C1C1E, stroke width: 8px)
 
 2. TRUST TIER BADGE (Below XP ring, centered)
-   - Pill-shaped badge: "TIER B — TRUSTED" (background: #007AFF, white text, size: 14px, weight: 600, padding: 8px 16px)
-   - Subtext: "Verified • 47 tasks completed" (size: 12px, color: #8E8E93)
+   - Pill-shaped badge: "TIER 2 — VERIFIED" (background: #007AFF, white text, size: 14px, weight: 600, padding: 8px 16px)
+   - Subtext: "47 tasks completed" (size: 12px, color: #8E8E93)
 
 3. STREAK INDICATOR (Below tier badge)
    - Fire icon + "7-day streak" (size: 16px, color: #FF9500)
