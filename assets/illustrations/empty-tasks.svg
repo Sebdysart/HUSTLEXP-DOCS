@@ -1,0 +1,24 @@
+<svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background elements -->
+  <circle cx="120" cy="90" r="70" fill="#F3F4F6"/>
+
+  <!-- Clipboard -->
+  <rect x="85" y="45" width="70" height="90" rx="6" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="2"/>
+  <rect x="100" y="35" width="40" height="15" rx="4" fill="#D1D5DB"/>
+
+  <!-- Empty lines -->
+  <rect x="95" y="65" width="50" height="6" rx="3" fill="#D1D5DB"/>
+  <rect x="95" y="80" width="40" height="6" rx="3" fill="#D1D5DB"/>
+  <rect x="95" y="95" width="45" height="6" rx="3" fill="#D1D5DB"/>
+  <rect x="95" y="110" width="35" height="6" rx="3" fill="#D1D5DB"/>
+
+  <!-- Magnifying glass -->
+  <circle cx="165" cy="55" r="18" stroke="#9CA3AF" stroke-width="3" fill="none"/>
+  <line x1="178" y1="68" x2="190" y2="80" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Question mark -->
+  <text x="165" y="62" text-anchor="middle" fill="#9CA3AF" font-family="system-ui" font-size="18" font-weight="bold">?</text>
+
+  <!-- Text -->
+  <text x="120" y="160" text-anchor="middle" fill="#6B7280" font-family="system-ui" font-size="13">No tasks available</text>
+</svg>

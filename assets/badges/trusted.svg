@@ -1,0 +1,21 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background - tier 3 green -->
+  <circle cx="40" cy="40" r="38" fill="url(#trusted-gradient)" stroke="#047857" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="trusted-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield with star -->
+  <path d="M40 12 L60 21 L60 44 C60 58 51 68 40 72 C29 68 20 58 20 44 L20 21 Z" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+
+  <!-- Star -->
+  <path d="M40 24 L44 34 L54 34 L46 41 L49 52 L40 46 L31 52 L34 41 L26 34 L36 34 Z" fill="#10B981"/>
+
+  <!-- Tier 3 indicator -->
+  <text x="40" y="62" text-anchor="middle" fill="#065F46" font-family="system-ui" font-size="10" font-weight="bold">TIER 3</text>
+</svg>

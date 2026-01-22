@@ -1,0 +1,22 @@
+<svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="120" cy="85" r="65" fill="#F3F4F6"/>
+
+  <!-- Message bubble 1 (empty) -->
+  <path d="M60 60 L60 90 C60 94 63 97 67 97 L80 97 L70 110 L90 97 L113 97 C117 97 120 94 120 90 L120 60 C120 56 117 53 113 53 L67 53 C63 53 60 56 60 60 Z" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1"/>
+
+  <!-- Dots in bubble 1 -->
+  <circle cx="75" cy="75" r="4" fill="#D1D5DB"/>
+  <circle cx="90" cy="75" r="4" fill="#D1D5DB"/>
+  <circle cx="105" cy="75" r="4" fill="#D1D5DB"/>
+
+  <!-- Message bubble 2 (empty) -->
+  <path d="M180 75 L180 105 C180 109 177 112 173 112 L145 112 L155 125 L135 112 L127 112 C123 112 120 109 120 105 L120 75 C120 71 123 68 127 68 L173 68 C177 68 180 71 180 75 Z" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1"/>
+
+  <!-- Lines in bubble 2 -->
+  <rect x="130" y="80" width="40" height="4" rx="2" fill="#D1D5DB"/>
+  <rect x="130" y="90" width="30" height="4" rx="2" fill="#D1D5DB"/>
+
+  <!-- Text -->
+  <text x="120" y="160" text-anchor="middle" fill="#6B7280" font-family="system-ui" font-size="13">No messages yet</text>
+</svg>

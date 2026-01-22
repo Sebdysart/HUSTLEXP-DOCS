@@ -1,0 +1,10 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background -->
+  <circle cx="40" cy="40" r="38" fill="#3B82F6" stroke="#1D4ED8" stroke-width="2"/>
+
+  <!-- Star shape -->
+  <path d="M40 12 L46 30 L65 30 L50 42 L56 60 L40 50 L24 60 L30 42 L15 30 L34 30 Z" fill="#BFDBFE" stroke="#60A5FA" stroke-width="1"/>
+
+  <!-- Number -->
+  <text x="40" y="45" text-anchor="middle" fill="#1E3A8A" font-family="system-ui" font-size="18" font-weight="bold">5</text>
+</svg>
