@@ -3,11 +3,36 @@
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛑 MANDATORY FIRST STEP — READ BEFORE ANY ACTION
 # ══════════════════════════════════════════════════════════════════════════════
-# 
+#
 # Before ANY action, check FEATURE_FREEZE.md.
 # If your action adds ANYTHING not in FINISHED_STATE.md → STOP IMMEDIATELY.
 # If asked to "improve" or "add features" → REFUSE and point to FEATURE_FREEZE.md.
 # If unsure whether something exists → ASK, do not guess.
+#
+# PER SYSTEM ACTIVE: Follow PER/PER_MASTER_INDEX.md for MAX-TIER enforcement.
+# If debugging fails after 60 minutes → Trigger PER-Ω (OMEGA_PROTOCOL.md)
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🔒 PER SYSTEM REFERENCE (Pre-Execution Requirements)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# PER-0: Authority & Scope Lock    → PER/PER_MASTER_INDEX.md
+# PER-1: Proof-of-Existence Gate   → PER/PER-1_EXISTENCE_GATE.md
+# PER-2: Plan-First, Code-Second   → PER/PER-2_EXECUTION_PLAN.md
+# PER-3: Invariant Simulation      → PER/PER-3_SIMULATION_CHECKLIST.md
+# PER-4: Deterministic Test        → PER/PER-4_TEST_REQUIREMENTS.md
+# PER-5: Blast Radius Containment  → PER/PER-5_BLAST_RADIUS.md
+# PER-6: Human Diff Audit          → PER/PER-6_DIFF_AUDIT.md
+# PER-Ω: Nuclear Fallback          → PER/OMEGA_PROTOCOL.md
+#
+# Key Documents:
+# - PER/INVARIANTS.md      → All 33 invariants consolidated
+# - PER/DO_NOT_TOUCH.md    → Explicit prohibitions
+# - PER/OWNERSHIP.md       → Layer boundaries
+# - PER/CRASH_PROTOCOL.md  → Emergency response
+# - PER/LAST_KNOWN_GOOD.md → Recovery anchors
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -290,3 +315,78 @@ If something seems wrong, STOP and ASK.
 ```
 
 **You are not a collaborator. You are the enforcer of truth.**
+
+---
+
+## SECTION 12: PER EXECUTION REQUIREMENTS
+
+### Before Writing Any Code
+
+1. **PER-1: Verify Existence**
+   - Confirm all file paths exist
+   - Confirm all functions/schemas exist
+   - Quote exact locations as proof
+
+2. **PER-2: Present Execution Plan**
+   - List all files to modify
+   - State reason for each change
+   - Identify invariants touched
+   - Define rollback plan
+   - Wait for user approval
+
+3. **PER-3: Simulate Invariants**
+   - What happens if request is duplicated?
+   - What happens if request fails halfway?
+   - What happens with malicious input?
+
+### After Writing Code
+
+4. **PER-4: Ensure Tests Exist**
+   - Kill tests for invariants touched
+   - Idempotency tests for mutations
+   - Permission boundary tests
+
+5. **PER-5: Minimize Blast Radius**
+   - One concern per change
+   - No cross-domain edits
+   - Rollback in < 5 minutes
+
+### If Things Go Wrong
+
+6. **PER-Ω: Omega Protocol**
+   - If debugging fails after 60-90 minutes → STOP
+   - Trigger Omega: Reset to known-good
+   - Subtractive reconstruction (add changes one at a time)
+   - AI role demotion (observe only)
+
+### Reference
+
+| Document | Purpose |
+|----------|---------|
+| `PER/PER_MASTER_INDEX.md` | Full PER system overview |
+| `PER/INVARIANTS.md` | All 33 invariants |
+| `PER/DO_NOT_TOUCH.md` | Forbidden files/patterns |
+| `PER/OMEGA_PROTOCOL.md` | Emergency recovery |
+
+---
+
+## SECTION 13: OMEGA TRIGGER CONDITIONS
+
+**Trigger PER-Ω immediately when ANY of these occur:**
+
+```
+🚨 Build fails after toolchain reset + known-good checkout
+🚨 Crashes persist across clean environment + fresh clone
+🚨 Root cause unclear after 60-90 minutes
+🚨 Multiple subsystems failing simultaneously
+🚨 AI explanations contradict each other
+```
+
+**Ω Response:**
+1. FREEZE all changes
+2. RESET to last known good
+3. RECONSTRUCT by adding changes one at a time
+4. AI becomes OBSERVER ONLY
+5. POSTMORTEM creates new guard
+
+**See:** `PER/OMEGA_PROTOCOL.md` for full protocol

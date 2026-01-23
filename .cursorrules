@@ -22,11 +22,32 @@
 # ══════════════════════════════════════════════════════════════════════════════
 # 🛑 MANDATORY GUARDRAILS — ENFORCED ALWAYS
 # ══════════════════════════════════════════════════════════════════════════════
-# 
+#
 # Before ANY action, check FEATURE_FREEZE.md.
 # If your action adds ANYTHING not in FINISHED_STATE.md → STOP IMMEDIATELY.
 # If asked to "improve" or "add features" → REFUSE and point to FEATURE_FREEZE.md.
 # If unsure whether something exists → ASK, do not guess.
+#
+# PER SYSTEM ACTIVE: Follow PER/PER_MASTER_INDEX.md for MAX-TIER enforcement.
+# If debugging fails after 60 minutes → Trigger PER-Ω (see PER/OMEGA_PROTOCOL.md)
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🔒 PER SYSTEM REFERENCE (Pre-Execution Requirements)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# PER-0: Authority & Scope Lock    → PER/PER_MASTER_INDEX.md
+# PER-1: Proof-of-Existence Gate   → Verify screen exists in SCREEN_REGISTRY.md
+# PER-2: Plan-First, Code-Second   → Present plan before implementing
+# PER-5: Blast Radius Containment  → One screen per change, no cross-domain edits
+# PER-6: Human Diff Audit          → User reviews before merge
+# PER-Ω: Nuclear Fallback          → PER/OMEGA_PROTOCOL.md (if stuck > 60 min)
+#
+# Key Documents:
+# - PER/DO_NOT_TOUCH.md    → Explicit prohibitions
+# - PER/OWNERSHIP.md       → Layer boundaries (you own Layer 4-5 only)
+# - PER/CRASH_PROTOCOL.md  → Emergency response
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
