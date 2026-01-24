@@ -1,39 +1,57 @@
-# PER MASTER INDEX — HUSTLEXP v2.0
+# PER MASTER INDEX — HUSTLEXP v2.1
 
 **STATUS: CONSTITUTIONAL AUTHORITY**
-**VERSION: MAX-TIER**
+**VERSION: MAX-TIER + HIC**
 **ENFORCEMENT: MANDATORY — VIOLATIONS ARE SYSTEM FAILURES**
 
 ---
 
-## MANDATORY COLD START VERIFICATION
+## 🔒 HUSTLEXP INVOCATION COMMAND (HIC v1.0)
 
-> **BEFORE ANY IMPLEMENTATION, AI MUST OUTPUT:**
+> **EVERY CURSOR PROMPT MUST BEGIN WITH:**
 >
 > ```
-> COLD START VERIFICATION:
-> 1. Current Focus: [verbatim from PROJECT_STATE.md]
-> 2. Phase: [from CURRENT_PHASE.md]
-> 3. Locked Constraints: [list from PROJECT_STATE.md]
-> 4. Acceptance Gates Required: [UAP gates that apply]
-> 5. Next Legal Action: [from PROJECT_STATE.md]
+> HUSTLEXP_INVOCATION()
 > ```
 >
-> **Failure to output this verification invalidates the response.**
+> **EVERY RESPONSE MUST BEGIN WITH HIC HEADER:**
+>
+> ```
+> ┌─────────────────────────────────────────────────────────────────┐
+> │ HIC v1.0 — HUSTLEXP INVOCATION RESPONSE                         │
+> ├─────────────────────────────────────────────────────────────────┤
+> │ STEP 0: REPO RE-ANCHOR        ✓ Complete                        │
+> │ STEP 1: COLD START            [verification]                    │
+> │ STEP 2: CLASSIFICATION        [protocol]                        │
+> │ STEP 3: LEGALITY              [LEGAL/ILLEGAL]                   │
+> │ STEP 4: PLAN                  [if implementation]               │
+> │ STEP 5: EXECUTION             [proceed/stop]                    │
+> └─────────────────────────────────────────────────────────────────┘
+> ```
+>
+> **Responses missing HIC header are INVALID.**
+>
+> See `PER/INVOCATION_COMMAND.md` for full specification.
+> See `PER/SELF_CHECK.md` for pre-output verification.
 
 ---
 
-## PER v2: SESSION START PROTOCOL
+## PER v2.1: SESSION START PROTOCOL
 
 > **AI MUST READ THESE FIRST — IN ORDER:**
 >
-> 1. `PER/PROJECT_STATE.md` — Know where we are in the build
-> 2. `PER/DICTIONARY.md` — Know what terms mean (no interpretation drift)
-> 3. `PER/DONE_DEFINITION.md` — Know what "done" means (binary checkboxes)
-> 4. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
-> 5. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
-> 6. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
-> 7. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
+> 1. `PER/PER_MASTER_INDEX.md` — Root authority (this file)
+> 2. `PER/INVOCATION_COMMAND.md` — HIC syscall specification
+> 3. `PER/PROJECT_STATE.md` — Know where we are in the build
+> 4. `PER/DICTIONARY.md` — Know what terms mean
+> 5. `PER/DONE_DEFINITION.md` — Know what "done" means
+> 6. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
+> 7. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
+> 8. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
+> 9. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
+> 10. `PER/REJECTED_APPROACHES.md` — Don't repeat failures
+> 11. `PER/COMPLETION_LOCK.md` — Protect finished work
+> 12. `PER/SELF_CHECK.md` — Pre-output verification
 
 ---
 

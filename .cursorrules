@@ -1,4 +1,34 @@
-# CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND v2.0
+# CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND v2.1
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🔒 HUSTLEXP INVOCATION COMMAND (HIC) — MANDATORY SYSCALL
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# EVERY RESPONSE MUST BEGIN WITH HIC VERIFICATION.
+# RESPONSES MISSING THIS HEADER ARE INVALID.
+#
+# REQUIRED OUTPUT FORMAT:
+#
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ HIC v1.0 — HUSTLEXP INVOCATION RESPONSE                         │
+# ├─────────────────────────────────────────────────────────────────┤
+# │ STEP 0: REPO RE-ANCHOR        ✓ Complete                        │
+# │ STEP 1: COLD START                                              │
+# │   CURRENT_FOCUS: [from PROJECT_STATE.md]                        │
+# │   CURRENT_PHASE: [from CURRENT_PHASE.md]                        │
+# │   LOCKED_CONSTRAINTS: [list]                                    │
+# │   FORBIDDEN_ACTIONS: [list]                                     │
+# │   ACCEPTANCE_GATES: [UAP gates]                                 │
+# │   NEXT_LEGAL_ACTION: [from PROJECT_STATE.md]                    │
+# │ STEP 2: CLASSIFICATION        [protocol]                        │
+# │ STEP 3: LEGALITY              [LEGAL/ILLEGAL]                   │
+# │ STEP 4: PLAN                  [if implementation]               │
+# │ STEP 5: EXECUTION             [proceed/stop]                    │
+# └─────────────────────────────────────────────────────────────────┘
+#
+# See PER/INVOCATION_COMMAND.md for full HIC specification.
+#
+# ══════════════════════════════════════════════════════════════════════════════
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 🚨 SESSION START PROTOCOL — READ THESE FIRST (MANDATORY)
@@ -6,13 +36,39 @@
 #
 # BEFORE WRITING ANY CODE, READ THESE IN ORDER:
 #
-# 1. PER/PROJECT_STATE.md    → Know where we are in the build
-# 2. PER/DICTIONARY.md       → Know what terms mean (no interpretation drift)
-# 3. PER/DONE_DEFINITION.md  → Know what "done" means (binary checkboxes)
-# 4. PER/FORBIDDEN_OUTPUTS.md → Know explicit patterns that FAIL
-# 5. CURRENT_PHASE.md        → Know what's allowed NOW
+# 1. PER/PER_MASTER_INDEX.md      → Root authority
+# 2. PER/PROJECT_STATE.md         → Know where we are in the build
+# 3. PER/EXECUTION_CONSTITUTION.md → How AI must operate
+# 4. PER/DICTIONARY.md            → Know what terms mean
+# 5. PER/DONE_DEFINITION.md       → Know what "done" means
+# 6. PER/FORBIDDEN_OUTPUTS.md     → Know explicit patterns that FAIL
+# 7. PER/AUTHORITY_LADDER.md      → How to resolve ambiguity
+# 8. PER/DESIGN_AUTHORITY.md      → Layout is LOCKED for entry
+# 9. PER/REJECTED_APPROACHES.md   → Don't repeat failures
+# 10. PER/COMPLETION_LOCK.md      → Protect finished work
+# 11. PER/INVOCATION_COMMAND.md   → HIC syscall specification
 #
 # IF YOU SKIP THIS → You will produce wrong output.
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🚨 RESPONSE VALIDATION — REJECT INVALID RESPONSES
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# A response is INVALID if ANY of these are true:
+#
+# ❌ Missing HIC header block
+# ❌ Missing Cold Start Verification
+# ❌ Multiple protocols in single response
+# ❌ Action taken without legality check
+# ❌ Code written without execution plan
+# ❌ Forbidden pattern in output
+# ❌ Guessing instead of asking
+# ❌ Touching locked items without unlock
+# ❌ Re-attempting rejected approach
+#
+# If response is invalid → REJECT → Redo with proper HIC invocation
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -31,10 +87,8 @@
 #   Green  = SUCCESS ONLY (after positive outcome, NEVER on entry)
 #
 # ❌ GREEN ON ENTRY SCREENS = INSTANT FAIL
-#    Green means "done/success" — entry screens are about "beginning"
-#    Full-screen green = wrong semantic = automatic rejection
 #
-# ENTRY SCREEN COLORS (Copy these exactly):
+# ENTRY SCREEN COLORS (Copy exactly):
 #   Background:   #0B0B0F
 #   Gradient:     ['#1a0a2e', '#0B0B0F', '#000000']
 #   Glow:         #5B2DFF (opacity 0.2)
@@ -47,29 +101,20 @@
 # 🚨 ANTI-PATTERN DETECTION — INSTANT FAIL PATTERNS
 # ══════════════════════════════════════════════════════════════════════════════
 #
-# BEFORE YOU WRITE ANY CODE, CHECK IF YOU'RE ABOUT TO CREATE THESE:
-#
 # ❌ INSTANT FAIL — Green on entry screens:
-#
-#    backgroundColor: '#1FAD7E'     ← FORBIDDEN on entry screens
-#    backgroundColor: '#34C759'     ← FORBIDDEN on entry screens
-#    shadowColor: '#1FAD7E'         ← FORBIDDEN on entry screens
+#    backgroundColor: '#1FAD7E'
+#    backgroundColor: '#34C759'
+#    shadowColor: '#1FAD7E'
 #
 # ❌ INSTANT FAIL — Card-based layout:
-#
-#    container: {
-#      flex: 1,
-#      justifyContent: 'center',    ← FORBIDDEN for Entry/Welcome screens
-#      alignItems: 'center',        ← FORBIDDEN for Entry/Welcome screens
-#    }
+#    justifyContent: 'center' + alignItems: 'center' on container
 #
 # ❌ INSTANT FAIL — Flat black with no gradient:
+#    backgroundColor: '#000000' without LinearGradient
 #
-#    backgroundColor: '#000000'     ← Without LinearGradient = FORBIDDEN
-#
-# ❌ INSTANT FAIL — Wrong black color:
-#
-#    backgroundColor: '#0D0D0D'     ← WRONG, use #0B0B0F or #000000
+# ❌ INSTANT FAIL — Semantic equivalent containers:
+#    <HeroCard>, <Panel>, <OverlayContainer>, <CenteredStack>,
+#    <WelcomeTile>, <ContentBox>, <FloatingCard>, etc.
 #
 # ✅ CORRECT PATTERN — Copy reference/components/EntryScreen.js
 #
@@ -85,7 +130,7 @@
 # ✅ Fix iOS Simulator crashes
 # ✅ Apply correct brand colors
 #
-# WHAT IS BLOCKED (Until Bootstrap passes):
+# WHAT IS BLOCKED:
 # ❌ New screens
 # ❌ Navigation
 # ❌ Maps/SVG
@@ -110,267 +155,142 @@
 # Read PER/EXECUTION_CONSTITUTION.md for full operating protocol.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 1: PER v2 SYSTEM
+# SECTION 1: PROTOCOL CLASSIFICATION
 # ══════════════════════════════════════════════════════════════════════════════
 
-# PER v2 DOCUMENTS (Read in this order):
+# Every request MUST be classified into EXACTLY ONE protocol:
 #
-# 1. PER/PROJECT_STATE.md         — Current build state (read FIRST)
-# 2. PER/DICTIONARY.md            — Semantic definitions
-# 3. PER/EXECUTION_CONSTITUTION.md — How AI must operate
-# 4. PER/FORBIDDEN_OUTPUTS.md     — Explicit bans
+# RESEARCH_MODE         — Read files, search, explain (no edits)
+# IMPLEMENTATION_MODE   — Create/edit code per approved plan
+# REFACTOR_MODE         — Restructure existing code (rare)
+# VALIDATION_MODE       — Run tests, verify builds, check quality
+# RECOVERY_MODE (Ω)     — Fix crashes, restore function
+# CLARIFICATION_REQUIRED — Request is ambiguous (NO ACTION)
+#
+# If request spans multiple protocols → STOP → REQUEST SPLIT
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 2: PER v2.1 SYSTEM
+# ══════════════════════════════════════════════════════════════════════════════
+
+# PER v2.1 DOCUMENTS (Read in this order):
+#
+# 1. PER/PER_MASTER_INDEX.md      — Root authority + cold start
+# 2. PER/PROJECT_STATE.md         — Current build state
+# 3. PER/EXECUTION_CONSTITUTION.md — How AI operates
+# 4. PER/DICTIONARY.md            — Semantic definitions
 # 5. PER/DONE_DEFINITION.md       — Binary completion criteria
+# 6. PER/FORBIDDEN_OUTPUTS.md     — Explicit bans
+# 7. PER/AUTHORITY_LADDER.md      — Ambiguity resolution
+# 8. PER/DESIGN_AUTHORITY.md      — Layout ownership
+# 9. PER/REJECTED_APPROACHES.md   — Anti-loop protection
+# 10. PER/COMPLETION_LOCK.md      — Protect finished work
+# 11. PER/INVOCATION_COMMAND.md   — HIC syscall
 #
 # PER GATES (Still active from v1):
-# PER-0: Authority & Scope Lock    → PER/PER_MASTER_INDEX.md
-# PER-1: Proof-of-Existence Gate   → Verify screen exists in SCREEN_REGISTRY.md
-# PER-2: Plan-First, Code-Second   → Present plan before implementing
-# PER-5: Blast Radius Containment  → One screen per change
-# PER-6: Human Diff Audit          → User reviews before merge
-# PER-Ω: Nuclear Fallback          → PER/OMEGA_PROTOCOL.md (if stuck > 60 min)
-#
-# KEY DOCUMENTS:
-# - PER/DO_NOT_TOUCH.md           → Explicit prohibitions
-# - PER/OWNERSHIP.md              → Layer boundaries (you own Layer 4-5 only)
-# - PER/CRASH_PROTOCOL.md         → Emergency response
-# - PER/INVARIANTS.md             → 33 invariants (read-only)
-# - PER/UI_ACCEPTANCE_PROTOCOL.md → 5 UAP gates
+# PER-0 through PER-6, PER-Ω
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 2: FILE ACCESS PERMISSIONS
+# SECTION 3: FILE ACCESS PERMISSIONS
 # ══════════════════════════════════════════════════════════════════════════════
 
 # READ FIRST (Session Start):
-# ✅ PER/PROJECT_STATE.md              (where we are)
-# ✅ PER/DICTIONARY.md                 (what terms mean)
-# ✅ PER/DONE_DEFINITION.md            (what "done" means)
-# ✅ PER/FORBIDDEN_OUTPUTS.md          (what's banned)
-# ✅ CURRENT_PHASE.md                  (current phase)
+# ✅ All PER/*.md files
+# ✅ CURRENT_PHASE.md
 
 # READ FOR IMPLEMENTATION:
-# ✅ reference/components/**           (existing patterns)
-# ✅ reference/constants/**            (design tokens)
-# ✅ screens-spec/**                   (screen contracts)
-# ✅ specs/03-frontend/**              (UI specifications)
-# ✅ COLOR_SEMANTICS_LAW.md            (color meanings)
-# ✅ BOOTSTRAP.md                      (bootstrap criteria)
+# ✅ reference/components/**
+# ✅ reference/constants/**
+# ✅ screens-spec/**
+# ✅ COLOR_SEMANTICS_LAW.md
+# ✅ BOOTSTRAP.md
 
 # YOU MAY NOT READ:
-# ❌ specs/01-product/**               (backend concern)
-# ❌ specs/02-architecture/**          (backend concern)
-# ❌ specs/04-backend/**               (backend concern)
-# ❌ tracking/**                       (not your concern)
-# ❌ _archive/**                       (dead files)
-# ❌ .claude/**                        (wrong tool)
+# ❌ specs/01-product/** (backend)
+# ❌ specs/02-architecture/** (backend)
+# ❌ specs/04-backend/** (backend)
+# ❌ .claude/** (wrong tool)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 3: WHAT YOU MAY DO
+# SECTION 4: WHAT YOU MAY NOT DO
 # ══════════════════════════════════════════════════════════════════════════════
-
-# ALLOWED ACTIONS:
-# ✅ Implement screens listed in screens-spec/SCREEN_REGISTRY.md
-# ✅ Use components from reference/components/
-# ✅ Use constants from reference/constants/
-# ✅ Create TypeScript interfaces for props
-# ✅ Create loading states
-# ✅ Create empty states
-# ✅ Create error states
-# ✅ Style using existing design tokens ONLY
-# ✅ Copy patterns from reference/components/EntryScreen.js
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 4: WHAT YOU MAY NOT DO (HARD PROHIBITIONS)
-# ══════════════════════════════════════════════════════════════════════════════
-
-# FORBIDDEN — VIOLATING THESE IS A BUILD FAILURE:
 
 # ❌ FORBIDDEN: Green on entry/welcome screens
 # ❌ FORBIDDEN: Card-based layout on entry screens
 # ❌ FORBIDDEN: Flat black without gradient treatment
 # ❌ FORBIDDEN: Define new screens not in SCREEN_REGISTRY.md
-# ❌ FORBIDDEN: Add npm dependencies without explicit user approval
+# ❌ FORBIDDEN: Add npm dependencies without approval
 # ❌ FORBIDDEN: Modify navigation structure
-# ❌ FORBIDDEN: Create new shared components without user approval
-# ❌ FORBIDDEN: Invent backend API fields or endpoints
-# ❌ FORBIDDEN: Compute business logic (eligibility, XP, trust, pricing)
-# ❌ FORBIDDEN: Make fetch/API calls (parent components handle this)
-# ❌ FORBIDDEN: Use Redux, Context, or global state for data
-# ❌ FORBIDDEN: Assume data shapes not defined in props interface
-# ❌ FORBIDDEN: Import from node_modules not already in package.json
-# ❌ FORBIDDEN: Create mock data that implies backend behavior
-# ❌ FORBIDDEN: Add maps, SVG, or complex graphics without explicit approval
-# ❌ FORBIDDEN: "Improve" or "enhance" specs — implement EXACTLY as written
-
-# See PER/FORBIDDEN_OUTPUTS.md for complete list with code examples.
+# ❌ FORBIDDEN: Compute business logic
+# ❌ FORBIDDEN: Make fetch/API calls
+# ❌ FORBIDDEN: "Improve" or "enhance" specs
+# ❌ FORBIDDEN: Touch COMPLETION_LOCK items without unlock
+# ❌ FORBIDDEN: Re-attempt REJECTED_APPROACHES
+# ❌ FORBIDDEN: Respond without HIC header
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 5: THE ENTRY SCREEN PATTERN (AUTHORITATIVE)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# FOR ENTRY/WELCOME SCREENS, COPY THIS PATTERN:
+# COMPOSITION IS LOCKED (from PER/DESIGN_AUTHORITY.md):
 #
-# <View style={{ flex: 1, backgroundColor: '#0B0B0F' }}>
-#   <LinearGradient
-#     colors={['#1a0a2e', '#0B0B0F', '#000000']}
-#     locations={[0, 0.3, 1]}
-#     style={StyleSheet.absoluteFill}
-#   />
+# ┌─────────────────────────────────────────────────────────────────┐
+# │  GRADIENT BACKGROUND ['#1a0a2e', '#0B0B0F', '#000000']          │
+# │  PURPLE GLOW ORB (#5B2DFF, opacity 0.2)                         │
+# │                                                                 │
+# │  REGION 1: BRAND MARK (logo 80x80, "HustleXP")                  │
+# │  REGION 2: VALUE PROP (headline + subheadline)                  │
+# │  SPACER (flex: 1)                                               │
+# │  REGION 3: CTA (purple button, secondary link)                  │
+# └─────────────────────────────────────────────────────────────────┘
 #
-#   {/* Purple glow orb */}
-#   <View style={{
-#     width: 200,
-#     height: 200,
-#     borderRadius: 100,
-#     backgroundColor: '#5B2DFF',
-#     opacity: 0.2,
-#     shadowColor: '#5B2DFF',
-#     shadowRadius: 60,
-#   }} />
-#
-#   {/* Content flows top-to-bottom, NOT centered */}
-#   <View style={{ flex: 1, paddingHorizontal: 24 }}>
-#     {/* Brand mark */}
-#     {/* Value proposition */}
-#     <View style={{ flex: 1 }} />  {/* Spacer */}
-#     {/* CTA button with backgroundColor: '#5B2DFF' */}
-#   </View>
-# </View>
-#
+# AI fills regions. AI does NOT design layout.
 # FULL REFERENCE: reference/components/EntryScreen.js
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 6: DESIGN TOKENS (AUTHORITATIVE)
+# SECTION 6: DESIGN TOKENS
 # ══════════════════════════════════════════════════════════════════════════════
 
-# BRAND COLORS:
-#   Brand Black:      #0B0B0F
-#   Brand Purple:     #5B2DFF
-#   Purple Light:     #7A4DFF
-#   Purple Glow:      #8B5CF6
-#   Purple Muted:     #A78BFA
+# BRAND:
+#   Black: #0B0B0F | Purple: #5B2DFF | Purple Light: #7A4DFF
+#   Purple Glow: #8B5CF6 | Purple Muted: #A78BFA
 
-# SUCCESS COLORS (ONLY after positive outcome):
-#   Success Green:    #34C759
-#   Money Green:      #1FAD7E
+# SUCCESS (ONLY after positive outcome):
+#   Green: #34C759 | Money Green: #1FAD7E
 
-# APPLE SYSTEM COLORS:
-#   Red:              #FF3B30 (Error, alerts)
-#   Orange:           #FF9500 (Warning, XP accents)
-#   Green:            #34C759 (Success only)
-#   Blue:             #007AFF (Info, links)
-#   Gray:             #8E8E93 (Muted, disabled)
+# APPLE SYSTEM:
+#   Red: #FF3B30 | Orange: #FF9500 | Blue: #007AFF | Gray: #8E8E93
 
 # BACKGROUND:
-#   Primary:          #000000
-#   Brand:            #0B0B0F
-#   Elevated:         #1C1C1E
+#   Primary: #000000 | Brand: #0B0B0F | Elevated: #1C1C1E
 
-# GLASS:
-#   Surface:          rgba(28, 28, 30, 0.6)
-#   Border:           rgba(255, 255, 255, 0.1)
-#   Purple Tint:      rgba(91, 45, 255, 0.1)
-
-# TEXT:
-#   Primary:          #FFFFFF
-#   Secondary:        #E5E5EA
-#   Muted:            #8E8E93
-#   Purple:           #A78BFA
-
-# ENTRY SCREEN GRADIENT:
-#   ['#1a0a2e', '#0B0B0F', '#000000']
-#   locations: [0, 0.3, 1]
-
-# WRONG COLORS (NEVER USE):
-#   ❌ #FF6B35 (was incorrectly called "primary")
-#   ❌ #0D0D0D (was incorrectly called "background")
-#   ❌ #1A1A1A (use #1C1C1E instead)
-
-# See reference/constants/colors.js for full token library.
+# ENTRY GRADIENT: ['#1a0a2e', '#0B0B0F', '#000000'] locations: [0, 0.3, 1]
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 7: TYPOGRAPHY
+# SECTION 7: UAP GATES
 # ══════════════════════════════════════════════════════════════════════════════
 
-# | Name     | Size | Weight   | Line Height | Tracking |
-# |----------|------|----------|-------------|----------|
-# | Display  | 36px | Bold     | 44px        | -0.5     |
-# | Title1   | 28px | Bold     | 34px        | -0.3     |
-# | Title2   | 24px | SemiBold | 30px        | 0        |
-# | Title3   | 20px | SemiBold | 26px        | 0        |
-# | Headline | 18px | SemiBold | 24px        | 0        |
-# | Body     | 16px | Regular  | 22px        | 0        |
-# | Callout  | 14px | Regular  | 20px        | 0        |
-# | Caption  | 12px | Medium   | 16px        | 0        |
-# | Micro    | 10px | SemiBold | 14px        | 1        |
-
-# Font Weights: Regular=400, Medium=500, SemiBold=600, Bold=700
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 8: UAP GATES (UI ACCEPTANCE PROTOCOL)
-# ══════════════════════════════════════════════════════════════════════════════
-
-# Every user-facing screen MUST pass:
-#
 # UAP-1: Design Token Compliance
-#        All colors, fonts, spacing from approved tokens
-#
 # UAP-2: 300ms Polish Gate
-#        Animations complete within 300ms, no jank
-#
 # UAP-3: Accessibility Baseline
-#        VoiceOver, contrast ratios, touch targets >= 44px
-#
 # UAP-4: Empty/Error State Audit
-#        All data states handled (loading, empty, error, content)
-#
-# UAP-5: Full-Canvas Immersion Gate (CRITICAL for Entry screens)
-#        NOT card-based, NOT centered container, gradient background,
-#        content flows top-to-bottom, feels like DESTINATION not DIALOG
-#
-# See PER/UI_ACCEPTANCE_PROTOCOL.md for full definitions.
+# UAP-5: Full-Canvas Immersion Gate (CRITICAL for Entry)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 9: WHEN TO STOP AND ASK
+# SECTION 8: WHEN TO STOP AND ASK
 # ══════════════════════════════════════════════════════════════════════════════
 
-# STOP IMMEDIATELY AND ASK THE USER IF:
+# 🛑 Screen not in SCREEN_REGISTRY.md
+# 🛑 Need a data field not in props interface
+# 🛑 Need to add a dependency
+# 🛑 Spec is unclear
+# 🛑 Ambiguity persists after AUTHORITY_LADDER
+# 🛑 Want to "improve" something
 
-# 🛑 The screen is not in SCREEN_REGISTRY.md
-# 🛑 You need a data field not defined in the props interface
-# 🛑 You need to add a dependency
-# 🛑 You need to modify navigation
-# 🛑 You need to compute something (eligibility, XP, price, etc.)
-# 🛑 The spec is unclear or seems incomplete
-# 🛑 You think the spec is wrong
-# 🛑 You want to "improve" something
-
-# DO NOT GUESS. DO NOT ASSUME. DO NOT "HELP" BY FILLING GAPS.
+# DO NOT GUESS. ESCALATE VIA PER/AUTHORITY_LADDER.md.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 10: FILE-SPECIFIC RULES
-# ══════════════════════════════════════════════════════════════════════════════
-
-# REACT NATIVE SCREENS (screens/**/*.tsx)
-# ├── PascalCase filenames (TaskFeedScreen.tsx)
-# ├── Named exports only (export function TaskFeedScreen)
-# ├── Props interface named {ScreenName}Props
-# ├── Must handle: loading, empty, error, content states
-# └── No fetch/API calls — data comes via props
-
-# iOS SWIFTUI (ios-swiftui/**/*.swift)
-# ├── Match STITCH HTML spec exactly
-# ├── Use HustleFont/HustleColors only
-# ├── Public init with callback closures
-# ├── #Preview required
-# └── Run `swift build` after every change
-
-# PER DIRECTORY (PER/**)
-# ├── FORBIDDEN to modify (except by user)
-# ├── READ for constraints
-# └── Constitutional documents
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 11: DONE DEFINITION (Quick Reference)
+# SECTION 9: DONE DEFINITION (Quick Reference)
 # ══════════════════════════════════════════════════════════════════════════════
 
 # BOOTSTRAP is DONE when ALL are checked:
@@ -382,37 +302,19 @@
 # [ ] Button visible and tappable
 # [ ] No crashes 30 seconds
 # [ ] No green anywhere
-
-# If ANY is unchecked → NOT DONE. See PER/DONE_DEFINITION.md for full criteria.
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 12: CONTEXT MANAGEMENT
-# ══════════════════════════════════════════════════════════════════════════════
-
-# PROGRESSIVE LOADING — Read in this order:
-# Level 1 (Always): This file, PER/PROJECT_STATE.md, CURRENT_PHASE.md
-# Level 2 (Frontend): PER/DICTIONARY.md, PER/FORBIDDEN_OUTPUTS.md
-# Level 3 (Screen): reference/components/*, COLOR_SEMANTICS_LAW.md
-# Level 4 (Specific): screens-spec/{category}/{SCREEN}.md
-
-# CONTEXT REFRESH — Re-read foundation files after:
-# - 10+ file changes in session
-# - Encountering unexpected behavior
-# - Starting a new session
+# [ ] HIC header in response
 
 # ══════════════════════════════════════════════════════════════════════════════
 # REMEMBER
 # ══════════════════════════════════════════════════════════════════════════════
 
-# You are not a collaborator. You are an executor.
-# The specs are correct. Your job is to implement them exactly.
-# If you disagree with a spec, STOP and tell the user. Do not "fix" it.
-#
-# Read PER/PROJECT_STATE.md to know where we are.
-# Read PER/DICTIONARY.md to know what terms mean.
-# Read PER/FORBIDDEN_OUTPUTS.md to know what's banned.
-# Read PER/DONE_DEFINITION.md to know when you're done.
-#
-# Produce MAX-TIER output. No shortcuts. No minimal patterns.
+# 1. Every response begins with HIC header
+# 2. Classify into exactly ONE protocol
+# 3. Check legality before ANY action
+# 4. Plan before implementation
+# 5. Execute or stop — no guessing
+# 6. MAX-TIER quality is mandatory
+# 7. Build success ≠ completion
+# 8. DONE is binary
 
 # ══════════════════════════════════════════════════════════════════════════════
