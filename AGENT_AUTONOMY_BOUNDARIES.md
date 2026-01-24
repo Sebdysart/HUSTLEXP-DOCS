@@ -1,12 +1,13 @@
-# Agent Autonomy Boundaries
+# AGENT AUTONOMY BOUNDARIES — AI DECISION MATRICES
 
-**Purpose:** Define clear decision matrices for when AI agents can act independently vs. when user approval is required.
-
-**Last Updated:** 2025-01-23
+**STATUS: OPERATIONAL**
+**PURPOSE: Define when AI can act independently vs. when user approval is required**
+**LAST UPDATED: 2026-01-24**
+**VERSION: 2.0.0**
 
 ---
 
-## The Autonomy Spectrum
+## THE AUTONOMY SPECTRUM
 
 ```
 FORBIDDEN ◄──────────────────────────────────────────────► AUTONOMOUS
@@ -18,11 +19,12 @@ FORBIDDEN ◄──────────────────────�
 
 ---
 
-## Level 1: Autonomous (No Approval Needed)
+## LEVEL 1: AUTONOMOUS (NO APPROVAL NEEDED)
 
 **These actions can be taken immediately without user confirmation.**
 
 ### Read Operations
+
 | Action | Example |
 |--------|---------|
 | Reading any file | `Read specs/03-frontend/DESIGN_SYSTEM.md` |
@@ -30,8 +32,10 @@ FORBIDDEN ◄──────────────────────�
 | Listing files | `Glob "**/*.tsx"` |
 | Checking git status | `git status`, `git log` |
 | Reading documentation | Any `.md` file |
+| Exploring architecture | Using Task tool with Explore agent |
 
 ### Build & Test Operations
+
 | Action | Example |
 |--------|---------|
 | Running builds | `swift build`, `npm run build` |
@@ -41,6 +45,7 @@ FORBIDDEN ◄──────────────────────�
 | Checking dependencies | `npm audit`, `npm outdated` |
 
 ### Planning Operations
+
 | Action | Example |
 |--------|---------|
 | Creating execution plans | Drafting implementation steps |
@@ -51,11 +56,12 @@ FORBIDDEN ◄──────────────────────�
 
 ---
 
-## Level 2: Semi-Autonomous (Announce and Proceed)
+## LEVEL 2: SEMI-AUTONOMOUS (ANNOUNCE AND PROCEED)
 
 **Announce intent, then proceed unless user objects.**
 
 ### File Creation (Within Defined Structure)
+
 | Action | Condition |
 |--------|-----------|
 | Creating new screen file | Screen is in `SCREEN_REGISTRY.md` |
@@ -69,12 +75,14 @@ Creating {filename} to implement {purpose} as defined in {spec_reference}.
 ```
 
 ### Code Modifications (Following Patterns)
+
 | Action | Condition |
 |--------|-----------|
 | Implementing screen from spec | Spec exists in `screens-spec/` |
 | Adding API endpoint | Defined in `API_CONTRACT.md` |
 | Fixing lint errors | Auto-fixable issues only |
 | Formatting code | Using project formatters |
+| Applying design tokens | From `DESIGN_SYSTEM.md` |
 
 **Announcement Template:**
 ```
@@ -82,27 +90,32 @@ Modifying {filename} to {action} following pattern from {example_file}.
 ```
 
 ### Documentation Updates
+
 | Action | Condition |
 |--------|-----------|
 | Updating README | Adding factual information |
 | Adding code comments | Clarifying existing code |
 | Updating status tables | Reflecting completed work |
+| Updating tracking docs | `EXECUTION_QUEUE.md` step completion |
 
 ---
 
-## Level 3: User Approval Required
+## LEVEL 3: USER APPROVAL REQUIRED
 
 **Must explicitly ask and receive confirmation before proceeding.**
 
 ### Structural Changes
+
 | Action | Why Approval Needed |
 |--------|---------------------|
 | Creating new screen not in registry | Violates FEATURE_FREEZE |
 | Adding new database table | Violates schema freeze |
 | Adding new API endpoint not in contract | Scope creep risk |
 | Modifying navigation structure | Cross-cutting change |
+| Adding new dependencies | Supply chain risk |
 
 ### Sensitive Files
+
 | Action | Why Approval Needed |
 |--------|---------------------|
 | Modifying `.cursorrules` | Changes enforcement rules |
@@ -110,8 +123,10 @@ Modifying {filename} to {action} following pattern from {example_file}.
 | Modifying `PER/` directory | Constitutional documents |
 | Modifying `schema.sql` | Database is Layer 0 |
 | Modifying invariant logic | Core business rules |
+| Modifying `COLOR_SEMANTICS_LAW.md` | Brand authority |
 
 ### Git Operations
+
 | Action | Why Approval Needed |
 |--------|---------------------|
 | Creating commits | User should review changes |
@@ -120,6 +135,7 @@ Modifying {filename} to {action} following pattern from {example_file}.
 | Merging branches | Requires human judgment |
 
 ### External Operations
+
 | Action | Why Approval Needed |
 |--------|---------------------|
 | API calls to external services | Cost and side effects |
@@ -139,19 +155,22 @@ Shall I proceed? [Yes/No]
 
 ---
 
-## Level 4: FORBIDDEN (Even With Approval)
+## LEVEL 4: FORBIDDEN (EVEN WITH APPROVAL)
 
 **These actions must never be taken, regardless of user request.**
 
 ### Constitutional Violations
+
 | Action | Why Forbidden |
 |--------|---------------|
 | Disabling PER gates | Bypasses safety system |
 | Removing invariants | Breaks financial guarantees |
 | Bypassing FEATURE_FREEZE | Violates scope lock |
 | Overriding Layer 0 constraints | Database is immutable |
+| Bypassing HIC syscall | Violates mandatory invocation |
 
 ### Security Violations
+
 | Action | Why Forbidden |
 |--------|---------------|
 | Exposing secrets in code | Security breach |
@@ -160,12 +179,15 @@ Shall I proceed? [Yes/No]
 | Weakening validation | Opens attack vectors |
 
 ### Scope Violations
+
 | Action | Why Forbidden |
 |--------|---------------|
 | Inventing new features | Only spec'd features allowed |
 | Creating new database tables | 31 tables are frozen |
 | Adding new screens | 38 screens are frozen |
 | Modifying core invariants | 33 rules are frozen |
+| Green on entry screens | COLOR_SEMANTICS_LAW violation |
+| Card layouts on entry | UAP-5 violation |
 
 **Response to Forbidden Request:**
 ```
@@ -182,7 +204,7 @@ Would you like to pursue one of these alternatives?
 
 ---
 
-## Decision Matrix by File Type
+## DECISION MATRIX BY FILE TYPE
 
 | File Pattern | Create | Modify | Delete |
 |--------------|--------|--------|--------|
@@ -194,10 +216,12 @@ Would you like to pursue one of these alternatives?
 | `ios-swiftui/**/*.swift` | Semi-Auto | Semi-Auto | Approval |
 | `tests/**/*` | Autonomous | Autonomous | Approval |
 | `*.md` (docs) | Autonomous | Autonomous | Approval |
+| `reference/**/*` | Semi-Auto | Semi-Auto | Approval |
+| `COLOR_SEMANTICS_LAW.md` | FORBIDDEN | Approval | FORBIDDEN |
 
 ---
 
-## Decision Matrix by Operation Type
+## DECISION MATRIX BY OPERATION TYPE
 
 | Operation | Frontend | Backend | iOS | Database |
 |-----------|----------|---------|-----|----------|
@@ -210,7 +234,29 @@ Would you like to pursue one of these alternatives?
 
 ---
 
-## Escalation Protocol
+## BOOTSTRAP PHASE SPECIFIC RULES
+
+During Bootstrap phase, additional restrictions apply:
+
+### Allowed (Semi-Autonomous)
+
+- Creating/editing EntryScreen
+- Fixing Xcode build errors
+- Fixing iOS Simulator crashes
+- Applying correct brand colors
+- Verifying UAP-5 compliance
+
+### Blocked (Requires Approval + Phase Exit)
+
+- Adding new screens
+- Adding navigation
+- Adding backend calls
+- Adding maps/SVG
+- Adding new dependencies
+
+---
+
+## ESCALATION PROTOCOL
 
 When uncertain about autonomy level:
 
@@ -222,7 +268,7 @@ When uncertain about autonomy level:
 5. Otherwise → AUTONOMOUS
 ```
 
-### Uncertainty Resolution
+### Uncertainty Resolution Flowchart
 
 ```mermaid
 flowchart TD
@@ -238,24 +284,33 @@ flowchart TD
 
 ---
 
-## Self-Check Questions
+## SELF-CHECK QUESTIONS
 
 Before any action, ask:
 
-1. **Is this in scope?** (Check `FINISHED_STATE.md`)
-2. **Does the file exist?** (Check `PER-1_EXISTENCE_GATE.md`)
+1. **Is this in scope?** (Check `FINISHED_STATE.md`, `FEATURE_FREEZE.md`)
+2. **Does the file exist?** (Check filesystem)
 3. **Is there a spec?** (Check `screens-spec/` or `specs/`)
 4. **What layer does this touch?** (Check authority hierarchy)
 5. **Could this break invariants?** (Check `PER/INVARIANTS.md`)
+6. **Is this allowed in current phase?** (Check `CURRENT_PHASE.md`)
+7. **Does this follow color semantics?** (Check `COLOR_SEMANTICS_LAW.md`)
 
-If any answer is uncertain → Escalate to User Approval.
+**If any answer is uncertain → Escalate to User Approval.**
 
 ---
 
-## Cross-References
+## CROSS-REFERENCES
 
 - `PER/PER_MASTER_INDEX.md` — Gate definitions
+- `PER/AUTHORITY_LADDER.md` — Ambiguity resolution
 - `FEATURE_FREEZE.md` — Scope lock rules
 - `FINISHED_STATE.md` — What's in scope
+- `CURRENT_PHASE.md` — Current phase constraints
 - `.cursorrules` — Cursor enforcement
 - `.claude/instructions.md` — Claude Code enforcement
+
+---
+
+**When in doubt, ask.**
+**Autonomy is earned through demonstrated alignment.**

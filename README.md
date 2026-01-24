@@ -241,6 +241,20 @@ AI proposes → Deterministic systems decide → Database enforces
 
 Advanced AI tool configuration for Cursor and Claude Code development.
 
+### PER v2.1 System (26 documents)
+
+The Prevention/Enforcement/Recovery system ensures AI tools produce MAX-TIER output:
+
+| Document | Purpose |
+|----------|---------|
+| `PER/PER_MASTER_INDEX.md` | Root authority + HIC invocation |
+| `PER/PROJECT_STATE.md` | Current build state |
+| `PER/INVOCATION_COMMAND.md` | HIC syscall specification |
+| `PER/INVARIANTS.md` | 33 mechanically enforced rules |
+| `PER/UI_ACCEPTANCE_PROTOCOL.md` | 5 UAP gates |
+
+### AI Infrastructure Documents
+
 | Document | Purpose |
 |----------|---------|
 | `.cursorrules` | Cursor enforcement (file-specific rules) |

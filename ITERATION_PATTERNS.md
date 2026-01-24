@@ -1,8 +1,9 @@
-# Iteration Patterns
+# ITERATION PATTERNS — AI DEVELOPMENT WORKFLOWS
 
-**Purpose:** Define workflows for planning, self-review, and iterative refinement with AI tools.
-
-**Last Updated:** 2025-01-23
+**STATUS: OPERATIONAL**
+**PURPOSE: Define workflows for planning, self-review, and iterative refinement**
+**LAST UPDATED: 2026-01-24**
+**VERSION: 2.0.0**
 
 ---
 
@@ -43,7 +44,7 @@ AI tools are most effective when working in focused, verifiable chunks rather th
 5. Incremental Implementation
    ├── Implement Step 1
    ├── Test Step 1
-   ├── Commit checkpoint (optional)
+   ├── Mark todo as completed
    ├── Proceed to Step 2
    └── Repeat until complete
 ```
@@ -84,7 +85,7 @@ AI tools are most effective when working in focused, verifiable chunks rather th
 ### Testing Strategy
 - Run `swift build` after each step
 - Verify preview renders correctly
-- Check against STITCH spec: 01-instant-interrupt-card.html
+- Check against STITCH spec
 ```
 
 ---
@@ -136,7 +137,14 @@ Prompt 2: Spec Compliance Review
 - UI/UX deviations
 - Edge cases not handled"
 
-Prompt 3: Security Review
+Prompt 3: Color Semantics Review
+"Review {files} for color compliance:
+- Green on entry screens (FORBIDDEN)
+- Card layouts on entry screens (FORBIDDEN)
+- Colors match COLOR_SEMANTICS_LAW.md
+- Design tokens from DESIGN_SYSTEM.md"
+
+Prompt 4: Security Review
 "Review {files} for security issues:
 - Input validation
 - Authentication checks
@@ -202,27 +210,11 @@ Settings → Features → Enable "Iterate on Lints"
 
 | Tool | Auto-Fix | AI Iteration |
 |------|----------|--------------|
-| ESLint | ✅ | ✅ |
-| Prettier | ✅ | ✅ |
-| TypeScript | ❌ | ✅ (manual fix) |
-| SwiftLint | ✅ | ✅ |
-| Swift Format | ✅ | ✅ |
-
-### Example Iteration
-
-```
-Round 1: AI generates component
-├── ESLint: 3 errors (unused vars)
-└── AI: Removes unused imports
-
-Round 2: Check again
-├── TypeScript: 1 error (type mismatch)
-└── AI: Fixes type annotation
-
-Round 3: Check again
-├── All checks pass
-└── Human: Reviews final code
-```
+| ESLint | Yes | Yes |
+| Prettier | Yes | Yes |
+| TypeScript | No | Yes (manual fix) |
+| SwiftLint | Yes | Yes |
+| Swift Format | Yes | Yes |
 
 ---
 
@@ -259,7 +251,7 @@ After each bite:
 ├── Build (swift build / npm run build)
 ├── Test (swift test / npm test)
 ├── Review (quick visual check)
-└── Commit (optional checkpoint)
+└── Mark todo complete
 ```
 
 ---
@@ -304,6 +296,7 @@ After each bite:
 - [ ] All components present
 - [ ] Layout matches spec
 - [ ] Design tokens used (no hardcoding)
+- [ ] Colors match COLOR_SEMANTICS_LAW.md
 
 ### Interactions
 - [ ] All callbacks implemented
@@ -330,6 +323,7 @@ After each bite:
 - AI suggesting already-rejected approaches
 - AI unable to find files it just created
 - Conversation exceeds 50 messages
+- AI violating PER gates or HIC
 ```
 
 ### Fresh Start Protocol
@@ -339,10 +333,10 @@ After each bite:
    └── "We've completed X, Y, Z. Next is A."
 
 2. Save summary to file (optional)
-   └── Create CURRENT_STATE.md or update TODO
+   └── Update TODO or EXECUTION_QUEUE.md
 
 3. Start new session
-   └── Load foundation context
+   └── Load foundation context (Level 1)
    └── Reference summary
 
 4. Continue from checkpoint
@@ -350,7 +344,32 @@ After each bite:
 
 ---
 
-## Pattern 7: Parallel Exploration
+## Pattern 7: HIC-Compliant Iteration
+
+**When to Use:** Every Cursor response (mandatory).
+
+### Workflow
+
+```
+1. User Request Received
+
+2. Execute HIC
+   ├── STEP 0: Repo Re-anchor (read PER documents)
+   ├── STEP 1: Cold Start Verification (output proof)
+   ├── STEP 2: Protocol Classification (ONE mode)
+   ├── STEP 3: Legality Check
+   ├── STEP 4: Plan (if implementation)
+   └── STEP 5: Execute or Stop
+
+3. Output with HIC Header
+
+4. Self-Check Before Completion
+   └── Run PER/SELF_CHECK.md checklist
+```
+
+---
+
+## Pattern 8: Parallel Exploration
 
 **When to Use:** Uncertain about approach, need to compare options.
 
@@ -371,29 +390,6 @@ Comparison Session:
 ├── Load both approaches
 ├── Compare against requirements
 └── Select winner
-```
-
-### Comparison Template
-
-```markdown
-## Approach Comparison: {Feature}
-
-### Approach 1: {Name}
-- Lines of code: X
-- Dependencies: Y
-- Matches spec: Z%
-- Pros: ...
-- Cons: ...
-
-### Approach 2: {Name}
-- Lines of code: X
-- Dependencies: Y
-- Matches spec: Z%
-- Pros: ...
-- Cons: ...
-
-### Recommendation
-{Approach N} because {reasons}.
 ```
 
 ---
@@ -435,6 +431,20 @@ Comparison Session:
 ✅ Always build, test, and review
 ```
 
+### Anti-Pattern 6: Skipping HIC
+
+```
+❌ Output without HIC header (response is INVALID)
+✅ Every response begins with HIC verification
+```
+
+### Anti-Pattern 7: Repeating Rejected Approaches
+
+```
+❌ Try card layout again for entry screen
+✅ Check REJECTED_APPROACHES.md first
+```
+
 ---
 
 ## Cross-References
@@ -442,5 +452,13 @@ Comparison Session:
 - `AGENT_AUTONOMY_BOUNDARIES.md` — What AI can do
 - `CONTEXT_MANAGEMENT_GUIDE.md` — How to load context
 - `EXECUTION_QUEUE.md` — Build order
+- `PER/INVOCATION_COMMAND.md` — HIC specification
+- `PER/SELF_CHECK.md` — Pre-output verification
+- `PER/REJECTED_APPROACHES.md` — Anti-loop protection
 - `.cursorrules` — Cursor patterns
 - `.claude/instructions.md` — Claude Code patterns
+
+---
+
+**Iteration beats perfection.**
+**Small verified steps beat large uncertain leaps.**

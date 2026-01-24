@@ -1,8 +1,9 @@
-# MCP Integration Guide
+# MCP INTEGRATION GUIDE — AI TOOL CAPABILITIES
 
-**Purpose:** Define Model Context Protocol (MCP) server configurations and guardrails for AI tool integration.
-
-**Last Updated:** 2025-01-23
+**STATUS: OPERATIONAL**
+**PURPOSE: Define MCP server configurations and guardrails for AI tool integration**
+**LAST UPDATED: 2026-01-24**
+**VERSION: 2.0.0**
 
 ---
 
@@ -69,6 +70,7 @@ Even if an MCP server is capable of an action, it must pass PER gates:
 - **PER-0:** Is the action in `FINISHED_STATE.md`?
 - **PER-1:** Do referenced files exist?
 - **PER-2:** Is there an approved plan?
+- **HIC:** Has the invocation command been executed?
 
 ### Rule 2: External API Calls Require User Confirmation
 
@@ -97,6 +99,13 @@ MCP Response → Validate against spec → If deviation → FLAG
 
 Data from MCP servers must be validated against existing specifications before use.
 
+### Rule 5: MCP Respects Color Semantics
+
+```
+MCP design extraction → Validate against COLOR_SEMANTICS_LAW.md
+Green on entry screen → REJECT even if from MCP source
+```
+
 ---
 
 ## MCP Server Specifications
@@ -111,8 +120,9 @@ Data from MCP servers must be validated against existing specifications before u
 
 **Restrictions:**
 - Cannot access paths outside `HUSTLEXP-DOCS/`
-- Cannot modify `PER/` directory
-- Cannot modify `.cursorrules` or `.claude/`
+- Cannot modify `PER/` directory without explicit approval
+- Cannot modify `.cursorrules` or `.claude/` without approval
+- Cannot create screens not in `SCREEN_REGISTRY.md`
 
 ### Bash Server (Built-in, Restricted)
 
@@ -161,6 +171,7 @@ npm install
 - Rate limited (10 requests/minute)
 - File ID whitelist required
 - Output validated against `DESIGN_SYSTEM.md`
+- Colors validated against `COLOR_SEMANTICS_LAW.md`
 
 ### Stripe Test Server (Planned)
 
@@ -185,8 +196,9 @@ npm install
 1. User: "Implement the login screen from Figma"
 2. MCP: Fetch Figma file → Extract components
 3. AI: Validate against DESIGN_SYSTEM.md
-4. AI: Generate SwiftUI/React Native code
-5. User: Review and approve
+4. AI: Validate against COLOR_SEMANTICS_LAW.md
+5. AI: Generate SwiftUI/React Native code
+6. User: Review and approve
 ```
 
 ### Pattern 2: Database Schema Verification
@@ -233,8 +245,10 @@ npm install
 ### PER Compliance
 - [ ] Respects PER-0 (scope check)
 - [ ] Respects PER-1 (existence check)
+- [ ] Respects HIC (invocation command)
 - [ ] Cannot bypass FEATURE_FREEZE
 - [ ] Cannot modify invariants
+- [ ] Validates against COLOR_SEMANTICS_LAW.md
 
 ### Risk Assessment
 - Data exposure risk: {Low/Medium/High}
@@ -302,5 +316,12 @@ cursor mcp status
 
 - `AGENT_AUTONOMY_BOUNDARIES.md` — What MCP servers can do
 - `PER/PER_MASTER_INDEX.md` — Gates MCP must respect
+- `PER/INVOCATION_COMMAND.md` — HIC syscall
 - `.claude/settings.local.json` — Current permissions
 - `AI_GUARDRAILS.md` — Universal AI rules
+- `COLOR_SEMANTICS_LAW.md` — Color validation rules
+
+---
+
+**MCP extends capabilities but cannot bypass constraints.**
+**All MCP actions must pass PER gates and HIC verification.**

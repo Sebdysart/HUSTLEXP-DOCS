@@ -305,6 +305,55 @@
 # [ ] HIC header in response
 
 # ══════════════════════════════════════════════════════════════════════════════
+# SECTION 10: FILE-SPECIFIC RULES
+# ══════════════════════════════════════════════════════════════════════════════
+
+# React Components (screens/, components/)
+# ───────────────────────────────────────────────────────────────────────────────
+#   - PascalCase filenames (EntryScreen.tsx, TaskCard.tsx)
+#   - Named exports only (no default exports)
+#   - Props interface named {ComponentName}Props
+#   - Use design tokens from DESIGN_SYSTEM.md
+#   - NO hardcoded colors — use reference/constants/colors.js
+#   - Entry screens: Purple gradient, NEVER green
+#   - UAP-5 required for entry/welcome screens
+
+# iOS SwiftUI (ios-swiftui/HustleXP/Sources/)
+# ───────────────────────────────────────────────────────────────────────────────
+#   - Match STITCH HTML spec exactly
+#   - Use HustleColors, HustleTypography only
+#   - Public init with callback closures
+#   - #Preview required for all screens
+#   - No UIKit imports unless absolutely necessary
+
+# Backend Services (services/, routers/)
+# ───────────────────────────────────────────────────────────────────────────────
+#   - camelCase filenames
+#   - tRPC router pattern
+#   - Zod validation on all inputs
+#   - Error codes from ERROR_CODES.md only
+#   - Cannot bypass Layer 0 constraints
+
+# Database (specs/02-architecture/)
+# ───────────────────────────────────────────────────────────────────────────────
+#   - NEVER modify schema.sql without PER-3 simulation
+#   - Always include rollback SQL for migrations
+#   - Kill test required for every constraint
+#   - 31 tables are FROZEN — no new tables
+
+# Reference Files (reference/)
+# ───────────────────────────────────────────────────────────────────────────────
+#   - EntryScreen.js is the authoritative pattern
+#   - colors.js is the authoritative color source
+#   - Copy patterns, don't invent new ones
+
+# PER Documents (PER/)
+# ───────────────────────────────────────────────────────────────────────────────
+#   - CONSTITUTIONAL — cannot modify without explicit approval
+#   - AI cannot edit PER/ files by default
+#   - Changes require user confirmation
+
+# ══════════════════════════════════════════════════════════════════════════════
 # REMEMBER
 # ══════════════════════════════════════════════════════════════════════════════
 
