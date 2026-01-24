@@ -2,6 +2,33 @@
 
 This directory contains ready-to-use prompts for generating high-fidelity UI screens in Google Stitch.
 
+---
+
+## ⚠️ FILE VERSION GUIDANCE (FOR AI TOOLS)
+
+**IMPORTANT:** This directory contains both locked and editable versions of stitch prompts.
+
+### Version Rules:
+- **`*-LOCKED.md`** files: READ-ONLY. These are approved, frozen designs. DO NOT MODIFY.
+- **`*.md`** files (without LOCKED): Editable versions for iteration.
+- **`*.html`** files: Pixel-perfect HTML implementations. AUTHORITATIVE for colors/spacing.
+
+### Which Version to Read:
+1. **For implementation:** Read the `.html` file first (authoritative)
+2. **For requirements:** Read the `-LOCKED.md` file (approved spec)
+3. **For iteration:** Read the non-locked `.md` file (work-in-progress)
+
+### Color Authority:
+All stitch prompts use Apple HIG colors (see `COLOR_AUTHORITY_RESOLUTION.md`):
+- Brand: `#1FAD7E` (teal-green)
+- Background: `#000000` (pure black)
+- Success/Accept: `#34C759` (Apple green)
+- Error/Live: `#FF3B30` (Apple red)
+- Warning: `#FF9500` (Apple orange)
+- Info/Trust: `#007AFF` (Apple blue)
+
+---
+
 ## Purpose
 
 These prompts generate **static, high-fidelity, non-interactive screens** that lock:

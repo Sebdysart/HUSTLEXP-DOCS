@@ -61,108 +61,83 @@ import { colors, typography, spacing, radius, shadows } from '@/design-system';
 > - Error: `#FF3B30` (NOT `#F44336`)
 > - Info: `#007AFF` (NOT `#2196F3`)
 
-### Brand Colors (DEPRECATED — see notice above)
+### AUTHORITATIVE Colors (USE THESE)
 
 ```typescript
+/**
+ * AUTHORITATIVE COLOR TOKENS — from STITCH HTML / Apple HIG
+ *
+ * See: COLOR_AUTHORITY_RESOLUTION.md for complete specification
+ */
 export const colors = {
-  // Primary - HustleXP Green
-  primary: {
-    50:  '#E8F5E9',
-    100: '#C8E6C9',
-    200: '#A5D6A7',
-    300: '#81C784',
-    400: '#66BB6A',
-    500: '#4CAF50',  // Primary action
-    600: '#43A047',
-    700: '#388E3C',
-    800: '#2E7D32',
-    900: '#1B5E20',
+  // Brand
+  brand: {
+    primary: '#1FAD7E',      // HustleXP teal-green
+    yellow: '#FFD900',       // Instant mode
   },
 
-  // Secondary - Deep Blue
-  secondary: {
-    50:  '#E3F2FD',
-    100: '#BBDEFB',
-    200: '#90CAF9',
-    300: '#64B5F6',
-    400: '#42A5F5',
-    500: '#2196F3',  // Secondary action
-    600: '#1E88E5',
-    700: '#1976D2',
-    800: '#1565C0',
-    900: '#0D47A1',
-  },
-
-  // Accent - Warm Orange (XP, celebrations)
-  accent: {
-    50:  '#FFF3E0',
-    100: '#FFE0B2',
-    200: '#FFCC80',
-    300: '#FFB74D',
-    400: '#FFA726',
-    500: '#FF9800',  // XP color
-    600: '#FB8C00',
-    700: '#F57C00',
-    800: '#EF6C00',
-    900: '#E65100',
-  },
-
-  // Neutral - Grays
-  neutral: {
-    0:   '#FFFFFF',
-    50:  '#FAFAFA',
-    100: '#F5F5F5',
-    200: '#EEEEEE',
-    300: '#E0E0E0',
-    400: '#BDBDBD',
-    500: '#9E9E9E',
-    600: '#757575',
-    700: '#616161',
-    800: '#424242',
-    900: '#212121',
-    1000: '#000000',
+  // Apple System Colors (iOS HIG)
+  apple: {
+    red: '#FF3B30',
+    orange: '#FF9500',
+    green: '#34C759',
+    blue: '#007AFF',
+    gray: '#8E8E93',
   },
 
   // Semantic Colors
-  success: '#4CAF50',
-  warning: '#FF9800',
-  error: '#F44336',
-  info: '#2196F3',
+  success: '#34C759',        // Apple green
+  warning: '#FF9500',        // Apple orange
+  error: '#FF3B30',          // Apple red
+  info: '#007AFF',           // Apple blue
 
   // State Colors
-  live: '#F44336',      // Live mode indicator
-  funded: '#4CAF50',    // Escrow funded
-  pending: '#FF9800',   // Awaiting action
-  disputed: '#9C27B0',  // Dispute state
-};
-```
+  live: '#FF3B30',           // Apple red
+  funded: '#34C759',         // Apple green
+  pending: '#FF9500',        // Apple orange
+  disputed: '#FF9500',       // Apple orange
 
-### Dark Mode Colors
-
-```typescript
-export const darkColors = {
+  // Background
   background: {
-    primary: '#121212',
-    secondary: '#1E1E1E',
-    elevated: '#2D2D2D',
+    primary: '#000000',      // Pure black
+    elevated: '#1C1C1E',
   },
+
+  // Glass (glassmorphism)
+  glass: {
+    surface: 'rgba(28, 28, 30, 0.6)',
+    border: 'rgba(255, 255, 255, 0.1)',
+  },
+
+  // Text
   text: {
-    primary: 'rgba(255, 255, 255, 0.87)',
-    secondary: 'rgba(255, 255, 255, 0.60)',
-    disabled: 'rgba(255, 255, 255, 0.38)',
+    primary: '#FFFFFF',
+    secondary: '#E5E5EA',
+    muted: '#8E8E93',
   },
-  // Primary colors remain the same
+
+  // Zinc scale (for subtle UI)
+  zinc: {
+    400: '#A1A1AA',
+    500: '#71717A',
+    600: '#52525B',
+    700: '#3F3F46',
+    800: '#27272A',
+  },
 };
 ```
 
 ### Usage
 
 ```typescript
-// Correct
-<View style={{ backgroundColor: colors.primary[500] }} />
+// Correct — use authoritative tokens
+<View style={{ backgroundColor: colors.brand.primary }} />
+<View style={{ backgroundColor: colors.apple.green }} />
+<Text style={{ color: colors.text.primary }} />
 
-// Incorrect - never hardcode
-<View style={{ backgroundColor: '#4CAF50' }} />
+// WRONG — Material Design colors (deprecated)
+// <View style={{ backgroundColor: '#4CAF50' }} />  // Use #1FAD7E or #34C759
+// <View style={{ backgroundColor: '#121212' }} />  // Use #000000
 ```
 
 ---

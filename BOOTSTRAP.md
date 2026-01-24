@@ -175,7 +175,7 @@ open ios/HustleXP.xcworkspace
 [ ] App builds without errors
 [ ] App launches without crashing
 [ ] Black screen with "HustleXP" text visible
-[ ] Orange "Get Started" button visible
+[ ] Teal-green (#1FAD7E) "Get Started" button visible
 [ ] Tap button → "Button pressed" appears in Xcode console
 [ ] App does not crash after 30 seconds idle
 ```
