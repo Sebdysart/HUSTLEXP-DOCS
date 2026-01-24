@@ -1,26 +1,28 @@
 /**
- * EntryScreen Component v1.0.0
+ * EntryScreen Component v2.0.0
  *
- * SPEC: PER/UI_ACCEPTANCE_PROTOCOL.md §UAP-5
- * AUTHORITY: Full-Canvas Immersion Gate
+ * AUTHORITY: COLOR_SEMANTICS_LAW.md + PER/UI_ACCEPTANCE_PROTOCOL.md §UAP-5
  *
  * ═══════════════════════════════════════════════════════════════════════════
  * ✅ THIS IS THE CORRECT PATTERN FOR ENTRY SCREENS
  * ═══════════════════════════════════════════════════════════════════════════
  *
+ * BRAND: Black + Purple (NOT green)
+ * - Purple = Brand, energy, ambition
+ * - Green = SUCCESS ONLY (never on entry screens)
+ *
  * PASSES UAP-5:
  * ✅ Full-canvas composition (NOT card-based)
- * ✅ Gradient background (narrative surface)
+ * ✅ Purple gradient background (narrative surface)
  * ✅ Hierarchy: Brand → Value Prop → Context → Action
  * ✅ Logo fade-in animation (300ms)
  * ✅ Feels like DESTINATION, not popup
  *
- * NEVER DO THIS (FAILS UAP-5):
+ * FORBIDDEN:
+ * ❌ Green background (green = "done", entry = "begin")
  * ❌ justifyContent: 'center' + alignItems: 'center' on container
  * ❌ <Card> wrapping all content
  * ❌ Flat black background with no gradient/glow
- * ❌ Single centered box containing everything
- * ❌ "Two boxes on black background" layout
  */
 
 import React, { useEffect, useRef } from 'react';
@@ -36,23 +38,30 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// AUTHORITATIVE COLORS (Apple HIG)
+// AUTHORITATIVE COLORS (Black + Purple Brand)
 // ═══════════════════════════════════════════════════════════════════════════
+// BRAND IS PURPLE, NOT GREEN. Green is for SUCCESS states only.
 
 const COLORS = {
-  background: '#000000',
+  // Brand Identity (NOT green)
   brand: {
-    primary: '#1FAD7E',
+    black: '#0B0B0F',           // Near-black (premium)
+    purple: '#5B2DFF',          // Electric purple (primary)
+    purpleLight: '#7A4DFF',     // Gradient
+    purpleGlow: '#8B5CF6',      // Glow effects
+    purpleMuted: '#A78BFA',     // Secondary purple
   },
+  // Text
   text: {
     primary: '#FFFFFF',
     secondary: '#E5E5EA',
     muted: '#8E8E93',
   },
+  // Gradient for entry screen (PURPLE tint, NOT green)
   gradient: {
-    top: '#0a2f1f',      // Subtle brand tint
-    middle: '#000000',
-    bottom: '#000000',
+    top: '#1a0a2e',             // Purple tint
+    middle: '#0B0B0F',          // Brand black
+    bottom: '#000000',          // Pure black
   },
 };
 
@@ -71,8 +80,8 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 /**
  * Entry Screen - First screen users see after app launch
  *
- * UAP-5 COMPLIANT: Full-canvas composition with gradient background,
- * brand hierarchy, and anchored CTA.
+ * BRAND: Black + Purple (NOT green)
+ * Green is reserved for SUCCESS states only.
  *
  * @param {EntryScreenProps} props
  */
@@ -100,17 +109,17 @@ export function EntryScreen({ onGetStarted, onSignIn }) {
   return (
     <View style={styles.container}>
       {/* ═══════════════════════════════════════════════════════════════════
-          NARRATIVE BACKGROUND — Required by UAP-5
-          Background is a design element, NOT empty space
+          PURPLE GRADIENT BACKGROUND — Required by COLOR_SEMANTICS_LAW
+          NOT green. Purple = brand. Green = success only.
           ═══════════════════════════════════════════════════════════════════ */}
       <LinearGradient
         colors={[COLORS.gradient.top, COLORS.gradient.middle, COLORS.gradient.bottom]}
-        locations={[0, 0.4, 1]}
+        locations={[0, 0.3, 1]}
         style={StyleSheet.absoluteFill}
       />
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SUBTLE GLOW EFFECT — Adds depth and visual interest
+          PURPLE GLOW EFFECT — Brand energy, NOT green
           ═══════════════════════════════════════════════════════════════════ */}
       <View style={styles.glowContainer}>
         <View style={styles.glowOrb} />
@@ -154,7 +163,7 @@ export function EntryScreen({ onGetStarted, onSignIn }) {
             { paddingBottom: insets.bottom + 24, opacity: contentOpacity }
           ]}
         >
-          {/* Primary Action */}
+          {/* Primary Action — PURPLE button (NOT green) */}
           <TouchableOpacity
             style={styles.primaryButton}
             onPress={onGetStarted}
@@ -181,7 +190,7 @@ export function EntryScreen({ onGetStarted, onSignIn }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// STYLES — UAP-5 COMPLIANT (Full-Canvas, NOT Card-Based)
+// STYLES — UAP-5 COMPLIANT + BLACK/PURPLE BRAND
 // ═══════════════════════════════════════════════════════════════════════════
 
 const styles = StyleSheet.create({
@@ -190,10 +199,10 @@ const styles = StyleSheet.create({
   // This is what makes it full-canvas instead of card-based
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.brand.black,
   },
 
-  // ═══ GLOW EFFECT ═══
+  // ═══ PURPLE GLOW EFFECT ═══
   glowContainer: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
@@ -204,10 +213,10 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: COLORS.brand.primary,
-    opacity: 0.15,
+    backgroundColor: COLORS.brand.purple,  // PURPLE, not green
+    opacity: 0.2,
     // iOS blur effect via shadow
-    shadowColor: COLORS.brand.primary,
+    shadowColor: COLORS.brand.purple,      // PURPLE glow
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 60,
@@ -229,10 +238,15 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: COLORS.brand.primary,
+    backgroundColor: COLORS.brand.purple,   // PURPLE logo container
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    // Purple glow on logo
+    shadowColor: COLORS.brand.purple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
   },
   logoText: {
     fontSize: 40,
@@ -279,11 +293,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   primaryButton: {
-    backgroundColor: COLORS.brand.primary,
+    backgroundColor: COLORS.brand.purple,   // PURPLE button, NOT green
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: 'center',
     marginBottom: 16,
+    // Purple glow on button
+    shadowColor: COLORS.brand.purple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   primaryButtonText: {
     fontSize: 17,
@@ -299,7 +318,7 @@ const styles = StyleSheet.create({
     color: COLORS.text.muted,
   },
   signInLink: {
-    color: COLORS.brand.primary,
+    color: COLORS.brand.purpleMuted,        // Purple link, not green
     fontWeight: '600',
   },
 });

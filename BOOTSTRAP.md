@@ -104,11 +104,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// AUTHORITATIVE COLORS (Apple HIG) — DO NOT CHANGE
+// AUTHORITATIVE COLORS — BLACK + PURPLE BRAND (NOT GREEN)
 // ═══════════════════════════════════════════════════════════════════════════
+// Green = SUCCESS ONLY. Purple = Brand. See COLOR_SEMANTICS_LAW.md
 const colors = {
-  background: '#000000',
-  brandPrimary: '#1FAD7E',
+  brandBlack: '#0B0B0F',        // Near-black (premium)
+  brandPurple: '#5B2DFF',       // Electric purple (primary)
+  brandPurpleMuted: '#A78BFA',  // Softer purple
   textPrimary: '#FFFFFF',
   textSecondary: '#E5E5EA',
   textMuted: '#8E8E93',
@@ -155,16 +157,16 @@ export function EntryScreen({ onGetStarted, onSignIn }: EntryScreenProps) {
 
   return (
     <View style={styles.container}>
-      {/* ═══ NARRATIVE BACKGROUND (Required by UAP-5) ═══ */}
+      {/* ═══ PURPLE GRADIENT BACKGROUND (Required by COLOR_SEMANTICS_LAW) ═══ */}
       <LinearGradient
-        colors={['#0a2f1f', '#000000', '#000000']}
-        locations={[0, 0.4, 1]}
+        colors={['#1a0a2e', '#0B0B0F', '#000000']}  // PURPLE tint, NOT green
+        locations={[0, 0.3, 1]}
         style={StyleSheet.absoluteFill}
       />
 
-      {/* ═══ SUBTLE GLOW EFFECT ═══ */}
+      {/* ═══ PURPLE GLOW EFFECT (NOT green) ═══ */}
       <View style={styles.glowContainer}>
-        <View style={styles.glowOrb} />
+        <View style={styles.glowOrb} />  {/* backgroundColor: colors.brandPurple */}
       </View>
 
       {/* ═══ FULL-CANVAS CONTENT (NOT centered card) ═══ */}
@@ -213,15 +215,15 @@ export function EntryScreen({ onGetStarted, onSignIn }: EntryScreenProps) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// STYLES — UAP-5 COMPLIANT (Full-Canvas, NOT Card-Based)
+// STYLES — UAP-5 COMPLIANT + BLACK/PURPLE BRAND
 // ═══════════════════════════════════════════════════════════════════════════
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.brandBlack,  // #0B0B0F, NOT green
   },
 
-  // ═══ GLOW EFFECT ═══
+  // ═══ PURPLE GLOW EFFECT ═══
   glowContainer: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
@@ -232,10 +234,10 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: colors.brandPrimary,
-    opacity: 0.15,
-    // Blur effect via shadow on iOS
-    shadowColor: colors.brandPrimary,
+    backgroundColor: colors.brandPurple,   // PURPLE #5B2DFF, NOT green
+    opacity: 0.2,
+    // Purple glow via shadow on iOS
+    shadowColor: colors.brandPurple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 60,
@@ -258,10 +260,15 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: colors.brandPrimary,
+    backgroundColor: colors.brandPurple,   // PURPLE #5B2DFF, NOT green
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    // Purple glow on logo
+    shadowColor: colors.brandPurple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
   },
   logoText: {
     fontSize: 40,
@@ -306,11 +313,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   primaryButton: {
-    backgroundColor: colors.brandPrimary,
+    backgroundColor: colors.brandPurple,   // PURPLE #5B2DFF, NOT green
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: 'center',
     marginBottom: 16,
+    // Purple glow on button
+    shadowColor: colors.brandPurple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   primaryButtonText: {
     fontSize: 17,
@@ -326,7 +338,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   signInLink: {
-    color: colors.brandPrimary,
+    color: colors.brandPurpleMuted,        // Muted purple, NOT green
     fontWeight: '600',
   },
 });
