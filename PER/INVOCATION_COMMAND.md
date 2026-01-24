@@ -1,8 +1,9 @@
-# HUSTLEXP INVOCATION COMMAND (HIC v1.0)
+# HUSTLEXP INVOCATION COMMAND (HIC v1.1)
 
 **STATUS: MANDATORY SYSCALL**
 **PURPOSE: Force repo re-anchor and prove alignment before ANY action**
 **RULE: Every Cursor prompt MUST begin with HUSTLEXP_INVOCATION()**
+**VERSION: 1.1 (ECP Integration)**
 
 ---
 
@@ -129,15 +130,44 @@ If and only if in IMPLEMENTATION_MODE or REFACTOR_MODE:
 Do NOT write code until plan is acknowledged.
 
 ════════════════════════════════════════════════════════════════════
-STEP 5 — EXECUTE OR STOP
+STEP 5 — EXECUTION COMMITMENT (ECP)
 ════════════════════════════════════════════════════════════════════
 Proceed ONLY if all previous steps passed.
+
+If protocol is IMPLEMENTATION_MODE or REFACTOR_MODE:
+→ Check if execution is LEGAL (STEP 3 passed)
+→ If LEGAL → COMMIT (produce real artifact)
+→ If BLOCKED → REFUSE (cite blocker + unblock condition)
+→ NO OTHER RESPONSE IS VALID
+
+COMMIT means:
+• Code (actual implementation, not pseudocode)
+• Spec (complete, not partial)
+• Diagram (rendered, not described)
+• File diff (real changes, not conceptual)
+• No placeholders (// TODO, /* implement */)
+• Ready for review or merge
+
+REFUSE means:
+• Explicit statement of refusal
+• Blocking rule cited
+• Unblock condition stated
+• Format: "EXECUTION REFUSED: [rule] → [blocker] → [unblock]"
+
+FORBIDDEN responses in IMPLEMENTATION_MODE or REFACTOR_MODE:
+❌ "Here's how you would implement this..."
+❌ "One approach would be..."
+❌ "You could consider..."
+❌ Code with TODO comments
+❌ Partial or conceptual output
 
 If at any point ambiguity, conflict, or uncertainty appears:
 → STOP immediately
 → ESCALATE via PER/AUTHORITY_LADDER.md
 → ASK for clarification
 → DO NOT guess
+
+See: PER/EXECUTION_COMMITMENT_PROTOCOL.md for full specification
 
 ════════════════════════════════════════════════════════════════════
 IMMUTABLE RULES
@@ -210,7 +240,7 @@ Every response to HUSTLEXP_INVOCATION() MUST begin with:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ HIC v1.0 — HUSTLEXP INVOCATION RESPONSE                         │
+│ HIC v1.1 — HUSTLEXP INVOCATION RESPONSE                         │
 ├─────────────────────────────────────────────────────────────────┤
 │ STEP 0: REPO RE-ANCHOR        ✓ Complete                        │
 │ STEP 1: COLD START            [verification block]              │
@@ -286,7 +316,7 @@ Ensure it passes UAP-5 and uses purple brand colors.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ HIC v1.0 — HUSTLEXP INVOCATION RESPONSE                         │
+│ HIC v1.1 — HUSTLEXP INVOCATION RESPONSE                         │
 ├─────────────────────────────────────────────────────────────────┤
 │ STEP 0: REPO RE-ANCHOR        ✓ Complete                        │
 │ STEP 1: COLD START                                              │

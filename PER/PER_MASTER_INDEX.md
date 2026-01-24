@@ -1,12 +1,12 @@
-# PER MASTER INDEX — HUSTLEXP v2.1
+# PER MASTER INDEX — HUSTLEXP v2.2
 
 **STATUS: CONSTITUTIONAL AUTHORITY**
-**VERSION: MAX-TIER + HIC**
+**VERSION: MAX-TIER + HIC v1.1 + ECP**
 **ENFORCEMENT: MANDATORY — VIOLATIONS ARE SYSTEM FAILURES**
 
 ---
 
-## 🔒 HUSTLEXP INVOCATION COMMAND (HIC v1.0)
+## 🔒 HUSTLEXP INVOCATION COMMAND (HIC v1.1)
 
 > **EVERY CURSOR PROMPT MUST BEGIN WITH:**
 >
@@ -18,40 +18,43 @@
 >
 > ```
 > ┌─────────────────────────────────────────────────────────────────┐
-> │ HIC v1.0 — HUSTLEXP INVOCATION RESPONSE                         │
+> │ HIC v1.1 — HUSTLEXP INVOCATION RESPONSE                         │
 > ├─────────────────────────────────────────────────────────────────┤
 > │ STEP 0: REPO RE-ANCHOR        ✓ Complete                        │
 > │ STEP 1: COLD START            [verification]                    │
 > │ STEP 2: CLASSIFICATION        [protocol]                        │
 > │ STEP 3: LEGALITY              [LEGAL/ILLEGAL]                   │
 > │ STEP 4: PLAN                  [if implementation]               │
-> │ STEP 5: EXECUTION             [proceed/stop]                    │
+> │ STEP 5: ECP                   [COMMIT/REFUSE]                   │
 > └─────────────────────────────────────────────────────────────────┘
 > ```
 >
 > **Responses missing HIC header are INVALID.**
+> **STEP 5 (ECP): In IMPLEMENTATION_MODE or REFACTOR_MODE, must COMMIT or REFUSE. No conceptual-only responses.**
 >
 > See `PER/INVOCATION_COMMAND.md` for full specification.
+> See `PER/EXECUTION_COMMITMENT_PROTOCOL.md` for ECP rules.
 > See `PER/SELF_CHECK.md` for pre-output verification.
 
 ---
 
-## PER v2.1: SESSION START PROTOCOL
+## PER v2.2: SESSION START PROTOCOL
 
 > **AI MUST READ THESE FIRST — IN ORDER:**
 >
 > 1. `PER/PER_MASTER_INDEX.md` — Root authority (this file)
-> 2. `PER/INVOCATION_COMMAND.md` — HIC syscall specification
-> 3. `PER/PROJECT_STATE.md` — Know where we are in the build
-> 4. `PER/DICTIONARY.md` — Know what terms mean
-> 5. `PER/DONE_DEFINITION.md` — Know what "done" means
-> 6. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
-> 7. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
-> 8. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
-> 9. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
-> 10. `PER/REJECTED_APPROACHES.md` — Don't repeat failures
-> 11. `PER/COMPLETION_LOCK.md` — Protect finished work
-> 12. `PER/SELF_CHECK.md` — Pre-output verification
+> 2. `PER/INVOCATION_COMMAND.md` — HIC v1.1 syscall specification
+> 3. `PER/EXECUTION_COMMITMENT_PROTOCOL.md` — ECP (COMMIT or REFUSE)
+> 4. `PER/PROJECT_STATE.md` — Know where we are in the build
+> 5. `PER/DICTIONARY.md` — Know what terms mean
+> 6. `PER/DONE_DEFINITION.md` — Know what "done" means
+> 7. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
+> 8. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
+> 9. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
+> 10. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
+> 11. `PER/REJECTED_APPROACHES.md` — Don't repeat failures
+> 12. `PER/COMPLETION_LOCK.md` — Protect finished work
+> 13. `PER/SELF_CHECK.md` — Pre-output verification
 
 ---
 
@@ -278,6 +281,7 @@ PER_MASTER_INDEX.md (THIS FILE - ROOT AUTHORITY)
 ├── PER-6_DIFF_AUDIT.md (Human verification)
 ├── OMEGA_PROTOCOL.md (Nuclear fallback)
 ├── CRASH_PROTOCOL.md (Crash response)
+├── EXECUTION_COMMITMENT_PROTOCOL.md (ECP - COMMIT or REFUSE)
 └── LAST_KNOWN_GOOD.md (Recovery anchors)
 ```
 

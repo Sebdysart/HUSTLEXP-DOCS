@@ -1,8 +1,9 @@
-# ZERO-GAP AUDIT — PER v2.1 VERIFICATION
+# ZERO-GAP AUDIT — PER v2.2 VERIFICATION
 
 **STATUS: COMPLETE**
 **DATE: 2026-01-24**
 **RESULT: ZERO GAPS — SYSTEM IS ESCAPE-PROOF**
+**VERSION: 2.2 (ECP Integration)**
 
 ---
 
@@ -85,18 +86,49 @@ and no remaining gaps exist that could produce low-tier output.
 - Re-lock after modification
 - Protects quality from erosion
 
+### ✅ GAP 8: Answer-Only Compliance
+**Problem:** AI complies with process but produces no artifact
+**Solution:** `PER/EXECUTION_COMMITMENT_PROTOCOL.md`
+**Status:** CLOSED
+
+AI could:
+- Correctly execute HIC Step 0–3
+- Correctly classify the protocol
+- Correctly cite rules
+- Correctly explain what should happen
+- ...and STILL provide conceptual output instead of real code
+
+This is "helpful cowardice" — compliance without commitment.
+
+ECP makes this structurally impossible:
+- IMPLEMENTATION_MODE → Must COMMIT or REFUSE
+- REFACTOR_MODE → Must COMMIT or REFUSE
+- COMMIT = real artifact (no pseudocode, no TODOs, no placeholders)
+- REFUSE = explicit blocker + unblock condition
+- No third option exists
+
 ---
 
 ## ADDITIONAL HARDENING (BEYOND ORIGINAL AUDIT)
 
-### ✅ HIC Syscall System
+### ✅ HIC v1.1 Syscall System
 **Document:** `PER/INVOCATION_COMMAND.md`
 
 - 5-step invocation protocol
 - Protocol classification (single mode only)
 - Legality check before action
 - Plan before execution
+- **STEP 5: Execution Commitment (ECP)** — v1.1 addition
 - Protocol-specific sub-commands
+
+### ✅ Execution Commitment Protocol (ECP)
+**Document:** `PER/EXECUTION_COMMITMENT_PROTOCOL.md`
+
+- Binary output requirement: COMMIT or REFUSE
+- COMMIT = complete artifact, no placeholders
+- REFUSE = blocker + unblock condition
+- Conceptual-only responses INVALID
+- Closes "Answer-Only Compliance" gap
 
 ### ✅ Self-Check System
 **Document:** `PER/SELF_CHECK.md`
@@ -138,9 +170,10 @@ and no remaining gaps exist that could produce low-tier output.
 | `UI_ACCEPTANCE_PROTOCOL.md` | 5 UAP gates | ✅ |
 | `OMEGA_PROTOCOL.md` | Nuclear fallback | ✅ |
 | `CRASH_PROTOCOL.md` | Emergency response | ✅ |
+| `EXECUTION_COMMITMENT_PROTOCOL.md` | ECP (no conceptual-only) | ✅ |
 | `PER-0 through PER-6` | Gate documents | ✅ |
 
-**Total: 26 PER documents**
+**Total: 27 PER documents**
 
 ---
 
@@ -164,6 +197,9 @@ and no remaining gaps exist that could produce low-tier output.
 | Illegal actions | HIC Legality Check |
 | Unplanned changes | HIC Plan Step |
 | Low-tier output | SELF_CHECK.md, all UAP gates |
+| Answer-only compliance | EXECUTION_COMMITMENT_PROTOCOL.md |
+| Conceptual output | EXECUTION_COMMITMENT_PROTOCOL.md |
+| Helpful cowardice | EXECUTION_COMMITMENT_PROTOCOL.md |
 
 ---
 
@@ -207,7 +243,8 @@ HUSTLEXP_INVOCATION()
     │
     ▼
 ┌─────────────────────────────────────┐
-│ STEP 5: EXECUTE OR STOP             │
+│ STEP 5: EXECUTION COMMITMENT (ECP)  │
+│   COMMIT or REFUSE — no third option│
 │   Run SELF_CHECK before output      │
 └─────────────────────────────────────┘
     │
@@ -224,19 +261,20 @@ HUSTLEXP_INVOCATION()
 
 This audit certifies:
 
-1. **All 7 original gaps CLOSED**
-2. **3 additional hardening layers added**
-3. **26 PER documents in complete set**
+1. **All 8 gaps CLOSED** (including GAP 8: Answer-Only Compliance)
+2. **4 additional hardening layers added** (HIC, Self-Check, .cursorrules, ECP)
+3. **27 PER documents in complete set**
 4. **All failure modes have prevention documents**
 5. **Control chain is unbroken**
-6. **HIC syscall prevents execution without alignment**
+6. **HIC v1.1 syscall prevents execution without alignment**
 7. **Self-check prevents output without verification**
+8. **ECP prevents conceptual-only responses**
 
 ---
 
 ## THE GUARANTEE
 
-With PER v2.1 + HIC, the system guarantees:
+With PER v2.2 + HIC v1.1 + ECP, the system guarantees:
 
 | Guarantee | Mechanism |
 |-----------|-----------|
@@ -252,6 +290,8 @@ With PER v2.1 + HIC, the system guarantees:
 | No repeated failures | REJECTED_APPROACHES |
 | No quality erosion | COMPLETION_LOCK |
 | No low-tier output | SELF_CHECK + UAP gates |
+| **No conceptual-only output** | **ECP (COMMIT or REFUSE)** |
+| **No helpful cowardice** | **ECP enforcement in STEP 5** |
 
 ---
 
