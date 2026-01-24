@@ -303,10 +303,31 @@
 # - Bootstrap screens may NEVER be promoted to production navigation
 #
 # SCREEN COMPLETION REQUIREMENTS:
-# - Any user-facing screen MUST pass UAP-0 through UAP-4
+# - Any user-facing screen MUST pass UAP-0 through UAP-5
 # - "Builds without crashing" is NECESSARY but INSUFFICIENT
 # - Phase completion is SUBORDINATE to UAP
 # - A screen that builds but fails UAP is INCOMPLETE
+#
+# UAP-5: FULL-CANVAS IMMERSION GATE (CRITICAL):
+# Entry, Welcome, and first-contact screens MUST use full-canvas composition.
+# Card-based, modal-style, or component-stacked layouts are FORBIDDEN.
+#
+# ❌ FORBIDDEN PATTERNS (Will fail UAP-5):
+#    - <Card> wrapping all content
+#    - justify-content: center + alignItems: center + single child
+#    - backgroundColor: '#000000' with no gradient/glow
+#    - Modal-like border radius on content container
+#    - "Two boxes on black background" layouts
+#    - Single centered card containing everything
+#
+# ✅ REQUIRED PATTERNS (Passes UAP-5):
+#    - Background with gradient, glow, texture, or animation
+#    - Content spanning conceptual width (not floating)
+#    - Hierarchy: Brand → Value Prop → Context → Action
+#    - Entry screens feel like DESTINATION, not DIALOG
+#
+# TEST: Does this screen feel like you've ARRIVED somewhere, or like
+#       you're dismissing a popup? If popup → FAILS UAP-5.
 #
 # USER-FACING SCREEN DEFINITION:
 # Any screen that:

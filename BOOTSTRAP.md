@@ -84,7 +84,18 @@ const TEXT_MUTED = '#8E8E93';
 
 ---
 
-## THE BOOTSTRAP SCREEN (FIXED COLORS)
+## THE BOOTSTRAP SCREEN (INTERNAL ONLY)
+
+> ⚠️ **UAP-4/UAP-5 WARNING:** This Bootstrap Screen is an INTERNAL verification screen.
+> It is NOT the production Entry Screen. It MUST remain behind `#if DEBUG` and
+> may NEVER be promoted to user-facing status.
+>
+> **When the real Entry Screen is implemented, it MUST:**
+> - Pass UAP-5 (Full-Canvas Immersion Gate)
+> - Use full-canvas composition (NOT card-based layout)
+> - Include gradient/glow background (NOT flat black)
+> - Show value prop, context, and brand signal
+> - See: `PER/UI_ACCEPTANCE_PROTOCOL.md`
 
 **File:** `hustlexp-app/screens/BootstrapScreen.tsx`
 
@@ -220,12 +231,74 @@ export default function App() {
 
 ---
 
+## PRODUCTION ENTRY SCREEN REQUIREMENTS (UAP-5)
+
+> **CRITICAL:** When replacing the Bootstrap Screen with the real Entry Screen,
+> it MUST pass UAP-5 (Full-Canvas Immersion Gate). Card-based layouts are FORBIDDEN.
+
+### ❌ FORBIDDEN PATTERNS (Will Fail UAP-5):
+
+```
+┌─────────────────────────────────────┐
+│ ████████████████████████████████████│ ← Black empty space
+│    ┌─────────────────────────┐      │
+│    │       HustleXP          │      │ ← Centered card (FORBIDDEN)
+│    │   "Where hustlers..."   │      │
+│    └─────────────────────────┘      │
+│    ┌─────────────────────────┐      │
+│    │     [ Get Started ]     │      │ ← Separate card (FORBIDDEN)
+│    └─────────────────────────┘      │
+│ ████████████████████████████████████│ ← Black empty space
+└─────────────────────────────────────┘
+```
+
+### ✅ REQUIRED PATTERN (Passes UAP-5):
+
+```
+┌─────────────────────────────────────┐
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│ ← Gradient/glow background
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│
+│          🟢 HustleXP               │ ← Brand mark (animated fade-in)
+│                                     │
+│    Get things done. Get paid.       │ ← Value prop (WHO/WHY)
+│                                     │
+│    Post tasks and find help in      │ ← Supporting context
+│    minutes. Or earn money           │
+│    completing tasks nearby.         │
+│                                     │
+│    ┌─────────────────────────────┐  │
+│    │        Get Started          │  │ ← CTA anchored at bottom
+│    └─────────────────────────────┘  │
+│      Already have an account?       │ ← Secondary action
+└─────────────────────────────────────┘
+```
+
+### Technical Implementation Rules:
+
+```
+FORBIDDEN:
+• <Card> wrapping all content
+• justify-content: center + alignItems: center + single child
+• backgroundColor: '#000000' with no gradient/glow
+• Modal-like border radius on content container
+
+REQUIRED:
+• Background: LinearGradient or subtle glow treatment
+• Hierarchy: Brand → Value Prop → Context → Action
+• Full-canvas composition (no floating cards)
+• Logo fade-in animation (300ms)
+```
+
+**Reference:** `PER/UI_ACCEPTANCE_PROTOCOL.md` §UAP-5
+
+---
+
 ## WHAT HAPPENS AFTER BOOTSTRAP PASSES
 
 Once ALL criteria are met:
 
 1. **Phase 1:** Add navigation shell (no screens yet)
-2. **Phase 2:** Add HomeScreen (real one, replacing Bootstrap)
+2. **Phase 2:** Add Entry Screen (UAP-5 compliant, replacing Bootstrap)
 3. **Phase 3:** Add one screen at a time from SCREEN_REGISTRY
 4. **Phase 4:** Add backend integration (one endpoint at a time)
 
