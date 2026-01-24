@@ -734,18 +734,18 @@ export const trustTierColors = {
 
 ## Quick Reference
 
-### Most Used Tokens
+### Most Used Tokens (AUTHORITATIVE — Apple HIG)
 
 | Token | Value | Use Case |
 |-------|-------|----------|
-| `colors.primary[500]` | #4CAF50 | Primary buttons, links |
-| `colors.neutral[700]` | #616161 | Body text |
-| `colors.neutral[500]` | #9E9E9E | Secondary text |
-| `typography.h2` | 24px semibold | Section headers |
-| `typography.body` | 14px regular | Default text |
+| `colors.brand.primary` | #1FAD7E | Primary buttons, links |
+| `colors.text.primary` | #FFFFFF | Primary text |
+| `colors.text.muted` | #8E8E93 | Secondary text |
+| `typography.title2` | 24px semibold | Section headers |
+| `typography.body` | 16px regular | Default text |
 | `spacing[4]` | 16px | Standard padding |
-| `radius.lg` | 12px | Card corners |
-| `shadows.md` | Elevation 2 | Cards |
+| `radius.2xl` | 24px | Card corners (glass) |
+| `glass.surface` | rgba(28,28,30,0.6) | Cards |
 
 ---
 
@@ -915,11 +915,11 @@ export const celebrationColors = {
     balance: colors.neutral[900],
   },
 
-  // Streak
+  // Streak (using Apple orange for warmth)
   streak: {
-    fire: '#FF6B35',
-    fireGlow: '#FF6B3550',
-    milestone: colors.accent[500],
+    fire: '#FF9500',           // Apple orange (was #FF6B35)
+    fireGlow: '#FF950050',     // Apple orange 50% (was #FF6B3550)
+    milestone: '#FF9500',      // Apple orange
   },
 };
 ```

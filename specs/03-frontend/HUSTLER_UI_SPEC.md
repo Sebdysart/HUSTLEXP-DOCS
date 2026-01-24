@@ -405,10 +405,10 @@ Hustler UI has two states based on economic truth:
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `hustler.xp` | `#FF9500` | XP ring, counters |
-| `hustler.streak` | `#FF6B35` | Streak fire icon |
-| `hustler.badge.matte` | `#6B7280` | Tier 1 badges |
-| `hustler.badge.metallic` | `#3B82F6` | Tier 2 badges |
+| `hustler.xp` | `#FF9500` | XP ring, counters (Apple orange) |
+| `hustler.streak` | `#FF9500` | Streak fire icon (Apple orange) |
+| `hustler.badge.matte` | `#71717A` | Tier 1 badges (Zinc 500) |
+| `hustler.badge.metallic` | `#007AFF` | Tier 2 badges (Apple blue) |
 | `hustler.badge.holographic` | Gradient | Tier 3 badges |
 | `hustler.badge.obsidian` | `#1F2937` | Tier 4 badges |
 
