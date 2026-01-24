@@ -84,77 +84,271 @@ const TEXT_MUTED = '#8E8E93';
 
 ---
 
-## THE BOOTSTRAP SCREEN (INTERNAL ONLY)
+## THE ENTRY SCREEN (UAP-5 COMPLIANT)
 
-> ⚠️ **UAP-4/UAP-5 WARNING:** This Bootstrap Screen is an INTERNAL verification screen.
-> It is NOT the production Entry Screen. It MUST remain behind `#if DEBUG` and
-> may NEVER be promoted to user-facing status.
->
-> **When the real Entry Screen is implemented, it MUST:**
-> - Pass UAP-5 (Full-Canvas Immersion Gate)
-> - Use full-canvas composition (NOT card-based layout)
-> - Include gradient/glow background (NOT flat black)
-> - Show value prop, context, and brand signal
-> - See: `PER/UI_ACCEPTANCE_PROTOCOL.md`
+> **THIS IS THE CORRECT PATTERN.** Copy this, not minimal card layouts.
 
-**File:** `hustlexp-app/screens/BootstrapScreen.tsx`
+**File:** `hustlexp-app/screens/EntryScreen.tsx`
 
 ```tsx
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Dimensions,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// AUTHORITATIVE COLORS — DO NOT CHANGE
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTHORITATIVE COLORS (Apple HIG) — DO NOT CHANGE
+// ═══════════════════════════════════════════════════════════════════════════
 const colors = {
-  background: '#000000',        // Pure black (STITCH spec)
-  brandPrimary: '#1FAD7E',      // HustleXP teal-green
+  background: '#000000',
+  brandPrimary: '#1FAD7E',
   textPrimary: '#FFFFFF',
+  textSecondary: '#E5E5EA',
   textMuted: '#8E8E93',
-  glass: {
-    surface: 'rgba(28, 28, 30, 0.6)',
-    border: 'rgba(255, 255, 255, 0.1)',
-  },
 };
 
-export function BootstrapScreen() {
-  const handlePress = () => {
-    console.log('Button pressed');
-  };
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENTRY SCREEN — UAP-5 FULL-CANVAS COMPOSITION
+// ═══════════════════════════════════════════════════════════════════════════
+// ✅ PASSES UAP-5:
+//    - Full-canvas composition (NOT card-based)
+//    - Gradient background (narrative surface)
+//    - Hierarchy: Brand → Value Prop → Context → Action
+//    - Logo fade-in animation
+//    - Feels like DESTINATION, not popup
+// ═══════════════════════════════════════════════════════════════════════════
+
+interface EntryScreenProps {
+  onGetStarted: () => void;
+  onSignIn: () => void;
+}
+
+export function EntryScreen({ onGetStarted, onSignIn }: EntryScreenProps) {
+  const insets = useSafeAreaInsets();
+  const logoOpacity = useRef(new Animated.Value(0)).current;
+  const contentOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Logo fade-in first (300ms)
+    Animated.timing(logoOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      // Then content fade-in (400ms)
+      Animated.timing(contentOpacity, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>HustleXP</Text>
-      <TouchableOpacity style={styles.button} onPress={handlePress}>
-        <Text style={styles.buttonText}>Get Started</Text>
-      </TouchableOpacity>
+      {/* ═══ NARRATIVE BACKGROUND (Required by UAP-5) ═══ */}
+      <LinearGradient
+        colors={['#0a2f1f', '#000000', '#000000']}
+        locations={[0, 0.4, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+
+      {/* ═══ SUBTLE GLOW EFFECT ═══ */}
+      <View style={styles.glowContainer}>
+        <View style={styles.glowOrb} />
+      </View>
+
+      {/* ═══ FULL-CANVAS CONTENT (NOT centered card) ═══ */}
+      <View style={[styles.content, { paddingTop: insets.top + 60 }]}>
+
+        {/* BRAND MARK — with animated fade-in */}
+        <Animated.View style={[styles.brandSection, { opacity: logoOpacity }]}>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logoText}>H</Text>
+          </View>
+          <Text style={styles.brandName}>HustleXP</Text>
+        </Animated.View>
+
+        {/* VALUE PROP + CONTEXT — spans full width */}
+        <Animated.View style={[styles.valueSection, { opacity: contentOpacity }]}>
+          <Text style={styles.headline}>Get things done.{'\n'}Get paid.</Text>
+          <Text style={styles.subheadline}>
+            Post tasks and find help in minutes.{'\n'}
+            Or earn money completing tasks nearby.
+          </Text>
+        </Animated.View>
+
+        {/* SPACER — pushes CTA to bottom */}
+        <View style={styles.spacer} />
+
+        {/* CTA SECTION — anchored at bottom, NOT floating card */}
+        <Animated.View
+          style={[
+            styles.ctaSection,
+            { paddingBottom: insets.bottom + 24, opacity: contentOpacity }
+          ]}
+        >
+          <TouchableOpacity style={styles.primaryButton} onPress={onGetStarted}>
+            <Text style={styles.primaryButtonText}>Get Started</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton} onPress={onSignIn}>
+            <Text style={styles.secondaryButtonText}>
+              Already have an account? <Text style={styles.signInLink}>Sign in</Text>
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
     </View>
   );
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// STYLES — UAP-5 COMPLIANT (Full-Canvas, NOT Card-Based)
+// ═══════════════════════════════════════════════════════════════════════════
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,  // #000000
+    backgroundColor: colors.background,
+  },
+
+  // ═══ GLOW EFFECT ═══
+  glowContainer: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: SCREEN_HEIGHT * 0.15,
+  },
+  glowOrb: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: colors.brandPrimary,
+    opacity: 0.15,
+    // Blur effect via shadow on iOS
+    shadowColor: colors.brandPrimary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 60,
+  },
+
+  // ═══ FULL-CANVAS CONTENT LAYOUT ═══
+  // NOTE: NO justifyContent: 'center' + alignItems: 'center'
+  // Content flows top-to-bottom with explicit spacing
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+
+  // ═══ BRAND SECTION ═══
+  brandSection: {
+    alignItems: 'center',
+    marginBottom: 48,
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    backgroundColor: colors.brandPrimary,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 16,
   },
-  title: {
+  logoText: {
+    fontSize: 40,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  brandName: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    letterSpacing: -0.5,
+  },
+
+  // ═══ VALUE PROP SECTION ═══
+  valueSection: {
+    alignItems: 'center',
+  },
+  headline: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: colors.textPrimary,  // #FFFFFF
-    marginBottom: 24,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    lineHeight: 40,
+    marginBottom: 16,
   },
-  button: {
-    backgroundColor: colors.brandPrimary,  // #1FAD7E (NOT #FF6B35)
-    paddingHorizontal: 32,
+  subheadline: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+
+  // ═══ SPACER (pushes CTA to bottom) ═══
+  spacer: {
+    flex: 1,
+    minHeight: 40,
+  },
+
+  // ═══ CTA SECTION (anchored, NOT floating) ═══
+  ctaSection: {
+    width: '100%',
+  },
+  primaryButton: {
+    backgroundColor: colors.brandPrimary,
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 14,
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  buttonText: {
-    fontSize: 16,
+  primaryButtonText: {
+    fontSize: 17,
     fontWeight: '600',
-    color: colors.textPrimary,  // #FFFFFF
+    color: colors.textPrimary,
+  },
+  secondaryButton: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  secondaryButtonText: {
+    fontSize: 15,
+    color: colors.textMuted,
+  },
+  signInLink: {
+    color: colors.brandPrimary,
+    fontWeight: '600',
   },
 });
+```
+
+---
+
+## INTERNAL BOOTSTRAP VERIFICATION (Debug Only)
+
+> ⚠️ **FOR INTERNAL TESTING ONLY.** This minimal screen verifies the app boots.
+> It is NOT a production screen. NEVER ship this. NEVER copy this pattern.
+
+```tsx
+// #if DEBUG — INTERNAL ONLY
+// This is NOT a user-facing screen. See EntryScreen above for correct pattern.
+export function _InternalBootstrapVerification() {
+  return (
+    <View style={{ flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: '#FFF' }}>Bootstrap OK</Text>
+    </View>
+  );
+}
 ```
 
 ---

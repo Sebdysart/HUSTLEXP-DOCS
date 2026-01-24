@@ -1,10 +1,18 @@
 /**
- * HustleXP Component Exports v2.0.0
+ * HustleXP Component Exports v2.1.0
  *
- * UPDATED 2026-01-23: Added all 21 components from COMPONENT_LIBRARY.md
+ * UPDATED 2026-01-24: Added EntryScreen (UAP-5 compliant template)
  *
  * AUTHORITY: specs/03-frontend/COMPONENT_LIBRARY.md
  */
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCREEN TEMPLATES (UAP-5 COMPLIANT)
+// ═══════════════════════════════════════════════════════════════════════════
+// ⚠️ USE THESE AS STARTING POINTS FOR ENTRY/WELCOME SCREENS
+// DO NOT use minimal card-based layouts. These pass UAP-5.
+
+export { EntryScreen } from './EntryScreen';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // PRIMITIVE COMPONENTS (§1-4)

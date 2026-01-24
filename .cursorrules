@@ -1,6 +1,55 @@
 # CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND
 
 # ══════════════════════════════════════════════════════════════════════════════
+# 🚨 ANTI-PATTERN DETECTION — READ THIS FIRST
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# BEFORE YOU WRITE ANY CODE, CHECK IF YOU'RE ABOUT TO CREATE THESE PATTERNS:
+#
+# ❌ INSTANT FAIL — If you write this, you have FAILED:
+#
+#    container: {
+#      flex: 1,
+#      justifyContent: 'center',    ← FORBIDDEN for Entry/Welcome screens
+#      alignItems: 'center',        ← FORBIDDEN for Entry/Welcome screens
+#    }
+#
+#    WHY: This creates a card-based layout. Entry screens MUST be full-canvas.
+#
+# ❌ INSTANT FAIL — If you write this, you have FAILED:
+#
+#    <View style={styles.container}>
+#      <Card>                        ← FORBIDDEN for Entry/Welcome screens
+#        <Text>HustleXP</Text>
+#        <Button>Get Started</Button>
+#      </Card>
+#    </View>
+#
+#    WHY: Cards are for content screens, NOT entry/welcome screens.
+#
+# ❌ INSTANT FAIL — Flat black background with no gradient:
+#
+#    backgroundColor: '#000000'     ← Without LinearGradient = FORBIDDEN
+#
+#    WHY: Entry screens need narrative backgrounds (gradient, glow, texture).
+#
+# ✅ CORRECT PATTERN — Copy this instead:
+#
+#    <View style={{ flex: 1 }}>
+#      <LinearGradient colors={['#0a2f1f', '#000000']} style={absoluteFill} />
+#      <View style={{ flex: 1, paddingHorizontal: 24 }}>
+#        {/* Brand */}
+#        {/* Value prop */}
+#        <View style={{ flex: 1 }} />  {/* Spacer */}
+#        {/* CTA anchored at bottom */}
+#      </View>
+#    </View>
+#
+# FOR ENTRY/WELCOME SCREENS: Copy reference/components/EntryScreen.js
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
 # 🛑 EXECUTION MODE — READ THESE FILES FIRST
 # ══════════════════════════════════════════════════════════════════════════════
 #
