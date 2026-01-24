@@ -226,14 +226,30 @@
 #   ❌ #1A1A1A (use #1C1C1E instead)
 
 # TYPOGRAPHY (from STITCH HTML specs):
-# Display:  36px Bold, tracking: -0.5
-# Title1:   28px Bold, tracking: -0.3
-# Title2:   24px SemiBold
-# Headline: 18px SemiBold
-# Body:     16px Regular
-# Callout:  14px Regular
-# Caption:  12px Medium
-# Micro:    10px SemiBold, tracking: 1
+#
+# | Name     | Size | Weight   | Line Height | Tracking |
+# |----------|------|----------|-------------|----------|
+# | Display  | 36px | Bold     | 44px        | -0.5     |
+# | Title1   | 28px | Bold     | 34px        | -0.3     |
+# | Title2   | 24px | SemiBold | 30px        | 0        |
+# | Title3   | 20px | SemiBold | 26px        | 0        |
+# | Headline | 18px | SemiBold | 24px        | 0        |
+# | Body     | 16px | Regular  | 22px        | 0        |
+# | Callout  | 14px | Regular  | 20px        | 0        |
+# | Caption  | 12px | Medium   | 16px        | 0        |
+# | Micro    | 10px | SemiBold | 14px        | 1        |
+#
+# Font Weights: Regular=400, Medium=500, SemiBold=600, Bold=700
+# See: TYPOGRAPHY_AUTHORITY_RESOLUTION.md for full mapping
+
+# BORDER RADIUS (Apple HIG):
+# xs:   2px
+# sm:   4px
+# md:   8px
+# lg:   12px
+# xl:   16px
+# 2xl:  24px
+# full: 9999px
 
 # SPACING (Tailwind-aligned):
 # 1:   4px

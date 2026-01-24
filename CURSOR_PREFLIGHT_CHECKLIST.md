@@ -14,12 +14,12 @@ Before starting implementation, verify ALL boxes are checked:
 | Document | Location | Status |
 |----------|----------|--------|
 | Product Spec | `specs/01-product/PRODUCT_SPEC.md` | ✅ |
-| Backend Architecture | `specs/02-backend/BACKEND_ARCHITECTURE.md` | ✅ |
-| API Contracts | `specs/02-backend/API_CONTRACTS.md` | ✅ |
-| Database Schema | `specs/02-backend/DATABASE_SCHEMA.md` | ✅ |
+| Architecture | `specs/02-architecture/ARCHITECTURE.md` | ✅ |
+| API Contracts | `specs/04-backend/API_CONTRACT.md` | ✅ |
+| Database Schema | `specs/02-architecture/schema.sql` | ✅ |
 | UI Spec | `specs/03-frontend/UI_SPEC.md` | ✅ |
-| Onboarding Spec | `specs/03-frontend/ONBOARDING_SPEC.md` | ✅ |
-| Frontend Architecture | `specs/03-frontend/FRONTEND_ARCHITECTURE.md` | ✅ |
+| Onboarding Spec | `specs/01-product/ONBOARDING_SPEC.md` | ✅ |
+| Frontend Architecture | `FRONTEND_ARCHITECTURE.md` | ✅ |
 
 ### 2. Type System
 
@@ -148,10 +148,15 @@ Before starting implementation, verify ALL boxes are checked:
 → Check `specs/03-frontend/PLATFORM_SPECIFIC.md`
 
 ### "What API endpoint for action X?"
-→ Check `specs/02-backend/API_CONTRACTS.md`
+→ Check `specs/04-backend/API_CONTRACT.md`
 
 ### "What color for element X?"
-→ Check `specs/03-frontend/UI_SPEC.md` §2
+→ Check `COLOR_AUTHORITY_RESOLUTION.md` (authoritative)
+→ Or `.cursorrules` SECTION 7 (quick reference)
+
+### "What typography for element X?"
+→ Check `TYPOGRAPHY_AUTHORITY_RESOLUTION.md` (authoritative)
+→ Or `.cursorrules` SECTION 7 (quick reference)
 
 ### "What animation for state X?"
 → Check `specs/03-frontend/UI_SPEC.md` §3
@@ -178,15 +183,17 @@ if (result.success) {
 
 ### 2. XP Colors Only in XP Context
 ```typescript
-// ❌ NEVER use XP green (#10B981) for non-XP
-<View style={{ backgroundColor: '#10B981' }}>
+// ❌ NEVER use XP green for non-XP elements
+<View style={{ backgroundColor: '#1FAD7E' }}>
   <Text>Task Card</Text>
 </View>
 
-// ✅ ONLY in XP components
+// ✅ ONLY in XP components (brand primary #1FAD7E or Apple green #34C759)
 <XPDisplay>
-  <Text style={{ color: '#10B981' }}>{xpAmount}</Text>
+  <Text style={{ color: '#1FAD7E' }}>{xpAmount}</Text>
 </XPDisplay>
+
+// NOTE: #10B981 is DEPRECATED — use #1FAD7E (brand) or #34C759 (Apple green)
 ```
 
 ### 3. No Gamification for Posters
@@ -257,22 +264,24 @@ tier: 'NEW' | 'VERIFIED' | 'TRUSTED' | 'ELITE' // ❌
 HUSTLEXP-DOCS/
 ├── specs/
 │   ├── 01-product/
-│   │   └── PRODUCT_SPEC.md
-│   ├── 02-backend/
-│   │   ├── API_CONTRACTS.md
-│   │   ├── BACKEND_ARCHITECTURE.md
-│   │   └── DATABASE_SCHEMA.md
-│   └── 03-frontend/
-│       ├── API_PAGINATION.md
-│       ├── ASSETS_STRATEGY.md
-│       ├── COMPONENT_LIBRARY.md
-│       ├── ESLINT_CUSTOM_RULES.md
-│       ├── FRONTEND_ARCHITECTURE.md
-│       ├── ONBOARDING_SPEC.md
-│       ├── PLATFORM_SPECIFIC.md
-│       ├── STATE_MANAGEMENT_PATTERNS.md
-│       ├── UI_SPEC.md
-│       └── VALIDATION_PATTERNS.md
+│   │   ├── PRODUCT_SPEC.md
+│   │   └── ONBOARDING_SPEC.md
+│   ├── 02-architecture/
+│   │   ├── ARCHITECTURE.md
+│   │   └── schema.sql
+│   ├── 03-frontend/
+│   │   ├── API_PAGINATION.md
+│   │   ├── ASSETS_STRATEGY.md
+│   │   ├── COMPONENT_LIBRARY.md
+│   │   ├── DESIGN_SYSTEM.md
+│   │   ├── ESLINT_CUSTOM_RULES.md
+│   │   ├── PLATFORM_SPECIFIC.md
+│   │   ├── STATE_MANAGEMENT_PATTERNS.md
+│   │   ├── UI_SPEC.md
+│   │   ├── VALIDATION_PATTERNS.md
+│   │   └── stitch-prompts/              ← PIXEL-PERFECT HTML SPECS
+│   └── 04-backend/
+│       └── API_CONTRACT.md
 ├── src/
 │   └── types/
 │       └── index.ts
