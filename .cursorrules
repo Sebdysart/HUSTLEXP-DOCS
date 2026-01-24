@@ -247,6 +247,98 @@
 # See: BOOTSTRAP.md for the exact success criteria.
 
 # ══════════════════════════════════════════════════════════════════════════════
+# SECTION 10: FILE-SPECIFIC RULES
+# ══════════════════════════════════════════════════════════════════════════════
+
+# REACT NATIVE SCREENS (screens/**/*.tsx)
+# ├── PascalCase filenames (TaskFeedScreen.tsx, not task-feed-screen.tsx)
+# ├── Named exports only (export function TaskFeedScreen, not export default)
+# ├── Props interface named {ScreenName}Props
+# ├── Must handle: loading, empty, error, content states
+# └── No fetch/API calls — data comes via props
+
+# iOS SWIFTUI (ios-swiftui/**/*.swift)
+# ├── Match STITCH HTML spec exactly
+# ├── Use HustleFont/HustleColors only (no hardcoded values)
+# ├── Public init with callback closures for actions
+# ├── #Preview required for all screens
+# ├── Data models use public structs with public init
+# └── Run `swift build` after every file change
+
+# STITCH PROMPTS (specs/03-frontend/stitch-prompts/*.html)
+# ├── READ ONLY — do not modify
+# ├── Source of truth for pixel-perfect layouts
+# ├── Extract: component hierarchy, colors, spacing, copy
+# └── If HTML and spec conflict → HTML wins
+
+# SCREEN SPECS (screens-spec/**/*.md)
+# ├── READ for requirements
+# ├── MODIFY only to update status checkboxes
+# └── DO NOT add new screens or sections
+
+# DESIGN SYSTEM (specs/03-frontend/DESIGN_SYSTEM.md)
+# ├── READ ONLY — authoritative design tokens
+# ├── Extract exact color hex values
+# ├── Extract exact font sizes
+# └── DO NOT invent new tokens
+
+# COMPONENT LIBRARY (specs/03-frontend/COMPONENT_LIBRARY.md)
+# ├── READ for reusable component specs
+# ├── Implement components exactly as specified
+# └── DO NOT create new components not in spec
+
+# DATABASE (specs/02-architecture/schema.sql)
+# ├── YOU MAY NOT MODIFY — Layer 0 authority
+# ├── READ only if user explicitly instructs
+# └── Backend concern — ask user if unclear
+
+# PER DIRECTORY (PER/**)
+# ├── FORBIDDEN to modify
+# ├── READ only for understanding constraints
+# └── Constitutional documents — immutable
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 11: CONTEXT MANAGEMENT
+# ══════════════════════════════════════════════════════════════════════════════
+
+# PROGRESSIVE LOADING — Read in this order:
+# Level 1 (Always): .cursorrules, CURRENT_PHASE.md
+# Level 2 (Frontend): CURSOR_INSTRUCTIONS.md, DESIGN_SYSTEM.md
+# Level 3 (Specific): screens-spec/{category}/{SCREEN}.md
+# Level 4 (Reference): COMPONENT_LIBRARY.md, schema.sql (if needed)
+
+# CONTEXT REFRESH — Re-read foundation files after:
+# - 10+ file changes in session
+# - Switching from frontend to backend tasks
+# - Encountering unexpected behavior
+# - Starting a new session
+
+# See CONTEXT_MANAGEMENT_GUIDE.md for full progressive loading strategy.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 12: ITERATION PATTERNS
+# ══════════════════════════════════════════════════════════════════════════════
+
+# PLAN MODE (for complex changes):
+# 1. Propose step-by-step plan
+# 2. Get user approval
+# 3. Implement one step at a time
+# 4. Test after each step
+# 5. Proceed to next step
+
+# SELF-REVIEW (after major implementation):
+# 1. Ask: "Review this for issues or spec deviations"
+# 2. Apply fixes from feedback
+# 3. Re-run tests
+
+# BITE-SIZED TASKS:
+# - No single task should touch more than 5 files
+# - No single task should exceed 200 lines
+# - Build → Test → Commit pattern
+
+# See ITERATION_PATTERNS.md for full workflow documentation.
+
+# ══════════════════════════════════════════════════════════════════════════════
 # REMEMBER: You are not a collaborator. You are an executor.
 # The specs are correct. Your job is to implement them exactly.
 # If you disagree with a spec, STOP and tell the user. Do not "fix" it.

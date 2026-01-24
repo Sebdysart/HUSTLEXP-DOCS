@@ -306,3 +306,38 @@ Use this for tracking implementation status:
 
 **Total: 37/38 functional**
 
+---
+
+## §11. iOS SwiftUI Implementation
+
+Location: `ios-swiftui/HustleXP/`
+
+**Status:** 15/38 screens implemented (SwiftUI native, iOS 17+)
+
+| # | Screen | SwiftUI File | Source STITCH | Status |
+|---|--------|--------------|---------------|--------|
+| H1 | Hustler Home | `HustlerHomeScreen.swift` | 02-hustler-home.html | ✅ |
+| H5 | Task In Progress | `TaskInProgressScreen.swift` | 08-hustler-task-in-progress.html | ✅ |
+| H6 | Task Completion (Approved) | `TaskCompletionApprovedScreen.swift` | 09-hustler-task-completion-APPROVED.html | ✅ |
+| H6 | Task Completion (Action Req) | `TaskCompletionActionRequiredScreen.swift` | 09-hustler-task-completion-ACTION-REQUIRED.html | ✅ |
+| H6 | Task Completion (Blocked) | `TaskCompletionBlockedScreen.swift` | 09-hustler-task-completion-BLOCKED.html | ✅ |
+| H8 | XP Breakdown | `XPBreakdownScreen.swift` | 07-xp-breakdown.html | ✅ |
+| H9 | Instant Interrupt | `InstantInterruptCard.swift` | 01-instant-interrupt-card.html | ✅ |
+| P3 | Poster Completion | `PosterTaskCompletionScreen.swift` | 10-poster-task-completion-FIXED.html | ✅ |
+| SH2 | Trust Tier Ladder | `TrustTierLadderScreen.swift` | 06-trust-tier-ladder.html | ✅ |
+| SH3 | Trust Change | `TrustChangeExplanationScreen.swift` | 12-trust-change-explanation-FIXED.html | ✅ |
+| SH4 | Dispute Entry | `DisputeEntryScreen.swift` | 13-dispute-entry-*.html | ✅ |
+| E1 | No Tasks Available | `NoTasksAvailableScreen.swift` | E1-no-tasks-available.html | ✅ |
+| E2 | Eligibility Mismatch | `EligibilityMismatchScreen.swift` | E2-eligibility-mismatch.html | ✅ |
+| E3 | Trust Tier Locked | `TrustTierLockedScreen.swift` | E3-trust-tier-locked.html | ✅ |
+
+### Design System
+- `HustleColors.swift` — Color tokens from DESIGN_SYSTEM.md
+- `HustleTypography.swift` — Font system (8 sizes)
+- `HustleComponents.swift` — GlassCard, PrimaryButton, ProgressRing, etc.
+
+### Build Instructions
+```bash
+cd ios-swiftui/HustleXP && swift build
+```
+

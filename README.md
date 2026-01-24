@@ -110,19 +110,49 @@ HUSTLEXP-DOCS/
 │
 ├── 🤖 prompts/                   ← Cursor execution prompts
 ├── 📦 reference/                 ← Scaffold code
-└── 🗄️ _archive/                  ← Historical specs
+├── 🗄️ _archive/                  ← Historical specs
+└── 📱 ios-swiftui/               ← iOS SwiftUI package
 ```
+
+---
+
+## iOS SwiftUI Package
+
+Location: `ios-swiftui/HustleXP/`
+
+Production-ready SwiftUI screens converted from STITCH HTML specifications.
+
+| Metric | Value |
+|--------|-------|
+| Screens Implemented | 15/38 |
+| iOS Version | 17.0+ |
+| Build Status | ✅ Compiles |
+
+### Quick Start
+```swift
+// Add to your Xcode project
+dependencies: [
+    .package(path: "./ios-swiftui/HustleXP")
+]
+```
+
+See `ios-swiftui/HustleXP/README.md` for full documentation.
 
 ---
 
 ## Tech Stack
 
 ```
-Frontend:
+Frontend (React Native):
   - React Native + Expo
   - TypeScript
   - React Query
   - Zustand (UI state only)
+
+Frontend (iOS Native):
+  - SwiftUI (iOS 17+)
+  - Swift Package Manager
+  - Converted from STITCH HTML specs
 
 Backend:
   - Node.js + TypeScript
@@ -162,7 +192,7 @@ See `BUILD_READINESS.md` for detailed breakdown.
 |----------|-------|
 | Database Tables | 31 |
 | API Endpoints | 35+ |
-| Frontend Screens | ~40 |
+| Frontend Screens | ~40 (15 iOS SwiftUI) |
 | Invariants | 5 core + 8 eligibility |
 
 ---
@@ -204,6 +234,52 @@ AI proposes → Deterministic systems decide → Database enforces
 | INV-3 | COMPLETED requires ACCEPTED proof |
 | INV-4 | Escrow amount is immutable after funding |
 | INV-5 | XP issuance is idempotent per escrow |
+
+---
+
+## AI Development Infrastructure
+
+Advanced AI tool configuration for Cursor and Claude Code development.
+
+| Document | Purpose |
+|----------|---------|
+| `.cursorrules` | Cursor enforcement (file-specific rules) |
+| `.claude/instructions.md` | Claude Code enforcement |
+| `AI_GUARDRAILS.md` | Universal AI governance |
+| `APP_OVERVIEW.md` | AI-generated understanding proof |
+| `CONTEXT_MANAGEMENT_GUIDE.md` | Progressive context loading |
+| `AGENT_AUTONOMY_BOUNDARIES.md` | Decision matrices |
+| `ARCHITECTURE_DIAGRAMS.md` | Mermaid visualizations |
+| `MCP_INTEGRATION_GUIDE.md` | Tool capabilities |
+| `ITERATION_PATTERNS.md` | Self-review workflows |
+
+### AI Tool Quick Start
+
+**Cursor:**
+```
+1. Open project in Cursor
+2. .cursorrules loads automatically
+3. Read CURRENT_PHASE.md
+4. Read EXECUTION_QUEUE.md
+5. Execute current step
+```
+
+**Claude Code:**
+```
+1. Open project in terminal
+2. Run: claude
+3. Read .claude/instructions.md
+4. Read CURRENT_PHASE.md
+5. Execute tasks
+```
+
+### Key Principles
+
+- **Context Budget:** Cursor ~8k tokens, Claude ~100k tokens
+- **Progressive Loading:** Foundation → Task-Specific → Reference
+- **Plan Mode:** Propose plan before complex changes
+- **Self-Review:** Review architecture after major implementations
+- **Bite-Sized Tasks:** Max 5 files, max 200 lines per task
 
 ---
 
