@@ -6,6 +6,23 @@
 
 ---
 
+## MANDATORY COLD START VERIFICATION
+
+> **BEFORE ANY IMPLEMENTATION, AI MUST OUTPUT:**
+>
+> ```
+> COLD START VERIFICATION:
+> 1. Current Focus: [verbatim from PROJECT_STATE.md]
+> 2. Phase: [from CURRENT_PHASE.md]
+> 3. Locked Constraints: [list from PROJECT_STATE.md]
+> 4. Acceptance Gates Required: [UAP gates that apply]
+> 5. Next Legal Action: [from PROJECT_STATE.md]
+> ```
+>
+> **Failure to output this verification invalidates the response.**
+
+---
+
 ## PER v2: SESSION START PROTOCOL
 
 > **AI MUST READ THESE FIRST — IN ORDER:**
@@ -15,6 +32,8 @@
 > 3. `PER/DONE_DEFINITION.md` — Know what "done" means (binary checkboxes)
 > 4. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
 > 5. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
+> 6. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
+> 7. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
 
 ---
 

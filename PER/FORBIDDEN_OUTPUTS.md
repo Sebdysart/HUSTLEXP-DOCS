@@ -360,4 +360,79 @@ backgroundColor:\s*['"]#0D0D0D['"]
 
 ---
 
+## SEMANTIC EQUIVALENTS (PATTERN RENAMING BYPASS)
+
+AI may try to recreate banned patterns under different names.
+The following are ALSO forbidden, even if named differently:
+
+### Card-Like Containers (All Names Forbidden)
+
+```tsx
+// ❌ ALL OF THESE ARE FORBIDDEN on entry screens:
+
+<HeroCard>           // Renamed card
+<Panel>              // Renamed card
+<OverlayContainer>   // Renamed card
+<CenteredStack>      // Centered layout
+<PrimaryContainer>   // Renamed card
+<WelcomeTile>        // Renamed card
+<ContentBox>         // Renamed card
+<MainPanel>          // Renamed card
+<CenteredWrapper>    // Centered layout
+<ModalContainer>     // Modal-like card
+<FloatingCard>       // Floating card
+<ContentCard>        // Obvious card
+```
+
+### Visual Test (If It Looks Like a Card, It's Forbidden)
+
+```
+Does the layout have:
+[ ] A distinct "box" floating in the center?
+[ ] Empty space around all edges?
+[ ] Content that could be a popup/modal?
+[ ] A container that looks like it could be dismissed?
+
+If ANY are checked → IT'S A CARD → FORBIDDEN
+```
+
+### The Rule
+
+> **Renaming does not bypass prohibition.**
+>
+> If it visually resembles a card, modal, or centered popup,
+> it is forbidden on entry screens regardless of what it's called.
+
+---
+
+## COPY DISGUISES (SAME CONTENT, DIFFERENT WORDS)
+
+AI may reproduce forbidden copy with slight rewording:
+
+### Forbidden Copy Patterns
+
+```
+❌ "Welcome to HustleXP"           → Too generic
+❌ "Let's get started"             → Too generic
+❌ "Your journey begins here"      → Too cliché
+❌ "Ready to hustle?"              → Too informal
+❌ "Sign up now"                   → Wrong CTA for entry
+```
+
+### Required Copy Pattern
+
+```
+✅ Headline: Value proposition (what user gets)
+   Example: "Get things done. Get paid."
+
+✅ Subheadline: How it works (mechanism)
+   Example: "Post tasks and find help in minutes."
+
+✅ CTA: Clear action (not generic)
+   Example: "Get Started"
+```
+
+---
+
 **If output matches ANY pattern in this document → REJECT and redo.**
+**Renaming patterns does not make them acceptable.**

@@ -174,6 +174,47 @@
 
 ---
 
+## SESSION CONTINUITY RULE (CRITICAL)
+
+### Mandatory Response Header
+
+Every implementation response MUST begin with this verification:
+
+```
+SESSION STATE:
+- Current Focus: [from PROJECT_STATE.md]
+- Phase: [from CURRENT_PHASE.md]
+- Allowed: [list allowed actions]
+- Forbidden: [list forbidden actions]
+```
+
+### Deviation Detection
+
+If ANY response deviates from Current Focus:
+→ HARD STOP
+→ SESSION RESET REQUIRED
+→ Re-read PROJECT_STATE.md before continuing
+
+### What Counts as Deviation
+
+- Working on a different screen than Current Focus
+- Implementing features not in current phase
+- Changing colors/patterns outside current constraints
+- Adding functionality beyond what was requested
+
+### Continuity Check (Self-Verify Each Response)
+
+```
+[ ] Am I still working on the Current Focus?
+[ ] Is my action allowed in the current Phase?
+[ ] Have I drifted to a different problem?
+[ ] Would PROJECT_STATE.md approve this action?
+```
+
+If ANY check fails → STOP → RESET → Re-read state documents
+
+---
+
 ## CONTEXT MANAGEMENT
 
 ### What AI Must Remember
@@ -192,6 +233,7 @@
 - Session timeout
 - Phase transition
 - User says "start fresh"
+- SESSION CONTINUITY violation detected
 
 ---
 
