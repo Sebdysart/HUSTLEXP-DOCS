@@ -196,6 +196,139 @@ A **Bootstrap Screen** is an internal verification screen that:
 
 ---
 
+### UAP-5: Full-Canvas Immersion Gate (CRITICAL)
+
+**Requirement:** Entry, Welcome, and first-contact screens MUST occupy the FULL visual canvas. Card-based, modal-style, or component-stacked layouts are FORBIDDEN.
+
+**Applies To:**
+- Entry Screen (first screen after launch)
+- Welcome Screen
+- Onboarding Phase 0 (Framing)
+- First screen after signup
+- Any "arrival" or "activation" moment
+
+**BINDING RULES:**
+
+1. **Full-Canvas Composition Required**
+   - Background is a NARRATIVE SURFACE, not empty space
+   - Content flows from edge-to-edge conceptually
+   - No centered "floating cards" as primary container
+
+2. **Card-Based Layouts FORBIDDEN**
+   - No rounded-corner cards containing all content
+   - No modal-style containers on dark background
+   - No "dialog box" aesthetic
+   - No component stacks that could be a settings panel
+
+3. **Visual Narrative Required**
+   - Background must have intentional treatment (gradient, glow, texture, or motion)
+   - Elements must establish visual momentum (something is happening)
+   - Eye path must be designed, not accidental
+
+**Failure Examples (ALL FORBIDDEN):**
+
+```
+❌ FAILS UAP-5 — Card-Based Layout
+┌─────────────────────────────────────┐
+│ ████████████████████████████████████│ ← Black empty space
+│ ████████████████████████████████████│
+│    ┌─────────────────────────┐      │
+│    │       HustleXP          │      │ ← Centered card (FORBIDDEN)
+│    │   "Where hustlers..."   │      │
+│    └─────────────────────────┘      │
+│                                     │
+│    ┌─────────────────────────┐      │
+│    │     [ Get Started ]     │      │ ← Separate card (FORBIDDEN)
+│    └─────────────────────────┘      │
+│ ████████████████████████████████████│ ← Black empty space
+└─────────────────────────────────────┘
+
+WHY IT FAILS:
+• Two floating cards = modal/dialog aesthetic
+• Background is dead space, not narrative
+• Could be a login interstitial for ANY app
+• Zero visual momentum or arrival feeling
+• Component-stacked, not full-canvas composed
+```
+
+```
+❌ FAILS UAP-5 — Modal Aesthetic
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│   ╔═══════════════════════════════╗ │
+│   ║                               ║ │
+│   ║         HustleXP              ║ │ ← Single centered card (FORBIDDEN)
+│   ║   "Where hustlers meet..."    ║ │
+│   ║                               ║ │
+│   ║       [ Get Started ]         ║ │
+│   ║                               ║ │
+│   ╚═══════════════════════════════╝ │
+│                                     │
+│                                     │
+└─────────────────────────────────────┘
+
+WHY IT FAILS:
+• Looks like a modal/popup, not an entry
+• Background is waste, not design
+• Card contains everything = lazy containment
+• No sense of arrival or momentum
+• Generic enough to be any app's login screen
+```
+
+**Pass Examples:**
+
+```
+✅ PASSES UAP-5 — Full-Canvas Composition
+┌─────────────────────────────────────┐
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│ ← Subtle gradient/glow (narrative bg)
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│
+│          🟢 HustleXP               │ ← Brand mark with presence
+│                                     │
+│    Get things done. Get paid.       │ ← Value prop (full width)
+│                                     │
+│    Post tasks and find help in      │ ← Supporting context
+│    minutes. Or earn money           │
+│    completing tasks nearby.         │
+│                                     │
+│    ┌─────────────────────────────┐  │
+│    │        Get Started          │  │ ← CTA anchored, not floating
+│    └─────────────────────────────┘  │
+│                                     │
+│      Already have an account?       │ ← Secondary action
+│                                     │
+└─────────────────────────────────────┘
+
+WHY IT PASSES:
+• Background has intentional gradient (narrative surface)
+• Content flows from top to bottom (designed hierarchy)
+• No card containing everything (full-canvas)
+• Button is anchored element, not floating modal
+• Feels like arrival, not interruption
+```
+
+**Technical Guidance for AI Implementation:**
+
+```
+FORBIDDEN PATTERNS:
+• <Card> wrapping all content
+• justify-content: center + alignItems: center + single child
+• backgroundColor: '#000000' with no gradient/glow/texture
+• Modal-like border radius on content container
+• "Two boxes on black background" layouts
+
+REQUIRED PATTERNS:
+• Background must have: gradient, subtle glow, texture, or animation
+• Content must span conceptual width (even if padded)
+• Hierarchy must be: Brand → Value Prop → Context → Action
+• Entry screens must feel like DESTINATION, not DIALOG
+```
+
+**Test:** Does this screen feel like you've ARRIVED somewhere, or like you're dismissing a popup?
+
+---
+
 ## Enforcement
 
 ### Gate Failure = Build Failure
@@ -218,6 +351,7 @@ Before marking ANY screen as complete:
 [ ] UAP-2: Has motion OR depth (if entry/onboarding)
 [ ] UAP-3: Matches spec layout/copy/colors exactly
 [ ] UAP-4: Not a bootstrap placeholder promoted to production
+[ ] UAP-5: Entry screens use FULL-CANVAS (not card-based)
 
 If ANY checkbox is unchecked → SCREEN IS NOT COMPLETE
 ```
