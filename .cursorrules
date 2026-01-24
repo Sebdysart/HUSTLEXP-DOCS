@@ -1,4 +1,20 @@
-# CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND
+# CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND v2.0
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🚨 SESSION START PROTOCOL — READ THESE FIRST (MANDATORY)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# BEFORE WRITING ANY CODE, READ THESE IN ORDER:
+#
+# 1. PER/PROJECT_STATE.md    → Know where we are in the build
+# 2. PER/DICTIONARY.md       → Know what terms mean (no interpretation drift)
+# 3. PER/DONE_DEFINITION.md  → Know what "done" means (binary checkboxes)
+# 4. PER/FORBIDDEN_OUTPUTS.md → Know explicit patterns that FAIL
+# 5. CURRENT_PHASE.md        → Know what's allowed NOW
+#
+# IF YOU SKIP THIS → You will produce wrong output.
+#
+# ══════════════════════════════════════════════════════════════════════════════
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 🚨 BRAND COLORS — BLACK + PURPLE (NOT GREEN)
@@ -18,20 +34,26 @@
 #    Green means "done/success" — entry screens are about "beginning"
 #    Full-screen green = wrong semantic = automatic rejection
 #
+# ENTRY SCREEN COLORS (Copy these exactly):
+#   Background:   #0B0B0F
+#   Gradient:     ['#1a0a2e', '#0B0B0F', '#000000']
+#   Glow:         #5B2DFF (opacity 0.2)
+#   Button:       #5B2DFF
+#   Button Text:  #FFFFFF
+#
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 🚨 ANTI-PATTERN DETECTION — READ THIS FIRST
+# 🚨 ANTI-PATTERN DETECTION — INSTANT FAIL PATTERNS
 # ══════════════════════════════════════════════════════════════════════════════
 #
-# BEFORE YOU WRITE ANY CODE, CHECK IF YOU'RE ABOUT TO CREATE THESE PATTERNS:
+# BEFORE YOU WRITE ANY CODE, CHECK IF YOU'RE ABOUT TO CREATE THESE:
 #
 # ❌ INSTANT FAIL — Green on entry screens:
 #
 #    backgroundColor: '#1FAD7E'     ← FORBIDDEN on entry screens
 #    backgroundColor: '#34C759'     ← FORBIDDEN on entry screens
-#
-#    WHY: Green = "success/done". Entry = "beginning". Wrong semantic.
+#    shadowColor: '#1FAD7E'         ← FORBIDDEN on entry screens
 #
 # ❌ INSTANT FAIL — Card-based layout:
 #
@@ -41,123 +63,108 @@
 #      alignItems: 'center',        ← FORBIDDEN for Entry/Welcome screens
 #    }
 #
-#    WHY: This creates a card-based layout. Entry screens MUST be full-canvas.
-#
 # ❌ INSTANT FAIL — Flat black with no gradient:
 #
 #    backgroundColor: '#000000'     ← Without LinearGradient = FORBIDDEN
 #
-#    WHY: Entry screens need narrative backgrounds (gradient, glow, texture).
+# ❌ INSTANT FAIL — Wrong black color:
 #
-# ✅ CORRECT PATTERN — Copy this instead:
+#    backgroundColor: '#0D0D0D'     ← WRONG, use #0B0B0F or #000000
 #
-#    <View style={{ flex: 1, backgroundColor: '#0B0B0F' }}>
-#      <LinearGradient
-#        colors={['#1a0a2e', '#0B0B0F', '#000000']}  {/* PURPLE tint */}
-#        style={absoluteFill}
-#      />
-#      <View style={styles.glowOrb}>  {/* PURPLE glow, NOT green */}
-#        backgroundColor: '#5B2DFF'
-#      </View>
-#      <View style={{ flex: 1, paddingHorizontal: 24 }}>
-#        {/* Brand */}
-#        {/* Value prop */}
-#        <View style={{ flex: 1 }} />  {/* Spacer */}
-#        {/* CTA — PURPLE button: backgroundColor: '#5B2DFF' */}
-#      </View>
-#    </View>
-#
-# FOR ENTRY/WELCOME SCREENS: Copy reference/components/EntryScreen.js
+# ✅ CORRECT PATTERN — Copy reference/components/EntryScreen.js
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 🛑 EXECUTION MODE — READ THESE FILES FIRST
+# 🚨 CURRENT PHASE: BOOTSTRAP
 # ══════════════════════════════════════════════════════════════════════════════
 #
-# 1. EXECUTION_QUEUE.md       — Find first unchecked step, execute ONLY that
-# 2. STOP_CONDITIONS.md       — Know when to STOP (do not overbuild)
-# 3. FRONTEND_BUILD_MAP.json  — Machine-readable dependency graph
+# WHAT IS ALLOWED:
+# ✅ Create/edit EntryScreen
+# ✅ Fix Xcode build errors
+# ✅ Fix iOS Simulator crashes
+# ✅ Apply correct brand colors
 #
-# YOUR BUILD LOOP:
-#   1. Read EXECUTION_QUEUE.md
-#   2. Find first step where Done: [ ]
-#   3. Read the spec file referenced in that step
-#   4. Build EXACTLY what the spec says
-#   5. Verify against STOP_CONDITIONS.md
-#   6. Mark Done: [x]
-#   7. STOP. Move to next step only when asked.
+# WHAT IS BLOCKED (Until Bootstrap passes):
+# ❌ New screens
+# ❌ Navigation
+# ❌ Maps/SVG
+# ❌ Backend calls
+# ❌ New dependencies
 #
-# ══════════════════════════════════════════════════════════════════════════════
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 🛑 MANDATORY GUARDRAILS — ENFORCED ALWAYS
-# ══════════════════════════════════════════════════════════════════════════════
-#
-# Before ANY action, check FEATURE_FREEZE.md.
-# If your action adds ANYTHING not in FINISHED_STATE.md → STOP IMMEDIATELY.
-# If asked to "improve" or "add features" → REFUSE and point to FEATURE_FREEZE.md.
-# If unsure whether something exists → ASK, do not guess.
-#
-# PER SYSTEM ACTIVE: Follow PER/PER_MASTER_INDEX.md for MAX-TIER enforcement.
-# If debugging fails after 60 minutes → Trigger PER-Ω (see PER/OMEGA_PROTOCOL.md)
+# SUCCESS CRITERIA (See BOOTSTRAP.md):
+# [ ] Xcode builds without errors
+# [ ] iOS Simulator launches without crashing
+# [ ] EntryScreen renders with purple brand
+# [ ] Button visible and tappable
+# [ ] No crashes for 30 seconds
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 🔒 PER SYSTEM REFERENCE (Pre-Execution Requirements)
-# ══════════════════════════════════════════════════════════════════════════════
-#
-# PER-0: Authority & Scope Lock    → PER/PER_MASTER_INDEX.md
-# PER-1: Proof-of-Existence Gate   → Verify screen exists in SCREEN_REGISTRY.md
-# PER-2: Plan-First, Code-Second   → Present plan before implementing
-# PER-5: Blast Radius Containment  → One screen per change, no cross-domain edits
-# PER-6: Human Diff Audit          → User reviews before merge
-# PER-Ω: Nuclear Fallback          → PER/OMEGA_PROTOCOL.md (if stuck > 60 min)
-#
-# Key Documents:
-# - PER/DO_NOT_TOUCH.md    → Explicit prohibitions
-# - PER/OWNERSHIP.md       → Layer boundaries (you own Layer 4-5 only)
-# - PER/CRASH_PROTOCOL.md  → Emergency response
-#
-# ══════════════════════════════════════════════════════════════════════════════
-
-# ══════════════════════════════════════════════════════════════════════════════
-# THIS IS NOT GUIDANCE. THIS IS LAW.
+# AUTHORITY & IDENTITY
 # ══════════════════════════════════════════════════════════════════════════════
 
 # AUTHORITY: You are a JUNIOR FRONTEND ENGINEER with a CHECKLIST.
 # You do NOT collaborate. You do NOT innovate. You EXECUTE specs exactly.
+# Read PER/EXECUTION_CONSTITUTION.md for full operating protocol.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 1: FILE ACCESS PERMISSIONS (PRIORITY ORDER)
+# SECTION 1: PER v2 SYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
 
-# EXECUTION RAILS (Read FIRST):
-# ✅ EXECUTION_QUEUE.md                 (what to build next)
-# ✅ STOP_CONDITIONS.md                 (when to stop)
-# ✅ FRONTEND_BUILD_MAP.json            (dependency graph)
-# ✅ CURRENT_PHASE.md                   (current phase gate)
+# PER v2 DOCUMENTS (Read in this order):
+#
+# 1. PER/PROJECT_STATE.md         — Current build state (read FIRST)
+# 2. PER/DICTIONARY.md            — Semantic definitions
+# 3. PER/EXECUTION_CONSTITUTION.md — How AI must operate
+# 4. PER/FORBIDDEN_OUTPUTS.md     — Explicit bans
+# 5. PER/DONE_DEFINITION.md       — Binary completion criteria
+#
+# PER GATES (Still active from v1):
+# PER-0: Authority & Scope Lock    → PER/PER_MASTER_INDEX.md
+# PER-1: Proof-of-Existence Gate   → Verify screen exists in SCREEN_REGISTRY.md
+# PER-2: Plan-First, Code-Second   → Present plan before implementing
+# PER-5: Blast Radius Containment  → One screen per change
+# PER-6: Human Diff Audit          → User reviews before merge
+# PER-Ω: Nuclear Fallback          → PER/OMEGA_PROTOCOL.md (if stuck > 60 min)
+#
+# KEY DOCUMENTS:
+# - PER/DO_NOT_TOUCH.md           → Explicit prohibitions
+# - PER/OWNERSHIP.md              → Layer boundaries (you own Layer 4-5 only)
+# - PER/CRASH_PROTOCOL.md         → Emergency response
+# - PER/INVARIANTS.md             → 33 invariants (read-only)
+# - PER/UI_ACCEPTANCE_PROTOCOL.md → 5 UAP gates
 
-# SCREEN SPECS (Read for current step):
-# ✅ screens-spec/**                    (screen contracts)
-# ✅ specs/03-frontend/**               (UI specifications)
-# ✅ specs/03-frontend/stitch-prompts/** (implementation prompts)
-# ✅ reference/components/**            (existing patterns)
-# ✅ reference/constants/**             (design tokens)
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 2: FILE ACCESS PERMISSIONS
+# ══════════════════════════════════════════════════════════════════════════════
+
+# READ FIRST (Session Start):
+# ✅ PER/PROJECT_STATE.md              (where we are)
+# ✅ PER/DICTIONARY.md                 (what terms mean)
+# ✅ PER/DONE_DEFINITION.md            (what "done" means)
+# ✅ PER/FORBIDDEN_OUTPUTS.md          (what's banned)
+# ✅ CURRENT_PHASE.md                  (current phase)
+
+# READ FOR IMPLEMENTATION:
+# ✅ reference/components/**           (existing patterns)
+# ✅ reference/constants/**            (design tokens)
+# ✅ screens-spec/**                   (screen contracts)
+# ✅ specs/03-frontend/**              (UI specifications)
+# ✅ COLOR_SEMANTICS_LAW.md            (color meanings)
+# ✅ BOOTSTRAP.md                      (bootstrap criteria)
 
 # YOU MAY NOT READ:
-# ❌ specs/01-product/**                (backend concern)
-# ❌ specs/02-architecture/**           (backend concern)
-# ❌ specs/04-backend/**                (backend concern)
-# ❌ tracking/**                        (not your concern)
-# ❌ _archive/**                        (dead files)
-# ❌ .claude/**                         (wrong tool)
-
-# IF YOU NEED BACKEND INFORMATION: STOP. ASK THE USER. DO NOT GUESS.
+# ❌ specs/01-product/**               (backend concern)
+# ❌ specs/02-architecture/**          (backend concern)
+# ❌ specs/04-backend/**               (backend concern)
+# ❌ tracking/**                       (not your concern)
+# ❌ _archive/**                       (dead files)
+# ❌ .claude/**                        (wrong tool)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 2: WHAT YOU MAY DO
+# SECTION 3: WHAT YOU MAY DO
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ALLOWED ACTIONS:
@@ -169,13 +176,17 @@
 # ✅ Create empty states
 # ✅ Create error states
 # ✅ Style using existing design tokens ONLY
+# ✅ Copy patterns from reference/components/EntryScreen.js
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 3: WHAT YOU MAY NOT DO (HARD PROHIBITIONS)
+# SECTION 4: WHAT YOU MAY NOT DO (HARD PROHIBITIONS)
 # ══════════════════════════════════════════════════════════════════════════════
 
 # FORBIDDEN — VIOLATING THESE IS A BUILD FAILURE:
 
+# ❌ FORBIDDEN: Green on entry/welcome screens
+# ❌ FORBIDDEN: Card-based layout on entry screens
+# ❌ FORBIDDEN: Flat black without gradient treatment
 # ❌ FORBIDDEN: Define new screens not in SCREEN_REGISTRY.md
 # ❌ FORBIDDEN: Add npm dependencies without explicit user approval
 # ❌ FORBIDDEN: Modify navigation structure
@@ -190,62 +201,136 @@
 # ❌ FORBIDDEN: Add maps, SVG, or complex graphics without explicit approval
 # ❌ FORBIDDEN: "Improve" or "enhance" specs — implement EXACTLY as written
 
+# See PER/FORBIDDEN_OUTPUTS.md for complete list with code examples.
+
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 4: THE SCREEN CONTRACT
+# SECTION 5: THE ENTRY SCREEN PATTERN (AUTHORITATIVE)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Every screen you build MUST follow this pattern:
-
-# 1. Props interface (data comes from parent, you never fetch)
-# 2. Loading state (shown when isLoading=true)
-# 3. Empty state (shown when primary data is missing)
-# 4. Content state (display props data, nothing computed)
-# 5. Actions (onPress callbacks passed as props, no logic inside)
-
-# TEMPLATE:
-# ```tsx
-# interface ScreenNameProps {
-#   data?: DataType;
-#   isLoading?: boolean;
-#   onAction?: () => void;
-# }
+# FOR ENTRY/WELCOME SCREENS, COPY THIS PATTERN:
 #
-# export function ScreenName({ data, isLoading, onAction }: ScreenNameProps) {
-#   if (isLoading) return <LoadingState />;
-#   if (!data) return <EmptyState />;
-#   return <Content data={data} onAction={onAction} />;
-# }
-# ```
+# <View style={{ flex: 1, backgroundColor: '#0B0B0F' }}>
+#   <LinearGradient
+#     colors={['#1a0a2e', '#0B0B0F', '#000000']}
+#     locations={[0, 0.3, 1]}
+#     style={StyleSheet.absoluteFill}
+#   />
+#
+#   {/* Purple glow orb */}
+#   <View style={{
+#     width: 200,
+#     height: 200,
+#     borderRadius: 100,
+#     backgroundColor: '#5B2DFF',
+#     opacity: 0.2,
+#     shadowColor: '#5B2DFF',
+#     shadowRadius: 60,
+#   }} />
+#
+#   {/* Content flows top-to-bottom, NOT centered */}
+#   <View style={{ flex: 1, paddingHorizontal: 24 }}>
+#     {/* Brand mark */}
+#     {/* Value proposition */}
+#     <View style={{ flex: 1 }} />  {/* Spacer */}
+#     {/* CTA button with backgroundColor: '#5B2DFF' */}
+#   </View>
+# </View>
+#
+# FULL REFERENCE: reference/components/EntryScreen.js
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 5: PROHIBITED CODE PATTERNS
+# SECTION 6: DESIGN TOKENS (AUTHORITATIVE)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# IF YOU WRITE ANY OF THESE, YOU HAVE FAILED:
+# BRAND COLORS:
+#   Brand Black:      #0B0B0F
+#   Brand Purple:     #5B2DFF
+#   Purple Light:     #7A4DFF
+#   Purple Glow:      #8B5CF6
+#   Purple Muted:     #A78BFA
 
-# ❌ const isEligible = user.trustTier >= task.requiredTier;
-#    WHY: Client-side eligibility computation
+# SUCCESS COLORS (ONLY after positive outcome):
+#   Success Green:    #34C759
+#   Money Green:      #1FAD7E
 
-# ❌ const xpAmount = calculateXP(task);
-#    WHY: Client-side business logic
+# APPLE SYSTEM COLORS:
+#   Red:              #FF3B30 (Error, alerts)
+#   Orange:           #FF9500 (Warning, XP accents)
+#   Green:            #34C759 (Success only)
+#   Blue:             #007AFF (Info, links)
+#   Gray:             #8E8E93 (Muted, disabled)
 
-# ❌ if (shouldShowTask(user, task)) { ... }
-#    WHY: Client-side filtering decision
+# BACKGROUND:
+#   Primary:          #000000
+#   Brand:            #0B0B0F
+#   Elevated:         #1C1C1E
 
-# ❌ fetch('/api/...')
-#    WHY: Screens don't fetch. Parent components do.
+# GLASS:
+#   Surface:          rgba(28, 28, 30, 0.6)
+#   Border:           rgba(255, 255, 255, 0.1)
+#   Purple Tint:      rgba(91, 45, 255, 0.1)
 
-# ❌ const [data, setData] = useState(); useEffect(() => fetch...
-#    WHY: Data fetching in screens. Screens receive props.
+# TEXT:
+#   Primary:          #FFFFFF
+#   Secondary:        #E5E5EA
+#   Muted:            #8E8E93
+#   Purple:           #A78BFA
 
-# ❌ import NewPackage from 'new-package';
-#    WHY: Adding dependencies without approval
+# ENTRY SCREEN GRADIENT:
+#   ['#1a0a2e', '#0B0B0F', '#000000']
+#   locations: [0, 0.3, 1]
 
-# ❌ <NewScreenNotInRegistry />
-#    WHY: Inventing screens
+# WRONG COLORS (NEVER USE):
+#   ❌ #FF6B35 (was incorrectly called "primary")
+#   ❌ #0D0D0D (was incorrectly called "background")
+#   ❌ #1A1A1A (use #1C1C1E instead)
+
+# See reference/constants/colors.js for full token library.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 6: WHEN TO STOP AND ASK
+# SECTION 7: TYPOGRAPHY
+# ══════════════════════════════════════════════════════════════════════════════
+
+# | Name     | Size | Weight   | Line Height | Tracking |
+# |----------|------|----------|-------------|----------|
+# | Display  | 36px | Bold     | 44px        | -0.5     |
+# | Title1   | 28px | Bold     | 34px        | -0.3     |
+# | Title2   | 24px | SemiBold | 30px        | 0        |
+# | Title3   | 20px | SemiBold | 26px        | 0        |
+# | Headline | 18px | SemiBold | 24px        | 0        |
+# | Body     | 16px | Regular  | 22px        | 0        |
+# | Callout  | 14px | Regular  | 20px        | 0        |
+# | Caption  | 12px | Medium   | 16px        | 0        |
+# | Micro    | 10px | SemiBold | 14px        | 1        |
+
+# Font Weights: Regular=400, Medium=500, SemiBold=600, Bold=700
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 8: UAP GATES (UI ACCEPTANCE PROTOCOL)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Every user-facing screen MUST pass:
+#
+# UAP-1: Design Token Compliance
+#        All colors, fonts, spacing from approved tokens
+#
+# UAP-2: 300ms Polish Gate
+#        Animations complete within 300ms, no jank
+#
+# UAP-3: Accessibility Baseline
+#        VoiceOver, contrast ratios, touch targets >= 44px
+#
+# UAP-4: Empty/Error State Audit
+#        All data states handled (loading, empty, error, content)
+#
+# UAP-5: Full-Canvas Immersion Gate (CRITICAL for Entry screens)
+#        NOT card-based, NOT centered container, gradient background,
+#        content flows top-to-bottom, feels like DESTINATION not DIALOG
+#
+# See PER/UI_ACCEPTANCE_PROTOCOL.md for full definitions.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 9: WHEN TO STOP AND ASK
 # ══════════════════════════════════════════════════════════════════════════════
 
 # STOP IMMEDIATELY AND ASK THE USER IF:
@@ -262,251 +347,72 @@
 # DO NOT GUESS. DO NOT ASSUME. DO NOT "HELP" BY FILLING GAPS.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 7: DESIGN TOKENS (AUTHORITATIVE — STITCH-ALIGNED)
-# ══════════════════════════════════════════════════════════════════════════════
-
-# COLORS (AUTHORITATIVE — from STITCH HTML specs):
-#
-# Brand:
-#   Primary:      #1FAD7E (HustleXP teal-green, NOT #FF6B35)
-#   Yellow:       #FFD900 (Instant mode)
-#
-# Apple System Colors:
-#   Red:          #FF3B30 (Error, alerts)
-#   Orange:       #FF9500 (Warning, XP accents)
-#   Green:        #34C759 (Success, money positive)
-#   Blue:         #007AFF (Info, links)
-#   Gray:         #8E8E93 (Muted, disabled)
-#
-# Background:
-#   Primary:      #000000 (Pure black, NOT #0D0D0D)
-#   Elevated:     #1C1C1E
-#
-# Glass:
-#   Surface:      rgba(28, 28, 30, 0.6)
-#   Border:       rgba(255, 255, 255, 0.1)
-#
-# Text:
-#   Primary:      #FFFFFF
-#   Secondary:    #E5E5EA
-#   Muted:        #8E8E93
-#
-# WRONG COLORS (NEVER USE):
-#   ❌ #FF6B35 (was incorrectly called "primary")
-#   ❌ #0D0D0D (was incorrectly called "background")
-#   ❌ #1A1A1A (use #1C1C1E instead)
-
-# TYPOGRAPHY (from STITCH HTML specs):
-#
-# | Name     | Size | Weight   | Line Height | Tracking |
-# |----------|------|----------|-------------|----------|
-# | Display  | 36px | Bold     | 44px        | -0.5     |
-# | Title1   | 28px | Bold     | 34px        | -0.3     |
-# | Title2   | 24px | SemiBold | 30px        | 0        |
-# | Title3   | 20px | SemiBold | 26px        | 0        |
-# | Headline | 18px | SemiBold | 24px        | 0        |
-# | Body     | 16px | Regular  | 22px        | 0        |
-# | Callout  | 14px | Regular  | 20px        | 0        |
-# | Caption  | 12px | Medium   | 16px        | 0        |
-# | Micro    | 10px | SemiBold | 14px        | 1        |
-#
-# Font Weights: Regular=400, Medium=500, SemiBold=600, Bold=700
-# See: TYPOGRAPHY_AUTHORITY_RESOLUTION.md for full mapping
-
-# BORDER RADIUS (Apple HIG):
-# xs:   2px
-# sm:   4px
-# md:   8px
-# lg:   12px
-# xl:   16px
-# 2xl:  24px
-# full: 9999px
-
-# SPACING (Tailwind-aligned):
-# 1:   4px
-# 2:   8px
-# 3:   12px
-# 4:   16px
-# 5:   20px
-# 6:   24px
-# 8:   32px
-# 10:  40px
-# 12:  48px
-
-# DO NOT INVENT NEW TOKENS. USE ONLY WHAT EXISTS.
-# IF DESIGN_SYSTEM.md CONFLICTS WITH THESE VALUES, THESE VALUES WIN.
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 8: EXECUTION ORDER
-# ══════════════════════════════════════════════════════════════════════════════
-
-# BEFORE WRITING ANY CODE:
-# 1. Read screens-spec/SCREEN_REGISTRY.md
-# 2. Find the screen in the registry
-# 3. Read the screen's category spec (e.g., screens-spec/hustler/HUSTLER_SCREENS.md)
-# 4. Read any linked stitch-prompt if available
-# 5. Confirm you understand the props interface
-# 6. THEN write code
-
-# DO NOT SKIP STEPS. DO NOT ASSUME YOU KNOW WHAT TO BUILD.
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 9: CURRENT PHASE & UI ACCEPTANCE PROTOCOL
-# ══════════════════════════════════════════════════════════════════════════════
-
-# CURRENT PHASE: SCREEN_IMPLEMENTATION
-#
-# UI ACCEPTANCE PROTOCOL (UAP) AUTHORITY:
-# UAP outranks ALL phase constraints. No phase may override UAP for user-facing screens.
-# See: PER/UI_ACCEPTANCE_PROTOCOL.md (CONSTITUTIONAL AUTHORITY)
-#
-# AUTHORITY ORDER (Highest → Lowest):
-# 1. UI_ACCEPTANCE_PROTOCOL (UAP)     ← HIGHEST
-# 2. Screen Specs (screens-spec/*)
-# 3. Phase Constraints (this section)
-# 4. Implementation Instructions
-#
-# BOOTSTRAP MODE (Internal Verification Only):
-# - Purpose: Verify app boots without crashing (INTERNAL USE ONLY)
-# - Output: Non-user-facing verification screens
-# - Bootstrap success ≠ screen completion
-# - Bootstrap screens MUST be behind compile-time flags or named Internal*/Debug*/Test*
-# - Bootstrap screens may NEVER be promoted to production navigation
-#
-# SCREEN COMPLETION REQUIREMENTS:
-# - Any user-facing screen MUST pass UAP-0 through UAP-5
-# - "Builds without crashing" is NECESSARY but INSUFFICIENT
-# - Phase completion is SUBORDINATE to UAP
-# - A screen that builds but fails UAP is INCOMPLETE
-#
-# UAP-5: FULL-CANVAS IMMERSION GATE (CRITICAL):
-# Entry, Welcome, and first-contact screens MUST use full-canvas composition.
-# Card-based, modal-style, or component-stacked layouts are FORBIDDEN.
-#
-# ❌ FORBIDDEN PATTERNS (Will fail UAP-5):
-#    - <Card> wrapping all content
-#    - justify-content: center + alignItems: center + single child
-#    - backgroundColor: '#000000' with no gradient/glow
-#    - Modal-like border radius on content container
-#    - "Two boxes on black background" layouts
-#    - Single centered card containing everything
-#
-# ✅ REQUIRED PATTERNS (Passes UAP-5):
-#    - Background with gradient, glow, texture, or animation
-#    - Content spanning conceptual width (not floating)
-#    - Hierarchy: Brand → Value Prop → Context → Action
-#    - Entry screens feel like DESTINATION, not DIALOG
-#
-# TEST: Does this screen feel like you've ARRIVED somewhere, or like
-#       you're dismissing a popup? If popup → FAILS UAP-5.
-#
-# USER-FACING SCREEN DEFINITION:
-# Any screen that:
-# - Appears in Simulator/App launch
-# - Is reachable via navigation
-# - Is visible to a human without debug flags
-#
-# CRITICAL RULE:
-# If you build a screen that "works" but doesn't pass UAP gates, it is NOT DONE.
-# You must either: (1) complete it to UAP spec, or (2) mark it INTERNAL and hide it.
-#
-# See: PER/UI_ACCEPTANCE_PROTOCOL.md for full gate definitions
-# See: screens-spec/UI_ACCEPTANCE_CHECKLIST.md for per-screen verification
-
-# ══════════════════════════════════════════════════════════════════════════════
 # SECTION 10: FILE-SPECIFIC RULES
 # ══════════════════════════════════════════════════════════════════════════════
 
 # REACT NATIVE SCREENS (screens/**/*.tsx)
-# ├── PascalCase filenames (TaskFeedScreen.tsx, not task-feed-screen.tsx)
-# ├── Named exports only (export function TaskFeedScreen, not export default)
+# ├── PascalCase filenames (TaskFeedScreen.tsx)
+# ├── Named exports only (export function TaskFeedScreen)
 # ├── Props interface named {ScreenName}Props
 # ├── Must handle: loading, empty, error, content states
 # └── No fetch/API calls — data comes via props
 
 # iOS SWIFTUI (ios-swiftui/**/*.swift)
 # ├── Match STITCH HTML spec exactly
-# ├── Use HustleFont/HustleColors only (no hardcoded values)
-# ├── Public init with callback closures for actions
-# ├── #Preview required for all screens
-# ├── Data models use public structs with public init
-# └── Run `swift build` after every file change
-
-# STITCH PROMPTS (specs/03-frontend/stitch-prompts/*.html)
-# ├── READ ONLY — do not modify
-# ├── Source of truth for pixel-perfect layouts
-# ├── Extract: component hierarchy, colors, spacing, copy
-# └── If HTML and spec conflict → HTML wins
-
-# SCREEN SPECS (screens-spec/**/*.md)
-# ├── READ for requirements
-# ├── MODIFY only to update status checkboxes
-# └── DO NOT add new screens or sections
-
-# DESIGN SYSTEM (specs/03-frontend/DESIGN_SYSTEM.md)
-# ├── READ ONLY — authoritative design tokens
-# ├── Extract exact color hex values
-# ├── Extract exact font sizes
-# └── DO NOT invent new tokens
-
-# COMPONENT LIBRARY (specs/03-frontend/COMPONENT_LIBRARY.md)
-# ├── READ for reusable component specs
-# ├── Implement components exactly as specified
-# └── DO NOT create new components not in spec
-
-# DATABASE (specs/02-architecture/schema.sql)
-# ├── YOU MAY NOT MODIFY — Layer 0 authority
-# ├── READ only if user explicitly instructs
-# └── Backend concern — ask user if unclear
+# ├── Use HustleFont/HustleColors only
+# ├── Public init with callback closures
+# ├── #Preview required
+# └── Run `swift build` after every change
 
 # PER DIRECTORY (PER/**)
-# ├── FORBIDDEN to modify
-# ├── READ only for understanding constraints
-# └── Constitutional documents — immutable
+# ├── FORBIDDEN to modify (except by user)
+# ├── READ for constraints
+# └── Constitutional documents
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 11: CONTEXT MANAGEMENT
+# SECTION 11: DONE DEFINITION (Quick Reference)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# BOOTSTRAP is DONE when ALL are checked:
+# [ ] Xcode builds with zero errors
+# [ ] iOS Simulator launches without crashing
+# [ ] EntryScreen renders with purple brand
+# [ ] Purple gradient visible
+# [ ] Purple glow visible
+# [ ] Button visible and tappable
+# [ ] No crashes 30 seconds
+# [ ] No green anywhere
+
+# If ANY is unchecked → NOT DONE. See PER/DONE_DEFINITION.md for full criteria.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 12: CONTEXT MANAGEMENT
 # ══════════════════════════════════════════════════════════════════════════════
 
 # PROGRESSIVE LOADING — Read in this order:
-# Level 1 (Always): .cursorrules, CURRENT_PHASE.md
-# Level 2 (Frontend): CURSOR_INSTRUCTIONS.md, DESIGN_SYSTEM.md
-# Level 3 (Specific): screens-spec/{category}/{SCREEN}.md
-# Level 4 (Reference): COMPONENT_LIBRARY.md, schema.sql (if needed)
+# Level 1 (Always): This file, PER/PROJECT_STATE.md, CURRENT_PHASE.md
+# Level 2 (Frontend): PER/DICTIONARY.md, PER/FORBIDDEN_OUTPUTS.md
+# Level 3 (Screen): reference/components/*, COLOR_SEMANTICS_LAW.md
+# Level 4 (Specific): screens-spec/{category}/{SCREEN}.md
 
 # CONTEXT REFRESH — Re-read foundation files after:
 # - 10+ file changes in session
-# - Switching from frontend to backend tasks
 # - Encountering unexpected behavior
 # - Starting a new session
 
-# See CONTEXT_MANAGEMENT_GUIDE.md for full progressive loading strategy.
-
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 12: ITERATION PATTERNS
+# REMEMBER
 # ══════════════════════════════════════════════════════════════════════════════
 
-# PLAN MODE (for complex changes):
-# 1. Propose step-by-step plan
-# 2. Get user approval
-# 3. Implement one step at a time
-# 4. Test after each step
-# 5. Proceed to next step
-
-# SELF-REVIEW (after major implementation):
-# 1. Ask: "Review this for issues or spec deviations"
-# 2. Apply fixes from feedback
-# 3. Re-run tests
-
-# BITE-SIZED TASKS:
-# - No single task should touch more than 5 files
-# - No single task should exceed 200 lines
-# - Build → Test → Commit pattern
-
-# See ITERATION_PATTERNS.md for full workflow documentation.
-
-# ══════════════════════════════════════════════════════════════════════════════
-# REMEMBER: You are not a collaborator. You are an executor.
+# You are not a collaborator. You are an executor.
 # The specs are correct. Your job is to implement them exactly.
 # If you disagree with a spec, STOP and tell the user. Do not "fix" it.
+#
+# Read PER/PROJECT_STATE.md to know where we are.
+# Read PER/DICTIONARY.md to know what terms mean.
+# Read PER/FORBIDDEN_OUTPUTS.md to know what's banned.
+# Read PER/DONE_DEFINITION.md to know when you're done.
+#
+# Produce MAX-TIER output. No shortcuts. No minimal patterns.
+
 # ══════════════════════════════════════════════════════════════════════════════

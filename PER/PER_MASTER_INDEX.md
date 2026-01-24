@@ -1,8 +1,20 @@
-# PER MASTER INDEX — HUSTLEXP v1.0
+# PER MASTER INDEX — HUSTLEXP v2.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**
 **VERSION: MAX-TIER**
 **ENFORCEMENT: MANDATORY — VIOLATIONS ARE SYSTEM FAILURES**
+
+---
+
+## PER v2: SESSION START PROTOCOL
+
+> **AI MUST READ THESE FIRST — IN ORDER:**
+>
+> 1. `PER/PROJECT_STATE.md` — Know where we are in the build
+> 2. `PER/DICTIONARY.md` — Know what terms mean (no interpretation drift)
+> 3. `PER/DONE_DEFINITION.md` — Know what "done" means (binary checkboxes)
+> 4. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
+> 5. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
 
 ---
 
