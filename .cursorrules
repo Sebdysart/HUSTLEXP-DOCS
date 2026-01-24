@@ -191,36 +191,63 @@
 # DO NOT GUESS. DO NOT ASSUME. DO NOT "HELP" BY FILLING GAPS.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 7: DESIGN TOKENS (USE EXACTLY)
+# SECTION 7: DESIGN TOKENS (AUTHORITATIVE — STITCH-ALIGNED)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# COLORS (from reference/constants/colors.ts):
-# Primary:      #FF6B35
-# Background:   #0D0D0D
-# Surface:      #1A1A1A
-# TextPrimary:  #FFFFFF
-# TextSecondary:#9CA3AF
-# Success:      #10B981
-# Warning:      #F59E0B
-# Error:        #EF4444
+# COLORS (AUTHORITATIVE — from STITCH HTML specs):
+#
+# Brand:
+#   Primary:      #1FAD7E (HustleXP teal-green, NOT #FF6B35)
+#   Yellow:       #FFD900 (Instant mode)
+#
+# Apple System Colors:
+#   Red:          #FF3B30 (Error, alerts)
+#   Orange:       #FF9500 (Warning, XP accents)
+#   Green:        #34C759 (Success, money positive)
+#   Blue:         #007AFF (Info, links)
+#   Gray:         #8E8E93 (Muted, disabled)
+#
+# Background:
+#   Primary:      #000000 (Pure black, NOT #0D0D0D)
+#   Elevated:     #1C1C1E
+#
+# Glass:
+#   Surface:      rgba(28, 28, 30, 0.6)
+#   Border:       rgba(255, 255, 255, 0.1)
+#
+# Text:
+#   Primary:      #FFFFFF
+#   Secondary:    #E5E5EA
+#   Muted:        #8E8E93
+#
+# WRONG COLORS (NEVER USE):
+#   ❌ #FF6B35 (was incorrectly called "primary")
+#   ❌ #0D0D0D (was incorrectly called "background")
+#   ❌ #1A1A1A (use #1C1C1E instead)
 
-# TYPOGRAPHY (from reference/constants/typography.ts):
-# Display:  32px Bold
-# Title:    24px SemiBold
-# Headline: 20px SemiBold
+# TYPOGRAPHY (from STITCH HTML specs):
+# Display:  36px Bold, tracking: -0.5
+# Title1:   28px Bold, tracking: -0.3
+# Title2:   24px SemiBold
+# Headline: 18px SemiBold
 # Body:     16px Regular
-# Caption:  14px Regular
-# Micro:    12px Medium
+# Callout:  14px Regular
+# Caption:  12px Medium
+# Micro:    10px SemiBold, tracking: 1
 
-# SPACING (4px base, from reference/constants/spacing.ts):
-# xs:  4px
-# sm:  8px
-# md:  16px
-# lg:  24px
-# xl:  32px
-# 2xl: 48px
+# SPACING (Tailwind-aligned):
+# 1:   4px
+# 2:   8px
+# 3:   12px
+# 4:   16px
+# 5:   20px
+# 6:   24px
+# 8:   32px
+# 10:  40px
+# 12:  48px
 
 # DO NOT INVENT NEW TOKENS. USE ONLY WHAT EXISTS.
+# IF DESIGN_SYSTEM.md CONFLICTS WITH THESE VALUES, THESE VALUES WIN.
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 8: EXECUTION ORDER

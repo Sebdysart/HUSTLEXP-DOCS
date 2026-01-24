@@ -43,7 +43,25 @@ import { colors, typography, spacing, radius, shadows } from '@/design-system';
 
 ## 2. Colors
 
-### Brand Colors
+> **⚠️ DEPRECATION NOTICE (2026-01-23)**
+>
+> The color values in this section are DEPRECATED. They use Material Design palette
+> which conflicts with STITCH HTML specifications (Apple HIG colors).
+>
+> **For authoritative colors, see:**
+> - `COLOR_AUTHORITY_RESOLUTION.md` (binding decision)
+> - `BOOTSTRAP.md` (quick reference)
+> - `.cursorrules` SECTION 7 (AI enforcement)
+> - `ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleColors.swift` (reference impl)
+>
+> **Correct values:**
+> - Brand Primary: `#1FAD7E` (NOT `#4CAF50`)
+> - Background: `#000000` (NOT `#121212`)
+> - Success: `#34C759` (NOT `#4CAF50`)
+> - Error: `#FF3B30` (NOT `#F44336`)
+> - Info: `#007AFF` (NOT `#2196F3`)
+
+### Brand Colors (DEPRECATED — see notice above)
 
 ```typescript
 export const colors = {
