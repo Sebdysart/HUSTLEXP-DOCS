@@ -284,62 +284,108 @@ if (error) {
 
 ---
 
-## Design Tokens (Use Exactly)
+## Design Tokens (AUTHORITATIVE — Use Exactly)
+
+**Source: STITCH HTML specifications + BOOTSTRAP.md**
 
 ### Colors
 ```typescript
-// From specs/03-frontend/DESIGN_SYSTEM.md
-const colors = {
-  primary: '#FF6B35',
-  background: '#0D0D0D',
-  surface: '#1A1A1A',
-  surfaceElevated: '#242424',
-  textPrimary: '#FFFFFF',
-  textSecondary: '#9CA3AF',
-  textTertiary: '#6B7280',
-  success: '#10B981',
-  warning: '#F59E0B',
-  error: '#EF4444',
-  divider: '#2D2D2D',
-};
+// AUTHORITATIVE COLOR TOKENS — DO NOT CHANGE
+export const colors = {
+  // Brand
+  brand: {
+    primary: '#1FAD7E',      // HustleXP teal-green (NOT #FF6B35)
+    yellow: '#FFD900',       // Instant mode
+  },
+
+  // Apple System Colors
+  apple: {
+    red: '#FF3B30',
+    orange: '#FF9500',
+    green: '#34C759',
+    blue: '#007AFF',
+    gray: '#8E8E93',
+  },
+
+  // Semantic
+  success: '#34C759',        // Apple green
+  error: '#FF3B30',          // Apple red
+  warning: '#FF9500',        // Apple orange
+  info: '#007AFF',           // Apple blue
+
+  // Background
+  background: {
+    primary: '#000000',      // Pure black (NOT #0D0D0D)
+    elevated: '#1C1C1E',
+  },
+
+  // Glass (glassmorphism)
+  glass: {
+    surface: 'rgba(28, 28, 30, 0.6)',
+    border: 'rgba(255, 255, 255, 0.1)',
+  },
+
+  // Text
+  text: {
+    primary: '#FFFFFF',
+    secondary: '#E5E5EA',
+    muted: '#8E8E93',
+  },
+
+  // Zinc scale (for subtle UI)
+  zinc: {
+    400: '#A1A1AA',
+    500: '#71717A',
+    600: '#52525B',
+    700: '#3F3F46',
+    800: '#27272A',
+  },
+} as const;
 ```
 
 ### Typography
 ```typescript
 const typography = {
-  display: { fontSize: 32, fontWeight: '700' },
-  title: { fontSize: 24, fontWeight: '600' },
-  headline: { fontSize: 20, fontWeight: '600' },
+  display: { fontSize: 36, fontWeight: '700', tracking: -0.5 },
+  title1: { fontSize: 28, fontWeight: '700', tracking: -0.3 },
+  title2: { fontSize: 24, fontWeight: '600' },
+  headline: { fontSize: 18, fontWeight: '600' },
   body: { fontSize: 16, fontWeight: '400' },
-  caption: { fontSize: 14, fontWeight: '400' },
-  micro: { fontSize: 12, fontWeight: '500' },
+  callout: { fontSize: 14, fontWeight: '400' },
+  caption: { fontSize: 12, fontWeight: '500' },
+  micro: { fontSize: 10, fontWeight: '600', tracking: 1 },
 };
 ```
 
 ### Spacing
 ```typescript
 const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+  1: 4,
+  2: 8,
+  3: 12,
+  4: 16,
+  5: 20,
+  6: 24,
+  8: 32,
+  10: 40,
+  12: 48,
 };
 ```
 
 ### Border Radius
 ```typescript
 const radius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  '2xl': 24,
   full: 9999,
 };
 ```
 
 **DO NOT invent new tokens. Use only what exists.**
+**If colors here conflict with DESIGN_SYSTEM.md, THIS FILE WINS.**
 
 ---
 

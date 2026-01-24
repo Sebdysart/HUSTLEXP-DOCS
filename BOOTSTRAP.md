@@ -1,8 +1,8 @@
 # BOOTSTRAP CONTRACT — HUSTLEXP RUNTIME BASELINE
 
-**STATUS: BLOCKING — Nothing else proceeds until this passes**  
-**Owner: Frontend (Cursor)**  
-**Validator: Xcode Simulator**  
+**STATUS: BLOCKING — Nothing else proceeds until this passes**
+**Owner: Frontend (Cursor)**
+**Validator: Xcode Simulator**
 **Frontend Repo: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)**
 
 ---
@@ -21,6 +21,36 @@ Until Bootstrap passes:
 
 ---
 
+## AUTHORITATIVE COLOR TOKENS
+
+**USE THESE EXACT VALUES. NO EXCEPTIONS.**
+
+```typescript
+// Brand
+const BRAND_PRIMARY = '#1FAD7E';     // HustleXP teal-green
+const BRAND_YELLOW = '#FFD900';      // Instant mode
+
+// Apple System Colors
+const APPLE_RED = '#FF3B30';
+const APPLE_ORANGE = '#FF9500';
+const APPLE_GREEN = '#34C759';
+const APPLE_BLUE = '#007AFF';
+const APPLE_GRAY = '#8E8E93';
+
+// Background
+const BACKGROUND_DARK = '#000000';   // NOT #0D0D0D
+
+// Glass
+const GLASS_SURFACE = 'rgba(28, 28, 30, 0.6)';
+const GLASS_BORDER = 'rgba(255, 255, 255, 0.1)';
+
+// Text
+const TEXT_PRIMARY = '#FFFFFF';
+const TEXT_MUTED = '#8E8E93';
+```
+
+---
+
 ## SUCCESS CRITERIA
 
 ### The app MUST:
@@ -35,6 +65,7 @@ Until Bootstrap passes:
 ✅ No red error screens
 ✅ No yellow warning screens
 ✅ No crashes for 30 seconds of idle
+✅ Use CORRECT colors from tokens above
 ```
 
 ### The app MUST NOT:
@@ -47,17 +78,31 @@ Until Bootstrap passes:
 ❌ Access any backend APIs
 ❌ Use any state management beyond local useState
 ❌ Import any packages not in current package.json
+❌ Use #0D0D0D (wrong) — use #000000
+❌ Use #FF6B35 (wrong) — use #1FAD7E (brand) or #34C759 (success)
 ```
 
 ---
 
-## THE BOOTSTRAP SCREEN
+## THE BOOTSTRAP SCREEN (FIXED COLORS)
 
 **File:** `hustlexp-app/screens/BootstrapScreen.tsx`
 
 ```tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+// AUTHORITATIVE COLORS — DO NOT CHANGE
+const colors = {
+  background: '#000000',        // Pure black (STITCH spec)
+  brandPrimary: '#1FAD7E',      // HustleXP teal-green
+  textPrimary: '#FFFFFF',
+  textMuted: '#8E8E93',
+  glass: {
+    surface: 'rgba(28, 28, 30, 0.6)',
+    border: 'rgba(255, 255, 255, 0.1)',
+  },
+};
 
 export function BootstrapScreen() {
   const handlePress = () => {
@@ -77,26 +122,26 @@ export function BootstrapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0D0D0D',
+    backgroundColor: colors.background,  // #000000
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: colors.textPrimary,  // #FFFFFF
     marginBottom: 24,
   },
   button: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: colors.brandPrimary,  // #1FAD7E (NOT #FF6B35)
     paddingHorizontal: 32,
     paddingVertical: 16,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: colors.textPrimary,  // #FFFFFF
   },
 });
 ```
