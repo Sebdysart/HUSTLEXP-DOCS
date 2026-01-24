@@ -587,6 +587,82 @@ hustlexp-app/
 
 ---
 
+## When Is a Screen DONE?
+
+**CRITICAL: "Builds without crashing" is NECESSARY but INSUFFICIENT.**
+
+A screen is DONE **only if ALL of the following are true**:
+
+### UAP Gate Checklist (MANDATORY)
+
+```
+[ ] UAP-0: PURPOSE GATE
+    - Screen answers WHO is this for?
+    - Screen answers WHAT do I do next?
+    - Screen answers WHY should I care?
+    - All three answerable within 3 seconds
+
+[ ] UAP-1: HIERARCHY GATE
+    - Has PRIMARY ACTION (the main thing user can do)
+    - Has SUPPORTING CONTEXT (information to inform decision)
+    - Has BRAND/EMOTIONAL SIGNAL (trust, polish, identity)
+
+[ ] UAP-2: MOTION/DEPTH GATE (Entry/Onboarding only)
+    - Has animation, gradient, glass, shadow, OR parallax
+    - Static flat screens NOT allowed for entry/onboarding
+
+[ ] UAP-3: SPEC FIDELITY GATE
+    - Layout matches spec wireframe exactly
+    - Copy text matches spec verbatim (no AI rewrites)
+    - Colors use spec tokens only
+    - Typography uses spec scale only
+    - Spacing uses spec scale only
+
+[ ] UAP-4: BOOTSTRAP SEPARATION GATE
+    - Screen is NOT a bootstrap/verification placeholder
+    - Screen is in SCREEN_REGISTRY with UAP Status = PASSED
+    - If bootstrap: is behind debug flag and marked INTERNAL
+
+If ANY checkbox is unchecked → SCREEN IS NOT COMPLETE
+```
+
+### What "Complete" Means
+
+| Status | Meaning |
+|--------|---------|
+| **BUILDS** | Code compiles, no crashes |
+| **RENDERS** | UI appears on screen |
+| **COMPLETE** | Passes all 5 UAP gates |
+
+**BUILD SUCCESS + UAP FAILURE = INCOMPLETE SCREEN**
+
+### Authority Hierarchy
+
+```
+AUTHORITY ORDER (Highest → Lowest)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. UI_ACCEPTANCE_PROTOCOL (UAP)     ← HIGHEST
+2. Screen Specs (screens-spec/*)
+3. Phase Constraints (.cursorrules)
+4. Implementation Instructions (this file)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+UAP outranks ALL phase constraints. No phase (including BOOTSTRAP) may override UAP for user-facing screens.
+
+### Before Marking Any Screen Complete
+
+1. Run the UAP Gate Checklist above
+2. Compare output to spec reference element-by-element
+3. Verify screen is listed in SCREEN_REGISTRY.md
+4. Update UAP Status column to PASSED or FAILED
+
+**If you cannot pass all gates, STOP and ask the user.**
+
+See: `PER/UI_ACCEPTANCE_PROTOCOL.md` for full gate definitions and examples.
+
+---
+
 ## Summary
 
 ```
@@ -598,10 +674,12 @@ hustlexp-app/
 6. You call callbacks for actions
 7. You use design tokens exactly
 8. You follow specs exactly
-9. If unclear, you ask
+9. You verify against UAP gates
+10. "Builds" ≠ "Complete"
+11. If unclear, you ask
 ```
 
-**You are a frontend executor. The specs are complete. Build exactly what they say.**
+**You are a frontend executor. The specs are complete. Build exactly what they say. Verify against UAP before marking done.**
 
 ---
 

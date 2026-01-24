@@ -280,14 +280,46 @@
 # DO NOT SKIP STEPS. DO NOT ASSUME YOU KNOW WHAT TO BUILD.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 9: CURRENT PHASE CONSTRAINT
+# SECTION 9: CURRENT PHASE & UI ACCEPTANCE PROTOCOL
 # ══════════════════════════════════════════════════════════════════════════════
 
-# CURRENT PHASE: BOOTSTRAP
-# ALLOWED: Make the app boot and render ONE screen without crashing.
-# FORBIDDEN: Everything else until bootstrap passes.
-
-# See: BOOTSTRAP.md for the exact success criteria.
+# CURRENT PHASE: SCREEN_IMPLEMENTATION
+#
+# UI ACCEPTANCE PROTOCOL (UAP) AUTHORITY:
+# UAP outranks ALL phase constraints. No phase may override UAP for user-facing screens.
+# See: PER/UI_ACCEPTANCE_PROTOCOL.md (CONSTITUTIONAL AUTHORITY)
+#
+# AUTHORITY ORDER (Highest → Lowest):
+# 1. UI_ACCEPTANCE_PROTOCOL (UAP)     ← HIGHEST
+# 2. Screen Specs (screens-spec/*)
+# 3. Phase Constraints (this section)
+# 4. Implementation Instructions
+#
+# BOOTSTRAP MODE (Internal Verification Only):
+# - Purpose: Verify app boots without crashing (INTERNAL USE ONLY)
+# - Output: Non-user-facing verification screens
+# - Bootstrap success ≠ screen completion
+# - Bootstrap screens MUST be behind compile-time flags or named Internal*/Debug*/Test*
+# - Bootstrap screens may NEVER be promoted to production navigation
+#
+# SCREEN COMPLETION REQUIREMENTS:
+# - Any user-facing screen MUST pass UAP-0 through UAP-4
+# - "Builds without crashing" is NECESSARY but INSUFFICIENT
+# - Phase completion is SUBORDINATE to UAP
+# - A screen that builds but fails UAP is INCOMPLETE
+#
+# USER-FACING SCREEN DEFINITION:
+# Any screen that:
+# - Appears in Simulator/App launch
+# - Is reachable via navigation
+# - Is visible to a human without debug flags
+#
+# CRITICAL RULE:
+# If you build a screen that "works" but doesn't pass UAP gates, it is NOT DONE.
+# You must either: (1) complete it to UAP spec, or (2) mark it INTERNAL and hide it.
+#
+# See: PER/UI_ACCEPTANCE_PROTOCOL.md for full gate definitions
+# See: screens-spec/UI_ACCEPTANCE_CHECKLIST.md for per-screen verification
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 10: FILE-SPECIFIC RULES
