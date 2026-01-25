@@ -434,5 +434,108 @@ AI may reproduce forbidden copy with slight rewording:
 
 ---
 
+## PUZZLE MODE VIOLATIONS
+
+### FORBIDDEN: Layer Boundary Violations
+
+```swift
+// ❌ FORBIDDEN — Screen (Layer 4) creating new atom
+// In a screen file:
+struct MyScreen: View {
+    var body: some View {
+        NewGlowEffect()  // ← Inventing an atom at screen layer
+    }
+}
+
+// ✅ CORRECT — Screen uses only existing sections
+struct MyScreen: View {
+    var body: some View {
+        ExistingSection()  // ← From Layer 3
+    }
+}
+```
+
+### FORBIDDEN: Raw Values Instead of Tokens
+
+```swift
+// ❌ FORBIDDEN — Using raw hex in molecule/section/screen
+.foregroundColor(Color(hex: "#5B2DFF"))
+
+// ✅ CORRECT — Using token from Layer 0
+.foregroundColor(PuzzleColors.brandPrimary)
+```
+
+### FORBIDDEN: Missing Contracts/Manifests
+
+```
+// ❌ FORBIDDEN — Molecule without contract
+ui-puzzle/molecules/NewMolecule/
+├── NewMolecule.swift     ← EXISTS
+└── (no contract file)    ← VIOLATION
+
+// ✅ CORRECT — Molecule with contract
+ui-puzzle/molecules/NewMolecule/
+├── NewMolecule.swift
+└── NewMolecule.contract.md  ← REQUIRED
+```
+
+### FORBIDDEN: Atoms Without Stress Tests
+
+```
+// ❌ FORBIDDEN — Atom promoted without stress test
+ui-puzzle/atoms/NewAtom/
+├── NewAtom.swift         ← EXISTS
+└── (no stress file)      ← VIOLATION
+
+// ✅ CORRECT — Atom with stress test
+ui-puzzle/atoms/NewAtom/
+├── NewAtom.swift
+└── NewAtom.stress.md     ← REQUIRED
+```
+
+### FORBIDDEN: Screen Invention
+
+```swift
+// ❌ FORBIDDEN — Screen declaring new concepts
+// EntryScreen.manifest.md
+## New Atoms: CustomGlow       ← VIOLATION
+## New Copy: "Welcome!"        ← VIOLATION
+## New Motion: bounceIn        ← VIOLATION
+
+// ✅ CORRECT — Screen as pure assembly
+## New Atoms: NONE
+## New Molecules: NONE
+## New Copy: NONE
+## New Motion: NONE
+```
+
+### FORBIDDEN: Section Answering Multiple Questions
+
+```swift
+// ❌ FORBIDDEN — Section doing too much
+struct HeroAndActionSection: View {  // ← Answering TWO questions
+    // "What is this?" AND "What do I do?"
+}
+
+// ✅ CORRECT — One section per question
+struct EntryHeroSection: View {      // "What is this?"
+struct EntryActionSection: View {    // "What do I do?"
+```
+
+---
+
+## PUZZLE MODE QUICK REFERENCE
+
+| Layer | Violation | Result |
+|-------|-----------|--------|
+| Screen creates atom | INSTANT REJECT | Must use existing atoms |
+| Molecule uses raw color | REJECT | Must use PuzzleColors token |
+| Atom without stress test | CANNOT PROMOTE | Stays at Layer 1 |
+| Screen with "New Atoms: X" | INSTANT REJECT | Must be NONE |
+| Section without contract | CANNOT USE | Contract required |
+
+---
+
 **If output matches ANY pattern in this document → REJECT and redo.**
 **Renaming patterns does not make them acceptable.**
+**Layer boundaries are inviolable. Higher layers CANNOT invent lower-layer concepts.**

@@ -37,13 +37,14 @@ Re-read and ground yourself in the following authoritative files:
 1. PER/PER_MASTER_INDEX.md
 2. PER/PROJECT_STATE.md
 3. PER/EXECUTION_CONSTITUTION.md
-4. PER/DICTIONARY.md
-5. PER/DONE_DEFINITION.md
-6. PER/FORBIDDEN_OUTPUTS.md
-7. PER/AUTHORITY_LADDER.md
-8. PER/DESIGN_AUTHORITY.md
-9. PER/REJECTED_APPROACHES.md
-10. PER/COMPLETION_LOCK.md
+4. PER/PUZZLE_MODE.md          ← UI Assembly Constraint System
+5. PER/DICTIONARY.md
+6. PER/DONE_DEFINITION.md
+7. PER/FORBIDDEN_OUTPUTS.md
+8. PER/AUTHORITY_LADDER.md
+9. PER/DESIGN_AUTHORITY.md
+10. PER/REJECTED_APPROACHES.md
+11. PER/COMPLETION_LOCK.md
 
 If any file is missing or unclear, STOP and ask.
 
@@ -57,6 +58,7 @@ Output the following verbatim before any reasoning or code:
 ├─────────────────────────────────────────────────────────────────┤
 │ CURRENT_FOCUS:           [from PROJECT_STATE.md]                │
 │ CURRENT_PHASE:           [from CURRENT_PHASE.md]                │
+│ PUZZLE_LAYER:            [0=Token|1=Atom|2=Molecule|3=Section|4=Screen]│
 │ LOCKED_CONSTRAINTS:      [list from PROJECT_STATE.md]           │
 │ FORBIDDEN_ACTIONS:       [from FORBIDDEN_OUTPUTS.md]            │
 │ ACCEPTANCE_GATES:        [UAP gates that apply]                 │
@@ -121,6 +123,7 @@ If and only if in IMPLEMENTATION_MODE or REFACTOR_MODE:
 ├─────────────────────────────────────────────────────────────────┤
 │ Action:          [what will be done]                            │
 │ Files changed:   [list of files]                                │
+│ PUZZLE_LAYER:    [Layer 0-4, what permissions apply]            │
 │ Pattern used:    [reference/components/X or existing pattern]   │
 │ UAP gates:       [which gates apply]                            │
 │ Forbidden check: [confirm no forbidden patterns]                │
@@ -180,6 +183,15 @@ IMMUTABLE RULES
 • Green on entry screens = INSTANT FAIL
 • Card layouts on entry = INSTANT FAIL
 • Renaming patterns does NOT bypass prohibition
+
+PUZZLE MODE RULES (UI WORK):
+• Layer 0 (Tokens) = READ-ONLY, zero decisions
+• Layer 1 (Atoms) = Single-responsibility, stress test required
+• Layer 2 (Molecules) = Composition contract required
+• Layer 3 (Sections) = Answer ONE question only
+• Layer 4 (Screens) = Assembly ONLY, no invention
+• Higher layers CANNOT invent concepts from lower layers
+• Stress tests must pass before promotion to higher layer
 ```
 
 ---

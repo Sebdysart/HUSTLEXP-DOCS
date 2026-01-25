@@ -271,6 +271,147 @@ ALL CHECKBOXES MUST BE CHECKED.
 
 ---
 
+## PUZZLE LAYER 0 (TOKEN): DONE DEFINITION
+
+### A token is DONE when:
+
+```
+DEFINITION
+[ ] Documented in ui-puzzle/tokens/
+[ ] Has unique constant name
+[ ] Value is hardcoded (no computation)
+[ ] Zero semantic decisions embedded
+
+USAGE
+[ ] Referenced by atoms correctly
+[ ] Not modified by higher layers
+
+ALL CHECKBOXES MUST BE CHECKED.
+```
+
+---
+
+## PUZZLE LAYER 1 (ATOM): DONE DEFINITION
+
+### An atom is DONE when:
+
+```
+IMPLEMENTATION
+[ ] Single responsibility (ONE job)
+[ ] Uses ONLY Layer 0 tokens
+[ ] No external dependencies
+[ ] No internal state beyond animation
+
+STRESS TEST
+[ ] .stress.md file exists alongside .swift
+[ ] Renders at 0.5x scale
+[ ] Renders at 2x scale
+[ ] Animates for 60 seconds without degradation
+[ ] Works with VoiceOver
+[ ] No jank at 60fps
+
+DOCUMENTATION
+[ ] Purpose documented
+[ ] Layer declared (Layer 1: Atom)
+[ ] Stress test results recorded
+
+ALL CHECKBOXES MUST BE CHECKED.
+```
+
+---
+
+## PUZZLE LAYER 2 (MOLECULE): DONE DEFINITION
+
+### A molecule is DONE when:
+
+```
+COMPOSITION CONTRACT
+[ ] .contract.md file exists alongside .swift
+[ ] Lists exactly which atoms are used
+[ ] Lists forbidden atoms (if any)
+[ ] Declares Dominant Axis (vertical/horizontal)
+
+IMPLEMENTATION
+[ ] Combines 2+ atoms ONLY
+[ ] Uses ONLY Layer 0 tokens for spacing
+[ ] No new visual primitives invented
+[ ] Semantic purpose is clear
+
+STRESS TEST INHERITANCE
+[ ] All constituent atoms have passed stress tests
+[ ] Molecule tested at 0.5x and 2x scale
+[ ] Animation continuity verified
+
+ALL CHECKBOXES MUST BE CHECKED.
+```
+
+---
+
+## PUZZLE LAYER 3 (SECTION): DONE DEFINITION
+
+### A section is DONE when:
+
+```
+CONTRACT
+[ ] .contract.md file exists alongside .swift
+[ ] Answers exactly ONE user question
+[ ] Lists exactly which molecules are used
+[ ] Lists forbidden content
+
+UAP COMPLIANCE
+[ ] UAP-0: Visible hierarchy
+[ ] UAP-1: Motion continuity
+[ ] UAP-2: Action clarity
+[ ] UAP-3: Loading elegance
+
+IMPLEMENTATION
+[ ] Uses ONLY approved molecules
+[ ] No new atoms invented
+[ ] No new molecules invented
+[ ] Copy comes from contract (not invented)
+
+ALL CHECKBOXES MUST BE CHECKED.
+```
+
+---
+
+## PUZZLE LAYER 4 (SCREEN): DONE DEFINITION
+
+### A screen is DONE when:
+
+```
+ASSEMBLY MANIFEST
+[ ] .manifest.md file exists alongside .swift
+[ ] Lists exactly which sections are used
+[ ] Declares "New Atoms: NONE"
+[ ] Declares "New Molecules: NONE"
+[ ] Declares "New Copy: NONE"
+[ ] Declares "New Motion: NONE"
+
+LAYOUT ONLY
+[ ] Positions sections (VStack/ZStack)
+[ ] Applies screen padding
+[ ] Handles safe areas
+[ ] Places background
+[ ] Connects callbacks to navigation
+
+FORBIDDEN
+[ ] No new visual elements
+[ ] No section modifications
+[ ] No text additions
+[ ] No animation additions
+[ ] No invention whatsoever
+
+ALL UAP GATES
+[ ] UAP-0 through UAP-7 pass
+[ ] COLOR_SEMANTICS_LAW respected
+[ ] DESIGN_TARGET matched
+
+ALL CHECKBOXES MUST BE CHECKED.
+```
+
+---
+
 ## UNIVERSAL: NOT DONE IF
 
 Work is automatically NOT DONE if any of these are true:

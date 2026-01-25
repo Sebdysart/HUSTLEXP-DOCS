@@ -22,11 +22,12 @@
 
 ```
 1. Read PER/PROJECT_STATE.md         → Know where we are
-2. Read PER/DICTIONARY.md            → Know what terms mean
-3. Read PER/DONE_DEFINITION.md       → Know what "done" means
-4. Read PER/FORBIDDEN_OUTPUTS.md     → Know what's banned
-5. Check CURRENT_PHASE.md            → Know what's allowed NOW
-6. Check FEATURE_FREEZE.md           → Know what's locked
+2. Read PER/PUZZLE_MODE.md           → Know what layer constraints apply
+3. Read PER/DICTIONARY.md            → Know what terms mean
+4. Read PER/DONE_DEFINITION.md       → Know what "done" means
+5. Read PER/FORBIDDEN_OUTPUTS.md     → Know what's banned
+6. Check CURRENT_PHASE.md            → Know what's allowed NOW
+7. Check FEATURE_FREEZE.md           → Know what's locked
 ```
 
 ### Before ANY Code Change, AI MUST:
@@ -52,11 +53,22 @@
 - **Trigger:** User requests code changes
 - **Allowed:** Edit files per PER gates
 - **Required:** Plan → Approve → Implement → Test
+- **UI Work:** Must declare layer (0-4) and follow PUZZLE_MODE.md
 
 ### Mode 3: Recovery
 - **Trigger:** Build broken, crashes occurring
 - **Allowed:** Minimal fixes to restore function
 - **Forbidden:** Adding features, refactoring
+
+### Mode 4: UI Assembly (PUZZLE_MODE)
+- **Trigger:** User requests UI component work
+- **Allowed:** Work only at declared layer
+- **Required:** Layer declaration → Contract/Manifest → Stress Test → Lock
+- **Layer 0:** Read tokens only, no modifications
+- **Layer 1:** Implement atoms with stress tests
+- **Layer 2:** Combine atoms per composition contract
+- **Layer 3:** Arrange molecules per section contract
+- **Layer 4:** Assemble sections only, NO invention
 
 ---
 
@@ -337,6 +349,16 @@ Is it in DO_NOT_TOUCH.md?
 [ ] Does my output pass all UAP gates?
 [ ] Does my output comply with COLOR_SEMANTICS_LAW?
 [ ] Did I avoid all FORBIDDEN patterns?
+```
+
+### UI Work Self-Check (PUZZLE_MODE)
+```
+[ ] Did I declare my layer (0-4)?
+[ ] Am I working only at my declared layer?
+[ ] Am I using only approved components from lower layers?
+[ ] Does my component have required contract/manifest?
+[ ] Have stress tests passed before promotion?
+[ ] Am I NOT inventing at screen layer?
 ```
 
 ### If ANY check fails → STOP and fix before continuing

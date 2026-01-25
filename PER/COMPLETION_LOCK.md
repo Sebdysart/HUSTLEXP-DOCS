@@ -89,6 +89,83 @@ Requires: New DONE verification
 
 ---
 
+## UI-PUZZLE COMPONENT REGISTRY
+
+### Layer 0: Tokens (PERMANENTLY LOCKED)
+
+| Token File | Status | Notes |
+|------------|--------|-------|
+| `ui-puzzle/tokens/colors.swift` | LOCKED | PuzzleColors enum |
+| `ui-puzzle/tokens/typography.swift` | LOCKED | PuzzleTypography enum |
+| `ui-puzzle/tokens/spacing.swift` | LOCKED | PuzzleSpacing, PuzzleGap |
+| `ui-puzzle/tokens/motion.swift` | LOCKED | PuzzleMotion, PuzzleEasing |
+| `ui-puzzle/tokens/shadows.swift` | LOCKED | PuzzleShadows |
+
+### Layer 1: Atoms
+
+| Atom | Stress Test | Status |
+|------|-------------|--------|
+| `AnimatedMeshField` | PASSED | LOCKED |
+| `GlowOrb` | PASSED | LOCKED |
+| `NoiseOverlay` | PASSED | LOCKED |
+| `ParticleField` | PASSED | LOCKED |
+| `BrandMark` | PASSED | LOCKED |
+| `PrimaryCTA` | PASSED | LOCKED |
+| `MotionFadeIn` | PASSED | LOCKED |
+| `TypeReveal` | PASSED | LOCKED |
+
+### Layer 2: Molecules
+
+| Molecule | Contract | Atoms Used | Status |
+|----------|----------|------------|--------|
+| `MarketField` | APPROVED | AnimatedMeshField, ParticleField, NoiseOverlay | LOCKED |
+| `BrandCluster` | APPROVED | BrandMark, GlowOrb, MotionFadeIn | LOCKED |
+| `CTAStack` | APPROVED | PrimaryCTA, MotionFadeIn | LOCKED |
+
+### Layer 3: Sections
+
+| Section | Contract | Question Answered | Status |
+|---------|----------|-------------------|--------|
+| `EntryHeroSection` | APPROVED | "What is this app?" | LOCKED |
+| `EntryActionSection` | APPROVED | "What do I do next?" | LOCKED |
+
+### Layer 4: Screens
+
+| Screen | Manifest | Sections Used | Status |
+|--------|----------|---------------|--------|
+| `PuzzleEntryScreen` | APPROVED | EntryHeroSection, EntryActionSection | LOCKED |
+
+---
+
+## UI-PUZZLE LOCK RULES
+
+### Token Lock (Layer 0)
+- Tokens are **PERMANENTLY LOCKED** after creation
+- Tokens may NOT be modified by any layer
+- New tokens require explicit approval
+
+### Atom Lock (Layer 1)
+- Atoms are LOCKED after stress test passes
+- Modifications require stress test re-run
+- New atoms require stress test before first use
+
+### Molecule Lock (Layer 2)
+- Molecules are LOCKED after contract approval
+- Modifications require contract update + approval
+- Atom additions require contract amendment
+
+### Section Lock (Layer 3)
+- Sections are LOCKED after contract approval
+- Copy changes require contract update
+- Molecule changes require contract amendment
+
+### Screen Lock (Layer 4)
+- Screens are LOCKED after manifest approval
+- Section changes require manifest update
+- **New atoms/molecules/copy/motion = INSTANT REJECT**
+
+---
+
 ## UNLOCK PROTOCOL
 
 To unlock a DONE item:

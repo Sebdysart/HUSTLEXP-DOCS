@@ -45,16 +45,17 @@
 > 1. `PER/PER_MASTER_INDEX.md` — Root authority (this file)
 > 2. `PER/INVOCATION_COMMAND.md` — HIC v1.1 syscall specification
 > 3. `PER/EXECUTION_COMMITMENT_PROTOCOL.md` — ECP (COMMIT or REFUSE)
-> 4. `PER/PROJECT_STATE.md` — Know where we are in the build
-> 5. `PER/DICTIONARY.md` — Know what terms mean
-> 6. `PER/DONE_DEFINITION.md` — Know what "done" means
-> 7. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
-> 8. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
-> 9. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
-> 10. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
-> 11. `PER/REJECTED_APPROACHES.md` — Don't repeat failures
-> 12. `PER/COMPLETION_LOCK.md` — Protect finished work
-> 13. `PER/SELF_CHECK.md` — Pre-output verification
+> 4. `PER/PUZZLE_MODE.md` — **UI Assembly Constraint System (5 layers)**
+> 5. `PER/PROJECT_STATE.md` — Know where we are in the build
+> 6. `PER/DICTIONARY.md` — Know what terms mean
+> 7. `PER/DONE_DEFINITION.md` — Know what "done" means
+> 8. `PER/FORBIDDEN_OUTPUTS.md` — Know explicit patterns that FAIL
+> 9. `PER/EXECUTION_CONSTITUTION.md` — Know how AI must operate
+> 10. `PER/AUTHORITY_LADDER.md` — Know how to resolve ambiguity
+> 11. `PER/DESIGN_AUTHORITY.md` — Know that entry layout is LOCKED
+> 12. `PER/REJECTED_APPROACHES.md` — Don't repeat failures
+> 13. `PER/COMPLETION_LOCK.md` — Protect finished work
+> 14. `PER/SELF_CHECK.md` — Pre-output verification
 
 ---
 
@@ -273,6 +274,7 @@ PER_MASTER_INDEX.md (THIS FILE - ROOT AUTHORITY)
 ├── INVARIANTS.md (Consolidated invariant registry)
 ├── DO_NOT_TOUCH.md (Forbidden files/concepts)
 ├── OWNERSHIP.md (Layer boundaries)
+├── PUZZLE_MODE.md (UI Assembly Constraint System - 5 layers)
 ├── PER-1_EXISTENCE_GATE.md (Proof-of-existence)
 ├── PER-2_EXECUTION_PLAN.md (Plan-first gate)
 ├── PER-3_SIMULATION_CHECKLIST.md (Invariant simulation)

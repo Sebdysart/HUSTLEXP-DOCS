@@ -402,9 +402,57 @@ If Cursor's output differs from snapshot → requires explicit approval to updat
 | **PER** | What exists (features, scope, invariants) |
 | **HIC** | How Cursor behaves (invocation, commitment) |
 | **UAP** | When something is acceptable (quality gates) |
+| **DESIGN_TARGET** | What max-tier looks like (reference class) |
+| **DOMINANT_AXIS** | Which direction to tilt (aesthetic vector) |
 | **Puzzle Mode** | Where thinking is allowed (layer constraints) |
 
 Puzzle Mode does not replace PER — it **adds spatial constraints** to the temporal constraints PER already provides.
+
+---
+
+## Integration with DESIGN_TARGET and DOMINANT_AXIS
+
+### DESIGN_TARGET Applies At:
+| Layer | How DESIGN_TARGET Applies |
+|-------|---------------------------|
+| **Atoms** | Reference class informs visual quality (would Apple approve?) |
+| **Molecules** | Semantic grouping must feel like tier 1 references |
+| **Sections** | Narrative energy must match reference class |
+| **Screens** | Assembly must plausibly belong with Uber/Cash App/Duolingo |
+
+### DOMINANT_AXIS Applies At:
+| Layer | How DOMINANT_AXIS Applies |
+|-------|---------------------------|
+| **Atoms** | Motion must imply momentum (directional, not decorative) |
+| **Molecules** | Composition must tilt urgent > calm |
+| **Sections** | Narrative must favor action > reassurance |
+| **Screens** | Overall feel must pass 5-axis checklist |
+
+### Verification at Each Layer
+
+**Atom Stress Test Addition:**
+```
+- [ ] Would this atom appear in Uber/Cash App/Duolingo?
+- [ ] Does motion imply momentum (not decoration)?
+```
+
+**Molecule Contract Addition:**
+```
+### DOMINANT_AXIS Compliance
+- [ ] momentum > calm
+- [ ] urgency > comfort
+- [ ] action > reassurance
+- [ ] direction > balance
+- [ ] concrete > abstract
+```
+
+**Screen Manifest Addition:**
+```
+### DESIGN_TARGET Verification
+- [ ] Passes Reference Class Test (could appear in tier 1 apps)
+- [ ] Passes Exclusion Class Test (doesn't resemble excluded patterns)
+- [ ] Passes DOMINANT_AXIS 5-point checklist
+```
 
 ---
 

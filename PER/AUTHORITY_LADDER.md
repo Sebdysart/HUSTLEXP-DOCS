@@ -27,29 +27,34 @@ When ambiguity exists, AI MUST resolve in this exact order:
 │          What phase are we in? What's the current focus?        │
 │          If answer is here → USE IT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  STEP 2: EXECUTION_CONSTITUTION.md                              │
+│  STEP 2: PUZZLE_MODE.md (FOR UI WORK)                           │
+│          What layer are we working at? (0-4)                    │
+│          What permissions does this layer have?                 │
+│          If answer is here → USE IT                             │
+├─────────────────────────────────────────────────────────────────┤
+│  STEP 3: EXECUTION_CONSTITUTION.md                              │
 │          How should AI behave in this situation?                │
 │          If answer is here → USE IT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  STEP 3: DICTIONARY.md                                          │
+│  STEP 4: DICTIONARY.md                                          │
 │          What does this term mean in this project?              │
 │          If answer is here → USE IT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  STEP 4: Relevant SPEC file                                     │
+│  STEP 5: Relevant SPEC file or CONTRACT file                    │
 │          What does the specification say?                       │
-│          (BOOTSTRAP.md, screens-spec/*, etc.)                   │
+│          (BOOTSTRAP.md, screens-spec/*, *.contract.md, etc.)    │
 │          If answer is here → USE IT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  STEP 5: DONE_DEFINITION.md                                     │
+│  STEP 6: DONE_DEFINITION.md                                     │
 │          What are the completion criteria?                      │
 │          If answer is here → USE IT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  STEP 6: reference/components/* or reference/constants/*        │
+│  STEP 7: ui-puzzle/* or reference/components/*                  │
 │          Is there an existing pattern to copy?                  │
 │          If answer is here → USE IT                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  STEP 7: STOP → ASK → DO NOT IMPLEMENT                          │
-│          If ambiguity persists after steps 1-6:                 │
+│  STEP 8: STOP → ASK → DO NOT IMPLEMENT                          │
+│          If ambiguity persists after steps 1-7:                 │
 │          → STOP immediately                                     │
 │          → ASK the user for clarification                       │
 │          → DO NOT guess or implement                            │
@@ -134,9 +139,9 @@ RESOLVED at Step 4: Fade-in animation, not left-to-right
 **Question:** "What icon should we use for the settings button?"
 
 ```
-Step 1-6: No answer found
+Step 1-7: No answer found
 
-Step 7: STOP → ASK
+Step 8: STOP → ASK
 
 AI Response: "The spec doesn't specify which icon to use for settings.
 Should I use:
@@ -145,6 +150,40 @@ B) SF Symbol 'gearshape.fill'
 C) A different icon?"
 
 WAIT for user response before proceeding.
+```
+
+### Example 5: Puzzle Layer Ambiguity
+
+**Question:** "Can I add a new animation to this screen?"
+
+```
+Step 1: PROJECT_STATE.md
+        → Working on EntryScreen
+        → UI work in progress
+
+Step 2: PUZZLE_MODE.md
+        → Screen = Layer 4
+        → Layer 4 permissions: "New Motion: NONE"
+        → Animation must come from lower layers
+
+RESOLVED at Step 2: NO. Screen layer cannot add new animations.
+Animation must be defined in an Atom (Layer 1) first.
+```
+
+### Example 6: Molecule Composition
+
+**Question:** "Can I use this color directly in the molecule?"
+
+```
+Step 1: PROJECT_STATE.md
+        → Building molecule
+
+Step 2: PUZZLE_MODE.md
+        → Molecule = Layer 2
+        → Layer 2 must use Layer 0 tokens only
+        → Check ui-puzzle/tokens/colors.swift
+
+RESOLVED at Step 2: Must use PuzzleColors token, not raw hex value.
 ```
 
 ---
