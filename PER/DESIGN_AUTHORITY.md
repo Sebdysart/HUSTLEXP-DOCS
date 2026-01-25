@@ -2,7 +2,8 @@
 
 **STATUS: CONSTITUTIONAL**
 **PURPOSE: Remove AI's implicit belief that it decides layout**
-**RULE: For entry screens, composition is LOCKED, not AI-decided**
+**RULE: For entry screens, composition AND narrative are LOCKED**
+**VERSION: 2.0 (Narrative Lock)**
 
 ---
 
@@ -128,6 +129,40 @@ AI MAY NOT:
 
 ---
 
+## ENTRY SCREEN NARRATIVE (LOCKED)
+
+The emotional sequence for Entry Screen is locked:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ EMOTIONAL SEQUENCE (NON-NEGOTIABLE)                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│ 1. ARRIVAL (0-500ms)                                           │
+│    → User feels: "I've entered a system that's already running" │
+│    → Background establishes POWER + MOTION                      │
+│    → Something is happening, not waiting                        │
+│                                                                 │
+│ 2. IDENTITY (500-1000ms)                                       │
+│    → Brand appears as CONSEQUENCE, not focus                    │
+│    → Logo/name emerge from the environment                      │
+│    → "This place has a name"                                    │
+│                                                                 │
+│ 3. PROMISE (1000-1500ms)                                       │
+│    → Outcome framed as INEVITABILITY                            │
+│    → Value prop implies: "This will happen"                     │
+│    → Not description, but declaration                           │
+│                                                                 │
+│ 4. ACTION (1500ms+)                                            │
+│    → CTA implies MOMENTUM, not setup                            │
+│    → User enters the system, doesn't "start"                    │
+│    → Urgency: Why wait?                                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## LOCKED COPY (DO NOT MODIFY)
 
 The copy for Entry Screen is locked:
@@ -136,20 +171,41 @@ The copy for Entry Screen is locked:
 HEADLINE:
 "Get things done.\nGet paid."
 
+ALTERNATIVE HEADLINES (max-tier options):
+"Turn time into money."
+"There's work nearby."
+"You're minutes from your first task."
+
 SUBHEADLINE:
 "Post tasks and find help in minutes.\nOr earn money completing tasks nearby."
 
-PRIMARY CTA:
-"Get Started"
+PRIMARY CTA (outcome-oriented):
+"Find work near me" (for hustler flow)
+"Post a task now" (for poster flow)
+"Start earning today" (generic)
+
+AVOID THESE CTAs:
+❌ "Get Started" (generic)
+❌ "Continue" (ambiguous)
+❌ "Next" (says nothing)
+❌ "Sign Up" (transactional)
 
 SECONDARY:
 "Already have an account? Sign in"
 ```
 
+**Copy Energy Requirements:**
+- Headlines must imply action or outcome
+- Headlines must create tension or urgency
+- Headlines must NOT describe the app
+- CTAs must state what happens next
+- CTAs must feel like entering, not starting
+
 If copy needs to change:
 → STOP
 → REQUEST updated copy from user
 → DO NOT invent alternative copy
+→ See `PER/DESIGN_TARGET.md` for copy energy requirements
 
 ---
 
@@ -240,4 +296,21 @@ If ANY checkbox is unchecked → NOT COMPLIANT
 ---
 
 **This document removes AI's authority over entry screen layout.**
-**Composition is locked. AI fills regions. That's all.**
+**Composition is locked. Narrative is locked. AI fills regions. That's all.**
+
+---
+
+## REFERENCE CLASS BINDING
+
+This document must be used in conjunction with:
+- `PER/DESIGN_TARGET.md` — Reference class and exclusion class
+- `PER/UI_ACCEPTANCE_PROTOCOL.md` — UAP-6 reference match gate
+
+**A screen that follows layout rules but fails reference match is INVALID.**
+
+The entry screen must:
+1. Pass all layout requirements (this document)
+2. Pass UAP-0 through UAP-6 (UI_ACCEPTANCE_PROTOCOL.md)
+3. Match reference class (DESIGN_TARGET.md)
+
+All three are required. No exceptions.

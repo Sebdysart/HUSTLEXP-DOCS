@@ -4,8 +4,8 @@
 STATUS: CONSTITUTIONAL
 SCOPE: ALL USER-FACING UI
 VIOLATION: BUILD FAILURE
-VERSION: 1.0.0
-EFFECTIVE: 2025-01-24
+VERSION: 2.0.0
+EFFECTIVE: 2026-01-24
 ```
 
 ---
@@ -38,7 +38,7 @@ A **User-Facing Screen** is any screen that:
 2. Is reachable via navigation (any navigation path)
 3. Is visible to a human without debug flags or compile-time flags
 
-**BINDING RULE:** Any user-facing screen MUST pass UAP-0 through UAP-4, regardless of current phase.
+**BINDING RULE:** Any user-facing screen MUST pass UAP-0 through UAP-6, regardless of current phase.
 
 ---
 
@@ -329,6 +329,66 @@ REQUIRED PATTERNS:
 
 ---
 
+### UAP-6: Reference Match Gate (CRITICAL)
+
+**Requirement:** All user-facing screens MUST plausibly belong in the same reference class as top 1% consumer apps.
+
+**Applies To:**
+- ALL user-facing screens
+- Especially entry, onboarding, and first-impression surfaces
+
+**Reference Class (Must Feel Like):**
+
+| Product | Why It's Reference |
+|---------|-------------------|
+| **Uber** | Urgency, real-world immediacy |
+| **Cash App** | Bold, confident, unapologetic about money |
+| **Duolingo** | Streak energy, momentum, "you're in a system" |
+| **Apple Fitness+** | Premium motion, earned achievement |
+| **Discord** | Community presence, living feed |
+
+**Exclusion Class (Must NOT Feel Like):**
+
+| Pattern | Why Excluded |
+|---------|-------------|
+| **Generic SaaS landing pages** | "Get started with our platform" energy |
+| **Crypto wallet splash screens** | Abstract orbs, vague promises |
+| **Meditation/wellness apps** | Calm, contemplative, passive |
+| **Dribbble showcase UI** | Pretty screenshot, empty in hand |
+| **Banking apps** | Sterile, trustworthy-but-boring |
+
+**The Benchmark Test:**
+
+```
+1. Could this screen appear in Uber/Cash App/Duolingo?
+   → If no: FAIL
+
+2. Would a designer at Apple/Stripe approve this?
+   → If uncertain: FAIL
+
+3. Does this feel like a $1B company's app?
+   → If no: FAIL
+
+4. Would you screenshot this to show someone?
+   → If no: FAIL
+```
+
+**All four must be YES to pass.**
+
+**Failure Examples:**
+- Correct colors + correct layout + generic energy = FAIL
+- Passes UAP-0 through UAP-5 but feels like "every other startup" = FAIL
+- "Safe" design that avoids mistakes but lacks distinction = FAIL
+
+**Pass Examples:**
+- Entry screen that creates urgency and anticipation
+- Feed that feels alive with real activity
+- CTA that implies momentum, not just "starting"
+
+**See:** `PER/DESIGN_TARGET.md` for full reference class specification.
+
+---
+
 ## Enforcement
 
 ### Gate Failure = Build Failure
@@ -352,6 +412,7 @@ Before marking ANY screen as complete:
 [ ] UAP-3: Matches spec layout/copy/colors exactly
 [ ] UAP-4: Not a bootstrap placeholder promoted to production
 [ ] UAP-5: Entry screens use FULL-CANVAS (not card-based)
+[ ] UAP-6: Belongs in top 1% reference class (see DESIGN_TARGET.md)
 
 If ANY checkbox is unchecked → SCREEN IS NOT COMPLETE
 ```
@@ -436,7 +497,8 @@ Animation: Logo fade-in 300ms
 | `ONBOARDING_FLOW.md` | Defines screen specs UAP-3 verifies against |
 | `SCREEN_REGISTRY.md` | Tracks UAP status per screen |
 | `.cursorrules` | References UAP as superior authority |
-| `CURSOR_INSTRUCTIONS.md` | Includes UAP checklist for implementers |
+| `PER/DESIGN_TARGET.md` | Defines reference class for UAP-6 |
+| `PER/DESIGN_AUTHORITY.md` | Defines locked entry screen narrative |
 
 ---
 
@@ -445,7 +507,8 @@ Animation: Logo fade-in 300ms
 | Version | Date | Change |
 |---------|------|--------|
 | 1.0.0 | 2025-01-24 | Initial constitutional authority |
+| 2.0.0 | 2026-01-24 | Added UAP-6 Reference Match gate + DESIGN_TARGET.md integration |
 
 ---
 
-**END OF UI_ACCEPTANCE_PROTOCOL.md v1.0.0**
+**END OF UI_ACCEPTANCE_PROTOCOL.md v2.0.0**

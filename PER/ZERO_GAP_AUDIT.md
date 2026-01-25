@@ -107,6 +107,27 @@ ECP makes this structurally impossible:
 - REFUSE = explicit blocker + unblock condition
 - No third option exists
 
+### ✅ GAP 9: Aesthetic Convergence (Generic Output)
+**Problem:** AI produces correct but generic "safe" UI
+**Solution:** `PER/DESIGN_TARGET.md` + `PER/UI_ACCEPTANCE_PROTOCOL.md` (UAP-6)
+**Status:** CLOSED
+
+AI could:
+- Pass all UAP gates (UAP-0 through UAP-5)
+- Follow all layout rules
+- Use correct colors and typography
+- ...and STILL produce "Dribbble-tier startup" generic output
+
+This is "compliance without excellence" — following rules without achieving quality.
+
+Design Target system makes this structurally impossible:
+- Reference class defined (Uber, Cash App, Duolingo)
+- Exclusion class defined (SaaS, crypto wallets, meditation apps)
+- UAP-6 requires reference match
+- Four-question benchmark test required
+- Narrative sequence locked (not just layout)
+- Copy energy requirements enforced
+
 ---
 
 ## ADDITIONAL HARDENING (BEYOND ORIGINAL AUDIT)
@@ -129,6 +150,31 @@ ECP makes this structurally impossible:
 - REFUSE = blocker + unblock condition
 - Conceptual-only responses INVALID
 - Closes "Answer-Only Compliance" gap
+
+### ✅ Design Target System
+**Document:** `PER/DESIGN_TARGET.md`
+
+- Reference class (Uber, Cash App, Duolingo)
+- Exclusion class (SaaS, crypto, meditation apps)
+- Four-question benchmark test
+- Copy energy requirements
+- Closes "Aesthetic Convergence" gap
+
+### ✅ UAP-6 Reference Match Gate
+**Document:** `PER/UI_ACCEPTANCE_PROTOCOL.md` (v2.0)
+
+- Must belong in top 1% reference class
+- Four-question test required
+- Generic "safe" output = FAIL
+- Closes gap between correctness and excellence
+
+### ✅ Entry Screen Narrative Lock
+**Document:** `PER/DESIGN_AUTHORITY.md` (v2.0)
+
+- Emotional sequence locked (Arrival → Identity → Promise → Action)
+- Copy energy requirements defined
+- Outcome-oriented CTAs required
+- Generic CTAs forbidden
 
 ### ✅ Self-Check System
 **Document:** `PER/SELF_CHECK.md`
@@ -171,9 +217,11 @@ ECP makes this structurally impossible:
 | `OMEGA_PROTOCOL.md` | Nuclear fallback | ✅ |
 | `CRASH_PROTOCOL.md` | Emergency response | ✅ |
 | `EXECUTION_COMMITMENT_PROTOCOL.md` | ECP (no conceptual-only) | ✅ |
+| `DESIGN_TARGET.md` | Reference class + exclusions | ✅ |
+| `ENTRY_SCREEN_BRIEF.md` | Max-tier entry screen spec | ✅ |
 | `PER-0 through PER-6` | Gate documents | ✅ |
 
-**Total: 27 PER documents**
+**Total: 30 PER documents**
 
 ---
 
@@ -200,6 +248,9 @@ ECP makes this structurally impossible:
 | Answer-only compliance | EXECUTION_COMMITMENT_PROTOCOL.md |
 | Conceptual output | EXECUTION_COMMITMENT_PROTOCOL.md |
 | Helpful cowardice | EXECUTION_COMMITMENT_PROTOCOL.md |
+| Generic "safe" UI | DESIGN_TARGET.md, UAP-6 |
+| Aesthetic convergence | Reference class + exclusion class |
+| Weak copy/CTA | DESIGN_AUTHORITY.md narrative lock |
 
 ---
 
@@ -261,9 +312,9 @@ HUSTLEXP_INVOCATION()
 
 This audit certifies:
 
-1. **All 8 gaps CLOSED** (including GAP 8: Answer-Only Compliance)
-2. **4 additional hardening layers added** (HIC, Self-Check, .cursorrules, ECP)
-3. **27 PER documents in complete set**
+1. **All 9 gaps CLOSED** (including GAP 9: Aesthetic Convergence)
+2. **7 additional hardening layers added** (HIC, Self-Check, .cursorrules, ECP, Design Target, UAP-6, Narrative Lock)
+3. **30 PER documents in complete set**
 4. **All failure modes have prevention documents**
 5. **Control chain is unbroken**
 6. **HIC v1.1 syscall prevents execution without alignment**
@@ -292,6 +343,9 @@ With PER v2.2 + HIC v1.1 + ECP, the system guarantees:
 | No low-tier output | SELF_CHECK + UAP gates |
 | **No conceptual-only output** | **ECP (COMMIT or REFUSE)** |
 | **No helpful cowardice** | **ECP enforcement in STEP 5** |
+| **No generic "safe" UI** | **DESIGN_TARGET.md + UAP-6** |
+| **No aesthetic convergence** | **Reference class + exclusion class** |
+| **No weak copy/CTA** | **Narrative lock + copy energy requirements** |
 
 ---
 
