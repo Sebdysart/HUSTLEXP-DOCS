@@ -12,10 +12,12 @@ public enum HustleXPVersion {
     public static let source = "STITCH HTML Specifications"
 
     /// Total screens implemented
-    public static let screenCount = 15
+    public static let screenCount = 16
 
     /// Screens implemented
     public static let screens: [String] = [
+        // Onboarding
+        "OnboardingCarouselScreen",
         // Core Screens
         "InstantInterruptCard",
         "HustlerHomeScreen",
@@ -48,6 +50,17 @@ public struct HustleXPCatalog: View {
     public var body: some View {
         NavigationStack {
             List {
+                #if os(iOS)
+                Section("Onboarding") {
+                    NavigationLink("Onboarding Carousel") {
+                        OnboardingCarouselScreen(
+                            onGetStarted: {},
+                            onSignIn: {}
+                        )
+                    }
+                }
+                #endif
+
                 Section("Core Screens") {
                     NavigationLink("Instant Interrupt Card") {
                         InstantInterruptCard(
