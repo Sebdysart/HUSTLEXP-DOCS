@@ -4,7 +4,7 @@
 STATUS: CONSTITUTIONAL
 SCOPE: ALL USER-FACING UI
 VIOLATION: BUILD FAILURE
-VERSION: 2.0.0
+VERSION: 2.1.0
 EFFECTIVE: 2026-01-24
 ```
 
@@ -38,7 +38,7 @@ A **User-Facing Screen** is any screen that:
 2. Is reachable via navigation (any navigation path)
 3. Is visible to a human without debug flags or compile-time flags
 
-**BINDING RULE:** Any user-facing screen MUST pass UAP-0 through UAP-6, regardless of current phase.
+**BINDING RULE:** Any user-facing screen MUST pass UAP-0 through UAP-7, regardless of current phase.
 
 ---
 
@@ -389,6 +389,58 @@ REQUIRED PATTERNS:
 
 ---
 
+### UAP-7: Axis Alignment Gate (CRITICAL)
+
+**Requirement:** All user-facing screens MUST favor the dominant axis in at least 3 visible ways.
+
+**The Dominant Axis:**
+
+| Priority | Over |
+|----------|------|
+| **MOMENTUM** | calm |
+| **URGENCY** | comfort |
+| **ACTION** | reassurance |
+| **DIRECTION** | balance |
+| **CONCRETE** | abstract |
+
+**The Tilt Test:**
+
+This product should feel closer to:
+
+| Closer To | Not This |
+|-----------|----------|
+| "Something is happening" | "Everything is okay" |
+| "Act now" | "Take your time" |
+| "Money is moving" | "Your finances are secure" |
+| "People are nearby" | "Welcome to our community" |
+
+**Axis Verification Checklist:**
+
+```
+[ ] Does the screen favor MOMENTUM over calm?
+[ ] Does the screen create URGENCY (implied or explicit)?
+[ ] Does the screen drive ACTION (not contemplation)?
+[ ] Does the screen have clear DIRECTION (not balance)?
+[ ] Is the promise CONCRETE (not abstract)?
+
+If fewer than 3 boxes checked → FAIL UAP-7
+If 3+ boxes checked → PASS UAP-7
+```
+
+**Failure Examples (Pass UAP-6, Fail UAP-7):**
+- Reference-class averaging: Blends Uber + Cash App + Duolingo into neutral median
+- Polished passivity: Beautiful, calm, reassuring, forgettable
+- Premium emptiness: Lots of space, minimal elements, no urgency
+
+**Pass Examples:**
+- Entry screen with directional energy flowing toward CTA
+- Headline that declares outcome, not describes function
+- Motion that implies "system is running"
+
+**See:** `PER/DOMINANT_AXIS.md` for full axis specification.
+
+---
+
 ## Enforcement
 
 ### Gate Failure = Build Failure
@@ -413,6 +465,7 @@ Before marking ANY screen as complete:
 [ ] UAP-4: Not a bootstrap placeholder promoted to production
 [ ] UAP-5: Entry screens use FULL-CANVAS (not card-based)
 [ ] UAP-6: Belongs in top 1% reference class (see DESIGN_TARGET.md)
+[ ] UAP-7: Favors dominant axis in 3+ visible ways (see DOMINANT_AXIS.md)
 
 If ANY checkbox is unchecked → SCREEN IS NOT COMPLETE
 ```
@@ -498,6 +551,7 @@ Animation: Logo fade-in 300ms
 | `SCREEN_REGISTRY.md` | Tracks UAP status per screen |
 | `.cursorrules` | References UAP as superior authority |
 | `PER/DESIGN_TARGET.md` | Defines reference class for UAP-6 |
+| `PER/DOMINANT_AXIS.md` | Defines tilt direction for UAP-7 |
 | `PER/DESIGN_AUTHORITY.md` | Defines locked entry screen narrative |
 
 ---
@@ -508,7 +562,8 @@ Animation: Logo fade-in 300ms
 |---------|------|--------|
 | 1.0.0 | 2025-01-24 | Initial constitutional authority |
 | 2.0.0 | 2026-01-24 | Added UAP-6 Reference Match gate + DESIGN_TARGET.md integration |
+| 2.1.0 | 2026-01-24 | Added UAP-7 Axis Alignment gate + DOMINANT_AXIS.md integration |
 
 ---
 
-**END OF UI_ACCEPTANCE_PROTOCOL.md v2.0.0**
+**END OF UI_ACCEPTANCE_PROTOCOL.md v2.1.0**

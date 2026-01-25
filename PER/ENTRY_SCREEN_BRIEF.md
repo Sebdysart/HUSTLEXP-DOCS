@@ -3,6 +3,7 @@
 **STATUS: CONSTITUTIONAL — IMPLEMENTATION SPEC**
 **PURPOSE: Unambiguous target for max-tier entry screen**
 **RULE: This is what the entry screen MUST look like and feel like**
+**VERSION: 2.0 (Axis Enforcement)**
 
 ---
 
@@ -34,7 +35,41 @@ We must NEVER communicate:
 ❌ Contemplation
 ❌ Patience
 ❌ Generic startup energy
+❌ Calm
+❌ Balance
+❌ Reassurance
 ```
+
+---
+
+## DOMINANT AXIS (NON-NEGOTIABLE)
+
+When any design decision requires a tradeoff:
+
+```
+ALWAYS CHOOSE:
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  MOMENTUM  ────────────────────────────────────────►  (not calm)│
+│  URGENCY   ────────────────────────────────────────►  (not comfort)│
+│  ACTION    ────────────────────────────────────────►  (not reassurance)│
+│  DIRECTION ────────────────────────────────────────►  (not balance)│
+│  CONCRETE  ────────────────────────────────────────►  (not abstract)│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**The Tilt Test:**
+
+| Screen Must Feel Like | NOT Like |
+|-----------------------|----------|
+| "Something is happening" | "Everything is okay" |
+| "Act now" | "Take your time" |
+| "Money is moving" | "Your finances are secure" |
+| "People are nearby" | "Welcome to our community" |
+
+**If the screen feels calm, balanced, or reassuring — it has FAILED.**
+**Even if it's beautiful. Even if it passes everything else.**
 
 ---
 
@@ -253,11 +288,19 @@ MOTION:
 [ ] Background has subtle life
 [ ] Button has feedback
 
-FEEL:
+FEEL (UAP-6):
 [ ] Could this be Uber/Cash App? → YES required
 [ ] Would Apple designer approve? → YES required
 [ ] Would I screenshot this? → YES required
 [ ] Does it feel like $1B app? → YES required
+
+AXIS ALIGNMENT (UAP-7):
+[ ] Does the screen favor MOMENTUM over calm?
+[ ] Does the screen create URGENCY (implied or explicit)?
+[ ] Does the screen drive ACTION (not contemplation)?
+[ ] Does the screen have clear DIRECTION (not balance)?
+[ ] Is the promise CONCRETE (not abstract)?
+→ At least 3 must be checked to pass
 ```
 
 ---
@@ -298,3 +341,28 @@ Even if every rule is followed.
 
 **This is the target. This is what max-tier looks like.**
 **No more ambiguity. Build this.**
+
+---
+
+## GATE REQUIREMENTS
+
+This entry screen must pass:
+
+| Gate | Requirement |
+|------|-------------|
+| UAP-0 | Answers WHO/WHAT/WHY in 3 seconds |
+| UAP-1 | Has action + context + brand signal |
+| UAP-2 | Has motion AND depth |
+| UAP-3 | Matches spec exactly |
+| UAP-4 | Not a bootstrap placeholder |
+| UAP-5 | Full-canvas composition |
+| UAP-6 | Belongs in top 1% reference class |
+| UAP-7 | Favors dominant axis in 3+ ways |
+
+**All 8 gates must pass. No exceptions.**
+
+See:
+- `PER/UI_ACCEPTANCE_PROTOCOL.md` — Gate definitions
+- `PER/DESIGN_TARGET.md` — Reference class
+- `PER/DOMINANT_AXIS.md` — Tilt direction
+- `PER/DESIGN_AUTHORITY.md` — Layout lock

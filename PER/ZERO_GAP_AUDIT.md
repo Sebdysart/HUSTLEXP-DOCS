@@ -128,6 +128,29 @@ Design Target system makes this structurally impossible:
 - Narrative sequence locked (not just layout)
 - Copy energy requirements enforced
 
+### ✅ GAP 10: Reference-Class Averaging
+**Problem:** AI blends reference class into forgettable neutral median
+**Solution:** `PER/DOMINANT_AXIS.md` + `PER/UI_ACCEPTANCE_PROTOCOL.md` (UAP-7)
+**Status:** CLOSED
+
+AI could:
+- Pass UAP-6 (belong in reference class)
+- Blend Uber + Cash App + Duolingo into smooth average
+- Produce something that's "expensive-looking"
+- ...and STILL be forgettable
+
+This is "averaging into invisibility" — elite reference, median execution.
+
+Dominant Axis system makes this structurally impossible:
+- MOMENTUM over calm (enforced)
+- URGENCY over comfort (enforced)
+- ACTION over reassurance (enforced)
+- DIRECTION over balance (enforced)
+- CONCRETE over abstract (enforced)
+- UAP-7 requires 3+ axis alignment indicators
+- Tilt test catches neutral output
+- Calm/balanced/reassuring = FAIL even if beautiful
+
 ---
 
 ## ADDITIONAL HARDENING (BEYOND ORIGINAL AUDIT)
@@ -176,6 +199,22 @@ Design Target system makes this structurally impossible:
 - Outcome-oriented CTAs required
 - Generic CTAs forbidden
 
+### ✅ Dominant Axis System
+**Document:** `PER/DOMINANT_AXIS.md`
+
+- Defines tilt direction (momentum, urgency, action, direction, concrete)
+- Prevents reference-class averaging
+- Tilt test catches neutral output
+- Closes "forgettable excellence" gap
+
+### ✅ UAP-7 Axis Alignment Gate
+**Document:** `PER/UI_ACCEPTANCE_PROTOCOL.md` (v2.1)
+
+- Must favor dominant axis in 3+ visible ways
+- Tilt test required
+- Calm/balanced/reassuring = FAIL
+- Closes gap between reference match and memorability
+
 ### ✅ Self-Check System
 **Document:** `PER/SELF_CHECK.md`
 
@@ -218,10 +257,11 @@ Design Target system makes this structurally impossible:
 | `CRASH_PROTOCOL.md` | Emergency response | ✅ |
 | `EXECUTION_COMMITMENT_PROTOCOL.md` | ECP (no conceptual-only) | ✅ |
 | `DESIGN_TARGET.md` | Reference class + exclusions | ✅ |
+| `DOMINANT_AXIS.md` | Tilt direction + axis test | ✅ |
 | `ENTRY_SCREEN_BRIEF.md` | Max-tier entry screen spec | ✅ |
 | `PER-0 through PER-6` | Gate documents | ✅ |
 
-**Total: 30 PER documents**
+**Total: 31 PER documents**
 
 ---
 
@@ -251,6 +291,9 @@ Design Target system makes this structurally impossible:
 | Generic "safe" UI | DESIGN_TARGET.md, UAP-6 |
 | Aesthetic convergence | Reference class + exclusion class |
 | Weak copy/CTA | DESIGN_AUTHORITY.md narrative lock |
+| Reference-class averaging | DOMINANT_AXIS.md, UAP-7 |
+| Forgettable excellence | Tilt test + axis alignment |
+| Calm/balanced output | Momentum over calm requirement |
 
 ---
 
@@ -312,9 +355,9 @@ HUSTLEXP_INVOCATION()
 
 This audit certifies:
 
-1. **All 9 gaps CLOSED** (including GAP 9: Aesthetic Convergence)
-2. **7 additional hardening layers added** (HIC, Self-Check, .cursorrules, ECP, Design Target, UAP-6, Narrative Lock)
-3. **30 PER documents in complete set**
+1. **All 10 gaps CLOSED** (including GAP 10: Reference-Class Averaging)
+2. **9 additional hardening layers added** (HIC, Self-Check, .cursorrules, ECP, Design Target, UAP-6, Narrative Lock, Dominant Axis, UAP-7)
+3. **31 PER documents in complete set**
 4. **All failure modes have prevention documents**
 5. **Control chain is unbroken**
 6. **HIC v1.1 syscall prevents execution without alignment**
@@ -346,6 +389,9 @@ With PER v2.2 + HIC v1.1 + ECP, the system guarantees:
 | **No generic "safe" UI** | **DESIGN_TARGET.md + UAP-6** |
 | **No aesthetic convergence** | **Reference class + exclusion class** |
 | **No weak copy/CTA** | **Narrative lock + copy energy requirements** |
+| **No reference-class averaging** | **DOMINANT_AXIS.md + UAP-7** |
+| **No forgettable excellence** | **Tilt test + axis alignment** |
+| **No calm/balanced output** | **Momentum over calm enforced** |
 
 ---
 
