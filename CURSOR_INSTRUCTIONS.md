@@ -683,4 +683,84 @@ See: `PER/UI_ACCEPTANCE_PROTOCOL.md` for full gate definitions and examples.
 
 ---
 
+## PUZZLE MODE (UI Assembly System)
+
+**Authority:** `PER/PUZZLE_MODE.md`
+**Location:** `ui-puzzle/`
+
+### The Core Principle
+
+> **Cursor is a puzzle assembler, not a designer.**
+
+HustleXP UI is assembled from pre-validated pieces, not designed from scratch.
+
+### The 5-Layer System
+
+```
+LAYER 4: SCREENS    → Assembly only, no invention
+LAYER 3: SECTIONS   → Narrative fragments, one job each
+LAYER 2: MOLECULES  → Semantic combinations, no screen logic
+LAYER 1: ATOMS      → Visual primitives, single responsibility
+LAYER 0: TOKENS     → Zero-decision primitives, READ-ONLY
+```
+
+### Layer Permissions
+
+| Layer | Cursor CAN | Cursor CANNOT |
+|-------|------------|---------------|
+| **Token** | Read values | Create, modify, delete |
+| **Atom** | Implement from spec | Invent new concepts |
+| **Molecule** | Combine approved atoms | Add unapproved atoms |
+| **Section** | Arrange molecules | Add new molecules |
+| **Screen** | Assemble sections | Invent ANYTHING |
+
+### Invocation Pattern
+
+Every UI task MUST specify layer and target:
+
+```
+HUSTLEXP_INVOCATION(layer: .atom, target: "GlowOrb", scope: .implement)
+HUSTLEXP_INVOCATION(layer: .molecule, target: "BrandCluster", scope: .refine)
+HUSTLEXP_INVOCATION(layer: .screen, target: "EntryScreen", scope: .assemble)
+```
+
+### Critical Rules
+
+1. **Cursor is FORBIDDEN from introducing new visual concepts at the Screen layer**
+2. **All novelty must occur at Atom or Molecule layer and be stress-tested first**
+3. **Tokens are READ-ONLY — Cursor never creates or modifies tokens**
+4. **Components must pass stress tests before use at higher layers**
+5. **Locked components (in COMPLETION_LOCK.md) cannot be modified**
+
+### When Building UI
+
+1. Check if required atoms exist in `ui-puzzle/atoms/`
+2. Check if required molecules exist in `ui-puzzle/molecules/`
+3. Check if required sections exist in `ui-puzzle/sections/`
+4. Assemble screen from existing pieces ONLY
+5. If pieces don't exist → build at appropriate layer first
+
+### Folder Reference
+
+```
+ui-puzzle/
+├── tokens/     # colors.swift, typography.swift, spacing.swift, motion.swift, shadows.swift
+├── atoms/      # GlowOrb, AnimatedMeshField, PrimaryCTA, BrandMark, etc.
+├── molecules/  # MarketField, BrandCluster, CTAStack
+├── sections/   # EntryHeroSection, EntryActionSection
+└── screens/    # PuzzleEntryScreen
+```
+
+### Violation Response
+
+If Cursor violates layer rules:
+- **Scope violation** → REFUSE and state which layer was exceeded
+- **Invention at screen layer** → REFUSE with "Screen layer is assembly-only"
+- **Unapproved atom** → REFUSE with "Atom X is not approved"
+- **Hardcoded value** → REFUSE with "Value must trace to token"
+
+See `PER/PUZZLE_MODE.md` for complete specification.
+
+---
+
 **END OF CURSOR FRONTEND INSTRUCTIONS**
