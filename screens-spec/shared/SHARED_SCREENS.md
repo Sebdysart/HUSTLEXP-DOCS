@@ -1,6 +1,6 @@
 # Shared Screens Specification
 
-**Location:** `hustlexp-app/screens/shared/`  
+**Location:** `src/screens/shared/`  
 **Count:** 4 screens  
 **Status:** ✅ All functional
 

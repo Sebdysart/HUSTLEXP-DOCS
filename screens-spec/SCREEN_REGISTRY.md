@@ -44,7 +44,7 @@ All screens now track UAP compliance status. A screen is NOT complete unless:
 
 ## §1. Auth Screens (3)
 
-Location: `hustlexp-app/screens/auth/`
+Location: `src/screens/auth/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
@@ -65,7 +65,7 @@ App Launch → LoginScreen
 
 ## §2. Hustler Screens (9)
 
-Location: `hustlexp-app/screens/hustler/`
+Location: `src/screens/hustler/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
@@ -93,7 +93,7 @@ HustlerHomeScreen → TaskFeedScreen → TaskDetailScreen
 
 ## §3. Poster Screens (4)
 
-Location: `hustlexp-app/screens/poster/`
+Location: `src/screens/poster/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
@@ -115,7 +115,7 @@ PosterHomeScreen → TaskCreationScreen → (wait for acceptance)
 
 ## §4. Onboarding Screens (12)
 
-Location: `hustlexp-app/screens/onboarding/`
+Location: `src/screens/onboarding/`
 
 ### §4.1 Core Calibration (4)
 
@@ -128,7 +128,7 @@ Location: `hustlexp-app/screens/onboarding/`
 
 ### §4.2 Capability Screens (8)
 
-Location: `hustlexp-app/screens/onboarding/capability/`
+Location: `src/screens/onboarding/capability/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
@@ -154,7 +154,7 @@ SignupScreen → FramingScreen → CalibrationScreen → RoleConfirmationScreen
 
 ## §5. Settings Screens (3)
 
-Location: `hustlexp-app/screens/settings/`
+Location: `src/screens/settings/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
@@ -167,7 +167,7 @@ Location: `hustlexp-app/screens/settings/`
 
 ## §6. Shared Screens (4)
 
-Location: `hustlexp-app/screens/shared/`
+Location: `src/screens/shared/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
@@ -180,7 +180,7 @@ Location: `hustlexp-app/screens/shared/`
 
 ## §7. Edge Screens (3)
 
-Location: `hustlexp-app/screens/edge/`
+Location: `src/screens/edge/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|

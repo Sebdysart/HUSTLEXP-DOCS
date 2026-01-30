@@ -1,6 +1,6 @@
 # Hustler Screens Specification
 
-**Location:** `hustlexp-app/screens/hustler/`  
+**Location:** `src/screens/hustler/`  
 **Count:** 9 screens  
 **Status:** ✅ All functional
 

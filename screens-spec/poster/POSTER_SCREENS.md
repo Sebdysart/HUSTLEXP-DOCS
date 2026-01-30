@@ -1,6 +1,6 @@
 # Poster Screens Specification
 
-**Location:** `hustlexp-app/screens/poster/`  
+**Location:** `src/screens/poster/`  
 **Count:** 4 screens  
 **Status:** ✅ All functional
 

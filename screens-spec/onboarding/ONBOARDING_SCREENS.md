@@ -1,6 +1,6 @@
 # Onboarding Screens Specification
 
-**Location:** `hustlexp-app/screens/onboarding/`
+**Location:** `src/screens/onboarding/`
 **Count:** 12 screens
 **Status:** ✅ All screens have stitch-prompts
 
@@ -85,7 +85,7 @@ Confirm and lock initial preferences.
 
 ## Capability Screens (8)
 
-**Location:** `hustlexp-app/screens/onboarding/capability/`
+**Location:** `src/screens/onboarding/capability/`
 
 ### O5: CapabilityIntroScreen
 

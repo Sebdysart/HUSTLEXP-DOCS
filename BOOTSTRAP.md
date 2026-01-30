@@ -88,7 +88,7 @@ const TEXT_MUTED = '#8E8E93';
 
 > **THIS IS THE CORRECT PATTERN.** Copy this, not minimal card layouts.
 
-**File:** `hustlexp-app/screens/EntryScreen.tsx`
+**File:** `HUSTLEXPFINAL1/screens/EntryScreen.tsx`
 
 ```tsx
 import React, { useEffect, useRef } from 'react';
@@ -369,7 +369,7 @@ export function _InternalBootstrapVerification() {
 
 ### Step 1: Clean Build
 ```bash
-cd hustlexp-app
+cd HUSTLEXPFINAL1
 rm -rf node_modules
 rm -rf ios/Pods
 rm -rf ios/build
@@ -422,7 +422,7 @@ open ios/HustleXP.xcworkspace
 
 ## APP.TSX FOR BOOTSTRAP
 
-**File:** `hustlexp-app/App.tsx`
+**File:** `HUSTLEXPFINAL1/App.tsx`
 
 ```tsx
 import React from 'react';

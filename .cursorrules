@@ -78,8 +78,8 @@
 # └─────────────────────────────────────────────────────────────┘
 #
 # RULES:
-# - Atoms are LOCKED — use reference/components/atoms/
-# - Molecules are LOCKED — use reference/components/molecules/
+# - Atoms are LOCKED — use src/components/atoms/
+# - Molecules are LOCKED — use src/components/molecules/
 # - Screens ASSEMBLE — they do NOT invent new visuals
 # - If you need something new → ask first, create at lower layer
 #
@@ -139,8 +139,8 @@
 
 # ALLOWED ACTIONS:
 # ✅ Implement screens listed in screens-spec/SCREEN_REGISTRY.md
-# ✅ Use atoms from reference/components/atoms/
-# ✅ Use molecules from reference/components/molecules/
+# ✅ Use atoms from src/components/atoms/
+# ✅ Use molecules from src/components/molecules/
 # ✅ Use constants from reference/constants/
 # ✅ Create TypeScript interfaces for props
 # ✅ Assemble screens from existing pieces

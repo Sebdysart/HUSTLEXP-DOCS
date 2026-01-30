@@ -1,6 +1,6 @@
 # Edge Screens Specification
 
-**Location:** `hustlexp-app/screens/edge/`  
+**Location:** `src/screens/edge/`  
 **Count:** 3 screens  
 **Status:** ✅ All functional
 

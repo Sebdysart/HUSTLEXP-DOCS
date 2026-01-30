@@ -33,7 +33,7 @@ HustleXP UI is built as a **PUZZLE**, not as isolated screens.
 ```
 Definition: Single-purpose visual elements
 Examples: Button, Text, Input, Icon, Avatar, Badge
-Location: reference/components/atoms/
+Location: src/components/atoms/
 
 Rules:
 - ✅ Locked once approved
@@ -46,7 +46,7 @@ Rules:
 ```
 Definition: Combinations of atoms with specific purpose
 Examples: TaskCard, UserHeader, PriceDisplay, RatingStars, ProgressBar
-Location: reference/components/molecules/
+Location: src/components/molecules/
 
 Rules:
 - ✅ Locked once approved

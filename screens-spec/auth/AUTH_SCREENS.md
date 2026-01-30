@@ -1,6 +1,6 @@
 # Auth Screens Specification
 
-**Location:** `hustlexp-app/screens/auth/`  
+**Location:** `src/screens/auth/`  
 **Count:** 3 screens  
 **Status:** ✅ All functional
 

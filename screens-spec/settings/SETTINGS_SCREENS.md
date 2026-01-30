@@ -1,6 +1,6 @@
 # Settings Screens Specification
 
-**Location:** `hustlexp-app/screens/settings/`  
+**Location:** `src/screens/settings/`  
 **Count:** 3 screens  
 **Status:** ✅ All functional
 
