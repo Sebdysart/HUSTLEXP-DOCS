@@ -193,3 +193,41 @@ When locked, this screen **must not change** without backend changes.
 - ❌ Cannot request manual override (no appeal language)
 
 ---
+
+## Props Interface
+
+```typescript
+interface TrustTierLockedProps {
+  // Viewer role
+  viewerRole: 'POSTER' | 'WORKER';
+
+  // Locked tier info
+  lockedTier: {
+    name: string;                      // e.g., "In-Home Tasks"
+    description: string;               // e.g., "Required for tasks involving private spaces"
+  };
+
+  // Requirements checklist (read-only)
+  requirements: {
+    id: string;
+    label: string;                     // e.g., "25 completed tasks"
+    currentValue: string;              // e.g., "18 completed"
+    isMet: boolean;
+  }[];
+
+  // What this affects (factual list)
+  affectedFeatures: string[];          // e.g., ["In-home tasks", "Instant high-priority matching"]
+
+  // Callbacks
+  onContinue: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Requirements from backend trust tier configuration
+- Current values from user profile
+- Read-only display, no progress animations
+- Single "Continue" action, no bypass

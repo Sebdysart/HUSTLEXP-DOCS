@@ -1,0 +1,26 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background - platinum -->
+  <circle cx="40" cy="40" r="38" fill="url(#platinum-gradient)" stroke="#6B7280" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="platinum-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F9FAFB"/>
+      <stop offset="50%" stop-color="#E5E7EB"/>
+      <stop offset="100%" stop-color="#9CA3AF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Crown flame -->
+  <path d="M40 8 C50 22 65 28 65 48 C65 62 54 74 40 74 C26 74 15 62 15 48 C15 28 30 22 40 8 Z" fill="#FEF3C7"/>
+  <path d="M40 20 C48 32 58 38 58 52 C58 62 50 70 40 70 C30 70 22 62 22 52 C22 38 32 32 40 20 Z" fill="#FCD34D"/>
+  <path d="M40 32 C45 40 50 44 50 52 C50 58 46 62 40 62 C34 62 30 58 30 52 C30 44 35 40 40 32 Z" fill="#F59E0B"/>
+
+  <!-- Number -->
+  <text x="40" y="56" text-anchor="middle" fill="#1F2937" font-family="system-ui" font-size="14" font-weight="bold">100</text>
+
+  <!-- Sparkles -->
+  <circle cx="18" cy="25" r="3" fill="#FCD34D"/>
+  <circle cx="62" cy="25" r="3" fill="#FCD34D"/>
+  <circle cx="12" cy="45" r="2" fill="#FCD34D"/>
+  <circle cx="68" cy="45" r="2" fill="#FCD34D"/>
+</svg>

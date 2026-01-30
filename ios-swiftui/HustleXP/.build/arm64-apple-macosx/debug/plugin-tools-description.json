@@ -1,0 +1,490 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.HustleXP-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/sources",
+      "importPath" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleColors.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleComponents.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleTypography.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/HustleXP.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/DisputeEntryScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/EligibilityMismatchScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/HustlerHomeScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/InstantInterruptCard.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/NoTasksAvailableScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/PosterTaskCompletionScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionActionRequiredScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionApprovedScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionBlockedScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskInProgressScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustChangeExplanationScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLadderScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLockedScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/XPBreakdownScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "HustleXP",
+      "moduleOutputPath" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/Modules/HustleXP.swiftmodule",
+      "objects" : [
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleColors.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleComponents.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleTypography.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleXP.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/DisputeEntryScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/EligibilityMismatchScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustlerHomeScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/InstantInterruptCard.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/NoTasksAvailableScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/PosterTaskCompletionScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskCompletionActionRequiredScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskCompletionApprovedScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskCompletionBlockedScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskInProgressScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TrustChangeExplanationScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TrustTierLadderScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TrustTierLockedScreen.swift.o",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/XPBreakdownScreen.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j8",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/include/HustleXP-Swift.h",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "hustlexp"
+      ],
+      "outputFileMapPath" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleColors.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleComponents.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleTypography.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustleXP.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/DisputeEntryScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/EligibilityMismatchScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/HustlerHomeScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/InstantInterruptCard.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/NoTasksAvailableScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/PosterTaskCompletionScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskCompletionActionRequiredScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskCompletionApprovedScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskCompletionBlockedScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TaskInProgressScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TrustChangeExplanationScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TrustTierLadderScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/TrustTierLockedScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/XPBreakdownScreen.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/Modules/HustleXP.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleColors.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleComponents.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleTypography.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/HustleXP.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/DisputeEntryScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/EligibilityMismatchScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/HustlerHomeScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/InstantInterruptCard.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/NoTasksAvailableScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/PosterTaskCompletionScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionActionRequiredScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionApprovedScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionBlockedScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskInProgressScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustChangeExplanationScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLadderScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLockedScreen.swift",
+        "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/XPBreakdownScreen.swift"
+      ],
+      "tempsPath" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "HustleXP" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "HustleXP",
+      "-package-name",
+      "hustlexp",
+      "-c",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleColors.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleComponents.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleTypography.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/HustleXP.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/DisputeEntryScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/EligibilityMismatchScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/HustlerHomeScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/InstantInterruptCard.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/NoTasksAvailableScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/PosterTaskCompletionScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionActionRequiredScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionApprovedScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionBlockedScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskInProgressScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustChangeExplanationScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLadderScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLockedScreen.swift",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/XPBreakdownScreen.swift",
+      "-I",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j8",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/include/HustleXP-Swift.h",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "hustlexp",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "HustleXP" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleColors.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleComponents.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/DesignSystem/HustleTypography.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/HustleXP.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/DisputeEntryScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/EligibilityMismatchScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/HustlerHomeScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/InstantInterruptCard.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/NoTasksAvailableScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/PosterTaskCompletionScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionActionRequiredScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionApprovedScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskCompletionBlockedScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TaskInProgressScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustChangeExplanationScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLadderScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/TrustTierLockedScreen.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/Sources/HustleXP/Screens/XPBreakdownScreen.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/HustleXP.build/sources"
+    },
+    "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/sebastiandysart/Desktop/HUSTLEXP-DOCS/ios-swiftui/HustleXP/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}

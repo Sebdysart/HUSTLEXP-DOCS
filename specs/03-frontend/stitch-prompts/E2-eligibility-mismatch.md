@@ -118,7 +118,7 @@ Content Layout (Top to Bottom):
    - Title: "Current Settings" (size: 12px, uppercase, tracking: 1.5px, color: #8E8E93, weight: 700)
    - Chips (horizontal flex, gap: 8px, margin-top: 12px):
      - Location: "📍 UW Campus + 2mi" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
-     - Trust Tier: "🛡️ Tier B — Trusted" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
+     - Trust Tier: "🛡️ VERIFIED (Tier 2)" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
      - Instant Mode: "⚡ Instant Mode: ON" or "⚡ Instant Mode: OFF" (background: rgba(66, 188, 240, 0.2) if ON, rgba(255, 255, 255, 0.1) if OFF, padding: 6px 12px, rounded: 8px, size: 12px, color: #42bcf0 if ON, color: white if OFF)
    - All chips are read-only (no interaction, no toggles, no edits, no CTAs)
 
@@ -244,3 +244,50 @@ Once E2 is locked, the **only remaining high-risk edge state** is:
 Short-lived, emotionally charged, must feel **final but fair**.
 
 ---
+
+## Props Interface
+
+```typescript
+interface EligibilityMismatchProps {
+  // System status confirmation
+  systemStatus: {
+    accountActive: boolean;
+    matchingNormal: boolean;
+    tasksExist: boolean;              // true (tasks available, just not eligible)
+    noPenalties: boolean;
+  };
+
+  // Eligibility breakdown (collapsed by default)
+  eligibilityBlockers: {
+    type: 'TRUST_TIER' | 'TASK_TYPE_CLEARANCE' | 'LOCATION_RADIUS' | 'TIMING_WINDOW' | 'LIVE_MODE_CONSTRAINTS';
+    description: string;               // Backend-provided explanation
+    isExpanded?: boolean;
+  }[];
+
+  // What this does NOT mean (explicit denial)
+  denials: string[];                   // e.g., ["You are not restricted", "Your trust score has not changed"]
+
+  // Current settings (read-only)
+  currentSettings: {
+    location: string;
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: string;
+    };
+    liveModeEnabled: boolean;
+  };
+
+  // Callbacks
+  onReturnToDashboard: () => void;
+  onToggleBreakdown?: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Only shown when: tasks exist, user eligible for none, no penalties
+- Eligibility blockers map 1:1 to backend gates
+- Explicit denials prevent support escalation
+- All settings read-only, no actions except return

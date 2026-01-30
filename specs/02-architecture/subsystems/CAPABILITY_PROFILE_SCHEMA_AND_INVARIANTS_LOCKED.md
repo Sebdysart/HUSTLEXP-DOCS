@@ -33,7 +33,7 @@ interface CapabilityProfile {
   verified_trades: VerifiedTrade[]; // Empty array if no verifications
 
   // Trust & Risk (Derived from Trust Service)
-  trust_tier: TrustTier; // 'A' | 'B' | 'C' | 'D'
+  trust_tier: TrustTier; // 1 | 2 | 3 | 4 (ROOKIE/VERIFIED/TRUSTED/ELITE)
   trust_tier_updated_at: string; // ISO 8601, updated when trust tier changes
   risk_clearance: RiskLevel[]; // Derived from trust_tier (immutable mapping)
 
@@ -63,7 +63,7 @@ interface VerifiedTrade {
   verification_id: string; // Foreign key to verifications.id
 }
 
-type TrustTier = 'A' | 'B' | 'C' | 'D';
+type TrustTier = 1 | 2 | 3 | 4;  // 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
 type RiskLevel = 'low' | 'medium' | 'high';
 type VerificationStatus = 'not_started' | 'pending' | 'in_progress' | 'verified' | 'expired' | 'rejected';
 type VerificationMethod = 'license_scan' | 'certification' | 'portfolio' | 'test' | 'manual_review';
@@ -86,14 +86,14 @@ CREATE TABLE capability_profiles (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-  -- Trust & Risk
-  trust_tier VARCHAR(1) NOT NULL CHECK (trust_tier IN ('A', 'B', 'C', 'D')),
+  -- Trust & Risk (1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE)
+  trust_tier INTEGER NOT NULL CHECK (trust_tier IN (1, 2, 3, 4)),
   trust_tier_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   risk_clearance TEXT[] NOT NULL DEFAULT ARRAY['low']::TEXT[] CHECK (
-    (trust_tier = 'A' AND risk_clearance = ARRAY['low']::TEXT[]) OR
-    (trust_tier = 'B' AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
-    (trust_tier = 'C' AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
-    (trust_tier = 'D' AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance))
+    (trust_tier = 1 AND risk_clearance = ARRAY['low']::TEXT[]) OR
+    (trust_tier = 2 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
+    (trust_tier = 3 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
+    (trust_tier = 4 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance))
   ),
 
   -- Insurance & Credentials
@@ -149,10 +149,10 @@ CREATE INDEX idx_verified_trades_expires_at ON verified_trades(expires_at) WHERE
 
 **Rule:**
 ```
-trust_tier = 'A' → risk_clearance = ['low']
-trust_tier = 'B' → risk_clearance = ['low', 'medium']
-trust_tier = 'C' → risk_clearance = ['low', 'medium']
-trust_tier = 'D' → risk_clearance = ['low', 'medium', 'high']
+trust_tier = 1 (ROOKIE)   → risk_clearance = ['low']
+trust_tier = 2 (VERIFIED) → risk_clearance = ['low', 'medium']
+trust_tier = 3 (TRUSTED)  → risk_clearance = ['low', 'medium']
+trust_tier = 4 (ELITE)    → risk_clearance = ['low', 'medium', 'high']
 ```
 
 **Enforcement:**
@@ -407,7 +407,7 @@ async function recomputeOnBackgroundCheckVerificationChange(
 
 ### Trigger 4: Trust Tier Promotion/Demotion
 
-**Event:** Trust tier changed (A → B, B → C, C → D, or demotion)
+**Event:** Trust tier changed (1→2, 2→3, 3→4, or demotion)
 
 **Source Data:**
 - `trust_scores` table (trust score updated)
@@ -441,10 +441,10 @@ async function recomputeOnTrustTierChange(
 ```typescript
 function getRiskClearanceForTrustTier(tier: TrustTier): RiskLevel[] {
   switch (tier) {
-    case 'A': return ['low'];
-    case 'B': return ['low', 'medium'];
-    case 'C': return ['low', 'medium'];
-    case 'D': return ['low', 'medium', 'high'];
+    case 1: return ['low'];           // ROOKIE
+    case 2: return ['low', 'medium']; // VERIFIED
+    case 3: return ['low', 'medium']; // TRUSTED
+    case 4: return ['low', 'medium', 'high']; // ELITE
     default: throw new Error(`Invalid trust tier: ${tier}`);
   }
 }
@@ -790,7 +790,7 @@ function validateCapabilityProfileInvariants(profile: CapabilityProfile): void {
 **State:**
 ```typescript
 {
-  trust_tier: 'A',
+  trust_tier: 1,  // ROOKIE
   risk_clearance: ['low', 'medium'] // Should be ['low']
 }
 ```

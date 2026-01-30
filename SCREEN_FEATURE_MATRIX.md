@@ -471,7 +471,7 @@ Each screen lists:
 
 ## ONBOARDING SCREENS (12)
 
-### O1: FramingScreen ⚠️
+### O1: FramingScreen ✅
 ```
 ✅ IMPLEMENTS:
    - Welcome message
@@ -485,12 +485,13 @@ Each screen lists:
    - Skip option
 
 📥 RECEIVES:
-   - (none)
+   - currentStep (number)
+   - totalSteps (number)
 
 📤 EMITS:
    - onContinue()
 
-⚠️ KNOWN BUG: Continue button needs useNavigation hook
+📋 STITCH-PROMPT: O1-framing-screen.md
 ```
 
 ### O2: CalibrationScreen

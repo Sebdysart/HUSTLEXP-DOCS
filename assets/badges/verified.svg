@@ -1,0 +1,10 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background -->
+  <circle cx="40" cy="40" r="38" fill="#2196F3" stroke="#1976D2" stroke-width="2"/>
+
+  <!-- Shield -->
+  <path d="M40 14 L58 22 L58 42 C58 54 50 64 40 68 C30 64 22 54 22 42 L22 22 Z" fill="#BBDEFB" stroke="#64B5F6" stroke-width="1"/>
+
+  <!-- Checkmark -->
+  <path d="M30 40 L38 48 L52 32" stroke="#1565C0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

@@ -301,13 +301,28 @@ These are **explicitly excluded** from v1:
 
 ---
 
+## O. PER SYSTEM COMPLIANCE
+
+The app meets:
+- [ ] PER-0: Authority & Scope Lock verified
+- [ ] PER-1: All file paths and schemas exist
+- [ ] PER-2: Execution plans approved for all features
+- [ ] PER-3: Invariant simulations passed
+- [ ] PER-4: All 24+ kill tests passing
+- [ ] PER-5: Blast radius contained
+- [ ] PER-6: Human diff audits completed
+
+**Reference:** `PER/PER_MASTER_INDEX.md` for full enforcement documentation.
+
+---
+
 ## THE DEFINITION OF "DONE"
 
 HustleXP v1.0 is **DONE** when:
 
-1. All items in sections A-N are checked
+1. All items in sections A-O are checked
 2. All 38 screens are implemented and functional
-3. All 5 invariants pass kill tests
+3. All 33 invariants pass kill tests (see PER/INVARIANTS.md)
 4. Bootstrap passes
 5. App builds and runs on iOS simulator
 6. App builds and runs on Android emulator
@@ -316,6 +331,7 @@ HustleXP v1.0 is **DONE** when:
    - Dispute filed → Admin resolves
    - New user onboards → Becomes eligible for tasks
 8. AI features are assistive only (human always confirms)
+9. PER System compliance verified (PER-0 through PER-6)
 
 **Nothing else. No "polish." No "improvements." Done means done.**
 

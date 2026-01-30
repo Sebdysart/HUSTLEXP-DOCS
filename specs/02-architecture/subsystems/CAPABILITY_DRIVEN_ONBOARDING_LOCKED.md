@@ -769,8 +769,8 @@ Confirm onboarding completion, show verification paths, and guide next steps.
   user_id: string;
   profile_id: string;
   verified_trades: []; // Empty at onboarding completion
-  trust_tier: "A"; // Default tier (Unverified)
-  risk_clearance: ["low"]; // Default for Tier A
+  trust_tier: 1; // Default tier (ROOKIE)
+  risk_clearance: ["low"]; // Default for Tier 1
   insurance_valid: false; // Will be true after insurance verification
   background_check_valid: false; // Will be true after background check
   willingness_flags: RiskPreferences; // From onboarding
@@ -830,7 +830,7 @@ interface CapabilityProfile {
   user_id: string;
   profile_id: string;
   verified_trades: VerifiedTrade[]; // Empty at onboarding completion
-  trust_tier: TrustTier; // "A" (Unverified) at onboarding completion
+  trust_tier: TrustTier; // 1 (ROOKIE) at onboarding completion
   risk_clearance: RiskLevel[]; // ["low"] at onboarding completion
   insurance_valid: boolean; // false at onboarding completion
   background_check_valid: boolean; // false at onboarding completion
@@ -847,7 +847,7 @@ interface CapabilityProfile {
 ```typescript
 {
   verified_trades: [], // Empty (no verifications yet)
-  trust_tier: "A", // Unverified (default)
+  trust_tier: 1, // ROOKIE (default)
   risk_clearance: ["low"], // Only low-risk tasks available
   insurance_valid: false, // Not verified yet
   background_check_valid: false, // Not verified yet

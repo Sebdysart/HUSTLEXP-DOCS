@@ -1,0 +1,31 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient circle -->
+  <circle cx="150" cy="150" r="130" fill="url(#welcome-gradient)"/>
+
+  <defs>
+    <linearGradient id="welcome-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D1FAE5"/>
+      <stop offset="100%" stop-color="#A7F3D0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Person silhouette -->
+  <circle cx="150" cy="100" r="35" fill="#10B981"/>
+  <path d="M90 200 C90 160 115 135 150 135 C185 135 210 160 210 200 L210 220 L90 220 Z" fill="#10B981"/>
+
+  <!-- Handshake/connection lines -->
+  <circle cx="70" cy="150" r="20" fill="#34D399"/>
+  <circle cx="230" cy="150" r="20" fill="#34D399"/>
+
+  <!-- Connection arcs -->
+  <path d="M95 150 Q 120 120 145 150" stroke="#059669" stroke-width="3" fill="none"/>
+  <path d="M155 150 Q 180 120 205 150" stroke="#059669" stroke-width="3" fill="none"/>
+
+  <!-- Sparkles -->
+  <circle cx="110" cy="80" r="5" fill="#FCD34D"/>
+  <circle cx="190" cy="80" r="5" fill="#FCD34D"/>
+  <circle cx="150" cy="60" r="4" fill="#FCD34D"/>
+
+  <!-- Text -->
+  <text x="150" y="270" text-anchor="middle" fill="#065F46" font-family="system-ui" font-size="18" font-weight="600">Welcome to HustleXP</text>
+</svg>

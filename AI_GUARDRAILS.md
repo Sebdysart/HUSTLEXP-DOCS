@@ -1,7 +1,32 @@
 # AI GUARDRAILS — HUSTLEXP
 
-**STATUS: ACTIVE — Both Claude Code and Cursor must obey**  
+**STATUS: ACTIVE — Both Claude Code and Cursor must obey**
 **Purpose: Prevent AI drift, hallucination, and scope creep**
+**PER System: MAX-TIER enforcement active (see PER/PER_MASTER_INDEX.md)**
+
+---
+
+## PER SYSTEM REFERENCE (Pre-Execution Requirements)
+
+This document is part of the MAX-TIER PER system. Full documentation at `PER/PER_MASTER_INDEX.md`.
+
+| PER Level | Purpose | Document |
+|-----------|---------|----------|
+| **PER-0** | Authority & Scope Lock | `PER/PER_MASTER_INDEX.md` |
+| **PER-1** | Proof-of-Existence Gate | `PER/PER-1_EXISTENCE_GATE.md` |
+| **PER-2** | Plan-First, Code-Second | `PER/PER-2_EXECUTION_PLAN.md` |
+| **PER-3** | Invariant Simulation | `PER/PER-3_SIMULATION_CHECKLIST.md` |
+| **PER-4** | Deterministic Test Harness | `PER/PER-4_TEST_REQUIREMENTS.md` |
+| **PER-5** | Blast Radius Containment | `PER/PER-5_BLAST_RADIUS.md` |
+| **PER-6** | Human Diff Audit | `PER/PER-6_DIFF_AUDIT.md` |
+| **PER-Ω** | Nuclear Fallback | `PER/OMEGA_PROTOCOL.md` |
+
+**Key Documents:**
+- `PER/INVARIANTS.md` — All 33 invariants consolidated
+- `PER/DO_NOT_TOUCH.md` — Explicit prohibitions
+- `PER/OWNERSHIP.md` — Layer boundaries
+- `PER/CRASH_PROTOCOL.md` — Emergency response
+- `PER/LAST_KNOWN_GOOD.md` — Recovery anchors
 
 ---
 
@@ -334,3 +359,27 @@ When these guardrails are followed:
 - User controls the product, not AI
 
 **AI is a tool. Tools don't have opinions. Tools execute.**
+
+---
+
+## PER-Ω: OMEGA ESCAPE PROTOCOL
+
+When debugging fails after 60-90 minutes, trigger PER-Ω:
+
+### Trigger Conditions (Any ONE activates Ω)
+- Build fails after toolchain reset + known-good checkout
+- Crashes persist across clean environment + fresh clone
+- Root cause unclear after 60-90 minutes
+- Multiple subsystems failing simultaneously
+- AI explanations diverge or contradict
+
+### Ω Response
+1. **FREEZE** — No more fixes, no "one more try"
+2. **RESET** — Fresh clone, checkout last-known-good tag
+3. **RECONSTRUCT** — Add changes one at a time until failure found
+4. **AI DEMOTION** — AI observes only, human decides
+5. **POSTMORTEM** — Create new invariant/guard to prevent recurrence
+
+**Full Protocol:** `PER/OMEGA_PROTOCOL.md`
+
+**This guarantees escape from any failure. No death spirals. No infinite loops.**

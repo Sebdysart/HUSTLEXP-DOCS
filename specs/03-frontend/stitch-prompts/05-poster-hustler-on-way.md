@@ -26,7 +26,7 @@ Content Layout (Centered, Vertical):
 2. HUSTLER AVATAR (Middle 30%, centered)
    - Circular avatar (diameter: 120px)
    - Abstract design (geometric, not photo)
-   - Trust tier badge overlay: "Trusted (Tier B)" (bottom-right of avatar, pill-shaped, blue #007AFF) — REFINEMENT: Human-readable "Trusted" with system transparency "Tier B"
+   - Trust tier badge overlay: "VERIFIED (Tier 2)" (bottom-right of avatar, pill-shaped, blue #007AFF) — REFINEMENT: Human-readable "VERIFIED" with system transparency "Tier 2"
    - Subtle glow effect (not animated, just visual depth)
 
 3. HUSTLER INFO (Below avatar)
@@ -93,7 +93,7 @@ Constraints:
 
 **Visual Authority:**
 - Large avatar = human connection (abstract, not creepy)
-- Trust tier badge = earned status ("Trusted" human-readable, "Tier B" system-transparent)
+- Trust tier badge = earned status ("VERIFIED" human-readable, "Tier 2" system-transparent)
 - Progress steps = system is working
 - ETA = transparency
 - System assurance line = accountability and institutional presence
@@ -109,3 +109,57 @@ Constraints:
 - Hustler name de-emphasized = system state is hero, not individual
 
 ---
+
+## Props Interface
+
+```typescript
+interface PosterHustlerOnWayProps {
+  // Task data
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    state: 'ACCEPTED' | 'PROOF_SUBMITTED';
+  };
+
+  // Worker info
+  worker: {
+    id: string;
+    displayName: string;              // e.g., "Alex M."
+    avatarUrl?: string;
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
+    };
+    stats: {
+      tasksCompleted: number;
+      averageRating: number;
+    };
+  };
+
+  // Progress
+  currentStep: 'ACCEPTED' | 'EN_ROUTE' | 'WORKING' | 'COMPLETED';
+
+  // ETA
+  eta?: {
+    minutes: number;
+    basedOn: 'current_location' | 'estimate';
+  };
+
+  // Escrow
+  escrowState: 'FUNDED' | 'LOCKED_DISPUTE';
+
+  // Callbacks
+  onContactWorker: () => void;
+  onViewTaskDetails: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task and worker data from `task.getById` with worker relation
+- ETA computed from worker location updates (if available)
+- Progress steps derived from task state
+- Contact opens task conversation screen

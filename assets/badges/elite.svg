@@ -1,0 +1,31 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background - tier 4 gold/orange -->
+  <circle cx="40" cy="40" r="38" fill="url(#elite-gradient)" stroke="#B45309" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="elite-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="30%" stop-color="#F59E0B"/>
+      <stop offset="70%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="crown-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FCD34D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Crown -->
+  <path d="M20 50 L20 35 L30 42 L40 28 L50 42 L60 35 L60 50 Z" fill="url(#crown-gold)" stroke="#F59E0B" stroke-width="1"/>
+
+  <!-- Crown band -->
+  <rect x="20" y="50" width="40" height="8" rx="2" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+
+  <!-- Jewels -->
+  <circle cx="30" cy="37" r="3" fill="#EF4444"/>
+  <circle cx="40" cy="32" r="4" fill="#3B82F6"/>
+  <circle cx="50" cy="37" r="3" fill="#10B981"/>
+
+  <!-- Tier 4 indicator -->
+  <text x="40" y="72" text-anchor="middle" fill="#78350F" font-family="system-ui" font-size="10" font-weight="bold">ELITE</text>
+</svg>

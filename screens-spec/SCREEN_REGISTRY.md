@@ -1,23 +1,44 @@
-# HustleXP Screen Registry v1.0.0
+# HustleXP Screen Registry v1.1.0
 
-**STATUS: CONSTITUTIONAL REFERENCE**  
-**Total Screens: 38**  
-**Functional: 37** (FramingScreen needs navigation fix)  
+**STATUS: CONSTITUTIONAL REFERENCE**
+**Total Screens: 38**
+**Functional: 37** (FramingScreen needs navigation fix)
+**UAP Verified: 0/38** (UI Acceptance Protocol verification pending)
 **Last Updated: January 2025**
+
+---
+
+## UI Acceptance Protocol (UAP) Integration
+
+**Authority:** `PER/UI_ACCEPTANCE_PROTOCOL.md`
+
+All screens now track UAP compliance status. A screen is NOT complete unless:
+- Builds without crashing (necessary but insufficient)
+- Passes all 5 UAP gates (UAP-0 through UAP-4)
+
+**UAP Status Values:**
+| Status | Meaning |
+|--------|---------|
+| `PENDING` | Not yet verified against UAP |
+| `PASSED` | All 5 UAP gates passed — screen is COMPLETE |
+| `FAILED` | One or more UAP gates failed — see notes |
+| `INTERNAL` | Bootstrap/debug screen — exempt from UAP |
+
+**CRITICAL RULE:** No screen may be marked COMPLETE unless UAP Status = `PASSED`.
 
 ---
 
 ## Quick Reference
 
-| Category | Count | Location | Status |
-|----------|-------|----------|--------|
-| Auth | 3 | `screens/auth/` | ✅ All functional |
-| Hustler | 9 | `screens/hustler/` | ✅ All functional |
-| Poster | 4 | `screens/poster/` | ✅ All functional |
-| Onboarding | 12 | `screens/onboarding/` | ⚠️ 11/12 functional |
-| Settings | 3 | `screens/settings/` | ✅ All functional |
-| Shared | 4 | `screens/shared/` | ✅ All functional |
-| Edge | 3 | `screens/edge/` | ✅ All functional |
+| Category | Count | Location | Build Status | UAP Status |
+|----------|-------|----------|--------------|------------|
+| Auth | 3 | `screens/auth/` | ✅ All build | PENDING |
+| Hustler | 9 | `screens/hustler/` | ✅ All build | PENDING |
+| Poster | 4 | `screens/poster/` | ✅ All build | PENDING |
+| Onboarding | 12 | `screens/onboarding/` | ⚠️ 11/12 build | PENDING |
+| Settings | 3 | `screens/settings/` | ✅ All build | PENDING |
+| Shared | 4 | `screens/shared/` | ✅ All build | PENDING |
+| Edge | 3 | `screens/edge/` | ✅ All build | PENDING |
 
 ---
 
@@ -25,11 +46,11 @@
 
 Location: `hustlexp-app/screens/auth/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| A1 | Login | `LoginScreen.tsx` | ONBOARDING_SPEC §2 | ✅ | Entry point for existing users |
-| A2 | Signup | `SignupScreen.tsx` | ONBOARDING_SPEC §3 | ✅ | New user registration |
-| A3 | Forgot Password | `ForgotPasswordScreen.tsx` | ONBOARDING_SPEC §2.3 | ✅ | Password reset flow |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| A1 | Login | `LoginScreen.tsx` | ONBOARDING_SPEC §2 | ✅ | PENDING | Entry point for existing users |
+| A2 | Signup | `SignupScreen.tsx` | ONBOARDING_SPEC §3 | ✅ | PENDING | New user registration |
+| A3 | Forgot Password | `ForgotPasswordScreen.tsx` | ONBOARDING_SPEC §2.3 | ✅ | PENDING | Password reset flow |
 
 ### Auth Flow
 ```
@@ -46,17 +67,17 @@ App Launch → LoginScreen
 
 Location: `hustlexp-app/screens/hustler/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| H1 | Hustler Home | `HustlerHomeScreen.tsx` | UI_SPEC §5.1, PRODUCT_SPEC §3 | ✅ | Main dashboard for workers |
-| H2 | Task Feed | `TaskFeedScreen.tsx` | UI_SPEC §5.2, PRODUCT_SPEC §9 | ✅ | Browse available tasks |
-| H3 | Task History | `TaskHistoryScreen.tsx` | UI_SPEC §5.3 | ✅ | Past completed tasks |
-| H4 | Task Detail | `TaskDetailScreen.tsx` | UI_SPEC §5.4, PRODUCT_SPEC §3.1 | ✅ | Single task view before accepting |
-| H5 | Task In Progress | `TaskInProgressScreen.tsx` | UI_SPEC §5.5, PRODUCT_SPEC §3.2 | ✅ | Active task with map |
-| H6 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §5.6, PRODUCT_SPEC §3.3 | ✅ | Submit proof, mark complete |
-| H7 | En Route Map | `HustlerEnRouteMapScreen.tsx` | UI_SPEC §5.5.2 | ✅ | Full-screen navigation |
-| H8 | XP Breakdown | `XPBreakdownScreen.tsx` | UI_SPEC §7, PRODUCT_SPEC §5 | ✅ | Detailed XP history |
-| H9 | Instant Interrupt | `InstantInterruptCard.tsx` | UI_SPEC §14, PRODUCT_SPEC §3.5 | ✅ | Live Mode interrupt card |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| H1 | Hustler Home | `HustlerHomeScreen.tsx` | UI_SPEC §5.1, PRODUCT_SPEC §3 | ✅ | PENDING | Main dashboard for workers |
+| H2 | Task Feed | `TaskFeedScreen.tsx` | UI_SPEC §5.2, PRODUCT_SPEC §9 | ✅ | PENDING | Browse available tasks |
+| H3 | Task History | `TaskHistoryScreen.tsx` | UI_SPEC §5.3 | ✅ | PENDING | Past completed tasks |
+| H4 | Task Detail | `TaskDetailScreen.tsx` | UI_SPEC §5.4, PRODUCT_SPEC §3.1 | ✅ | PENDING | Single task view before accepting |
+| H5 | Task In Progress | `TaskInProgressScreen.tsx` | UI_SPEC §5.5, PRODUCT_SPEC §3.2 | ✅ | PENDING | Active task with map |
+| H6 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §5.6, PRODUCT_SPEC §3.3 | ✅ | PENDING | Submit proof, mark complete |
+| H7 | En Route Map | `HustlerEnRouteMapScreen.tsx` | UI_SPEC §5.5.2 | ✅ | PENDING | Full-screen navigation |
+| H8 | XP Breakdown | `XPBreakdownScreen.tsx` | UI_SPEC §7, PRODUCT_SPEC §5 | ✅ | PENDING | Detailed XP history |
+| H9 | Instant Interrupt | `InstantInterruptCard.tsx` | UI_SPEC §14, PRODUCT_SPEC §3.5 | ✅ | PENDING | Live Mode interrupt card |
 
 ### Hustler Task Flow
 ```
@@ -74,12 +95,12 @@ HustlerHomeScreen → TaskFeedScreen → TaskDetailScreen
 
 Location: `hustlexp-app/screens/poster/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| P1 | Task Creation | `TaskCreationScreen.tsx` | UI_SPEC §6.1, PRODUCT_SPEC §3.1 | ✅ | Create & fund task |
-| P2 | Hustler On Way | `HustlerOnWayScreen.tsx` | UI_SPEC §6.2, PRODUCT_SPEC §3.2 | ✅ | Track worker en route |
-| P3 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §6.3, PRODUCT_SPEC §3.3 | ✅ | Review proof, release escrow |
-| P4 | Feedback | `FeedbackScreen.tsx` | UI_SPEC §6.4, PRODUCT_SPEC §12 | ✅ | Rate the hustler |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| P1 | Task Creation | `TaskCreationScreen.tsx` | UI_SPEC §6.1, PRODUCT_SPEC §3.1 | ✅ | PENDING | Create & fund task |
+| P2 | Hustler On Way | `HustlerOnWayScreen.tsx` | UI_SPEC §6.2, PRODUCT_SPEC §3.2 | ✅ | PENDING | Track worker en route |
+| P3 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §6.3, PRODUCT_SPEC §3.3 | ✅ | PENDING | Review proof, release escrow |
+| P4 | Feedback | `FeedbackScreen.tsx` | UI_SPEC §6.4, PRODUCT_SPEC §12 | ✅ | PENDING | Rate the hustler |
 
 ### Poster Task Flow
 ```
@@ -98,27 +119,27 @@ Location: `hustlexp-app/screens/onboarding/`
 
 ### §4.1 Core Calibration (4)
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| O1 | Framing | `FramingScreen.tsx` | ONBOARDING_SPEC §4.1 | ⚠️ | **BROKEN: Continue button missing useNavigation** |
-| O2 | Calibration | `CalibrationScreen.tsx` | ONBOARDING_SPEC §4.2 | ✅ | Trust calibration quiz |
-| O3 | Role Confirmation | `RoleConfirmationScreen.tsx` | ONBOARDING_SPEC §4.3 | ✅ | Hustler vs Poster vs Both |
-| O4 | Preference Lock | `PreferenceLockScreen.tsx` | ONBOARDING_SPEC §4.4 | ✅ | Lock initial preferences |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| O1 | Framing | `FramingScreen.tsx` | ONBOARDING_SPEC §4.1 | ⚠️ | PENDING | **BROKEN: Continue button missing useNavigation** |
+| O2 | Calibration | `CalibrationScreen.tsx` | ONBOARDING_SPEC §4.2 | ✅ | PENDING | Trust calibration quiz |
+| O3 | Role Confirmation | `RoleConfirmationScreen.tsx` | ONBOARDING_SPEC §4.3 | ✅ | PENDING | Hustler vs Poster vs Both |
+| O4 | Preference Lock | `PreferenceLockScreen.tsx` | ONBOARDING_SPEC §4.4 | ✅ | PENDING | Lock initial preferences |
 
 ### §4.2 Capability Screens (8)
 
 Location: `hustlexp-app/screens/onboarding/capability/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| O5 | Capability Intro | `CapabilityIntroScreen.tsx` | ONBOARDING_SPEC §5.1 | ✅ | What capabilities mean |
-| O6 | Location Setup | `LocationSetupScreen.tsx` | ONBOARDING_SPEC §5.2 | ✅ | Work location preferences |
-| O7 | Trade Verification | `TradeVerificationScreen.tsx` | ONBOARDING_SPEC §5.3 | ✅ | Professional license input |
-| O8 | Insurance Upload | `InsuranceUploadScreen.tsx` | ONBOARDING_SPEC §5.4 | ✅ | Liability insurance docs |
-| O9 | Background Check | `BackgroundCheckScreen.tsx` | ONBOARDING_SPEC §5.5 | ✅ | Consent & initiation |
-| O10 | Vehicle Setup | `VehicleSetupScreen.tsx` | ONBOARDING_SPEC §5.6 | ✅ | Vehicle info for delivery |
-| O11 | Availability | `AvailabilityScreen.tsx` | ONBOARDING_SPEC §5.7 | ✅ | Weekly availability slots |
-| O12 | Capability Summary | `CapabilitySummaryScreen.tsx` | ONBOARDING_SPEC §5.8 | ✅ | Review & confirm |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| O5 | Capability Intro | `CapabilityIntroScreen.tsx` | ONBOARDING_SPEC §5.1 | ✅ | PENDING | What capabilities mean |
+| O6 | Location Setup | `LocationSetupScreen.tsx` | ONBOARDING_SPEC §5.2 | ✅ | PENDING | Work location preferences |
+| O7 | Trade Verification | `TradeVerificationScreen.tsx` | ONBOARDING_SPEC §5.3 | ✅ | PENDING | Professional license input |
+| O8 | Insurance Upload | `InsuranceUploadScreen.tsx` | ONBOARDING_SPEC §5.4 | ✅ | PENDING | Liability insurance docs |
+| O9 | Background Check | `BackgroundCheckScreen.tsx` | ONBOARDING_SPEC §5.5 | ✅ | PENDING | Consent & initiation |
+| O10 | Vehicle Setup | `VehicleSetupScreen.tsx` | ONBOARDING_SPEC §5.6 | ✅ | PENDING | Vehicle info for delivery |
+| O11 | Availability | `AvailabilityScreen.tsx` | ONBOARDING_SPEC §5.7 | ✅ | PENDING | Weekly availability slots |
+| O12 | Capability Summary | `CapabilitySummaryScreen.tsx` | ONBOARDING_SPEC §5.8 | ✅ | PENDING | Review & confirm |
 
 ### Onboarding Flow
 ```
@@ -135,11 +156,11 @@ SignupScreen → FramingScreen → CalibrationScreen → RoleConfirmationScreen
 
 Location: `hustlexp-app/screens/settings/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| S1 | Profile | `ProfileScreen.tsx` | UI_SPEC §8.1 | ✅ | User profile management |
-| S2 | Wallet | `WalletScreen.tsx` | UI_SPEC §8.2, PRODUCT_SPEC §4 | ✅ | Payment methods, earnings |
-| S3 | Work Eligibility | `WorkEligibilityScreen.tsx` | UI_SPEC §8.3, PRODUCT_SPEC §17.5 | ✅ | **CRITICAL: Eligibility interpretability** |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| S1 | Profile | `ProfileScreen.tsx` | UI_SPEC §8.1 | ✅ | PENDING | User profile management |
+| S2 | Wallet | `WalletScreen.tsx` | UI_SPEC §8.2, PRODUCT_SPEC §4 | ✅ | PENDING | Payment methods, earnings |
+| S3 | Work Eligibility | `WorkEligibilityScreen.tsx` | UI_SPEC §8.3, PRODUCT_SPEC §17.5 | ✅ | PENDING | **CRITICAL: Eligibility interpretability** |
 
 
 ---
@@ -148,12 +169,12 @@ Location: `hustlexp-app/screens/settings/`
 
 Location: `hustlexp-app/screens/shared/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| SH1 | Task Conversation | `TaskConversationScreen.tsx` | UI_SPEC §9.1, PRODUCT_SPEC §10 | ✅ | In-task messaging |
-| SH2 | Trust Tier Ladder | `TrustTierLadderScreen.tsx` | UI_SPEC §9.2, PRODUCT_SPEC §5.2 | ✅ | Visual trust progression |
-| SH3 | Trust Change | `TrustChangeExplanationScreen.tsx` | UI_SPEC §9.3, PRODUCT_SPEC §5.3 | ✅ | Why trust changed |
-| SH4 | Dispute Entry | `DisputeEntryScreen.tsx` | UI_SPEC §9.4, PRODUCT_SPEC §4.3 | ✅ | File a dispute |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| SH1 | Task Conversation | `TaskConversationScreen.tsx` | UI_SPEC §9.1, PRODUCT_SPEC §10 | ✅ | PENDING | In-task messaging |
+| SH2 | Trust Tier Ladder | `TrustTierLadderScreen.tsx` | UI_SPEC §9.2, PRODUCT_SPEC §5.2 | ✅ | PENDING | Visual trust progression |
+| SH3 | Trust Change | `TrustChangeExplanationScreen.tsx` | UI_SPEC §9.3, PRODUCT_SPEC §5.3 | ✅ | PENDING | Why trust changed |
+| SH4 | Dispute Entry | `DisputeEntryScreen.tsx` | UI_SPEC §9.4, PRODUCT_SPEC §4.3 | ✅ | PENDING | File a dispute |
 
 ---
 
@@ -161,11 +182,11 @@ Location: `hustlexp-app/screens/shared/`
 
 Location: `hustlexp-app/screens/edge/`
 
-| # | Screen | File | Spec Reference | Status | Notes |
-|---|--------|------|----------------|--------|-------|
-| E1 | No Tasks Available | `NoTasksAvailableScreen.tsx` | UI_SPEC §10.1 | ✅ | Empty feed state |
-| E2 | Eligibility Mismatch | `EligibilityMismatchScreen.tsx` | UI_SPEC §10.2 | ✅ | Why you can't see task |
-| E3 | Trust Tier Locked | `TrustTierLockedScreen.tsx` | UI_SPEC §10.3 | ✅ | Trust too low for task |
+| # | Screen | File | Spec Reference | Build | UAP Status | Notes |
+|---|--------|------|----------------|-------|------------|-------|
+| E1 | No Tasks Available | `NoTasksAvailableScreen.tsx` | UI_SPEC §10.1 | ✅ | PENDING | Empty feed state |
+| E2 | Eligibility Mismatch | `EligibilityMismatchScreen.tsx` | UI_SPEC §10.2 | ✅ | PENDING | Why you can't see task |
+| E3 | Trust Tier Locked | `TrustTierLockedScreen.tsx` | UI_SPEC §10.3 | ✅ | PENDING | Trust too low for task |
 
 ---
 
@@ -305,4 +326,39 @@ Use this for tracking implementation status:
 ```
 
 **Total: 37/38 functional**
+
+---
+
+## §11. iOS SwiftUI Implementation
+
+Location: `ios-swiftui/HustleXP/`
+
+**Status:** 15/38 screens implemented (SwiftUI native, iOS 17+)
+
+| # | Screen | SwiftUI File | Source STITCH | Status |
+|---|--------|--------------|---------------|--------|
+| H1 | Hustler Home | `HustlerHomeScreen.swift` | 02-hustler-home.html | ✅ |
+| H5 | Task In Progress | `TaskInProgressScreen.swift` | 08-hustler-task-in-progress.html | ✅ |
+| H6 | Task Completion (Approved) | `TaskCompletionApprovedScreen.swift` | 09-hustler-task-completion-APPROVED.html | ✅ |
+| H6 | Task Completion (Action Req) | `TaskCompletionActionRequiredScreen.swift` | 09-hustler-task-completion-ACTION-REQUIRED.html | ✅ |
+| H6 | Task Completion (Blocked) | `TaskCompletionBlockedScreen.swift` | 09-hustler-task-completion-BLOCKED.html | ✅ |
+| H8 | XP Breakdown | `XPBreakdownScreen.swift` | 07-xp-breakdown.html | ✅ |
+| H9 | Instant Interrupt | `InstantInterruptCard.swift` | 01-instant-interrupt-card.html | ✅ |
+| P3 | Poster Completion | `PosterTaskCompletionScreen.swift` | 10-poster-task-completion-FIXED.html | ✅ |
+| SH2 | Trust Tier Ladder | `TrustTierLadderScreen.swift` | 06-trust-tier-ladder.html | ✅ |
+| SH3 | Trust Change | `TrustChangeExplanationScreen.swift` | 12-trust-change-explanation-FIXED.html | ✅ |
+| SH4 | Dispute Entry | `DisputeEntryScreen.swift` | 13-dispute-entry-*.html | ✅ |
+| E1 | No Tasks Available | `NoTasksAvailableScreen.swift` | E1-no-tasks-available.html | ✅ |
+| E2 | Eligibility Mismatch | `EligibilityMismatchScreen.swift` | E2-eligibility-mismatch.html | ✅ |
+| E3 | Trust Tier Locked | `TrustTierLockedScreen.swift` | E3-trust-tier-locked.html | ✅ |
+
+### Design System
+- `HustleColors.swift` — Color tokens from DESIGN_SYSTEM.md
+- `HustleTypography.swift` — Font system (8 sizes)
+- `HustleComponents.swift` — GlassCard, PrimaryButton, ProgressRing, etc.
+
+### Build Instructions
+```bash
+cd ios-swiftui/HustleXP && swift build
+```
 

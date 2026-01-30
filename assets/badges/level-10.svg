@@ -1,0 +1,21 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background - deeper blue -->
+  <circle cx="40" cy="40" r="38" fill="url(#blue-gradient)" stroke="#1E40AF" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Double star -->
+  <path d="M40 10 L47 28 L66 28 L51 40 L57 58 L40 48 L23 58 L29 40 L14 28 L33 28 Z" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+
+  <!-- Number -->
+  <text x="40" y="44" text-anchor="middle" fill="#1E3A8A" font-family="system-ui" font-size="16" font-weight="bold">10</text>
+
+  <!-- Crown accent -->
+  <path d="M28 18 L32 12 L40 16 L48 12 L52 18" stroke="#FCD34D" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

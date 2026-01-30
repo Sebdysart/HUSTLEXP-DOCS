@@ -1,0 +1,19 @@
+<svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="120" cy="85" r="65" fill="#F3F4F6"/>
+
+  <!-- Cloud -->
+  <path d="M80 95 C70 95 62 87 62 77 C62 67 70 59 80 59 C82 59 84 59 86 60 C90 50 100 43 112 43 C128 43 141 54 143 69 C154 71 162 80 162 91 C162 104 152 115 140 115 L80 115 C68 115 58 105 58 93 C58 93 58 93 80 95 Z" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="2"/>
+
+  <!-- Disconnection symbol -->
+  <circle cx="120" cy="82" r="20" stroke="#9CA3AF" stroke-width="3" fill="none"/>
+  <line x1="106" y1="68" x2="134" y2="96" stroke="#9CA3AF" stroke-width="3"/>
+
+  <!-- WiFi icon (crossed out) -->
+  <path d="M95 115 C95 115 107 105 120 105 C133 105 145 115 145 115" stroke="#D1D5DB" stroke-width="2" fill="none"/>
+  <path d="M102 122 C102 122 111 115 120 115 C129 115 138 122 138 122" stroke="#D1D5DB" stroke-width="2" fill="none"/>
+  <circle cx="120" cy="128" r="3" fill="#D1D5DB"/>
+
+  <!-- Text -->
+  <text x="120" y="160" text-anchor="middle" fill="#6B7280" font-family="system-ui" font-size="13">No internet connection</text>
+</svg>

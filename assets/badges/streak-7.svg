@@ -1,0 +1,11 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background -->
+  <circle cx="40" cy="40" r="38" fill="#F59E0B" stroke="#D97706" stroke-width="2"/>
+
+  <!-- Flame -->
+  <path d="M40 15 C45 25 55 30 55 45 C55 55 48 65 40 65 C32 65 25 55 25 45 C25 30 35 25 40 15 Z" fill="#FCD34D"/>
+  <path d="M40 30 C43 38 48 42 48 50 C48 55 44 60 40 60 C36 60 32 55 32 50 C32 42 37 38 40 30 Z" fill="#F59E0B"/>
+
+  <!-- Number -->
+  <text x="40" y="55" text-anchor="middle" fill="white" font-family="system-ui" font-size="16" font-weight="bold">7</text>
+</svg>

@@ -137,3 +137,65 @@ Constraints:
 - System is fair, predictable, and auditable
 
 ---
+
+## Props Interface
+
+```typescript
+interface XPBreakdownProps {
+  // Time period
+  period: 'today' | 'week' | 'month' | 'all_time';
+
+  // Summary
+  summary: {
+    totalXP: number;
+    taskCount: number;
+    periodLabel: string;              // e.g., "Today"
+  };
+
+  // Multipliers breakdown
+  multipliers: {
+    id: string;
+    name: string;                     // e.g., "Instant Mode Bonus"
+    icon: string;                     // Emoji or icon name
+    multiplier: number;               // e.g., 1.5
+    appliedToTasks: number;
+    bonusXP: number;
+    category: 'real_time' | 'consistency';
+    note?: string;                    // e.g., "(limited window)"
+  }[];
+
+  // Base XP by task
+  taskBreakdown: {
+    id: string;
+    title: string;
+    baseXP: number;
+  }[];
+
+  // Calculation details
+  calculation: {
+    baseTotal: number;
+    combinedMultiplier: number;
+    multiplierCap: number;            // e.g., 2.0
+    preCapXP: number;
+    postCapXP: number;
+    finalXP: number;
+    qualityGatesApplied: boolean;
+  };
+
+  // Callbacks
+  onPeriodChange: (period: 'today' | 'week' | 'month' | 'all_time') => void;
+  onBackPress: () => void;
+
+  // Loading
+  isLoading?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- XP data fetched via `user.getXP` endpoint with period filter
+- Multipliers computed by backend, UI only displays
+- Calculation formula shown transparently
+- Cap behavior explicitly communicated

@@ -114,12 +114,12 @@ Content Layout (Top to Bottom):
    - Label: "Trust Tier" (size: 16px, weight: 600, color: white)
    - Value: "Unchanged" (size: 18px, weight: 600, color: #8E8E93)
    - Explanation (size: 12px, color: #8E8E93, margin-top: 4px):
-     "Current tier: Trusted (Tier C). You are 3 completed tasks away from Tier D promotion."
-   
+     "Current tier: TRUSTED (Tier 3). You are 3 completed tasks away from Tier 4 promotion."
+
    If trust tier promoted:
    - Icon: Shield icon (size: 20px, color: #34C759)
    - Label: "Trust Tier" (size: 16px, weight: 600, color: white)
-   - Value: "Promoted to Tier D" (size: 18px, weight: 700, color: #34C759)
+   - Value: "Promoted to Tier 4" (size: 18px, weight: 700, color: #34C759)
    - Explanation (size: 12px, color: #8E8E93, margin-top: 4px):
      "Requirements met: 10 completed tasks, 0 disputes, verified ID"
 
@@ -265,3 +265,84 @@ Without this screen:
 - System feels opaque despite being fair
 
 ---
+
+## Props Interface
+
+```typescript
+interface TrustChangeExplanationProps {
+  // Viewer role
+  viewerRole: 'POSTER' | 'WORKER';
+
+  // Task summary
+  task: {
+    id: string;
+    title: string;
+    contractId: string;               // e.g., "#820-A4"
+    completedAt: string;              // ISO 8601
+  };
+
+  // XP changes
+  xpChanges: {
+    gained: number;
+    breakdown: {
+      base: number;
+      multipliers: { name: string; factor: number }[];
+    };
+    withheld?: {
+      reason: string;
+    };
+  };
+
+  // Reliability status (task-scoped)
+  reliabilityStatus: {
+    taskStatus: 'PASSED' | 'FAILED';
+    accountReliability: 'UNCHANGED' | 'DECREASED';
+  };
+
+  // Trust tier changes
+  trustTierChanges: {
+    before: {
+      level: 1 | 2 | 3 | 4;
+      name: string;
+    };
+    after: {
+      level: 1 | 2 | 3 | 4;
+      name: string;
+    };
+    promoted: boolean;
+    progressToNext?: {
+      tasksRemaining: number;
+      nextTierName: string;
+    };
+    requirementsMet?: string[];
+  };
+
+  // System impact
+  systemImpact: {
+    impacts: string[];                // e.g., ["Priority matching weight increased"]
+    noPenaltiesApplied: boolean;
+    noRestrictionsAdded: boolean;
+  };
+
+  // Streak
+  streak?: {
+    currentCount: number;
+    bonusApplied: boolean;
+  };
+
+  // Next steps
+  nextSteps: string;
+
+  // Callbacks
+  onContinue: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- All data computed by backend after task completion
+- Read-only screen, no edits allowed
+- Single "Continue" button is only interactive element
+- Shown after completion and feedback screens

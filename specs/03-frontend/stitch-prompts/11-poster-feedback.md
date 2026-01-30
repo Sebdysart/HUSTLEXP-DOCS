@@ -219,3 +219,54 @@ The system derives trust deltas.
 - ✅ Poster cannot initiate dispute (separate, exceptional flow)
 
 ---
+
+## Props Interface
+
+```typescript
+interface PosterFeedbackProps {
+  // Task data (minimal, identity suppressed)
+  task: {
+    id: string;
+    title: string;
+    contractId: string;               // e.g., "#820-A4"
+  };
+
+  // Criteria confirmation (CRITICAL: required)
+  criteria: {
+    id: string;
+    label: string;                    // e.g., "Work completed as described"
+    value: 'YES' | 'NO' | null;
+  }[];
+
+  // Overall satisfaction (optional, de-emphasized)
+  overallSatisfaction: 1 | 2 | 3 | 4 | 5 | null;
+
+  // Optional comment
+  comment?: string;
+  maxCommentLength: number;           // 240 chars
+
+  // State
+  feedbackState: 'GATE' | 'FORM';     // Gate screen vs feedback form
+
+  // Callbacks
+  onCriteriaChange: (criterionId: string, value: 'YES' | 'NO') => void;
+  onSatisfactionChange: (value: 1 | 2 | 3 | 4 | 5 | null) => void;
+  onCommentChange: (text: string) => void;
+  onProceedToForm: () => void;        // From gate to form
+  onSubmit: () => void;
+  onSkip: () => void;
+
+  // Loading states
+  isSubmitting?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task data minimal to prevent identity priming
+- Criteria confirmation required before submission
+- Satisfaction rating optional, de-emphasized
+- Comments visible to moderators only, not public
+- Cannot be shown if task is disputed or proof under review

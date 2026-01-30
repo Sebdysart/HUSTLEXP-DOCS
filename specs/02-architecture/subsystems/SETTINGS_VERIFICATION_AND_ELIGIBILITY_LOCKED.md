@@ -91,8 +91,8 @@ Provide high-level overview of eligibility without overwhelming detail.
 ```typescript
 {
   label: "Trust Tier",
-  value: "Tier B (Verified)",
-  badge: "B", // Color-coded badge
+  value: "Tier 2 (VERIFIED)",
+  badge: "2", // Color-coded badge (displays tier number)
   description: "You can accept low and medium-risk gigs",
   read_only: true, // No edit action
 }
@@ -161,8 +161,8 @@ Not eligible for:
 {
   eligibility_summary: {
     trust_tier: {
-      current: TrustTier; // 'A' | 'B' | 'C' | 'D'
-      display: string; // "Tier B (Verified)"
+      current: TrustTier; // 1 | 2 | 3 | 4 (ROOKIE/VERIFIED/TRUSTED/ELITE)
+      display: string; // "Tier 2 (Verified)"
       description: string; // "You can accept low and medium-risk gigs"
     };
     risk_clearance: RiskLevel[]; // ["low", "medium"]

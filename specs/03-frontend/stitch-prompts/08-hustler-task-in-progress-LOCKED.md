@@ -42,4 +42,4 @@
 
 ---
 
-See `08-hustler-task-in-progress.md` for the full prompt and `08-hustler-task-in-progress.html` for the MAX-tier implementation.
+See `08-hustler-task-in-progress.md` for the full prompt specification.

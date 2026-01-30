@@ -1,4 +1,4 @@
-# HustleXP UI Specification v1.5.0
+# HustleXP UI Specification v1.6.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY — MAX-TIER COMPLETE + LAYERED HIERARCHY**  
 **Owner:** HustleXP Core  
@@ -1979,6 +1979,645 @@ const REQUIRED_PAUSE_ELEMENTS = [
 
 ---
 
+## §20. Haptic Feedback Patterns
+
+### 20.1 Haptic Philosophy
+
+Haptics reinforce the **Duolingo layer (Layer 2)** - micro-feedback that acknowledges user actions without being intrusive.
+
+> **Core Principle:** Every tap should feel intentional. Haptics confirm that the system heard you.
+
+### 20.2 iOS Haptic Types
+
+| Type | iOS API | When to Use |
+|------|---------|-------------|
+| **Light** | `UIImpactFeedbackGenerator(.light)` | Subtle confirmations, toggles |
+| **Medium** | `UIImpactFeedbackGenerator(.medium)` | Button presses, selections |
+| **Heavy** | `UIImpactFeedbackGenerator(.heavy)` | Important actions, errors |
+| **Rigid** | `UIImpactFeedbackGenerator(.rigid)` | Snapping interactions |
+| **Soft** | `UIImpactFeedbackGenerator(.soft)` | Gentle feedback, swipes |
+| **Success** | `UINotificationFeedbackGenerator(.success)` | Completion, payment |
+| **Warning** | `UINotificationFeedbackGenerator(.warning)` | Validation errors |
+| **Error** | `UINotificationFeedbackGenerator(.error)` | Failures, rejections |
+| **Selection** | `UISelectionFeedbackGenerator()` | Picker, segment changes |
+
+### 20.3 Haptic Patterns by Action
+
+| Action | Haptic Type | Duration | Pattern |
+|--------|-------------|----------|---------|
+| **Button tap** | Medium | Single | Immediate on press |
+| **Primary CTA press** | Medium + Soft | Sequence | Press (medium) → Release (soft) |
+| **Toggle switch** | Light | Single | On state change |
+| **Task accept** | Success | Single | On server confirmation |
+| **Task complete** | Success + Success | Sequence | Double pulse |
+| **Payment received** | Success + Heavy | Sequence | Success → Heavy (earned feel) |
+| **Badge unlock** | Success + Medium + Light | Sequence | Triple burst celebration |
+| **Level up** | Success + Success + Success | Sequence | Triple success burst |
+| **Error** | Error | Single | Distinct failure feel |
+| **Validation error** | Warning | Single | Gentle correction |
+| **Long press activate** | Heavy | Single | Confirms activation |
+| **Swipe action** | Soft | Single | Confirms gesture |
+| **Pull to refresh** | Light | Single | On release threshold |
+| **Picker scroll** | Selection | Per item | Each detent |
+| **Slider value** | Selection | Per step | Each major value |
+
+### 20.4 Implementation
+
+```typescript
+import * as Haptics from 'expo-haptics';
+
+export const haptics = {
+  // UI Feedback
+  tap: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
+  lightTap: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+  toggle: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+  selection: () => Haptics.selectionAsync(),
+
+  // State Changes
+  success: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+  warning: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning),
+  error: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error),
+
+  // Celebrations
+  taskComplete: async () => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await delay(100);
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  },
+
+  paymentReceived: async () => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await delay(150);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+  },
+
+  badgeUnlock: async () => {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await delay(80);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    await delay(80);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  },
+
+  levelUp: async () => {
+    for (let i = 0; i < 3; i++) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      await delay(100);
+    }
+  },
+};
+```
+
+### 20.5 Haptic Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **HAPTIC-1** | No haptics during loading states | Context guard |
+| **HAPTIC-2** | Celebration haptics only after server confirmation | State guard |
+| **HAPTIC-3** | Haptics respect system settings | Platform API check |
+| **HAPTIC-4** | No haptic spam (max 5 pulses per event) | Pattern limiter |
+| **HAPTIC-5** | Poster UI has minimal haptics (no celebrations) | Role guard |
+
+---
+
+## §21. Micro-Interaction Specifications
+
+### 21.1 Touch Response Philosophy
+
+Every touchable element must respond **immediately** (< 16ms) to communicate interactivity.
+
+> **Core Principle:** The best micro-interactions are invisible until you notice their absence.
+
+### 21.2 Touch Response Table
+
+| Component | On Press | On Release | Duration | Easing |
+|-----------|----------|------------|----------|--------|
+| **Button (Primary)** | Scale 0.97, shadow reduce | Scale 1.0, shadow restore | 100ms | spring |
+| **Button (Secondary)** | Scale 0.98, opacity 0.9 | Scale 1.0, opacity 1.0 | 80ms | ease-out |
+| **Card** | Scale 0.99, shadow lift | Scale 1.0, shadow normal | 150ms | spring |
+| **Card (Long press)** | Scale 0.98, shadow +4 | — | 200ms | ease-in |
+| **List Item** | Background darken 5% | Background restore | 100ms | linear |
+| **Icon Button** | Scale 0.9, opacity 0.7 | Scale 1.0, opacity 1.0 | 60ms | ease-out |
+| **Toggle** | — | Thumb slide + track fill | 200ms | spring |
+| **Checkbox** | — | Check scale in | 150ms | spring |
+| **Tab** | — | Indicator slide | 200ms | ease-out |
+
+### 21.3 Spring Configuration
+
+```typescript
+const TOUCH_SPRING = {
+  damping: 15,
+  stiffness: 180,
+  mass: 1,
+};
+
+const GESTURE_SPRING = {
+  damping: 20,
+  stiffness: 200,
+  mass: 0.8,
+};
+```
+
+### 21.4 State Transitions
+
+| Transition | Animation | Duration |
+|------------|-----------|----------|
+| **Default → Pressed** | Scale down | 50ms (instant feel) |
+| **Pressed → Default** | Scale up | 100ms (soft release) |
+| **Default → Focused** | Border + shadow | 150ms |
+| **Default → Disabled** | Opacity fade | 200ms |
+| **Hidden → Visible** | Fade + slide up | 200ms |
+| **Visible → Hidden** | Fade + slide down | 150ms |
+
+### 21.5 Implementation
+
+```typescript
+// Pressable with micro-interaction
+const InteractiveCard = ({ children, onPress }) => {
+  const scale = useSharedValue(1);
+  const shadowOpacity = useSharedValue(0.1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    shadowOpacity: shadowOpacity.value,
+  }));
+
+  return (
+    <Pressable
+      onPressIn={() => {
+        scale.value = withSpring(0.99, TOUCH_SPRING);
+        shadowOpacity.value = withTiming(0.15, { duration: 100 });
+        haptics.lightTap();
+      }}
+      onPressOut={() => {
+        scale.value = withSpring(1, TOUCH_SPRING);
+        shadowOpacity.value = withTiming(0.1, { duration: 150 });
+      }}
+      onPress={onPress}
+    >
+      <Animated.View style={[styles.card, animatedStyle]}>
+        {children}
+      </Animated.View>
+    </Pressable>
+  );
+};
+```
+
+---
+
+## §22. Status Breadcrumb Component
+
+### 22.1 Purpose
+
+Visual breadcrumb showing task progression through states. Users should always know **where they are** in the task lifecycle.
+
+### 22.2 Task State Flow
+
+```
+POSTED → ACCEPTED → IN_PROGRESS → PROOF_SUBMITTED → COMPLETED
+                                        ↓
+                                    DISPUTED → RESOLVED
+```
+
+### 22.3 Breadcrumb UI
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  ● ──────── ● ──────── ◐ ──────── ○ ──────── ○                 │
+│  Posted    Accepted   In Progress  Proof    Complete            │
+│  Jan 15    Jan 15      NOW         —         —                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 22.4 State Visual Indicators
+
+| State | Icon | Color | Animation |
+|-------|------|-------|-----------|
+| **Completed** | ● (filled) | Success green | None |
+| **Current** | ◐ (half) | Primary blue | Gentle pulse |
+| **Future** | ○ (empty) | Neutral gray | None |
+| **Failed** | ✗ | Error red | None |
+| **Disputed** | ⚠ | Warning amber | None |
+
+### 22.5 Component Specification
+
+```typescript
+interface BreadcrumbState {
+  label: string;
+  status: 'completed' | 'current' | 'pending' | 'failed' | 'disputed';
+  timestamp?: Date;
+  isClickable: boolean;
+}
+
+const TASK_BREADCRUMB_STATES: BreadcrumbState[] = [
+  { label: 'Posted', status: 'completed', timestamp: new Date(), isClickable: true },
+  { label: 'Accepted', status: 'completed', timestamp: new Date(), isClickable: true },
+  { label: 'In Progress', status: 'current', isClickable: false },
+  { label: 'Proof', status: 'pending', isClickable: false },
+  { label: 'Complete', status: 'pending', isClickable: false },
+];
+```
+
+### 22.6 Animation Between States
+
+When transitioning to next state:
+
+| Time | Animation |
+|------|-----------|
+| 0-150ms | Current state fills (◐ → ●) |
+| 150-300ms | Connector line fills left to right |
+| 300-450ms | Next state activates (○ → ◐) |
+| 450ms+ | Pulse animation starts on new current |
+
+### 22.7 Responsive Behavior
+
+| Screen Width | Behavior |
+|--------------|----------|
+| > 400px | Full labels visible |
+| 300-400px | Abbreviated labels ("In Prog") |
+| < 300px | Icons only, labels on tap |
+
+---
+
+## §23. Money Counter Animations
+
+### 23.1 Philosophy
+
+Money animations must feel **premium and earned**, not cartoonish. Think Cash App, not slot machine.
+
+### 23.2 Balance Change Animation
+
+When balance changes (payment received):
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│  AVAILABLE BALANCE                                              │
+│                                                                 │
+│  $127.50 → $157.25                                             │
+│  ↑                                                              │
+│  Digits roll up smoothly                                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 23.3 Digit Roll Animation
+
+| Property | Value |
+|----------|-------|
+| **Direction** | Up for positive, down for negative |
+| **Duration** | 50ms per $10 (max 1500ms) |
+| **Easing** | ease-out |
+| **Digit style** | Monospace, each digit animates independently |
+
+### 23.4 Implementation
+
+```typescript
+const AnimatedBalance = ({ from, to, duration = 1000 }) => {
+  const animatedValue = useSharedValue(from);
+
+  useEffect(() => {
+    animatedValue.value = withTiming(to, {
+      duration,
+      easing: Easing.out(Easing.cubic),
+    });
+
+    // Play sound
+    soundManager.play('money_counter_tick');
+  }, [to]);
+
+  const animatedText = useDerivedValue(() => {
+    return `$${animatedValue.value.toFixed(2)}`;
+  });
+
+  return (
+    <ReText
+      text={animatedText}
+      style={[typography.price, { fontVariant: ['tabular-nums'] }]}
+    />
+  );
+};
+```
+
+### 23.5 Payment Arrival Sequence
+
+Full animation when payment is released:
+
+| Time | Element | Animation |
+|------|---------|-----------|
+| 0-100ms | "+$29.75" | Fade in + slide up from bottom |
+| 100-400ms | Amount badge | Float up toward balance |
+| 400-1000ms | Balance digits | Roll from old to new value |
+| 1000-1200ms | Balance | Gentle scale pulse (1.0 → 1.02 → 1.0) |
+| 1200ms | Haptic | Success + Heavy pattern |
+| 1200ms | Sound | `money_incoming` |
+
+### 23.6 Counter Tick Pattern
+
+For large changes, tick sound plays during animation:
+
+```typescript
+const animateWithTicks = async (from: number, to: number) => {
+  const diff = to - from;
+  const ticks = Math.min(Math.ceil(diff / 10), 20); // Max 20 ticks
+  const tickInterval = 1000 / ticks;
+
+  for (let i = 0; i < ticks; i++) {
+    soundManager.play('money_counter_tick', { volume: 0.2 });
+    await delay(tickInterval);
+  }
+  soundManager.play('money_counter_complete', { volume: 0.5 });
+};
+```
+
+### 23.7 Money Animation Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **MONEY-ANIM-1** | No animation before server confirms | State guard |
+| **MONEY-ANIM-2** | Animation duration ≤ 1500ms | Constant |
+| **MONEY-ANIM-3** | Sound volume ≤ 0.5 for ticks | Audio config |
+| **MONEY-ANIM-4** | Monospace font for digits (prevent jumping) | Typography rule |
+
+---
+
+## §24. Skeleton Loading States
+
+### 24.1 Philosophy
+
+Skeletons create **anticipation of content shape** rather than infinite spinners that provide no information.
+
+> **Core Principle:** Users should understand what's loading before it loads.
+
+### 24.2 Skeleton Components
+
+| Component | Skeleton Shape | Shimmer |
+|-----------|---------------|---------|
+| **Task Card** | Rectangle + 3 lines + button | Yes |
+| **Avatar** | Circle | Yes |
+| **Text Line** | Rounded rectangle | Yes |
+| **Button** | Rounded rectangle (44px height) | No |
+| **Price** | Rectangle (monospace width) | Yes |
+| **Badge** | Circle | Yes |
+| **Image** | Rectangle (aspect ratio preserved) | Yes |
+
+### 24.3 Task Card Skeleton
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │  ████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░ │    │
+│  │  Title skeleton (75% width)                            │    │
+│  └────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌────────────────────────────────────┐                        │
+│  │  ████████████████░░░░░░░░░░░░░░░░░ │ ← Poster name (50%)   │
+│  └────────────────────────────────────┘                        │
+│                                                                 │
+│  ┌────────────────┐     ┌────────────────┐                    │
+│  │  ██████████░░░ │     │  ██████████░░░ │ ← Price, Distance  │
+│  └────────────────┘     └────────────────┘                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 24.4 Shimmer Animation
+
+```typescript
+const Shimmer = ({ width, height, borderRadius }) => {
+  const shimmerPosition = useSharedValue(-width);
+
+  useEffect(() => {
+    shimmerPosition.value = withRepeat(
+      withTiming(width * 2, { duration: 1500, easing: Easing.linear }),
+      -1, // Infinite
+      false // No reverse
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: shimmerPosition.value }],
+  }));
+
+  return (
+    <View style={[styles.skeleton, { width, height, borderRadius }]}>
+      <Animated.View style={[styles.shimmer, animatedStyle]} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  skeleton: {
+    backgroundColor: colors.neutral[200],
+    overflow: 'hidden',
+  },
+  shimmer: {
+    width: '50%',
+    height: '100%',
+    backgroundColor: colors.neutral[100],
+    opacity: 0.8,
+  },
+});
+```
+
+### 24.5 Screen-Specific Skeletons
+
+| Screen | Skeleton Pattern |
+|--------|------------------|
+| **Task Feed** | 5 task card skeletons, staggered fade in |
+| **Task Detail** | Header + description lines + price block + action button |
+| **Profile** | Avatar + name + stats grid + badge row |
+| **Wallet** | Balance block + transaction list (4 items) |
+| **Messages** | Avatar + 2 lines per message (5 messages) |
+
+### 24.6 Progressive Loading
+
+Load content progressively as it becomes available:
+
+| Priority | Content | Load Order |
+|----------|---------|------------|
+| 1 | Layout structure | Immediate |
+| 2 | Text content | First API response |
+| 3 | Avatars | Image preload |
+| 4 | Rich media | Background fetch |
+
+### 24.7 Skeleton Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **SKEL-1** | Skeleton matches final content shape | Design review |
+| **SKEL-2** | Shimmer direction: left to right | Animation config |
+| **SKEL-3** | Shimmer speed: 1500ms per cycle | Constant |
+| **SKEL-4** | No skeleton for < 200ms loads | Delay guard |
+| **SKEL-5** | Reduced motion: static gray (no shimmer) | Accessibility check |
+
+---
+
+## §25. Live Mode Tracking (Expanded)
+
+### 25.1 Real-Time Map Component
+
+For Live Mode tasks, both poster and hustler see real-time location.
+
+### 25.2 Map States
+
+| State | Poster View | Hustler View |
+|-------|-------------|--------------|
+| **ACCEPTED** | Hustler location dot + ETA | Route to task location |
+| **IN_PROGRESS** | Hustler at location indicator | Task location pin |
+| **PROOF_SUBMITTED** | N/A (awaiting review) | N/A (awaiting approval) |
+
+### 25.3 Location Update Frequency
+
+| Scenario | Update Interval | Battery Impact |
+|----------|-----------------|----------------|
+| **Active Live Mode** | 5 seconds | Medium |
+| **En route to task** | 10 seconds | Low-Medium |
+| **At task location** | 30 seconds | Low |
+| **App backgrounded** | 60 seconds | Minimal |
+
+### 25.4 Map UI Elements
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  [MAP]                                                          │
+│                                                                 │
+│      ● Hustler location (blue dot, pulsing)                    │
+│       \                                                         │
+│        \ Route line (blue, animated dash)                      │
+│         \                                                       │
+│          📍 Task location (red pin)                            │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Marcus is on the way                                   │   │
+│  │  ETA: 8 min • 0.7 mi away                               │   │
+│  │  ████████████░░░░░░░░                                   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 25.5 Geofence Triggers
+
+| Geofence | Radius | Trigger Action |
+|----------|--------|----------------|
+| **Approaching** | 500m | "Almost there" notification to poster |
+| **Arrival** | 50m | "Hustler arrived" notification + state change |
+| **Departure** | 100m | Prompt hustler to submit proof |
+
+### 25.6 ETA Calculation
+
+```typescript
+const calculateETA = (
+  hustlerLocation: LatLng,
+  taskLocation: LatLng,
+  travelMode: 'driving' | 'walking'
+): ETAResult => {
+  // Use mapping API (Google Maps, MapBox)
+  const route = await mapsApi.getRoute(hustlerLocation, taskLocation, travelMode);
+
+  return {
+    minutes: Math.ceil(route.duration / 60),
+    distance_miles: route.distance / 1609.34,
+    updated_at: new Date(),
+  };
+};
+```
+
+### 25.7 Privacy Controls
+
+| Data | Visibility | Retention |
+|------|------------|-----------|
+| **Exact location** | Task participants only | Until task complete |
+| **Route** | Task participants only | Until task complete |
+| **Location history** | Never shared | Deleted after 24h |
+
+---
+
+## §26. Streak Mechanics (Expanded)
+
+### 26.1 Streak System Overview
+
+Per Duolingo model: streaks drive retention, but HustleXP streaks are **never punitive**.
+
+### 26.2 Streak Types
+
+| Streak | Definition | Reward |
+|--------|------------|--------|
+| **Daily Streak** | Complete ≥1 task per day | +5% XP bonus |
+| **Weekly Streak** | Complete ≥3 tasks per week | Badge unlock at 4, 8, 12 weeks |
+| **Category Streak** | 5+ tasks in same category | Category badge |
+
+### 26.3 Streak Freeze System
+
+Users can **freeze** their streak to avoid losing progress:
+
+| Item | Cost | Effect | Limit |
+|------|------|--------|-------|
+| **Streak Freeze** | 50 XP | Protects 1 day | 2 active max |
+| **Weekend Bonus** | Free | Auto-freeze Sat+Sun | Earned at 7-day streak |
+
+### 26.4 Streak UI
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  🔥 14 DAY STREAK                                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  M   T   W   T   F   S   S                                     │
+│  ●   ●   ●   ●   ●   ❄   ❄                                    │
+│  ↑               ↑   ↑                                          │
+│  Week start    Today  Weekend (protected)                       │
+│                                                                 │
+│  STREAK FREEZES: 2 available                                    │
+│  ❄ ❄                                                           │
+│                                                                 │
+│  [ Use Freeze ] (costs 50 XP)                                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 26.5 Streak Recovery
+
+If streak breaks (no freeze available):
+
+| Days Missed | Consequence | Recovery |
+|-------------|-------------|----------|
+| 1 day | Streak resets to 0 | Complete 1 task to start new streak |
+| 2-7 days | Streak resets to 0 | "Streak Repair" available (100 XP) |
+| 7+ days | Streak resets to 0 | No repair option |
+
+### 26.6 Streak Milestone Rewards
+
+| Milestone | Reward | Badge |
+|-----------|--------|-------|
+| 7 days | +10% XP for 24h | "Week Warrior" (Matte) |
+| 30 days | +15% XP for 24h | "Month Master" (Metallic) |
+| 100 days | +20% XP for 48h | "Century Club" (Holographic) |
+| 365 days | +25% XP for 7 days | "Year Legend" (Obsidian) |
+
+### 26.7 Streak Notifications
+
+| Event | Notification | Timing |
+|-------|--------------|--------|
+| Streak about to break | "Complete a task to keep your 14-day streak!" | 6 PM if no task that day |
+| Streak broken | "Streak ended at 14 days. Start a new one!" | Morning after break |
+| Milestone reached | "🔥 30-day streak! You earned Month Master badge" | Immediately |
+
+### 26.8 Streak Invariants
+
+| ID | Invariant | Enforcement |
+|----|-----------|-------------|
+| **STREAK-1** | Streak freeze can only be used once per day | Backend validation |
+| **STREAK-2** | Weekend bonus only applies after 7-day streak | Backend flag |
+| **STREAK-3** | Streak repair costs XP, not money | Product rule |
+| **STREAK-4** | No anxiety language ("Don't break!") | Copy guard |
+| **STREAK-5** | Streak state is server-authoritative | Backend calculation |
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
@@ -1989,7 +2628,8 @@ const REQUIRED_PAUSE_ELEMENTS = [
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: Money Timeline (§14), Failure Recovery UX (§15) |
 | 1.4.0 | Jan 2025 | HustleXP Core | Added: Session Forecast (§17), Private Percentile Status (§18), Poster Quality Filtering (§19), Exit With Dignity/Pause State (§20). UI_SPEC now MAX-TIER complete. |
 | 1.5.0 | Jan 2025 | HustleXP Core | Added: Layered Influence Hierarchy (§2) — The UI Stack (Apple Glass → Duolingo → COD/Clash Royale). Non-negotiable order enforced with 7 invariants. This is the foundational design philosophy for all UI. |
+| 1.6.0 | Jan 2025 | HustleXP Core | Added: Haptic Feedback Patterns (§20), Micro-Interaction Specifications (§21), Status Breadcrumb Component (§22), Money Counter Animations (§23), Skeleton Loading States (§24), Live Mode Tracking Expanded (§25), Streak Mechanics Expanded (§26). UI_SPEC now 10X polished with Apple Glass + Duolingo + DoorDash/Uber patterns. |
 
 ---
 
-**END OF UI_SPEC v1.5.0 (MAX-TIER + LAYERED HIERARCHY)**
+**END OF UI_SPEC v1.6.0 (10X POLISHED)**

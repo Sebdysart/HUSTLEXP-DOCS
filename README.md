@@ -111,10 +111,10 @@ If a screen feels like "starting from zero" → it FAILS quality review.
 ```
 READ IN ORDER:
 1. EXECUTION_QUEUE.md        ← Find next step, execute ONLY that
-2. STOP_CONDITIONS.md        ← Know when to STOP
-3. .cursorrules              ← ENFORCEMENT (not guidance)
-4. SCREEN_ARCHETYPES.md      ← Which archetype is this screen?
-5. UI_COMPONENT_HIERARCHY.md ← What atoms/molecules exist?
+2. SCREEN_ARCHETYPES.md      ← Which archetype is this screen?
+3. UI_COMPONENT_HIERARCHY.md ← What atoms/molecules exist?
+4. STOP_CONDITIONS.md        ← Know when to STOP
+5. .cursorrules              ← ENFORCEMENT (not guidance)
 ```
 
 ### For Claude Code (Backend)
@@ -185,18 +185,10 @@ HUSTLEXP-DOCS/
 │
 ├── 📚 SPECIFICATIONS
 │   └── specs/
-│       ├── 00-overview/          ← Quick start
-│       ├── 01-product/           ← Product specs
-│       ├── 02-architecture/      ← Backend specs
-│       ├── 03-frontend/          ← UI specs
-│       └── 04-backend/           ← Build phases
 │
 ├── 📱 SCREEN SPECIFICATIONS
 │   └── screens-spec/
-│       ├── SCREEN_REGISTRY.md    ← All 38 screens
-│       └── [category]/           ← Per-category specs
 │
-├── 🤖 prompts/                   ← AI execution prompts
 ├── 📊 tracking/                  ← Implementation status
 ├── 📦 reference/                 ← Scaffold code
 └── 🗄️ _archive/                  ← Historical specs

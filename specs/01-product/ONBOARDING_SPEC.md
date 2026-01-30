@@ -1094,13 +1094,20 @@ interface RoleOverrideEvent {
 - [x] Certainty tier computation
 - [x] Enforcement rules generation
 
-### Backend (TODO - Phase 11)
-- [ ] `POST /onboarding/submitCalibration` (AI_INFRASTRUCTURE §15.1)
-- [ ] `POST /onboarding/confirmRole` (AI_INFRASTRUCTURE §15.1)
-- [ ] `POST /onboarding/lockPreferences` (AI_INFRASTRUCTURE §15.1)
+### Backend (Phase 5 — Onboarding)
+**Authority:** API_CONTRACT.md §12 (Onboarding Endpoints)
+
+API Endpoints (fully specified in API_CONTRACT.md):
+- [x] `onboarding.getProgress` — Get current onboarding state
+- [x] `onboarding.setRole` — Set user role (worker/poster)
+- [x] `onboarding.submitCapabilities` — Submit capability claims
+- [x] `onboarding.completeStep` — Mark step complete
+- [x] `onboarding.complete` — Finish onboarding
+
+Implementation Tasks:
 - [ ] Server-side role confidence recomputation
 - [ ] Enforcement rules stored per user
-- [ ] Analytics events
+- [ ] Analytics events for onboarding funnel
 - [ ] `xp_first_celebration_shown_at` column (§14.4)
 
 ---

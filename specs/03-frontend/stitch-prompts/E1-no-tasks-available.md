@@ -73,7 +73,7 @@ Content Layout (Top to Bottom):
    - Title: "Current Settings" (size: 12px, uppercase, tracking: 1.5px, color: #8E8E93, weight: 700)
    - Chips (horizontal flex, gap: 8px, margin-top: 12px):
      - Location: "UW Campus + 2mi" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
-     - Trust Tier: "Tier B — Trusted" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
+     - Trust Tier: "VERIFIED (Tier 2)" (background: rgba(255, 255, 255, 0.1), padding: 6px 12px, rounded: 8px, size: 12px, color: white)
      - Instant Mode: "ON" (background: rgba(66, 188, 240, 0.2), padding: 6px 12px, rounded: 8px, size: 12px, color: #42bcf0)
    - All chips are read-only (no interaction)
 
@@ -170,3 +170,44 @@ When locked, this screen **must not change** without backend changes.
 - User blame (system speaks factually, not user-blaming)
 
 ---
+
+## Props Interface
+
+```typescript
+interface NoTasksAvailableProps {
+  // System status
+  systemStatus: {
+    accountActive: boolean;
+    matchingAutomatic: boolean;
+    reason: 'NO_DEMAND' | 'LOCATION' | 'TIME_WINDOW' | 'SYSTEM_IDLE';
+  };
+
+  // Time expectation (optional)
+  timeExpectation?: {
+    typicalAppearanceHours: number;   // e.g., 24
+    message: string;                   // Backend-provided message
+  };
+
+  // Current settings (read-only display)
+  currentSettings: {
+    location: string;                  // e.g., "UW Campus + 2mi"
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: string;                    // e.g., "Trusted"
+    };
+    liveModeEnabled: boolean;
+  };
+
+  // Callbacks
+  onReturnToDashboard: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- System status from task.getFeed empty response
+- Settings chips are read-only (no interaction)
+- Single action: return to dashboard
+- No refresh, no retry buttons

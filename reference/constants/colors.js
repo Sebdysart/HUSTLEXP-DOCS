@@ -1,113 +1,216 @@
 /**
- * HustleXP Design Tokens v1.3.0
- * 
- * AUTHORITY: UI_SPEC.md v1.3.0 §2 — these values are constitutional.
- * 
- * COLOR AUTHORITY RULES (from UI_SPEC.md §2):
- * - XP colors may ONLY be used for XP displays, level indicators, streak counters, progression bars, level-up celebrations
- * - Money colors may ONLY be used for escrow state indicators, payment amounts, wallet balances, transaction history
- * - Status colors may ONLY be used for system state (success, warning, error, info)
- * - No decorative use of semantic colors
+ * HustleXP Design Tokens v3.0.0
+ *
+ * ⚠️ UPDATED 2026-01-24: Black + Purple brand identity
+ *
+ * AUTHORITY: COLOR_SEMANTICS_LAW.md (supersedes all previous color docs)
+ *
+ * BRAND IDENTITY RULES:
+ * - Brand: Black + Purple (NOT green)
+ * - Entry screens: Black background + purple gradient/glow
+ * - Green is SUCCESS-ONLY (never on entry screens)
+ *
+ * COLOR SEMANTIC RULES:
+ * - Purple: Brand, energy, ambition, CTAs on entry
+ * - Green: SUCCESS STATES ONLY (after positive outcome)
+ * - Red: Errors, live mode
+ * - Orange: Warnings, XP, gamification
+ * - Blue: Info, trust, links
  */
 
-// SEMANTIC COLORS (Legal Meaning)
+// ═══════════════════════════════════════════════════════════════════════════
+// BRAND IDENTITY (Black + Purple)
+// ═══════════════════════════════════════════════════════════════════════════
 
-/** XP Colors — ONLY when XP displayed/awarded (UI_SPEC §2.2) */
-export const XP = {
-  PRIMARY: '#10B981',    // Emerald 500
-  SECONDARY: '#34D399',  // Emerald 400
-  BACKGROUND: '#D1FAE5', // Emerald 100
-  ACCENT: '#059669',     // Emerald 600
+/** Brand Canvas - Used for entry screens, identity surfaces */
+export const BRAND = {
+  BLACK: '#0B0B0F',           // Near-black (premium feel)
+  PURPLE: '#5B2DFF',          // Electric purple (primary accent)
+  PURPLE_LIGHT: '#7A4DFF',    // Lighter purple (gradients)
+  PURPLE_GLOW: '#8B5CF6',     // Glow effects
+  PURPLE_MUTED: '#A78BFA',    // Softer purple (secondary)
+
+  // ⚠️ DEPRECATED - Use successGreen instead for money/success
+  // PRIMARY: '#1FAD7E',      // REMOVED - was causing green entry screens
+  YELLOW: '#FFD900',          // Instant mode only
 };
 
-/** Money Colors — ONLY for escrow/payment states (UI_SPEC §2.3) */
-export const MONEY = {
-  POSITIVE: '#10B981',  // Green - incoming
-  NEGATIVE: '#EF4444',  // Red - outgoing
-  NEUTRAL: '#6B7280',   // Gray - pending
-  LOCKED: '#F59E0B',    // Amber - disputed
+/** Brand Gradient Presets */
+export const BRAND_GRADIENTS = {
+  // Entry screen gradient (purple tint fading to black)
+  ENTRY: ['#1a0a2e', '#0B0B0F', '#000000'],
+  ENTRY_LOCATIONS: [0, 0.3, 1],
+
+  // Purple glow gradient
+  GLOW: ['#5B2DFF', '#8B5CF6'],
+
+  // Premium dark gradient
+  DARK: ['#1C1C1E', '#0B0B0F', '#000000'],
 };
 
-/** Status Colors — ONLY for system state (UI_SPEC §2.4) */
+// ═══════════════════════════════════════════════════════════════════════════
+// SUCCESS / MONEY (Use ONLY after positive outcomes)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * ⚠️ SUCCESS GREEN - ONLY for success states, NEVER on entry screens
+ *
+ * ALLOWED: Task completed, escrow released, money received, confirmations
+ * FORBIDDEN: Entry backgrounds, brand surfaces, onboarding
+ */
+export const SUCCESS = {
+  GREEN: '#34C759',           // Apple HIG green
+  MONEY_GREEN: '#1FAD7E',     // HustleXP teal (for money displays)
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STATUS COLORS (Contextual use only)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/** Apple System Colors (iOS HIG) */
+export const APPLE = {
+  RED: '#FF3B30',
+  ORANGE: '#FF9500',
+  GREEN: '#34C759',
+  BLUE: '#007AFF',
+  GRAY: '#8E8E93',
+};
+
+/** Status Colors — ONLY for system state */
 export const STATUS = {
-  SUCCESS: '#10B981',   // Confirmation, completion
-  WARNING: '#F59E0B',   // Attention needed, caution
-  ERROR: '#EF4444',     // Failure, rejection, danger
-  INFO: '#3B82F6',      // Neutral information
+  SUCCESS: '#34C759',         // Apple green - ONLY after success
+  WARNING: '#FF9500',         // Apple orange
+  ERROR: '#FF3B30',           // Apple red
+  INFO: '#007AFF',            // Apple blue
 };
 
-// NEUTRAL PALETTE
+// ═══════════════════════════════════════════════════════════════════════════
+// BACKGROUND & SURFACES
+// ═══════════════════════════════════════════════════════════════════════════
 
-export const GRAY = {
-  50: '#F9FAFB',
-  100: '#F3F4F6',
-  200: '#E5E7EB',
-  300: '#D1D5DB',
-  400: '#9CA3AF',
-  500: '#6B7280',
-  600: '#4B5563',
-  700: '#374151',
-  800: '#1F2937',
-  900: '#111827',
+/** Background & Surfaces */
+export const BACKGROUND = {
+  PRIMARY: '#000000',         // Pure black
+  BRAND: '#0B0B0F',           // Near-black (premium)
+  ELEVATED: '#1C1C1E',
 };
 
-// BADGE MATERIALS (UI_SPEC §4.1 - Tier-Material Binding)
-
-export const BADGE = {
-  // ROOKIE tier - Matte (flat color, no effects)
-  ROOKIE: {
-    color: '#6B7280', // Gray-500
-  },
-  // VERIFIED tier - Metallic (subtle gradient, soft shine)
-  VERIFIED: {
-    start: '#71717A', // Zinc-500
-    end: '#A1A1AA',   // Zinc-400
-  },
-  // TRUSTED tier - Holographic (animated gradient, premium)
-  TRUSTED: {
-    start: '#F59E0B', // Amber-500
-    end: '#FCD34D',   // Amber-300
-    glow: '#10B981',  // Emerald-500
-  },
+/** Glass (glassmorphism) */
+export const GLASS = {
+  SURFACE: 'rgba(28, 28, 30, 0.6)',
+  SURFACE_DARK: 'rgba(11, 11, 15, 0.8)',
+  BORDER: 'rgba(255, 255, 255, 0.1)',
+  PURPLE_TINT: 'rgba(91, 45, 255, 0.1)',
 };
 
-// LIVE MODE COLORS (UI_SPEC §13.1)
+// ═══════════════════════════════════════════════════════════════════════════
+// TEXT COLORS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/** Text colors */
+export const TEXT = {
+  PRIMARY: '#FFFFFF',
+  SECONDARY: '#E5E5EA',
+  MUTED: '#8E8E93',
+  PURPLE: '#A78BFA',          // Purple text for accents
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SEMANTIC COLORS (Contextual use)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/** XP Colors — ONLY when XP displayed/awarded */
+export const XP = {
+  PRIMARY: '#8B5CF6',         // Purple (brand-aligned)
+  SECONDARY: '#A78BFA',       // Lighter purple
+  ACCENT: '#FF9500',          // Apple orange (XP gain highlight)
+};
+
+/** Money Colors — ONLY for escrow/payment states */
+export const MONEY = {
+  POSITIVE: '#34C759',        // Apple green - incoming
+  NEGATIVE: '#FF3B30',        // Apple red - outgoing
+  NEUTRAL: '#8E8E93',         // Apple gray - pending
+  LOCKED: '#FF9500',          // Apple orange - disputed
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TRUST TIER COLORS
+// ═══════════════════════════════════════════════════════════════════════════
+
+export const TIER = {
+  ROOKIE: '#71717A',          // Zinc 500 (matte gray)
+  VERIFIED: '#007AFF',        // Apple Blue
+  TRUSTED: '#8B5CF6',         // Purple (brand-aligned)
+  ELITE: '#FFD700',           // Gold
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LIVE MODE COLORS
+// ═══════════════════════════════════════════════════════════════════════════
 
 export const LIVE_MODE = {
-  INDICATOR: '#EF4444',      // Red-500 - Live badge, active broadcast
-  STANDARD: '#6B7280',       // Gray-500 - Standard mode, neutral
-  ACTIVE: '#22C55E',         // Green-500 - Hustler Live Mode active
-  COOLDOWN: '#F59E0B',       // Amber-500 - Hustler in cooldown
+  INDICATOR: '#FF3B30',       // Apple red
+  STANDARD: '#8E8E93',        // Apple gray
+  ACTIVE: '#34C759',          // Apple green (active state only)
+  COOLDOWN: '#FF9500',        // Apple orange
 };
 
-// NEUTRAL COLORS (No semantic meaning - UI_SPEC §2.1)
+// ═══════════════════════════════════════════════════════════════════════════
+// NEUTRAL PALETTE
+// ═══════════════════════════════════════════════════════════════════════════
 
-export const NEUTRAL = {
-  BACKGROUND: '#FFFFFF',
-  BACKGROUND_SECONDARY: GRAY[50],
-  BACKGROUND_TERTIARY: GRAY[100],
-  TEXT: GRAY[900],
-  TEXT_SECONDARY: GRAY[600],
-  TEXT_TERTIARY: GRAY[400],
-  TEXT_INVERSE: '#FFFFFF',
-  BORDER: GRAY[200],
-  BORDER_STRONG: GRAY[300],
-  DISABLED: GRAY[300],
-  DISABLED_TEXT: GRAY[400],
+export const ZINC = {
+  200: '#E4E4E7',
+  300: '#D4D4D8',
+  400: '#A1A1AA',
+  500: '#71717A',
+  600: '#52525B',
+  700: '#3F3F46',
+  800: '#27272A',
 };
 
-// COMMON COLORS (for general UI - deprecated, use NEUTRAL)
+// ═══════════════════════════════════════════════════════════════════════════
+// ENTRY SCREEN COLORS (COPY THESE EXACTLY)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Pre-configured colors for entry screens
+ * Use these to avoid accidentally using green
+ */
+export const ENTRY_SCREEN = {
+  background: '#0B0B0F',
+  gradientColors: ['#1a0a2e', '#0B0B0F', '#000000'],
+  gradientLocations: [0, 0.3, 1],
+  glowColor: '#5B2DFF',
+  glowOpacity: 0.2,
+  buttonBackground: '#5B2DFF',
+  buttonText: '#FFFFFF',
+  headlineText: '#FFFFFF',
+  subtitleText: '#E5E5EA',
+  mutedText: '#8E8E93',
+  linkText: '#A78BFA',
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UNIFIED EXPORT
+// ═══════════════════════════════════════════════════════════════════════════
 
 export const COLORS = {
-  background: NEUTRAL.BACKGROUND,
-  backgroundSecondary: NEUTRAL.BACKGROUND_SECONDARY,
-  backgroundTertiary: NEUTRAL.BACKGROUND_TERTIARY,
-  text: NEUTRAL.TEXT,
-  textSecondary: NEUTRAL.TEXT_SECONDARY,
-  textTertiary: NEUTRAL.TEXT_TERTIARY,
-  textInverse: NEUTRAL.TEXT_INVERSE,
-  border: NEUTRAL.BORDER,
-  borderStrong: NEUTRAL.BORDER_STRONG,
-  disabled: NEUTRAL.DISABLED,
-  disabledText: NEUTRAL.DISABLED_TEXT,
+  brand: BRAND,
+  brandGradients: BRAND_GRADIENTS,
+  success: SUCCESS,
+  apple: APPLE,
+  background: BACKGROUND,
+  glass: GLASS,
+  text: TEXT,
+  xp: XP,
+  money: MONEY,
+  status: STATUS,
+  tier: TIER,
+  liveMode: LIVE_MODE,
+  zinc: ZINC,
+  entryScreen: ENTRY_SCREEN,
 };
+
+export default COLORS;

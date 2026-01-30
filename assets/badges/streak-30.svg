@@ -1,0 +1,19 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background - metallic gold -->
+  <circle cx="40" cy="40" r="38" fill="url(#gold-gradient)" stroke="#B45309" stroke-width="2"/>
+
+  <defs>
+    <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Flame -->
+  <path d="M40 12 C48 24 60 30 60 48 C60 60 51 70 40 70 C29 70 20 60 20 48 C20 30 32 24 40 12 Z" fill="#FEF3C7"/>
+  <path d="M40 28 C45 38 52 44 52 54 C52 60 47 66 40 66 C33 66 28 60 28 54 C28 44 35 38 40 28 Z" fill="#FBBF24"/>
+
+  <!-- Number -->
+  <text x="40" y="58" text-anchor="middle" fill="#78350F" font-family="system-ui" font-size="18" font-weight="bold">30</text>
+</svg>

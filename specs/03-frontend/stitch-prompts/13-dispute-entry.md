@@ -275,3 +275,65 @@ When locked, this screen **must not change** without backend changes.
 - ✅ Dispute reviewer can reconstruct intent (immutable task context, invariant-mapped reasons, structured input, evidence, contract ID)
 
 ---
+
+## Props Interface
+
+```typescript
+interface DisputeEntryProps {
+  // Viewer role
+  viewerRole: 'POSTER' | 'WORKER';
+
+  // Task context (read-only)
+  task: {
+    id: string;
+    title: string;
+    contractId: string;               // e.g., "#820-A4"
+    completionAttemptedAt: string;    // ISO 8601
+    systemVerdict: string;            // e.g., "Completion not approved"
+  };
+
+  // Dispute reasons (role-specific)
+  availableReasons: {
+    id: string;
+    label: string;                    // Invariant-mapped reason
+  }[];
+
+  // Form state
+  selectedReasonId: string | null;
+  certificationChecked: boolean;
+  evidence: {
+    id: string;
+    previewUrl: string;
+  }[];
+
+  // Validation
+  canSubmit: boolean;
+  validationErrors: string[];
+
+  // Consequences (shown always)
+  consequences: string[];             // Bullet points
+
+  // Callbacks
+  onReasonSelect: (reasonId: string) => void;
+  onCertificationToggle: () => void;
+  onAddEvidence: () => void;
+  onRemoveEvidence: (evidenceId: string) => void;
+  onSubmit: () => void;
+  onCancel: () => void;
+
+  // Loading states
+  isSubmitting?: boolean;
+  isUploadingEvidence?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Only accessible after failure states + trust change explanation viewed
+- Reasons are invariant-mapped, no free-form input
+- Evidence capped at 2 images
+- Certification checkbox required before submission
+- One dispute per task, irreversible
+- Manual review triggered after submission

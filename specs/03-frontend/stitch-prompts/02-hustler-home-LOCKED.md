@@ -18,4 +18,4 @@
 
 ---
 
-See `02-hustler-home.html` for the final HTML with refinements applied.
+See `02-hustler-home.md` for the full prompt specification.

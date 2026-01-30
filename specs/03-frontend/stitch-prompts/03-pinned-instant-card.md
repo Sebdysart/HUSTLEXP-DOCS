@@ -83,3 +83,37 @@ Constraints:
 - No dismiss button = already dismissed, this is second chance
 
 ---
+
+## Props Interface
+
+```typescript
+interface PinnedInstantCardProps {
+  // Task data (from parent)
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    location: string;
+    distanceMiles: number;
+    xpMultiplier: number;             // e.g., 1.8
+  };
+
+  // Availability indicator
+  availabilityText: string;           // e.g., "Limited availability"
+
+  // Callbacks
+  onAccept: (taskId: string) => void;
+
+  // Loading states
+  isAccepting?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task data from previously dismissed LiveTaskBroadcast
+- Shown at top of task feed as re-engagement opportunity
+- Parent handles accept API call
+- Card removed when accepted or task expires

@@ -173,7 +173,7 @@ Constraints:
 - ❌ Cannot bypass correction to appeal (support is visually de-emphasized, feels like last resort)
 
 **Backend States Represented:**
-- `task.state === 'COMPLETION_REVIEW'`
+- `task.state === 'PROOF_SUBMITTED'`
 - `proof_status: APPROVED | REJECTED | NEEDS_CORRECTION`
 - `proof_rejection_reasons[]` (explicit bullet list)
 - `xp_eligible: true | false`
@@ -196,3 +196,63 @@ Constraints:
 - ✅ Dispute reviewer can reconstruct intent (contract ID, proof status, rejection reasons, XP outcome, payment status all visible)
 
 ---
+
+## Props Interface
+
+```typescript
+interface HustlerTaskCompletionProps {
+  // Task data
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    contractId: string;               // e.g., "#820-A4"
+  };
+
+  // Verdict state
+  verdict: 'APPROVED' | 'ACTION_REQUIRED' | 'BLOCKED';
+  verdictSubtitle: string;            // e.g., "Task requirements met"
+
+  // Proof review
+  proofReview: {
+    status: 'APPROVED' | 'NEEDS_CORRECTION' | 'REJECTED';
+    criteriaVerified?: string[];      // If approved
+    rejectionReasons?: string[];      // If rejected/needs correction
+  };
+
+  // XP outcome
+  xpOutcome: {
+    awarded: boolean;
+    amount?: number;                  // If awarded
+    withheldReason?: string;          // If withheld
+    breakdownSummary?: string;        // e.g., "Instant • Speed • Streak bonuses applied"
+  };
+
+  // Payment
+  paymentStatus: {
+    state: 'PENDING_RELEASE' | 'BLOCKED';
+    amount: number;                   // In cents
+  };
+
+  // Escrow
+  escrowState: 'FUNDED' | 'LOCKED_DISPUTE';
+
+  // Callbacks
+  onFinishTask: () => void;
+  onFixProofIssues: () => void;
+  onViewIssueDetails: () => void;
+  onContactSupport: () => void;
+
+  // Loading states
+  isSubmitting?: boolean;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Verdict computed by backend based on proof review
+- XP outcome determined by backend quality gates
+- UI cannot bypass proof requirements
+- One-time correction limit enforced by backend

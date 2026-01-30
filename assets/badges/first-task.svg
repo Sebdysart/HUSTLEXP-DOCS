@@ -1,0 +1,10 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Badge background -->
+  <circle cx="40" cy="40" r="38" fill="#10B981" stroke="#059669" stroke-width="2"/>
+
+  <!-- Checkmark -->
+  <path d="M25 42 L35 52 L55 28" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Star accent -->
+  <circle cx="58" cy="22" r="6" fill="#FCD34D"/>
+</svg>

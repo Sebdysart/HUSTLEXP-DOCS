@@ -34,7 +34,7 @@ Content Layout (Top to Bottom):
    - CRITICAL FIX #2: Abstract avatar (geometric shape, NOT photo, size: 56px, rounded-full, background: linear-gradient(135deg, #34C759 0%, #2AB04A 100%), border: 2px solid rgba(52, 199, 89, 0.3))
    - Avatar content: Initials "AM" (size: 20px, weight: 700, color: white)
    - Name: "Alex M." (size: 18px, weight: 700, color: white, margin-top: 4px)
-   - Trust tier badge: "Trusted Tier C" (size: 12px, color: #34C759, background: rgba(52, 199, 89, 0.15), padding: 4px 8px, rounded: 4px, margin-top: 4px, inline-block)
+   - Trust tier badge: "TRUSTED (Tier 3)" (size: 12px, color: #34C759, background: rgba(52, 199, 89, 0.15), padding: 4px 8px, rounded: 4px, margin-top: 4px, inline-block)
    - Stats: "47 tasks • 4.9★ rating" (size: 14px, color: #8E8E93, margin-top: 8px)
    - Subtext: "Verified and in good standing" (size: 12px, color: #8E8E93, opacity: 0.8, margin-top: 4px)
 
@@ -189,3 +189,70 @@ Constraints:
 - Disputes feel exceptional (not routine, system is authoritative)
 
 ---
+
+## Props Interface
+
+```typescript
+interface PosterTaskCompletionProps {
+  // Task data
+  task: {
+    id: string;
+    title: string;
+    price: number;                    // In cents
+    contractId: string;               // e.g., "#820-A4"
+    completedAt: string;              // ISO 8601
+  };
+
+  // Worker info
+  worker: {
+    id: string;
+    displayName: string;              // e.g., "Alex M."
+    initials: string;                 // e.g., "AM"
+    trustTier: {
+      level: 1 | 2 | 3 | 4;
+      name: 'ROOKIE' | 'VERIFIED' | 'TRUSTED' | 'ELITE';
+    };
+    stats: {
+      tasksCompleted: number;
+      averageRating: number;
+    };
+    isVerified: boolean;
+  };
+
+  // Verification summary
+  verification: {
+    workCompleted: boolean;
+    proofVerified: boolean;
+    locationConfirmed: boolean;
+    method: 'AUTO' | 'MANUAL';
+    timestamp: string;                // ISO 8601
+  };
+
+  // Payment
+  payment: {
+    amount: number;                   // In cents
+    status: 'RELEASED';
+    releasedAt: string;               // ISO 8601
+  };
+
+  // Proof (collapsible)
+  proof: {
+    itemCount: number;
+    available: boolean;
+  };
+
+  // Callbacks
+  onLeaveFeedback: () => void;
+  onReportIssue: () => void;
+  onViewProof: () => void;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Task and worker data from `task.getById` with completion state
+- Verification summary computed by backend
+- Payment status from escrow table
+- Proof viewable but not downloadable

@@ -107,3 +107,60 @@ Constraints:
 - System prevents problems before they exist
 
 ---
+
+## Props Interface
+
+```typescript
+interface PosterTaskCreationProps {
+  // Form state (controlled by parent)
+  formData: {
+    title: string;
+    description: string;
+    location: string;
+    locationLat?: number;
+    locationLng?: number;
+    price: number;                    // In cents
+    deadline?: string;                // ISO 8601 timestamp
+    instantModeEnabled: boolean;
+  };
+
+  // AI validation state
+  aiValidation: {
+    state: 'DRAFT' | 'INCOMPLETE' | 'COMPLETE' | 'LOCKED';
+    isComplete: boolean;
+    missingFields: string[];          // e.g., ['access_instructions', 'quantity']
+    hints: { field: string; hint: string }[];
+    suggestedPrice?: { min: number; max: number };
+  };
+
+  // Risk classification (auto-computed)
+  riskClassification: {
+    level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    requiredTrustTier: 1 | 2 | 3 | 4;
+    explanation: string;
+  };
+
+  // Callbacks
+  onFieldChange: (field: keyof TaskCreationFormData, value: string | number | boolean | string[]) => void;
+  onToggleInstantMode: () => void;
+  onSubmit: () => void;
+  onCancel: () => void;
+
+  // Loading states
+  isSubmitting?: boolean;
+  isValidating?: boolean;
+
+  // Error state
+  error?: string;
+
+  // Optional
+  testID?: string;
+}
+```
+
+### Data Flow
+- Form state managed by parent component
+- AI validation runs on field changes (debounced)
+- Risk classification computed by backend, not UI
+- Instant Mode toggle gated by AI validation state
+- Submit blocked until AI state is COMPLETE

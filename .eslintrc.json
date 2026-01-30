@@ -1,0 +1,111 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "@react-native",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "react-native",
+    "hustlexp"
+  ],
+  "env": {
+    "react-native/react-native": true,
+    "es2021": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    // === TYPESCRIPT ===
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/prefer-optional-chain": "warn",
+
+    // === REACT ===
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "react/jsx-no-bind": ["warn", {
+      "allowArrowFunctions": true,
+      "allowFunctions": false
+    }],
+
+    // === REACT HOOKS ===
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+
+    // === REACT NATIVE ===
+    "react-native/no-unused-styles": "warn",
+    "react-native/no-inline-styles": "warn",
+    "react-native/no-color-literals": "warn",
+    "react-native/no-raw-text": ["warn", {
+      "skip": ["HXText"]
+    }],
+
+    // === HUSTLEXP CUSTOM RULES ===
+    // Note: These rules require the eslint-plugin-hustlexp package
+    // See ESLINT_CUSTOM_RULES.md for implementation details
+
+    // Color usage rules (UI_SPEC §2)
+    // "hustlexp/no-xp-color-outside-context": "error",
+    // "hustlexp/no-money-color-decorative": "error",
+    // "hustlexp/no-success-without-confirmation": "error",
+
+    // Animation rules (UI_SPEC §3)
+    // "hustlexp/no-forbidden-animation": "error",
+    // "hustlexp/max-animation-duration": ["error", { "max": 2000 }],
+
+    // Copy rules (UI_SPEC §15)
+    // "hustlexp/no-shame-copy": "error",
+    // "hustlexp/no-false-urgency": "error",
+
+    // Gamification rules (ONBOARDING_SPEC)
+    // "hustlexp/no-gamification-for-poster": "error",
+    // "hustlexp/no-animated-gamification-pre-unlock": "error",
+
+    // === GENERAL ===
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "prefer-const": "warn",
+    "no-var": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-nested-ternary": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.ts", "**/*.test.tsx"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "build/",
+    ".expo/",
+    "*.config.js",
+    "metro.config.js",
+    "babel.config.js"
+  ]
+}

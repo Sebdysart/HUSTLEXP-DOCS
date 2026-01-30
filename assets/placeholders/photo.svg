@@ -1,0 +1,17 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" rx="12" fill="#F3F4F6"/>
+
+  <!-- Camera icon -->
+  <rect x="125" y="160" width="150" height="100" rx="8" stroke="#9CA3AF" stroke-width="4" fill="none"/>
+
+  <!-- Lens -->
+  <circle cx="200" cy="210" r="30" stroke="#9CA3AF" stroke-width="4" fill="none"/>
+  <circle cx="200" cy="210" r="15" fill="#9CA3AF"/>
+
+  <!-- Flash -->
+  <rect x="240" y="145" width="20" height="15" rx="2" fill="#9CA3AF"/>
+
+  <!-- Text -->
+  <text x="200" y="300" text-anchor="middle" fill="#6B7280" font-family="system-ui" font-size="14">Photo unavailable</text>
+</svg>

@@ -160,10 +160,10 @@ Trust tier determines maximum risk clearance level. The mapping is immutable and
 
 **Enforcement:**
 - Database check constraint on capability profiles
-- Trust tier A → low risk only
-- Trust tier B → low and medium risk
-- Trust tier C → low and medium risk
-- Trust tier D → low, medium, and high risk
+- Trust tier 1 (ROOKIE) → low risk only
+- Trust tier 2 (VERIFIED) → low and medium risk
+- Trust tier 3 (TRUSTED) → low and medium risk
+- Trust tier 4 (ELITE) → low, medium, and high risk
 
 **Violation Behavior:**
 If violated, users could access tasks they are not legally or safely qualified for, leading to liability and trust erosion.
@@ -687,17 +687,17 @@ DELETE FROM xp_ledger WHERE id = 'any-id';
 | Level | XP Required | Title |
 |-------|-------------|-------|
 | 1 | 0 | Rookie |
-| 2 | 100 | Beginner |
-| 3 | 300 | Apprentice |
-| 4 | 600 | Journeyman |
-| 5 | 1,000 | Skilled |
-| 6 | 1,500 | Expert |
-| 7 | 2,100 | Master |
-| 8 | 2,800 | Grandmaster |
-| 9 | 3,600 | Legend |
-| 10 | 4,500 | Mythic |
+| 2 | 100 | Apprentice |
+| 3 | 300 | Hustler |
+| 4 | 700 | Pro |
+| 5 | 1,500 | Expert |
+| 6 | 2,700 | Veteran |
+| 7 | 4,500 | Master |
+| 8 | 7,000 | Elite |
+| 9 | 10,500 | Legend |
+| 10 | 18,500 | Mythic |
 
-Level calculation: `floor(sqrt(total_xp / 25)) + 1` capped at 10.
+Level calculation: See `schema.sql:calculate_level()` function. Thresholds designed for balanced progression curve.
 
 ### 5.5 Streaks
 
@@ -810,20 +810,20 @@ Role is determined during onboarding (see ONBOARDING_SPEC.md).
 
 ### 8.2 Trust Tiers
 
-| Tier | Requirements | Benefits | Risk Clearance |
-|------|--------------|----------|----------------|
-| `A` (ROOKIE) | New user | Base rates | Low risk only |
-| `B` (VERIFIED) | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
-| `C` (TRUSTED) | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
-| `D` (ELITE) | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
+| Tier | Name | Requirements | Benefits | Risk Clearance |
+|------|------|--------------|----------|----------------|
+| 1 | ROOKIE | New user | Base rates | Low risk only |
+| 2 | VERIFIED | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
+| 3 | TRUSTED | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
+| 4 | ELITE | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
 
 Trust tier changes are logged in `trust_ledger` (append-only).
 
 **Risk Clearance Mapping:**
 - Trust tier determines the maximum risk level of tasks a user can access (see INV-ELIGIBILITY-1 in §2)
-- This mapping is **immutable**—trust tier A cannot access high-risk tasks, even if the user is willing
+- This mapping is **immutable**—trust tier 1 (ROOKIE) cannot access high-risk tasks, even if the user is willing
 - Risk clearance is derived from trust tier, not stored separately, ensuring consistency
-- Users with trust tier D can access all risk levels (low, medium, high); users with trust tier A can only access low-risk tasks
+- Users with trust tier 4 (ELITE) can access all risk levels (low, medium, high); users with trust tier 1 (ROOKIE) can only access low-risk tasks
 
 **What This Prevents:**
 - New users accepting high-risk tasks they're not yet trusted to complete
@@ -895,7 +895,7 @@ Optional feedback flags:
 
 ---
 
-## §8. AI Task Completion System
+## §8a. AI Task Completion System
 
 ### 8.1 Core Principle (LOCK THIS)
 
@@ -1153,7 +1153,7 @@ All messages scanned via AI (A2 authority):
 | **MSG-1** | Messages only allowed during ACCEPTED/PROOF_SUBMITTED/DISPUTED | Backend validation |
 | **MSG-2** | Sender must be poster or worker for task | Backend validation |
 | **MSG-3** | Maximum 3 photos per message | DB constraint |
-| **MSG-4** | Maximum 500 characters per text message | Backend validation |
+| **MSG-4** | Maximum 500 characters per text message | DB constraint (schema.sql line 1535) |
 | **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation |
 
 **Detailed specification:** See `staging/MESSAGING_SPEC.md`
@@ -1261,6 +1261,7 @@ Both worker and poster rate each other after task completion. Ratings cannot be 
 | **RATE-4** | Ratings are immutable (cannot edit/delete) | DB constraint + backend validation |
 | **RATE-5** | One rating per pair per task | DB UNIQUE constraint |
 | **RATE-6** | Stars must be 1-5 | DB CHECK constraint |
+| **RATE-7** | Comment must be ≤500 characters | DB CHECK constraint (schema.sql line 1644) |
 
 **Detailed specification:** See `staging/RATING_SYSTEM_SPEC.md`
 
@@ -1666,9 +1667,9 @@ If a task appears in your feed, you can accept it. Period.
 
 **Trust Tier:**
 - Determines maximum risk clearance level (see INV-ELIGIBILITY-1)
-- Trust tier A → low risk only
-- Trust tier B/C → low and medium risk
-- Trust tier D → low, medium, and high risk
+- Trust tier 1 (ROOKIE) → low risk only
+- Trust tier 2/3 (VERIFIED/TRUSTED) → low and medium risk
+- Trust tier 4 (ELITE) → low, medium, and high risk
 
 **Insurance:**
 - Required for high-risk tasks (in-home work, property damage risk)
@@ -1724,7 +1725,7 @@ If a task appears in your feed, you can accept it. Period.
 
 **Trust Tiers (§8.2):**
 - Trust tier determines risk clearance level (see INV-ELIGIBILITY-1)
-- Risk clearance caps task visibility (high-risk tasks require trust tier D)
+- Risk clearance caps task visibility (high-risk tasks require trust tier 4/ELITE)
 - Trust tier changes trigger capability profile recomputation
 
 **Onboarding (§8.1):**
@@ -1778,16 +1779,21 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX201` | Release without completed task | INV-2 violation |
 | `HX301` | Complete without accepted proof | INV-3 violation |
 | `HX401` | Badge deletion attempt | Append-only violation |
-| `HX801` | Admin action audit violation | Append-only violation |
+| `HX501` | Admin action audit violation | Append-only violation |
 | `HX901` | Live broadcast without funded escrow | LIVE-1 violation |
 | `HX902` | Live task below price floor | LIVE-2 violation |
 | `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |
 | `HX904` | Live Mode toggle cooldown | Toggle attempt within 5 minutes |
 | `HX905` | Live Mode banned | Attempt to enable while banned |
-| `HX601` | Fatigue break bypass | FATIGUE-4 violation (reserved) |
-| `HX602` | Pause state violation | PAUSE-* violation (reserved) |
-| `HX603` | Poster rep access by poster | POSTER-1 violation (reserved) |
-| `HX604` | Percentile public exposure | PERC-1 violation (reserved) |
+| `HX601` | Fatigue break bypass | FATIGUE-4 violation |
+| `HX602` | Pause state violation | PAUSE-* violation |
+| `HX603` | Poster rep access by poster | POSTER-1 violation |
+| `HX604` | Percentile public exposure | PERC-1 violation |
+| `HX605` | Trust tier / risk clearance mismatch | INV-ELIGIBILITY-1 violation |
+| `HX606` | Verified trade without active license | INV-ELIGIBILITY-2 violation |
+| `HX607` | Expired credential access attempt | INV-ELIGIBILITY-3 violation |
+| `HX608` | Insurance without verified trade | INV-ELIGIBILITY-4 violation |
+| `HX609` | Ineligible task access attempt | INV-ELIGIBILITY-5 through INV-ELIGIBILITY-8 violation |
 | `HX701` | AI question attempted after LOCKED | COMPLETE-3 violation |
 | `HX702` | Escrow funding attempted before COMPLETE | COMPLETE-4 violation |
 | `HX703` | Invalid question type (not in 4 allowed types) | COMPLETE-5 violation |
@@ -1803,10 +1809,10 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX809` | Rating edit/delete attempted | RATE-4 violation |
 | `HX810` | Rating stars out of range (1-5) | RATE-6 violation |
 | `HX811` | Rating comment exceeds limit (500 chars) | RATE-7 violation |
-| `HX901` | Risk score calculation failed | FRAUD-1 violation |
-| `HX902` | High-risk entity bypassed review | FRAUD-2 violation |
-| `HX903` | Critical-risk entity not auto-rejected | FRAUD-3 violation |
-| `HX904` | Self-match not blocked | FRAUD-4 violation |
+| `HX911` | Risk score calculation failed | FRAUD-1 violation |
+| `HX912` | High-risk entity bypassed review | FRAUD-2 violation |
+| `HX913` | Critical-risk entity not auto-rejected | FRAUD-3 violation |
+| `HX914` | Self-match not blocked | FRAUD-4 violation |
 | `HX951` | Content moderation scan failed | MOD-1 violation |
 | `HX952` | CRITICAL content not auto-quarantined | MOD-2 violation |
 | `HX953` | Review queue SLA deadline missing | MOD-3 violation |
