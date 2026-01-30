@@ -468,7 +468,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_message_requires_active_task
-  BEFORE INSERT ON messages
+  BEFORE INSERT ON task_messages
   FOR EACH ROW
   EXECUTE FUNCTION message_requires_active_task();
 
@@ -497,7 +497,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_message_sender_is_participant
-  BEFORE INSERT ON messages
+  BEFORE INSERT ON task_messages
   FOR EACH ROW
   EXECUTE FUNCTION message_sender_is_participant();
 
@@ -506,7 +506,7 @@ CREATE TRIGGER trg_message_sender_is_participant
 -- SPEC: PRODUCT_SPEC.md §10.5
 -- Error Code: HX804
 -- ----------------------------------------------------------------------------
-ALTER TABLE messages ADD CONSTRAINT message_content_length CHECK (
+ALTER TABLE task_messages ADD CONSTRAINT message_content_length CHECK (
   content IS NULL OR LENGTH(content) <= 500
 );
 
@@ -581,6 +581,34 @@ ALTER TABLE ratings ADD CONSTRAINT rating_stars_range CHECK (
   stars >= 1 AND stars <= 5
 );
 
+-- ----------------------------------------------------------------------------
+-- RATE-7: Comment Must Be ≤500 Characters
+-- SPEC: PRODUCT_SPEC.md §12.5
+-- Error Code: HX811
+-- NOTE: Enforced via CHECK constraint in schema.sql line 1644
+--       CHECK (comment IS NULL OR LENGTH(comment) <= 500)
+-- ----------------------------------------------------------------------------
+-- (Constraint defined in schema.sql, not duplicated here)
+
+-- ----------------------------------------------------------------------------
+-- RATE-2: Rating Window 7 Days (APP-LEVEL ENFORCEMENT)
+-- SPEC: PRODUCT_SPEC.md §12.5
+-- Error Code: HX808
+-- NOTE: Time-based enforcement is handled at application layer.
+--       Backend validates: rating.created_at <= task.completed_at + 7 days
+--       This cannot be a DB trigger because it requires business logic timing.
+-- ----------------------------------------------------------------------------
+-- (Enforced at application layer, not database)
+
+-- ----------------------------------------------------------------------------
+-- RATE-3: Both Parties Must Rate (APP-LEVEL ENFORCEMENT)
+-- SPEC: PRODUCT_SPEC.md §12.5
+-- NOTE: Auto-rating after 7 days is a background job responsibility.
+--       The database cannot initiate time-based actions autonomously.
+--       A scheduled job checks for missing ratings and creates auto-ratings.
+-- ----------------------------------------------------------------------------
+-- (Enforced via background job, not database trigger)
+
 -- ============================================================================
 -- SECTION 11: GDPR CONSTRAINTS
 -- ============================================================================
@@ -624,12 +652,25 @@ ALTER TABLE users ADD CONSTRAINT user_location_state_format CHECK (
 -- ----------------------------------------------------------------------------
 -- Calculate Level from XP
 -- SPEC: PRODUCT_SPEC.md §5.4
+-- NOTE: Must match schema.sql calculate_level() exactly
 -- ----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION calculate_level(total_xp INTEGER)
 RETURNS INTEGER AS $$
 BEGIN
-  -- Level calculation: floor(sqrt(total_xp / 25)) + 1 capped at 10
-  RETURN LEAST(FLOOR(SQRT(total_xp / 25.0)) + 1, 10);
+  -- Level thresholds from PRODUCT_SPEC §5.4 (canonical source: schema.sql line 1139)
+  -- Thresholds: 0, 100, 300, 700, 1500, 2700, 4500, 7000, 10500, 18500
+  RETURN CASE
+    WHEN total_xp >= 18500 THEN 10  -- Mythic
+    WHEN total_xp >= 10500 THEN 9   -- Legend
+    WHEN total_xp >= 7000 THEN 8    -- Elite
+    WHEN total_xp >= 4500 THEN 7    -- Master
+    WHEN total_xp >= 2700 THEN 6    -- Veteran
+    WHEN total_xp >= 1500 THEN 5    -- Expert
+    WHEN total_xp >= 700 THEN 4     -- Pro
+    WHEN total_xp >= 300 THEN 3     -- Hustler
+    WHEN total_xp >= 100 THEN 2     -- Apprentice
+    ELSE 1                          -- Rookie
+  END;
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
