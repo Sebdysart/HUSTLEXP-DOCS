@@ -297,3 +297,55 @@
 # - Users must feel CHOSEN, not tested.
 # - If you disagree with a spec, STOP and tell the user. Do not "fix" it.
 # ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 10: UI_SPEC ENFORCEMENT RULES (from specs/03-frontend/UI_SPEC.md)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# rule "UI_SPEC §1: Must use HustleColors brand palette ONLY"
+# rule "UI_SPEC §2: Must use HustleTypography presets ONLY"
+# rule "UI_SPEC §3: Must use HustleSpacing scale (4px base) ONLY"
+# rule "UI_SPEC §4: Must follow motion timing curves from spec"
+# rule "UI_SPEC §5: Must use existing atoms/molecules from ui-puzzle/"
+# rule "UI_SPEC §6: Must meet WCAG 2.1 AA accessibility"
+
+# CHECKPOINT GATES (from AI_CHECKPOINTS.md):
+# Before ANY implementation passes, verify:
+#   ✅ COLORS_GATE    — All colors from tokens/colors.md
+#   ✅ TYPOGRAPHY_GATE — All text uses Text atom with presets
+#   ✅ SPACING_GATE    — All spacing uses Spacer atom or scale
+#   ✅ COMPONENT_GATE  — All components from ui-puzzle/ registries
+#   ✅ LAYER_GATE      — No business logic in frontend
+#   ✅ FEATURE_GATE    — Feature exists in FINISHED_STATE.md
+
+# IF ANY GATE FAILS → STOP and report the specific failure.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 11: UI-PUZZLE REFERENCES (Read These For Component Specs)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ATOMS (9 total):
+# ✅ ui-puzzle/atoms/ATOM_REGISTRY.md    — Index of all atoms
+# ✅ ui-puzzle/atoms/Button.md           — Button spec
+# ✅ ui-puzzle/atoms/Text.md             — Text spec
+# ✅ ui-puzzle/atoms/Input.md            — Input spec
+# ✅ ui-puzzle/atoms/Icon.md             — Icon spec
+# ✅ ui-puzzle/atoms/Avatar.md           — Avatar spec
+# ✅ ui-puzzle/atoms/Badge.md            — Badge spec
+
+# MOLECULES (12 total):
+# ✅ ui-puzzle/molecules/MOLECULE_REGISTRY.md — Index of all molecules
+# ✅ ui-puzzle/molecules/TaskCard.md          — TaskCard spec
+# ✅ ui-puzzle/molecules/UserHeader.md        — UserHeader spec
+# ✅ ui-puzzle/molecules/EmptyState.md        — EmptyState spec
+# ✅ ui-puzzle/molecules/LoadingState.md      — LoadingState spec
+# ✅ ui-puzzle/molecules/ActionBar.md         — ActionBar spec
+
+# SECTIONS (5 total):
+# ✅ ui-puzzle/sections/SECTION_REGISTRY.md   — Index of all sections
+
+# If the component you need is NOT in these registries → STOP and ask.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# END OF CURSOR ENFORCEMENT POLICY
+# ══════════════════════════════════════════════════════════════════════════════

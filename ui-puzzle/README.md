@@ -1,59 +1,95 @@
-# UI Puzzle System
+# UI PUZZLE — HUSTLEXP COMPONENT SYSTEM
 
-> **Cursor is a puzzle assembler, not a designer.**
-
-This directory contains the constrained component system for HustleXP UI development.
+**STATUS: FROZEN — These are the ONLY building blocks**
 
 ---
 
-## Layer Structure
+## PURPOSE
+
+This directory contains the **locked building blocks** for HustleXP UI.
+
+Cursor/AI tools read these specs to understand WHAT components exist.
+They may NOT create new components without explicit approval.
+
+---
+
+## DIRECTORY STRUCTURE
 
 ```
 ui-puzzle/
-├── tokens/      # Layer 0: Zero-decision primitives (READ-ONLY)
-├── atoms/       # Layer 1: Visual primitives (single responsibility)
-├── molecules/   # Layer 2: Semantic combinations (atom assemblies)
-├── sections/    # Layer 3: Narrative fragments (one job each)
-└── screens/     # Layer 4: Pure assembly (no invention)
+├── README.md              ← You are here
+├── atoms/                 ← Primitive elements (LOCKED)
+│   ├── ATOM_REGISTRY.md   ← Index of all atoms
+│   ├── Button.md          ← Button spec
+│   ├── Text.md            ← Text spec
+│   ├── Input.md           ← Input spec
+│   └── ...
+├── molecules/             ← Composite elements (LOCKED)
+│   ├── MOLECULE_REGISTRY.md
+│   ├── TaskCard.md
+│   ├── UserHeader.md
+│   └── ...
+├── sections/              ← Screen regions (LOCKED)
+│   ├── SECTION_REGISTRY.md
+│   ├── ScreenHeader.md
+│   ├── ActionFooter.md
+│   └── ...
+├── screens/               ← Archetype templates (LOCKED)
+│   └── ARCHETYPE_TEMPLATES.md
+└── tokens/                ← Design tokens (LOCKED)
+    ├── colors.md
+    ├── spacing.md
+    ├── typography.md
+    └── motion.md
 ```
 
 ---
 
-## Quick Rules
+## USAGE RULES
 
-| Layer | Cursor CAN | Cursor CANNOT |
-|-------|------------|---------------|
-| Token | Read | Create, modify |
-| Atom | Implement, refine | Invent, use non-tokens |
-| Molecule | Combine atoms | Add unapproved atoms |
-| Section | Arrange molecules | Add new molecules |
-| Screen | Assemble sections | Invent ANYTHING |
+### For Cursor/AI:
 
----
+1. **BEFORE building any screen**, read this directory
+2. **IDENTIFY** which atoms and molecules you need
+3. **USE ONLY** what exists here
+4. **IF MISSING**, STOP and ask — do NOT invent
 
-## How to Use
+### For Humans:
 
-### 1. Start at the right layer
-Don't jump to screens. Build atoms first, then molecules, then sections.
-
-### 2. Always invoke with layer
-```
-HUSTLEXP_INVOCATION(layer: .atom, target: "GlowOrb", scope: .implement)
-```
-
-### 3. Pass stress test before promotion
-An atom cannot be used in a molecule until it passes its stress test.
-
-### 4. Lock when validated
-Add to `COMPLETION_LOCK.md` when a component is production-ready.
+1. **To add a new atom/molecule**, create spec file first
+2. **Get approval** before implementation
+3. **Lock it** after implementation passes stress test
 
 ---
 
-## Authority
+## QUICK REFERENCE
 
-This system is governed by:
-- `PER/PUZZLE_MODE.md` — Full specification
-- `PER/INVARIANTS.md` — System invariants
-- `COMPLETION_LOCK.md` — Frozen components
+### Atoms (9 total)
+- Button, Text, Input, Icon, Avatar, Badge, Divider, Spacer, Image
 
-Violations trigger PER enforcement.
+### Molecules (12 total)
+- TaskCard, UserHeader, PriceDisplay, RatingStars, ProgressBar
+- StatusBadge, EmptyState, ErrorState, LoadingState, ListItem
+- FormField, ActionBar
+
+### Sections (5 total)
+- ScreenHeader, ContentScroll, ActionFooter, FilterBar, TabBar
+
+### Archetypes (6 total)
+- A. Entry/Commitment
+- B. Feed/Opportunity
+- C. Task Lifecycle
+- D. Calibration/Capability
+- E. Progress/Status
+- F. System/Interrupt
+
+---
+
+## ENFORCEMENT
+
+This directory is referenced by:
+- `.cursorrules` (enforcement)
+- `UI_COMPONENT_HIERARCHY.md` (documentation)
+- `EXECUTION_QUEUE.md` (build steps)
+
+**Components not in this directory DO NOT EXIST.**
