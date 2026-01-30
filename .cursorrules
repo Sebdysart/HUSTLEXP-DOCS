@@ -1,21 +1,90 @@
 # CURSOR ENFORCEMENT POLICY — HUSTLEXP FRONTEND
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 🛑 EXECUTION MODE — READ THESE FILES FIRST
+# 🛑 EXECUTION MODE — YOUR BUILD LOOP (NON-NEGOTIABLE)
 # ══════════════════════════════════════════════════════════════════════════════
 #
-# 1. EXECUTION_QUEUE.md       — Find first unchecked step, execute ONLY that
-# 2. STOP_CONDITIONS.md       — Know when to STOP (do not overbuild)
-# 3. FRONTEND_BUILD_MAP.json  — Machine-readable dependency graph
+# STEP 1: Read EXECUTION_QUEUE.md → Find first unchecked step
+# STEP 2: Read SCREEN_ARCHETYPES.md → Identify which archetype (A-F)
+# STEP 3: Read UI_COMPONENT_HIERARCHY.md → What atoms/molecules exist?
+# STEP 4: Read the screen spec referenced in the step
+# STEP 5: Build using ONLY existing atoms/molecules (NO invention)
+# STEP 6: Verify against STOP_CONDITIONS.md
+# STEP 7: Mark Done: [x] and STOP
 #
-# YOUR BUILD LOOP:
-#   1. Read EXECUTION_QUEUE.md
-#   2. Find first step where Done: [ ]
-#   3. Read the spec file referenced in that step
-#   4. Build EXACTLY what the spec says
-#   5. Verify against STOP_CONDITIONS.md
-#   6. Mark Done: [x]
-#   7. STOP. Move to next step only when asked.
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🎯 ARCHETYPE ROUTING (MANDATORY BEFORE EVERY SCREEN)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# BEFORE implementing ANY screen, you MUST:
+#
+# 1. Find the screen in SCREEN_ARCHETYPES.md
+# 2. Note its archetype (A-F):
+#    A = Entry/Commitment (Login, Signup, Role Selection)
+#    B = Feed/Opportunity (Task Feed, History)
+#    C = Task Lifecycle (In Progress, Proof, Conversation)
+#    D = Calibration/Capability (Onboarding, Settings, Verification)
+#    E = Progress/Status (Home, Profile, XP, Trust, Earnings)
+#    F = System/Interrupt (Errors, Maintenance, Support)
+#
+# 3. Inherit ALL patterns from that archetype:
+#    - Emotional tone
+#    - Visual patterns
+#    - Motion patterns
+#
+# 4. DO NOT treat screens as unique design problems
+# 5. DO NOT mix archetypes
+# 6. If unclear which archetype → STOP and ASK
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# ✨ CHOSEN-STATE REQUIREMENT (GLOBAL UI LAW)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# All screens must make the user feel:
+#
+# ✅ ALREADY SELECTED — not being tested or judged
+# ✅ SYSTEM IS ACTIVE — not waiting or dormant
+# ✅ SUCCESS IS LIKELY — not uncertain or risky
+#
+# FORBIDDEN in any screen:
+# ❌ Empty states that feel like "starting from zero"
+# ❌ Neutral or tentative language
+# ❌ UI that makes user feel they might fail or be rejected
+# ❌ Loading states that feel like waiting in line
+#
+# If a screen feels like "starting from zero" → it FAILS.
+# If a screen feels like the user is being tested → it FAILS.
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🧩 PUZZLE MODEL (HOW UI IS BUILT)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# HustleXP UI is a PUZZLE, not isolated screens.
+#
+# ┌─────────────────────────────────────────────────────────────┐
+# │  SCREENS    — Assembly ONLY (no invention allowed)          │
+# ├─────────────────────────────────────────────────────────────┤
+# │  SECTIONS   — Narrative regions (header, content, actions)  │
+# ├─────────────────────────────────────────────────────────────┤
+# │  MOLECULES  — Combinations of atoms (cards, forms, lists)   │
+# ├─────────────────────────────────────────────────────────────┤
+# │  ATOMS      — Primitive elements (buttons, inputs, text)    │
+# └─────────────────────────────────────────────────────────────┘
+#
+# RULES:
+# - Atoms are LOCKED — use reference/components/atoms/
+# - Molecules are LOCKED — use reference/components/molecules/
+# - Screens ASSEMBLE — they do NOT invent new visuals
+# - If you need something new → ask first, create at lower layer
+#
+# You are FORBIDDEN from creating inline styled components in screens.
+# You are FORBIDDEN from duplicating molecules with variations.
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -41,16 +110,16 @@
 # SECTION 1: FILE ACCESS PERMISSIONS (PRIORITY ORDER)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# EXECUTION RAILS (Read FIRST):
+# EXECUTION MODEL (Read FIRST):
 # ✅ EXECUTION_QUEUE.md                 (what to build next)
+# ✅ SCREEN_ARCHETYPES.md               (which archetype is this screen?)
+# ✅ UI_COMPONENT_HIERARCHY.md          (what atoms/molecules exist?)
 # ✅ STOP_CONDITIONS.md                 (when to stop)
 # ✅ FRONTEND_BUILD_MAP.json            (dependency graph)
-# ✅ CURRENT_PHASE.md                   (current phase gate)
 
 # SCREEN SPECS (Read for current step):
 # ✅ screens-spec/**                    (screen contracts)
 # ✅ specs/03-frontend/**               (UI specifications)
-# ✅ specs/03-frontend/stitch-prompts/** (implementation prompts)
 # ✅ reference/components/**            (existing patterns)
 # ✅ reference/constants/**             (design tokens)
 
@@ -70,13 +139,11 @@
 
 # ALLOWED ACTIONS:
 # ✅ Implement screens listed in screens-spec/SCREEN_REGISTRY.md
-# ✅ Use components from reference/components/
+# ✅ Use atoms from reference/components/atoms/
+# ✅ Use molecules from reference/components/molecules/
 # ✅ Use constants from reference/constants/
 # ✅ Create TypeScript interfaces for props
-# ✅ Create loading states
-# ✅ Create empty states
-# ✅ Create error states
-# ✅ Style using existing design tokens ONLY
+# ✅ Assemble screens from existing pieces
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 3: WHAT YOU MAY NOT DO (HARD PROHIBITIONS)
@@ -84,18 +151,18 @@
 
 # FORBIDDEN — VIOLATING THESE IS A BUILD FAILURE:
 
+# ❌ FORBIDDEN: Invent new visual components at the Screen level
+# ❌ FORBIDDEN: Create inline styled components (must use atoms/molecules)
+# ❌ FORBIDDEN: Duplicate molecules with minor variations
+# ❌ FORBIDDEN: Treat screens as unique design problems
 # ❌ FORBIDDEN: Define new screens not in SCREEN_REGISTRY.md
 # ❌ FORBIDDEN: Add npm dependencies without explicit user approval
 # ❌ FORBIDDEN: Modify navigation structure
-# ❌ FORBIDDEN: Create new shared components without user approval
 # ❌ FORBIDDEN: Invent backend API fields or endpoints
 # ❌ FORBIDDEN: Compute business logic (eligibility, XP, trust, pricing)
 # ❌ FORBIDDEN: Make fetch/API calls (parent components handle this)
 # ❌ FORBIDDEN: Use Redux, Context, or global state for data
-# ❌ FORBIDDEN: Assume data shapes not defined in props interface
-# ❌ FORBIDDEN: Import from node_modules not already in package.json
 # ❌ FORBIDDEN: Create mock data that implies backend behavior
-# ❌ FORBIDDEN: Add maps, SVG, or complex graphics without explicit approval
 # ❌ FORBIDDEN: "Improve" or "enhance" specs — implement EXACTLY as written
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -106,8 +173,8 @@
 
 # 1. Props interface (data comes from parent, you never fetch)
 # 2. Loading state (shown when isLoading=true)
-# 3. Empty state (shown when primary data is missing)
-# 4. Content state (display props data, nothing computed)
+# 3. Empty state (shown when primary data is missing — but feel CHOSEN)
+# 4. Content state (assembled from atoms/molecules, nothing invented)
 # 5. Actions (onPress callbacks passed as props, no logic inside)
 
 # TEMPLATE:
@@ -119,8 +186,8 @@
 # }
 #
 # export function ScreenName({ data, isLoading, onAction }: ScreenNameProps) {
-#   if (isLoading) return <LoadingState />;
-#   if (!data) return <EmptyState />;
+#   if (isLoading) return <LoadingState />; // User feels active, not waiting
+#   if (!data) return <EmptyState />;       // User feels chosen, not lacking
 #   return <Content data={data} onAction={onAction} />;
 # }
 # ```
@@ -137,20 +204,17 @@
 # ❌ const xpAmount = calculateXP(task);
 #    WHY: Client-side business logic
 
-# ❌ if (shouldShowTask(user, task)) { ... }
-#    WHY: Client-side filtering decision
+# ❌ <View style={{ backgroundColor: '#custom' }}>
+#    WHY: Inline styles instead of using atoms/design tokens
+
+# ❌ <CustomCardThatDoesntExist />
+#    WHY: Inventing components at screen level
 
 # ❌ fetch('/api/...')
 #    WHY: Screens don't fetch. Parent components do.
 
-# ❌ const [data, setData] = useState(); useEffect(() => fetch...
-#    WHY: Data fetching in screens. Screens receive props.
-
-# ❌ import NewPackage from 'new-package';
-#    WHY: Adding dependencies without approval
-
-# ❌ <NewScreenNotInRegistry />
-#    WHY: Inventing screens
+# ❌ "No tasks yet" or "Get started by..."
+#    WHY: Makes user feel like starting from zero (violates chosen-state)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 6: WHEN TO STOP AND ASK
@@ -158,11 +222,11 @@
 
 # STOP IMMEDIATELY AND ASK THE USER IF:
 
+# 🛑 You can't identify the screen's archetype
+# 🛑 The atom or molecule you need doesn't exist
 # 🛑 The screen is not in SCREEN_REGISTRY.md
 # 🛑 You need a data field not defined in the props interface
 # 🛑 You need to add a dependency
-# 🛑 You need to modify navigation
-# 🛑 You need to compute something (eligibility, XP, price, etc.)
 # 🛑 The spec is unclear or seems incomplete
 # 🛑 You think the spec is wrong
 # 🛑 You want to "improve" something
@@ -202,16 +266,17 @@
 # DO NOT INVENT NEW TOKENS. USE ONLY WHAT EXISTS.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SECTION 8: EXECUTION ORDER
+# SECTION 8: EXECUTION CHECKLIST (BEFORE EVERY SCREEN)
 # ══════════════════════════════════════════════════════════════════════════════
 
 # BEFORE WRITING ANY CODE:
-# 1. Read screens-spec/SCREEN_REGISTRY.md
-# 2. Find the screen in the registry
-# 3. Read the screen's category spec (e.g., screens-spec/hustler/HUSTLER_SCREENS.md)
-# 4. Read any linked stitch-prompt if available
-# 5. Confirm you understand the props interface
-# 6. THEN write code
+# [ ] 1. Found the step in EXECUTION_QUEUE.md
+# [ ] 2. Identified the archetype in SCREEN_ARCHETYPES.md
+# [ ] 3. Read the archetype's patterns (tone, visuals, motion)
+# [ ] 4. Identified required atoms/molecules in UI_COMPONENT_HIERARCHY.md
+# [ ] 5. Read the screen's spec in screens-spec/
+# [ ] 6. Confirmed props interface
+# [ ] 7. Ready to ASSEMBLE (not invent)
 
 # DO NOT SKIP STEPS. DO NOT ASSUME YOU KNOW WHAT TO BUILD.
 
@@ -226,7 +291,9 @@
 # See: BOOTSTRAP.md for the exact success criteria.
 
 # ══════════════════════════════════════════════════════════════════════════════
-# REMEMBER: You are not a collaborator. You are an executor.
-# The specs are correct. Your job is to implement them exactly.
-# If you disagree with a spec, STOP and tell the user. Do not "fix" it.
+# REMEMBER: 
+# - You are an ASSEMBLER, not a DESIGNER.
+# - Screens are INSTANCES of ARCHETYPES, not unique problems.
+# - Users must feel CHOSEN, not tested.
+# - If you disagree with a spec, STOP and tell the user. Do not "fix" it.
 # ══════════════════════════════════════════════════════════════════════════════

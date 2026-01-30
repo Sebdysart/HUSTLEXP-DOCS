@@ -6,6 +6,31 @@
 
 ---
 
+## 🎯 MANDATORY PRE-STEP (For ALL Screen Steps)
+
+**Before implementing ANY screen (Steps 020+), you MUST:**
+
+```
+1. Read SCREEN_ARCHETYPES.md
+2. Find this screen's archetype (A-F)
+3. Read that archetype's patterns (tone, visuals, motion)
+4. Read UI_COMPONENT_HIERARCHY.md
+5. Identify which atoms/molecules you will use
+6. THEN proceed with the step
+```
+
+**Archetypes:**
+- A = Entry/Commitment (Auth, Welcome, Role Selection)
+- B = Feed/Opportunity (Task Feed, History)
+- C = Task Lifecycle (In Progress, Proof, Conversation)
+- D = Calibration/Capability (Onboarding, Settings)
+- E = Progress/Status (Home, Profile, XP, Trust)
+- F = System/Interrupt (Errors, Maintenance)
+
+**If you skip archetype identification, you WILL produce inconsistent UI.**
+
+---
+
 ## CURRENT PHASE: BOOTSTRAP
 
 **Gate:** Nothing proceeds until Bootstrap passes.
