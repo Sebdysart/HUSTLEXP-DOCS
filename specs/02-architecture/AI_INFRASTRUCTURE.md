@@ -1114,7 +1114,27 @@ interface ForecastEvent {
 | 1.0 | Jan 2025 | Initial draft |
 | 1.1 | Jan 2025 | Added: DB schemas (§6), tRPC contracts (§15), specific rate limits (§13), cross-reference index (§20), integration with BUILD_GUIDE authority hierarchy |
 | 1.2 | Jan 2025 | Added: Session Forecast AI (§21) with A1 authority, earning prediction rules |
+| 1.3 | Feb 2026 | Added: Judge Agent cross-reference (§9 extended by JUDGE_AGENT_SPEC_LOCKED.md) |
+
+### Cross-Reference: Judge Agent
+
+§9 (Evidence and Proof Analysis) is now extended by the comprehensive Judge Agent specification:
+
+**Location:** `specs/02-architecture/subsystems/JUDGE_AGENT_SPEC_LOCKED.md`
+
+This spec adds:
+- 4-layer proactive verification (metadata, visual/video, poster multi-sig, trust-scaled rigor)
+- Live capture enforcement (gallery blocked)
+- GPS/EXIF cross-referencing with geofencing
+- LiDAR spatial scanning (trust-gated)
+- Video semantic analysis with Visual SLAM
+- Poster multi-sig verification loop with auto-release
+- Behavioral integrity scoring (trust tier → evidence tier matrix)
+- Full data model (proofs table, verification_audit table)
+- Kill switches, rate limits, phased implementation plan
+
+§9 in this document remains the authority for base proof rules. The Judge Agent spec extends those rules with operational detail.
 
 ---
 
-**END OF AI INFRASTRUCTURE SPECIFICATION v1.2**
+**END OF AI INFRASTRUCTURE SPECIFICATION v1.3**

@@ -227,8 +227,14 @@ These are **explicitly excluded** from v1:
 
 ### Deferred to v2 (Medium complexity):
 - ❌ Voice messages (storage, transcoding, moderation)
-- ❌ Video proof (storage, upload complexity, moderation)
+- ❌ Video proof / Visual SLAM verification (Judge Agent Phase 3)
+- ❌ LiDAR spatial scanning (Judge Agent Phase 3)
 - ❌ Team tasks (multi-assignee, payment splitting, trust interactions)
+
+### Judge Agent Phased Delivery:
+- ✅ v1.0: Live capture, GPS verification, single photo analysis, poster multi-sig (JUDGE_AGENT_SPEC_LOCKED.md Phase 1)
+- ◻ v1.5: Before/after comparison, success markers, trust-scaled evidence tiers (Phase 2)
+- ◻ v2.0: Video walkthrough, Visual SLAM, LiDAR scanning (Phase 3)
 
 ### Excluded entirely:
 - ❌ Tipping (payment edge cases, incentive distortion)
