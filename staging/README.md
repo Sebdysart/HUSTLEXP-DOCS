@@ -1,72 +1,28 @@
-# Staging Specifications
+# HustleXP Staging Specs
 
-**STATUS: DETAILED IMPLEMENTATION SPECS**
-**Last Updated:** January 2025
-
----
-
-## Purpose
-
-This directory contains detailed implementation specifications that expand on sections of PRODUCT_SPEC.md. These specs provide:
-
-- Implementation details
-- Database schemas
-- API contracts
-- UI component specifications
-- Edge case handling
+**STATUS: MIXED — Some promoted, some stubs, some superseded**
 
 ---
 
-## Authority Hierarchy
+## SUPERSEDED (Promoted to canonical locations — DO NOT USE)
 
-```
-PRODUCT_SPEC.md (§X)  ← Canonical definition
-        ↓
-staging/X_SPEC.md     ← Implementation details
-        ↓
-Code implementation   ← Must match both
-```
+| File | Canonical Location | Lines |
+|------|--------------------|-------|
+| `FRAUD_DETECTION_SPEC.md` | `specs/02-architecture/subsystems/RISK_TRUST_ENGINE_LOCKED.md` | 1,096 |
+| `MESSAGING_SPEC.md` | `specs/01-product/features/MESSAGING_SPEC.md` | 456 |
+| `NOTIFICATION_SPEC.md` | `specs/01-product/features/NOTIFICATION_SPEC.md` | 498 |
+| `RATING_SYSTEM_SPEC.md` | `specs/01-product/features/RATING_SYSTEM_SPEC.md` | 493 |
 
-**If there is a conflict, PRODUCT_SPEC.md wins.**
+## ACTIVE STAGING (Stubs — to be expanded post-v1.0)
 
----
-
-## Specifications
-
-| File | PRODUCT_SPEC Section | Status |
-|------|---------------------|--------|
-| `AI_TASK_COMPLETION_SPEC.md` | §8 | Complete |
-| `MESSAGING_SPEC.md` | §10 | Complete |
-| `NOTIFICATION_SPEC.md` | §11 | Stub |
-| `RATING_SYSTEM_SPEC.md` | §12 | Stub |
-| `ANALYTICS_SPEC.md` | §13 | Stub |
-| `FRAUD_DETECTION_SPEC.md` | §14 | Stub |
-| `CONTENT_MODERATION_SPEC.md` | §15 | Stub |
-| `GDPR_COMPLIANCE_SPEC.md` | §16 | Stub |
-| `TASK_DISCOVERY_SPEC.md` | §9 | Stub |
+| File | Purpose | Launch-Blocking? |
+|------|---------|-----------------|
+| `AI_TASK_COMPLETION_SPEC.md` | AI-powered task completion verification | No (Judge Agent covers core) |
+| `ANALYTICS_SPEC.md` | Product analytics and metrics | No |
+| `CONTENT_MODERATION_SPEC.md` | User content moderation | No (Judge Agent §4.2 covers basics) |
+| `GDPR_COMPLIANCE_SPEC.md` | EU privacy compliance | No (US launch only; AI_INFRASTRUCTURE §9.6 covers retention) |
+| `TASK_DISCOVERY_SPEC.md` | Advanced search/filter UX | No (FEED_QUERY_AND_ELIGIBILITY_RESOLVER covers core) |
 
 ---
 
-## Stub Files
-
-Stub files contain:
-- Link to PRODUCT_SPEC section
-- Placeholder for future detailed implementation
-- Key invariants copied from PRODUCT_SPEC
-
-These will be expanded as features are implemented.
-
----
-
-## Contributing
-
-When adding a staging spec:
-
-1. Copy structure from existing spec
-2. Link to PRODUCT_SPEC section
-3. Add to this README
-4. Ensure no conflicts with PRODUCT_SPEC
-
----
-
-**See PRODUCT_SPEC.md for all canonical definitions.**
+**Rule:** Stubs in staging are NOT implementation-ready. Check the canonical spec directories first.

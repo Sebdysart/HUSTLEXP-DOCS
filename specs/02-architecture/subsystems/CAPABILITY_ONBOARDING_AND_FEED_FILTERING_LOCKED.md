@@ -2,6 +2,8 @@
 ## Status: APPROVED — MAX-Tier System Architecture
 ## Version: v1.0
 ## Authority: System Architecture — Non-Negotiable
+## Scope: BACKEND ARCHITECTURE — Capability profiles, feed filtering, eligibility resolution
+## Companion: `CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md` covers the UX flow (screen-by-screen onboarding sequence)
 
 ---
 

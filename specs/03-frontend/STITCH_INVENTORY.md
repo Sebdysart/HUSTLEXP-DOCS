@@ -40,13 +40,14 @@
 
 ---
 
-## Edge & Empty States (E1-E3)
+## Edge & Empty States (E1-E4)
 
 | ID | Screen Name | Filename (Expected) | LOCKED | Status | iOS |
 |----|-------------|---------------------|--------|--------|-----|
 | E1 | No Tasks Available | `E1-no-tasks-available.md` | ⬜ | Empty state when no tasks | ✅ |
 | E2 | Eligibility Mismatch | `E2-eligibility-mismatch-LOCKED.md` | ✅ | Why user doesn't see tasks | ✅ |
 | E3 | Trust Tier Locked | `E3-trust-tier-locked.md` | ⬜ | Trust tier requirement explanation | ✅ |
+| E4 | Instant Mode Unavailable | `E4-instant-mode-unavailable.md` | ⬜ | Instant mode edge case (was E2) | ⬜ |
 
 ---
 
@@ -55,8 +56,34 @@
 | Filename (Expected) | Purpose | LOCKED | Status |
 |---------------------|---------|--------|--------|
 | `EDGE-STATES-LOCKED.md` | Consolidated edge state documentation | ✅ | Meta documentation |
-| `E2-instant-mode-unavailable.md` | Instant mode edge case | ⬜ | Edge state variant |
 | `08-dispute-protection.md` | Dispute protection UI | ⬜ | Security/trust UI |
+
+---
+
+## Registry-Aligned Stitch Prompts (A/H/O/P/S/SH/E prefix)
+
+**Authority:** `screens-spec/SCREEN_REGISTRY.md` defines canonical screen codes.
+**Convention:** `{CODE}-{screen-name}.md` (e.g., `A1-login-screen.md`, `H2-task-feed-screen.md`)
+
+These prompts use SCREEN_REGISTRY numbering (not the legacy 01-13 numbering above).
+
+| Code | Screen Name | Filename | Status |
+|------|-------------|----------|--------|
+| A1 | Login | `A1-login-screen.md` | Active |
+| A2 | Signup | `A2-signup-screen.md` | Active |
+| A3 | Forgot Password | `A3-forgot-password-screen.md` | Active |
+| H1 | Hustler Home | (see 02-hustler-home-LOCKED.md) | LOCKED |
+| H2 | Task Feed | `H2-task-feed-screen.md` | Active |
+| H3 | Task History | `H3-task-history-screen.md` | Active |
+| H4 | Task Detail | `H4-task-detail-screen.md` | Active |
+| H5 | Active Task | `H5-active-task-screen.md` | Active |
+| H7 | En Route Map | `H7-en-route-map-screen.md` | Active |
+| O1-O12 | Onboarding Screens | `O{N}-{name}-screen.md` | Active |
+| P1-P4 | Poster Screens | (see legacy 04/05/10/11) | Mixed |
+| S1-S3 | Settings Screens | `S{N}-{name}-screen.md` | Active |
+| SH1 | Task Conversation | `SH1-task-conversation-screen.md` | Active |
+| E1-E3 | Edge States | `E{N}-{name}.md` | Active |
+| E4 | Instant Mode Unavail | `E4-instant-mode-unavailable.md` | Active |
 
 ---
 
@@ -85,7 +112,7 @@
 ## Notes
 
 - **Draft vs. LOCKED:** Draft prompts (no `-LOCKED` suffix) may exist for screens in development. Only LOCKED prompts are canonical.
-- **Variants:** Some screens may have multiple variants (e.g., `E2-eligibility-mismatch.md` vs `E2-instant-mode-unavailable.md`). Both should be listed if they exist.
+- **Variants:** Some screens may have edge-case variants (e.g., `E2-eligibility-mismatch.md` and `E4-instant-mode-unavailable.md`). Each gets a unique code.
 - **Meta files:** Operational files like `ALPHA_DAY0_RUNBOOK.md` are not UI specs but are part of the stitch prompts directory and should be preserved during migration.
 
 ---

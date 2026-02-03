@@ -185,13 +185,36 @@ HUSTLEXP-DOCS/
 │
 ├── 📚 SPECIFICATIONS
 │   └── specs/
+│       ├── 00-overview/          ← Quick Start guide
+│       ├── 01-product/           ← Product spec, onboarding, features
+│       ├── 02-architecture/      ← Architecture, schema.sql, subsystems/ (10 LOCKED)
+│       ├── 03-frontend/          ← UI spec, stitch prompts, components
+│       └── 04-backend/           ← API contract, Stripe, matching, storage
 │
 ├── 📱 SCREEN SPECIFICATIONS
-│   └── screens-spec/
+│   └── screens-spec/             ← SCREEN_REGISTRY + per-screen specs
 │
-├── 📊 tracking/                  ← Implementation status
+├── 🧩 UI PUZZLE MODEL
+│   └── ui-puzzle/                ← atoms/, molecules/, sections/, screens/, tokens/
+│
+├── ⚙️ AUTHORITY & ENFORCEMENT (Top-Level)
+│   ├── AI_CHECKPOINTS.md         ← Enforcement gates
+│   ├── ARCHETYPE_MOLECULE_MATRIX.md ← Archetype-to-molecule binding
+│   ├── COLOR_AUTHORITY_RESOLUTION.md ← Color system authority
+│   ├── COLOR_SEMANTICS_LAW.md    ← Color semantic rules (13 refs)
+│   ├── CURSOR_INSTRUCTIONS.md    ← Cursor behavior rules (7 refs)
+│   ├── TYPOGRAPHY_AUTHORITY_RESOLUTION.md ← Type system authority
+│   ├── NAVIGATION_ARCHITECTURE.md ← Nav structure
+│   ├── TASK_CREATION_STATE_MACHINE.md ← Task creation flow
+│   ├── TASK_CLARIFICATION_QUESTION_BANK.md ← Question bank for tasks
+│   └── TASK_EXECUTION_REQUIREMENTS.md ← Task execution rules
+│
+├── 📊 tracking/                  ← Implementation status + historical audits
 ├── 📦 reference/                 ← Scaffold code
-└── 🗄️ _archive/                  ← Historical specs
+├── 📂 staging/                   ← Stub specs (post-v1) + SUPERSEDED redirects
+├── 📂 PER/                       ← Persistent Execution Rails (legacy framework)
+├── 📂 prompts/                   ← Prompt templates
+└── 📂 archive/                   ← Retired files (0 active references)
 ```
 
 ---
@@ -218,6 +241,21 @@ HUSTLEXP-DOCS/
 - ❌ Team tasks
 - ❌ Video proof
 
+### 🔒 LOCKED Subsystem Architecture (specs/02-architecture/subsystems/)
+
+| Subsystem | File | Lines |
+|-----------|------|-------|
+| Judge Agent (Proof Verification) | `JUDGE_AGENT_SPEC_LOCKED.md` | 750+ |
+| Risk & Trust Engine | `RISK_TRUST_ENGINE_LOCKED.md` | 1,096 |
+| Risk Classifier (Task Creation) | `POSTER_TASK_CREATION_RISK_CLASSIFIER_LOCKED.md` | 400+ |
+| Capability Profile Schema | `CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md` | 600+ |
+| Capability Onboarding (UX) | `CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md` | 1,042 |
+| Capability Onboarding (Backend) | `CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md` | 838 |
+| Feed Eligibility Resolver | `FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md` | 500+ |
+| Verification Pipeline | `VERIFICATION_PIPELINE_LOCKED.md` | 400+ |
+| Verification Payment UX | `VERIFICATION_PAYMENT_UX_AND_COPY_LOCKED.md` | 400+ |
+| Settings & Verification | `SETTINGS_VERIFICATION_AND_ELIGIBILITY_LOCKED.md` | 400+ |
+
 **Full list: [FINISHED_STATE.md](FINISHED_STATE.md)**
 
 ---
@@ -227,10 +265,14 @@ HUSTLEXP-DOCS/
 | Artifact | Count | Status |
 |----------|-------|--------|
 | Screens | 38 | 🔒 Frozen |
-| Tables | 32 | 🔒 Frozen |
+| Tables (schema.sql) | 20 | 🔒 Frozen |
+| Tables (migrations) | 21 | 🔒 Frozen |
+| Tables (Total) | 41 | 🔒 Frozen |
+| LOCKED Subsystems | 10 | 🔒 Frozen |
 | Views | 4 | 🔒 Frozen |
-| Invariants | 5 | 🔒 Frozen |
+| Invariants | 5+ | 🔒 Frozen |
 | Archetypes | 6 | 🔒 Frozen |
+| Trust Tiers | 5 | 🔒 Frozen (ROOKIE → VERIFIED → TRUSTED → ELITE → MASTER) |
 
 ---
 

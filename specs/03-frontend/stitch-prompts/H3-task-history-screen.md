@@ -1,4 +1,4 @@
-# Screen H2: Task History Screen
+# Screen H3: Task History Screen
 ## Status: IMPLEMENTATION SPEC
 **Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md
 **Cursor-Ready:** YES

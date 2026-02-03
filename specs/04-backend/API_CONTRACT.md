@@ -2493,6 +2493,51 @@ Manually retry a failed transfer.
 
 ---
 
+## §N. Subsystem API Extensions (Phase 2+)
+
+**Status:** Endpoint definitions to be added as subsystems are implemented. Full specifications in LOCKED subsystem files.
+
+### Judge Agent Endpoints
+
+**Authority:** `JUDGE_AGENT_SPEC_LOCKED.md`
+
+| Endpoint | Method | Purpose | Phase |
+|----------|--------|---------|-------|
+| `proof.submit` | mutation | Submit proof with evidence tier/media | v1.0 |
+| `proof.getVerdict` | query | Get Judge Agent verdict for a proof | v1.0 |
+| `proof.getAuditTrail` | query | Verification audit for a proof | v1.5 |
+| `admin.proof.manualReview` | mutation | Resolve UNCERTAIN/MANUAL_REVIEW proofs | v1.0 |
+
+### Risk & Trust Engine Endpoints
+
+**Authority:** `RISK_TRUST_ENGINE_LOCKED.md`
+
+| Endpoint | Method | Purpose | Phase |
+|----------|--------|---------|-------|
+| `task.getSafetyFee` | query | Get safety pool premium for a task | v1.0 |
+| `worker.getRateMultiplier` | query | Get worker's current rate range (0.8x-2.0x) | v1.0 |
+| `worker.setRateMultiplier` | mutation | Worker sets their rate multiplier | v1.0 |
+| `claim.file` | mutation | File a claim against safety pool | v1.0 |
+| `claim.getStatus` | query | Get claim status | v1.0 |
+| `admin.claim.review` | mutation | Manual claim resolution | v1.0 |
+| `admin.pool.getHealth` | query | Safety pool health metrics | v1.5 |
+| `admin.shadow.getScore` | query | Shadow score (admin only, INV-RISK-3) | v1.5 |
+| `worker.livenessChallenge` | mutation | Complete liveness verification | v1.5 |
+
+**Critical:** Shadow score endpoints MUST NOT exist for worker role. INV-RISK-3 enforces no worker-facing API.
+
+### Risk Classifier Endpoints
+
+**Authority:** `POSTER_TASK_CREATION_RISK_CLASSIFIER_LOCKED.md`
+
+| Endpoint | Method | Purpose | Phase |
+|----------|--------|---------|-------|
+| `task.classifyRisk` | internal | Classify risk at task creation (called by task.create) | v1.0 |
+
+Risk classification is embedded in `task.create` — not a standalone endpoint.
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
@@ -2501,6 +2546,7 @@ Manually retry a failed transfer.
 | 1.1.0 | Jan 2025 | Added onboarding, verification, liveMode, task.getFeed endpoints. Fixed photo_urls array type. Fixed price minimum to 500 cents. |
 | 1.2.0 | Jan 2025 | Added rating.* endpoints (§12 compliance). Added WebSocket events schema for Live Mode. |
 | 1.3.0 | Jan 2025 | Added Admin Endpoints section. Added dispute states (EVIDENCE_REQUESTED, ESCALATED). Added Live Mode $15 minimum validation. |
+| 1.4.0 | Feb 2026 | Added §N: Judge Agent, Risk & Trust Engine, Risk Classifier endpoint references |
 
 ---
 

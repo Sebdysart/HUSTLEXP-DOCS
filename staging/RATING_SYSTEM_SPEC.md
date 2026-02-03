@@ -1,10 +1,10 @@
 # RATING SYSTEM SPEC
 
-**STATUS: STAGING (Stub - To Be Expanded)**
-**Owner:** Product Team
-**Last Updated:** January 2025
-**Version:** v0.1.0
-**Authority:** See PRODUCT_SPEC.md for canonical definition.
+**STATUS: SUPERSEDED**
+
+**Canonical location:** `specs/01-product/features/RATING_SYSTEM_SPEC.md` (493 lines)
+
+Do NOT use this file for implementation. The canonical spec has been promoted.
 
 ---
 

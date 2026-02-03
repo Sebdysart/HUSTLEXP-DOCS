@@ -329,7 +329,9 @@ Use this for tracking implementation status:
 
 ---
 
-## §11. iOS SwiftUI Implementation
+## §11. iOS SwiftUI Implementation (SECONDARY PLATFORM)
+
+**NOTE:** This section tracks an iOS native implementation. The **canonical screen list is §1-§7 (React Native)**. SwiftUI screens reference the same screen codes but are a secondary platform build.
 
 Location: `ios-swiftui/HustleXP/`
 

@@ -1,4 +1,4 @@
-# Screen H1: Task Feed Screen
+# Screen H2: Task Feed Screen
 ## Status: IMPLEMENTATION SPEC
 **Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md
 **Cursor-Ready:** YES

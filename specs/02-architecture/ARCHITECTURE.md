@@ -3,7 +3,7 @@
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  
-**Version:** v1.2.0 (Added §11 Capability Profile Authority, §12 Verification Pipeline Authority, §13 Feed Eligibility Authority)  
+**Version:** v1.4.0 (Added §15-§20: Judge Agent, Risk & Trust Engine, Risk Classifier, Settings Verification, Capability Onboarding, Feed Filtering — All 10 LOCKED subsystems referenced)  
 **Governance:** This document defines jurisdictional authority. Violations are system failures.
 
 ---
@@ -1504,7 +1504,8 @@ if (!isEligible(task, profile)) {
 **❌ Trust Logic in Client:**
 ```javascript
 // ILLEGAL: Computing eligibility in frontend
-const canAccessHighRiskTasks = user.trust_tier >= 4;  // 4=ELITE
+const canAccessHighRiskTasks = user.trust_tier >= 4;  // 4=ELITE, 5=MASTER
+const canAccessCriticalRiskTasks = user.trust_tier >= 5;  // 5=MASTER only
 if (canAccessHighRiskTasks) {
   showHighRiskTasks();
 }
@@ -1675,6 +1676,155 @@ function assertTransition(from: TaskState, to: TaskState) {
 
 ---
 
+## §15. Judge Agent Authority
+
+**Constitutional Reference:** `subsystems/JUDGE_AGENT_SPEC_LOCKED.md`
+**Status:** LOCKED — 4-Layer Proactive Verification System
+
+### 15.1 Jurisdiction
+
+The Judge Agent owns ALL proof verification decisions. No other system may accept or reject proof.
+
+**Scope:**
+- Proof analysis pipeline (metadata → spatial → visual-semantic → poster multi-sig)
+- Fraud detection per proof (GPS spoofing, fake photos, recycled media)
+- Confidence scoring and automated verdicts
+- Trust Tier → Verification Rigor mapping
+
+### 15.2 Authority Rules
+
+1. **Judge Agent decides, poster confirms.** Poster response is multi-sig, not authority.
+2. **Confidence thresholds are immutable.** ≥0.90 = PASS, ≤0.30 = FAIL, between = UNCERTAIN.
+3. **Evidence tier scales with trust.** Tier 1 workers need more evidence than Tier 5.
+4. **Multi-sig windows are non-negotiable.** Auto-release fires if poster is silent.
+
+### 15.3 Integration Points
+
+- Proofs table (schema.sql): State machine extended for Judge pipeline
+- `verification_audit` table: Full pipeline audit trail
+- RISK_TRUST_ENGINE: Fraud signals feed shadow score
+- PRODUCT_SPEC INV-3: COMPLETED task requires ACCEPTED proof
+
+### 15.4 Invariants (INV-JUDGE-1 through INV-JUDGE-5)
+
+See `JUDGE_AGENT_SPEC_LOCKED.md` §7 for complete invariant definitions.
+
+---
+
+## §16. Risk & Trust Engine Authority
+
+**Constitutional Reference:** `subsystems/RISK_TRUST_ENGINE_LOCKED.md`
+**Status:** LOCKED — 4-Pillar Active Risk Engineering System (1,096 lines)
+
+### 16.1 Jurisdiction
+
+The Risk & Trust Engine owns ALL risk computation, safety funding, worker classification compliance, behavioral integrity, and trust defense.
+
+**Four Pillars:**
+1. **AI-Dynamic Safety Pool** — Parametric micro-premiums, automated claims, pool health monitoring
+2. **Worker Classification Fortress** — 6 pillars of independent contractor status, rate multiplier system
+3. **Behavioral Integrity System ("Shadow Level")** — Invisible shadow score, anti-spoofing, de-leveling
+4. **Layered Trust Defense** — 4-layer stack: identity → liveness → spatial → behavioral
+
+### 16.2 Authority Rules
+
+1. **Safety pool is self-insurance.** Premiums are collected per-task, claims are paid from pool.
+2. **Shadow score is NEVER exposed.** INV-RISK-3: No API endpoint returns shadow data to worker.
+3. **De-level before ban.** INV-RISK-5: Graduated response (STANDARD → RESTRICTED → PROBATION → FROZEN).
+4. **Worker sets rate.** INV-RISK-7: Rate multiplier 0.8x-2.0x is always available.
+5. **Classification is auditable.** 6-pillar quarterly compliance checks logged.
+
+### 16.3 Integration Points
+
+- Safety pool: Stripe sub-account, `safety_pool_ledger` table
+- Claims: `claims` table, Judge Agent evidence cross-reference
+- Shadow: `shadow_scores`, `fraud_signals` tables, feed filtering via queue_tier
+- Classification: `classification_audit` table, quarterly compliance
+- JUDGE_AGENT: Fraud signals and claim evidence
+- PRODUCT_SPEC INV-ELIGIBILITY-1: Trust tier → risk clearance
+
+### 16.4 Invariants (INV-RISK-1 through INV-RISK-10, INV-CLASS-1 through INV-CLASS-6)
+
+See `RISK_TRUST_ENGINE_LOCKED.md` §8 for complete invariant definitions.
+
+### 16.5 Kill Switches
+
+8 kill switches for emergency disablement. See `RISK_TRUST_ENGINE_LOCKED.md` §9.
+
+---
+
+## §17. Poster Task Creation Risk Classifier Authority
+
+**Constitutional Reference:** `subsystems/POSTER_TASK_CREATION_RISK_CLASSIFIER_LOCKED.md`
+**Status:** LOCKED
+
+### 17.1 Jurisdiction
+
+Owns risk classification of ALL tasks at creation time. Determines which risk level (LOW, MEDIUM, HIGH, CRITICAL) applies, which directly controls feed eligibility via trust tier mapping.
+
+### 17.2 Authority Rules
+
+1. **Risk level is assigned at creation, immutable after.** No reclassification.
+2. **Risk level determines verification requirements and safety pool premium.**
+3. **Classification inputs:** Task category, value, location, property access, vulnerable population flags.
+
+### 17.3 Integration Points
+
+- PRODUCT_SPEC INV-ELIGIBILITY-1: Risk level → trust tier gating
+- RISK_TRUST_ENGINE Pillar 1: Risk level → safety pool premium base rate
+- FEED_QUERY_AND_ELIGIBILITY_RESOLVER: Risk level → feed filtering
+
+---
+
+## §18. Settings Verification & Eligibility Authority
+
+**Constitutional Reference:** `subsystems/SETTINGS_VERIFICATION_AND_ELIGIBILITY_LOCKED.md`
+**Status:** LOCKED
+
+### 18.1 Jurisdiction
+
+Owns the Settings UI interpretability layer. Settings screens explain reality (verification status, eligibility, trust tier); they do NOT change reality.
+
+### 18.2 Authority Rules
+
+1. **Settings explain, never change.** No toggles that grant access.
+2. **Verification status is read from backend.** Settings shows what the pipeline determined.
+3. **Upgrade paths are visible.** Users see what they need to do to unlock more tasks.
+
+---
+
+## §19. Capability-Driven Onboarding Authority
+
+**Constitutional Reference:** `subsystems/CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md`
+**Status:** LOCKED
+**Scope:** Onboarding flow design — what questions to ask, how claims are collected
+
+### 19.1 Jurisdiction
+
+Owns the onboarding question flow for hustlers. Onboarding collects claims, not permissions. No question directly grants access.
+
+### 19.2 Complementary Spec
+
+`CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md` (§20) covers the architecture connecting onboarding data to feed filtering. §19 covers the UX flow; §20 covers the backend plumbing.
+
+---
+
+## §20. Capability Onboarding & Feed Filtering Architecture
+
+**Constitutional Reference:** `subsystems/CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md`
+**Status:** LOCKED
+**Scope:** Backend architecture — how onboarding claims flow into feed eligibility
+
+### 20.1 Jurisdiction
+
+Owns the pipeline from onboarding claim submission → capability profile computation → feed eligibility resolution. Users do not apply to gigs; gigs appear only if the user is eligible.
+
+### 20.2 Complementary Spec
+
+`CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md` (§19) covers the UX flow. §20 covers the backend plumbing and feed filtering architecture.
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
@@ -1683,7 +1833,8 @@ function assertTransition(from: TaskState, to: TaskState) {
 | 1.1.0 | Jan 2025 | HustleXP Core | Added: §10 Live Mode Authority |
 | 1.2.0 | Jan 2025 | HustleXP Core | Added: §11 Capability Profile Authority, §12 Verification Pipeline Authority, §13 Feed Eligibility Authority |
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: §14 Task State Machine Authority (Phase N2.2 cleanup) |
+| 1.4.0 | Feb 2026 | HustleXP Core | Added: §15 Judge Agent, §16 Risk & Trust Engine, §17 Risk Classifier, §18 Settings Verification, §19 Capability Onboarding, §20 Onboarding & Feed Filtering. All 10 LOCKED subsystems now referenced. |
 
 ---
 
-**END OF ARCHITECTURE v1.3.0**
+**END OF ARCHITECTURE v1.4.0**

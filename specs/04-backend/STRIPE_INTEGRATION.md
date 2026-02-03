@@ -777,4 +777,42 @@ Escrow: PENDING → FUNDED → RELEASED
 
 ---
 
-**END OF STRIPE_INTEGRATION v1.0.0**
+## §N. Safety Pool Integration (Risk & Trust Engine)
+
+**Authority:** `RISK_TRUST_ENGINE_LOCKED.md` Pillar 1
+**Status:** Phase 1 = fixed fee; Phase 2 = AI-dynamic premiums
+
+### Safety Pool Stripe Architecture
+
+The safety pool is a **Stripe sub-account** (Connect custom account) that collects micro-premiums per task and pays claims.
+
+**Phase 1 (v1.0):** Fixed safety fee per task (e.g., $1.50). Collected alongside escrow funding. Recorded in `safety_pool_ledger`.
+
+**Phase 2 (v1.5):** AI-dynamic premiums. Premium calculated from: task category, risk level, value, worker trust tier, location signals. See `RISK_TRUST_ENGINE_LOCKED.md` §2 for full premium calculation engine.
+
+### Key Flows
+
+| Flow | Stripe Action | Authority |
+|------|---------------|-----------|
+| Premium collection | Transfer from task payment to safety pool account | INV-RISK-10 |
+| Claim payout (auto) | Transfer from safety pool to claimant | INV-RISK-6 |
+| Claim payout (manual) | Admin-initiated transfer | RISK_TRUST_ENGINE §5.3 |
+| Pool seed | Platform → safety pool transfer | RISK_TRUST_ENGINE §5.1 |
+| Pool overflow | Safety pool → platform transfer (when reserves exceed 3× monthly) | RISK_TRUST_ENGINE §5.4 |
+
+### Tables
+
+- `safety_pool_ledger`: All pool transactions (premiums, payouts, seeds, overflows)
+- `claims`: Claim state machine (FILED → UNDER_REVIEW → APPROVED/DENIED/PARTIAL/APPEALED)
+
+### Invariants
+
+- INV-RISK-1: Premium ≤ 15% of task value
+- INV-RISK-2: Safety pool cannot go negative (platform backstop)
+- INV-RISK-10: Premium breakdown logged per task
+
+**Full specification:** `subsystems/RISK_TRUST_ENGINE_LOCKED.md`
+
+---
+
+**END OF STRIPE_INTEGRATION v1.1.0**

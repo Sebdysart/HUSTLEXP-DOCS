@@ -679,11 +679,47 @@ const CACHE_CONFIG = {
 
 ---
 
+## Shadow Score Feed Filtering (Phase 2)
+
+**Authority:** `RISK_TRUST_ENGINE_LOCKED.md` Pillar 3 — Behavioral Integrity System
+
+### Overview
+
+The shadow score system applies an invisible pre-filter BEFORE matching algorithms run. Workers with degraded shadow scores see fewer tasks without knowing why.
+
+### Queue Tier Filtering
+
+| Queue Tier | Shadow Score Range | Feed Behavior |
+|------------|-------------------|---------------|
+| STANDARD | 70-100 | Full matching algorithm runs normally |
+| RESTRICTED | 40-69 | High-value tasks (>$100) hidden before matching |
+| PROBATION | 10-39 | Only LOW risk tasks pass to matching |
+| FROZEN | 0-9 | Empty feed — no tasks reach matching at all |
+
+### Integration with Matching Pipeline
+
+```
+1. Feed request arrives
+2. Check shadow_scores.queue_tier for worker
+3. Apply queue_tier pre-filter (hide tasks by risk/value)
+4. Run standard matching algorithm on remaining tasks
+5. Return results
+```
+
+**Critical UX Rule:** Worker NEVER sees "restricted" or "score." The feed simply shows fewer tasks. Error states show "No tasks available in your area" — standard empty state.
+
+### Invalidation
+
+Shadow scores are recomputed on: task completion, fraud signal filed, signal decay, manual review. Matching cache must invalidate on `shadow_score.updated` event.
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
 |---------|------|---------|
 | 1.0.0 | Jan 2025 | Initial matching algorithms specification |
+| 1.1.0 | Feb 2026 | Added shadow score feed filtering (RISK_TRUST_ENGINE cross-reference) |
 
 ---
 

@@ -1,10 +1,10 @@
 # In-App Messaging Specification
 
-**STATUS: STAGING (Detailed Implementation)**
-**Owner:** Product Team
-**Last Updated:** January 2025
-**Version:** v1.0.0
-**Authority:** PRODUCT_SPEC.md §10 is canonical. This document provides implementation details.
+**STATUS: SUPERSEDED**
+
+**Canonical location:** `specs/01-product/features/MESSAGING_SPEC.md` (456 lines)
+
+Do NOT use this file for implementation. The canonical spec has been promoted.
 
 ---
 

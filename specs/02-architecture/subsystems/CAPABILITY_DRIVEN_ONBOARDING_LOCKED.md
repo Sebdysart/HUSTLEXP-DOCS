@@ -2,6 +2,8 @@
 ## Status: APPROVED — MAX-Tier System Architecture
 ## Version: v1.0
 ## Authority: System Architecture — Non-Negotiable
+## Scope: UX FLOW — Screen-by-screen onboarding sequence (Phases 0-5)
+## Companion: `CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md` covers the backend architecture (capability profiles, feed filtering, eligibility resolution)
 
 ---
 

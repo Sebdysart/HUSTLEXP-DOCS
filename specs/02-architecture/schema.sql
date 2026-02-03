@@ -1,5 +1,5 @@
 -- ============================================================================
--- HustleXP Canonical Database Schema v1.2.0
+-- HustleXP Canonical Database Schema v1.3.0
 -- ============================================================================
 -- STATUS: CONSTITUTIONAL — DO NOT MODIFY WITHOUT VERSION BUMP
 -- AUTHORITY: Layer 0 (Highest) — See ARCHITECTURE.md §1
@@ -61,9 +61,9 @@ CREATE TABLE users (
     authority_expectation NUMERIC(4,3),
     price_sensitivity NUMERIC(4,3),
     
-    -- Trust (PRODUCT_SPEC §6, 4-tier system)
+    -- Trust (PRODUCT_SPEC §8.2, 5-tier system: ROOKIE/VERIFIED/TRUSTED/ELITE/MASTER)
     trust_tier INTEGER DEFAULT 1 NOT NULL 
-        CHECK (trust_tier >= 1 AND trust_tier <= 4),
+        CHECK (trust_tier >= 1 AND trust_tier <= 5),
     
     -- XP (PRODUCT_SPEC §5)
     xp_total INTEGER DEFAULT 0 NOT NULL 
@@ -338,8 +338,12 @@ CREATE TRIGGER escrow_amount_immutable
 -- ----------------------------------------------------------------------------
 -- 1.4 PROOFS TABLE
 -- ----------------------------------------------------------------------------
--- Authority: PRODUCT_SPEC §3.2, INV-3
+-- Authority: PRODUCT_SPEC §3.2, INV-3, JUDGE_AGENT_SPEC_LOCKED.md
 -- INV-3: COMPLETED task requires ACCEPTED proof
+-- State Machine: PENDING → SUBMITTED → ANALYZING → PASS/FAIL/UNCERTAIN
+--   PASS → ACCEPTED (poster approve or auto-release)
+--   FAIL → resubmit (max 3) or REJECTED
+--   UNCERTAIN → MANUAL_REVIEW
 -- ----------------------------------------------------------------------------
 
 CREATE TABLE proofs (
@@ -349,27 +353,57 @@ CREATE TABLE proofs (
     task_id UUID NOT NULL REFERENCES tasks(id),
     submitter_id UUID NOT NULL REFERENCES users(id),
     
-    -- State
+    -- State (extended for Judge Agent verification pipeline)
     state VARCHAR(20) NOT NULL DEFAULT 'PENDING'
         CHECK (state IN (
-            'PENDING',   -- Not yet submitted
-            'SUBMITTED', -- Awaiting review
-            'ACCEPTED',  -- Approved by poster
-            'REJECTED',  -- Rejected by poster
-            'EXPIRED'    -- Review window passed
+            'PENDING',        -- Created, not yet submitted
+            'SUBMITTED',      -- Worker submitted, awaiting analysis
+            'ANALYZING',      -- Judge Agent processing
+            'PASS',           -- Judge Agent approved, multi-sig window open
+            'FAIL',           -- Judge Agent rejected, resubmit allowed
+            'UNCERTAIN',      -- Judge Agent uncertain, needs human review
+            'ACCEPTED',       -- Final acceptance (poster approved or auto-released)
+            'REJECTED',       -- Final rejection (poster disputed or max attempts)
+            'MANUAL_REVIEW',  -- Escalated to human review queue
+            'EXPIRED'         -- Review window passed
         )),
     
-    -- Content
+    -- Content (legacy)
     description TEXT,
     
-    -- Review
+    -- Evidence (Judge Agent)
+    evidence_tier INTEGER CHECK (evidence_tier BETWEEN 1 AND 4),
+    media_type VARCHAR(20) CHECK (media_type IN ('photo', 'video', 'lidar_scan')),
+    media_url TEXT,
+    media_hash VARCHAR(128),
+    metadata_envelope JSONB,
+    
+    -- Judge Verdict
+    verdict_confidence DECIMAL(4,3),
+    verdict_flags TEXT[],
+    fraud_score DECIMAL(4,3) DEFAULT 0,
+    success_markers_result JSONB,
+    
+    -- Multi-Sig (Poster Response)
+    poster_response VARCHAR(10) CHECK (poster_response IN ('APPROVE', 'DISPUTE', 'SILENT')),
+    poster_response_at TIMESTAMPTZ,
+    multi_sig_window_expires_at TIMESTAMPTZ,
+    auto_released BOOLEAN DEFAULT FALSE,
+    
+    -- Review (legacy — kept for backward compatibility)
     reviewed_by UUID REFERENCES users(id),
     reviewed_at TIMESTAMPTZ,
     rejection_reason TEXT,
     
+    -- Attempt tracking (INV-JUDGE-5: max 3 attempts)
+    attempt_number INTEGER NOT NULL DEFAULT 1 CHECK (attempt_number BETWEEN 1 AND 3),
+    previous_proof_id UUID REFERENCES proofs(id),
+    
     -- Timestamps
     submitted_at TIMESTAMPTZ,
-    review_deadline TIMESTAMPTZ,         -- Deadline for poster to review proof
+    analyzed_at TIMESTAMPTZ,
+    resolved_at TIMESTAMPTZ,
+    review_deadline TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
@@ -378,6 +412,8 @@ CREATE INDEX idx_proofs_task ON proofs(task_id);
 CREATE INDEX idx_proofs_review_deadline ON proofs(review_deadline) WHERE state = 'SUBMITTED';
 CREATE INDEX idx_proofs_submitter ON proofs(submitter_id);
 CREATE INDEX idx_proofs_state ON proofs(state);
+CREATE INDEX idx_proofs_multi_sig ON proofs(multi_sig_window_expires_at) WHERE state = 'PASS';
+CREATE INDEX idx_proofs_analyzing ON proofs(task_id) WHERE state = 'ANALYZING';
 
 -- ----------------------------------------------------------------------------
 -- 1.4.1 PROOF PHOTOS TABLE
@@ -2063,7 +2099,7 @@ CREATE INDEX IF NOT EXISTS idx_license_verifications_user_trade ON license_verif
 CREATE TABLE IF NOT EXISTS capability_profiles (
     user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     profile_id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
-    trust_tier INTEGER NOT NULL CHECK (trust_tier IN (1, 2, 3, 4)),  -- 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE
+    trust_tier INTEGER NOT NULL CHECK (trust_tier IN (1, 2, 3, 4, 5)),  -- 1=ROOKIE, 2=VERIFIED, 3=TRUSTED, 4=ELITE, 5=MASTER
     trust_tier_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     risk_clearance TEXT[] NOT NULL DEFAULT ARRAY['low']::TEXT[],
     insurance_valid BOOLEAN NOT NULL DEFAULT FALSE,
@@ -2080,12 +2116,13 @@ CREATE TABLE IF NOT EXISTS capability_profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     
     -- INV-ELIGIBILITY-1: Trust tier → risk clearance mapping (immutable)
-    -- Tier 1 (ROOKIE) = low only, Tier 2-3 (VERIFIED/TRUSTED) = low+medium, Tier 4 (ELITE) = low+medium+high
+    -- Tier 1 (ROOKIE) = low only, Tier 2-3 (VERIFIED/TRUSTED) = low+medium, Tier 4 (ELITE) = low+medium+high, Tier 5 (MASTER) = all
     CONSTRAINT capability_profiles_risk_clearance_check CHECK (
         (trust_tier = 1 AND risk_clearance = ARRAY['low']::TEXT[]) OR
         (trust_tier = 2 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
         (trust_tier = 3 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance)) OR
-        (trust_tier = 4 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance))
+        (trust_tier = 4 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance)) OR
+        (trust_tier = 5 AND 'low' = ANY(risk_clearance) AND 'medium' = ANY(risk_clearance) AND 'high' = ANY(risk_clearance) AND 'critical' = ANY(risk_clearance))
     )
 );
 
@@ -2227,7 +2264,7 @@ ALTER TABLE tasks
     ADD COLUMN IF NOT EXISTS task_category VARCHAR(255),
     ADD COLUMN IF NOT EXISTS risk_level VARCHAR(20) CHECK (risk_level IN ('low', 'medium', 'high', 'critical')),
     ADD COLUMN IF NOT EXISTS required_trade VARCHAR(255),
-    ADD COLUMN IF NOT EXISTS required_trust_tier INTEGER CHECK (required_trust_tier >= 0 AND required_trust_tier <= 4),
+    ADD COLUMN IF NOT EXISTS required_trust_tier INTEGER CHECK (required_trust_tier >= 0 AND required_trust_tier <= 5),
     ADD COLUMN IF NOT EXISTS insurance_required BOOLEAN NOT NULL DEFAULT FALSE,
     ADD COLUMN IF NOT EXISTS background_check_required BOOLEAN NOT NULL DEFAULT FALSE,
     ADD COLUMN IF NOT EXISTS location_state CHAR(2) CHECK (length(location_state) = 2),

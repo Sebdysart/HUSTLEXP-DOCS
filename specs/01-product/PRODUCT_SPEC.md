@@ -164,6 +164,7 @@ Trust tier determines maximum risk clearance level. The mapping is immutable and
 - Trust tier 2 (VERIFIED) → low and medium risk
 - Trust tier 3 (TRUSTED) → low and medium risk
 - Trust tier 4 (ELITE) → low, medium, and high risk
+- Trust tier 5 (MASTER) → low, medium, high, and critical risk
 
 **Violation Behavior:**
 If violated, users could access tasks they are not legally or safely qualified for, leading to liability and trust erosion.
@@ -652,7 +653,7 @@ effective_xp = base_xp × streak_multiplier × trust_multiplier
 |-----------|-------------|
 | `base_xp` | `escrow.amount / 100` (cents to XP) |
 | `streak_multiplier` | `1.0 + (streak_days × 0.05)` capped at 2.0 |
-| `trust_multiplier` | `1.0` (ROOKIE) → `1.5` (VERIFIED) → `2.0` (TRUSTED) |
+| `trust_multiplier` | `1.0` (ROOKIE) → `1.5` (VERIFIED) → `2.0` (TRUSTED) → `2.5` (MASTER) |
 
 ### 5.3 XP Ledger
 
@@ -816,14 +817,17 @@ Role is determined during onboarding (see ONBOARDING_SPEC.md).
 | 2 | VERIFIED | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
 | 3 | TRUSTED | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
 | 4 | ELITE | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
+| 5 | MASTER | 500+ completed, <0.5% dispute rate, 4.9+ rating, background check verified | 2.5× XP multiplier, instant release eligible, critical risk access | Low, medium, high, and critical risk |
 
 Trust tier changes are logged in `trust_ledger` (append-only).
 
 **Risk Clearance Mapping:**
 - Trust tier determines the maximum risk level of tasks a user can access (see INV-ELIGIBILITY-1 in §2)
 - This mapping is **immutable**—trust tier 1 (ROOKIE) cannot access high-risk tasks, even if the user is willing
+- Trust tier 5 (MASTER) is the only tier that can access critical-risk tasks (e.g., in-home care, vulnerable populations)
+- Users with trust tier 4 (ELITE) can access low, medium, and high risk levels; users with trust tier 1 (ROOKIE) can only access low-risk tasks
 - Risk clearance is derived from trust tier, not stored separately, ensuring consistency
-- Users with trust tier 4 (ELITE) can access all risk levels (low, medium, high); users with trust tier 1 (ROOKIE) can only access low-risk tasks
+- Users with trust tier 5 (MASTER) can access all risk levels (low, medium, high, critical); trust tier 4 (ELITE) accesses low, medium, and high; trust tier 1 (ROOKIE) can only access low-risk tasks
 
 **What This Prevents:**
 - New users accepting high-risk tasks they're not yet trusted to complete

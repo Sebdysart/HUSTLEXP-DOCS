@@ -1,4 +1,4 @@
-# Screen E2: Instant Mode Unavailable (Hustler View)
+# Screen E4: Instant Mode Unavailable (Hustler View)
 ## Purpose: Explain why Instant Mode is off without sounding punitive or upselling
 
 ### Screen Purpose (Non-Negotiable)

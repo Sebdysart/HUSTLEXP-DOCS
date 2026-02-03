@@ -1,10 +1,10 @@
 # NOTIFICATION SPEC
 
-**STATUS: STAGING (Stub - To Be Expanded)**
-**Owner:** Product Team
-**Last Updated:** January 2025
-**Version:** v0.1.0
-**Authority:** See PRODUCT_SPEC.md for canonical definition.
+**STATUS: SUPERSEDED**
+
+**Canonical location:** `specs/01-product/features/NOTIFICATION_SPEC.md` (498 lines)
+
+Do NOT use this file for implementation. The canonical spec has been promoted.
 
 ---
 

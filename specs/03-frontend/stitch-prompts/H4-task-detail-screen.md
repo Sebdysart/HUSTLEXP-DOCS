@@ -1,4 +1,4 @@
-# Screen H3: Task Detail Screen (Hustler View)
+# Screen H4: Task Detail Screen (Hustler View)
 ## Status: IMPLEMENTATION SPEC
 **Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md
 **Cursor-Ready:** YES

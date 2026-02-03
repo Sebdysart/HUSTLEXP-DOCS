@@ -1,18 +1,19 @@
 # SCREEN ARCHETYPES — HUSTLEXP v1.0
 
-**STATUS: FROZEN — All 38 screens are categorized**  
+**STATUS: FROZEN — All 38 screens are categorized**
+**Authority: SCREEN_REGISTRY.md (screens-spec/SCREEN_REGISTRY.md) is the constitutional reference for screen codes and names.**
 **Rule: Identify archetype BEFORE implementation. Inherit, don't invent.**
 
 ---
 
 ## PURPOSE
 
-Screens are NOT unique design problems.  
+Screens are NOT unique design problems.
 Screens are **instances of archetypes**.
 
 This document:
 1. Defines the 6 archetypes
-2. Maps all 38 screens to archetypes
+2. Maps all 38 screens (per SCREEN_REGISTRY) to archetypes
 3. Specifies what each archetype inherits
 
 **Cursor must identify the archetype BEFORE building any screen.**
@@ -44,12 +45,11 @@ This document:
 
 **Screens in this archetype:**
 ```
-A1: AuthLoginScreen
-A2: AuthSignupScreen
-A3: AuthForgotPasswordScreen
-A4: AuthPhoneVerificationScreen
-O1: WelcomeScreen
-O2: RoleSelectionScreen
+A1: Login
+A2: Signup
+A3: Forgot Password
+O1: Framing
+O3: Role Confirmation
 ```
 
 **Anti-patterns (FORBIDDEN):**
@@ -83,9 +83,8 @@ O2: RoleSelectionScreen
 
 **Screens in this archetype:**
 ```
-H2: TaskFeedScreen
-H3: TaskHistoryScreen
-P3: ActiveTasksScreen
+H2: Task Feed
+H3: Task History
 ```
 
 **Anti-patterns (FORBIDDEN):**
@@ -119,16 +118,14 @@ P3: ActiveTasksScreen
 
 **Screens in this archetype:**
 ```
-H5: TaskInProgressScreen
-H6: HustlerEnRouteMapScreen
-P5: TaskManagementScreen
-P6: HustlerTrackingScreen
-P7: ProofReviewScreen
-P8: TaskCompletionScreen
-SH1: TaskConversationScreen
-SH2: TaskDetailScreen
-SH3: ProofSubmissionScreen
-SH4: DisputeScreen
+H4: Task Detail
+H5: Task In Progress
+H6: Task Completion
+H7: En Route Map
+P2: Hustler On Way
+P3: Task Completion (Poster)
+SH1: Task Conversation
+SH4: Dispute Entry
 ```
 
 **Anti-patterns (FORBIDDEN):**
@@ -162,16 +159,20 @@ SH4: DisputeScreen
 
 **Screens in this archetype:**
 ```
-O3: LocationPermissionScreen
-O4: NotificationPermissionScreen
-O5: ProfileSetupScreen
-O6: OnboardingCompleteScreen
-S1: SettingsMainScreen
-S2: AccountSettingsScreen
-S3: NotificationSettingsScreen
-S4: PaymentSettingsScreen
-S5: PrivacySettingsScreen
-S6: VerificationScreen
+O2: Calibration
+O4: Preference Lock
+O5: Capability Intro
+O6: Location Setup
+O7: Trade Verification
+O8: Insurance Upload
+O9: Background Check
+O10: Vehicle Setup
+O11: Availability
+O12: Capability Summary
+P1: Task Creation
+P4: Feedback
+S1: Profile
+S3: Work Eligibility
 ```
 
 **Anti-patterns (FORBIDDEN):**
@@ -205,13 +206,11 @@ S6: VerificationScreen
 
 **Screens in this archetype:**
 ```
-H1: HustlerHomeScreen
-H4: HustlerProfileScreen
-H7: XPBreakdownScreen
-H8: TrustTierScreen
-H9: EarningsScreen
-P1: PosterHomeScreen
-P4: PosterProfileScreen
+H1: Hustler Home
+H8: XP Breakdown
+S2: Wallet
+SH2: Trust Tier Ladder
+SH3: Trust Change Explanation
 ```
 
 **Anti-patterns (FORBIDDEN):**
@@ -245,12 +244,10 @@ P4: PosterProfileScreen
 
 **Screens in this archetype:**
 ```
-E1: NoTasksScreen
-E2: EligibilityMismatchScreen
-E3: NetworkErrorScreen
-E4: MaintenanceScreen
-E5: ForceUpdateScreen
-S7: SupportScreen
+H9: Instant Interrupt
+E1: No Tasks Available
+E2: Eligibility Mismatch
+E3: Trust Tier Locked
 ```
 
 **Anti-patterns (FORBIDDEN):**
@@ -289,53 +286,64 @@ If truly unclear, ASK.
 
 ---
 
-## COMPLETE SCREEN-TO-ARCHETYPE MAP
+## COMPLETE SCREEN-TO-ARCHETYPE MAP (38 SCREENS)
 
-| Screen | Code | Archetype |
-|--------|------|-----------|
-| AuthLoginScreen | A1 | A. Entry/Commitment |
-| AuthSignupScreen | A2 | A. Entry/Commitment |
-| AuthForgotPasswordScreen | A3 | A. Entry/Commitment |
-| AuthPhoneVerificationScreen | A4 | A. Entry/Commitment |
-| WelcomeScreen | O1 | A. Entry/Commitment |
-| RoleSelectionScreen | O2 | A. Entry/Commitment |
-| LocationPermissionScreen | O3 | D. Calibration/Capability |
-| NotificationPermissionScreen | O4 | D. Calibration/Capability |
-| ProfileSetupScreen | O5 | D. Calibration/Capability |
-| OnboardingCompleteScreen | O6 | D. Calibration/Capability |
-| HustlerHomeScreen | H1 | E. Progress/Status |
-| TaskFeedScreen | H2 | B. Feed/Opportunity |
-| TaskHistoryScreen | H3 | B. Feed/Opportunity |
-| HustlerProfileScreen | H4 | E. Progress/Status |
-| TaskInProgressScreen | H5 | C. Task Lifecycle |
-| HustlerEnRouteMapScreen | H6 | C. Task Lifecycle |
-| XPBreakdownScreen | H7 | E. Progress/Status |
-| TrustTierScreen | H8 | E. Progress/Status |
-| EarningsScreen | H9 | E. Progress/Status |
-| PosterHomeScreen | P1 | E. Progress/Status |
-| TaskCreationScreen | P2 | D. Calibration/Capability |
-| ActiveTasksScreen | P3 | B. Feed/Opportunity |
-| PosterProfileScreen | P4 | E. Progress/Status |
-| TaskManagementScreen | P5 | C. Task Lifecycle |
-| HustlerTrackingScreen | P6 | C. Task Lifecycle |
-| ProofReviewScreen | P7 | C. Task Lifecycle |
-| TaskCompletionScreen | P8 | C. Task Lifecycle |
-| TaskConversationScreen | SH1 | C. Task Lifecycle |
-| TaskDetailScreen | SH2 | C. Task Lifecycle |
-| ProofSubmissionScreen | SH3 | C. Task Lifecycle |
-| DisputeScreen | SH4 | C. Task Lifecycle |
-| SettingsMainScreen | S1 | D. Calibration/Capability |
-| AccountSettingsScreen | S2 | D. Calibration/Capability |
-| NotificationSettingsScreen | S3 | D. Calibration/Capability |
-| PaymentSettingsScreen | S4 | D. Calibration/Capability |
-| PrivacySettingsScreen | S5 | D. Calibration/Capability |
-| VerificationScreen | S6 | D. Calibration/Capability |
-| SupportScreen | S7 | F. System/Interrupt |
-| NoTasksScreen | E1 | F. System/Interrupt |
-| EligibilityMismatchScreen | E2 | F. System/Interrupt |
-| NetworkErrorScreen | E3 | F. System/Interrupt |
-| MaintenanceScreen | E4 | F. System/Interrupt |
-| ForceUpdateScreen | E5 | F. System/Interrupt |
+**Authority: SCREEN_REGISTRY.md — codes and names are canonical.**
+
+| Code | Screen | File | Archetype |
+|------|--------|------|-----------|
+| A1 | Login | `LoginScreen.tsx` | A. Entry/Commitment |
+| A2 | Signup | `SignupScreen.tsx` | A. Entry/Commitment |
+| A3 | Forgot Password | `ForgotPasswordScreen.tsx` | A. Entry/Commitment |
+| H1 | Hustler Home | `HustlerHomeScreen.tsx` | E. Progress/Status |
+| H2 | Task Feed | `TaskFeedScreen.tsx` | B. Feed/Opportunity |
+| H3 | Task History | `TaskHistoryScreen.tsx` | B. Feed/Opportunity |
+| H4 | Task Detail | `TaskDetailScreen.tsx` | C. Task Lifecycle |
+| H5 | Task In Progress | `TaskInProgressScreen.tsx` | C. Task Lifecycle |
+| H6 | Task Completion | `TaskCompletionScreen.tsx` | C. Task Lifecycle |
+| H7 | En Route Map | `HustlerEnRouteMapScreen.tsx` | C. Task Lifecycle |
+| H8 | XP Breakdown | `XPBreakdownScreen.tsx` | E. Progress/Status |
+| H9 | Instant Interrupt | `InstantInterruptCard.tsx` | F. System/Interrupt |
+| P1 | Task Creation | `TaskCreationScreen.tsx` | D. Calibration/Capability |
+| P2 | Hustler On Way | `HustlerOnWayScreen.tsx` | C. Task Lifecycle |
+| P3 | Task Completion | `TaskCompletionScreen.tsx` | C. Task Lifecycle |
+| P4 | Feedback | `FeedbackScreen.tsx` | D. Calibration/Capability |
+| O1 | Framing | `FramingScreen.tsx` | A. Entry/Commitment |
+| O2 | Calibration | `CalibrationScreen.tsx` | D. Calibration/Capability |
+| O3 | Role Confirmation | `RoleConfirmationScreen.tsx` | A. Entry/Commitment |
+| O4 | Preference Lock | `PreferenceLockScreen.tsx` | D. Calibration/Capability |
+| O5 | Capability Intro | `CapabilityIntroScreen.tsx` | D. Calibration/Capability |
+| O6 | Location Setup | `LocationSetupScreen.tsx` | D. Calibration/Capability |
+| O7 | Trade Verification | `TradeVerificationScreen.tsx` | D. Calibration/Capability |
+| O8 | Insurance Upload | `InsuranceUploadScreen.tsx` | D. Calibration/Capability |
+| O9 | Background Check | `BackgroundCheckScreen.tsx` | D. Calibration/Capability |
+| O10 | Vehicle Setup | `VehicleSetupScreen.tsx` | D. Calibration/Capability |
+| O11 | Availability | `AvailabilityScreen.tsx` | D. Calibration/Capability |
+| O12 | Capability Summary | `CapabilitySummaryScreen.tsx` | D. Calibration/Capability |
+| S1 | Profile | `ProfileScreen.tsx` | D. Calibration/Capability |
+| S2 | Wallet | `WalletScreen.tsx` | E. Progress/Status |
+| S3 | Work Eligibility | `WorkEligibilityScreen.tsx` | D. Calibration/Capability |
+| SH1 | Task Conversation | `TaskConversationScreen.tsx` | C. Task Lifecycle |
+| SH2 | Trust Tier Ladder | `TrustTierLadderScreen.tsx` | E. Progress/Status |
+| SH3 | Trust Change | `TrustChangeExplanationScreen.tsx` | E. Progress/Status |
+| SH4 | Dispute Entry | `DisputeEntryScreen.tsx` | C. Task Lifecycle |
+| E1 | No Tasks Available | `NoTasksAvailableScreen.tsx` | F. System/Interrupt |
+| E2 | Eligibility Mismatch | `EligibilityMismatchScreen.tsx` | F. System/Interrupt |
+| E3 | Trust Tier Locked | `TrustTierLockedScreen.tsx` | F. System/Interrupt |
+
+---
+
+## ARCHETYPE COUNTS
+
+| Archetype | Count | Screens |
+|-----------|-------|---------|
+| A. Entry/Commitment | 5 | A1, A2, A3, O1, O3 |
+| B. Feed/Opportunity | 2 | H2, H3 |
+| C. Task Lifecycle | 8 | H4, H5, H6, H7, P2, P3, SH1, SH4 |
+| D. Calibration/Capability | 14 | O2, O4-O12, P1, P4, S1, S3 |
+| E. Progress/Status | 5 | H1, H8, S2, SH2, SH3 |
+| F. System/Interrupt | 4 | H9, E1, E2, E3 |
+| **TOTAL** | **38** | |
 
 ---
 
