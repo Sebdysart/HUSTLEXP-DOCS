@@ -1115,6 +1115,7 @@ interface ForecastEvent {
 | 1.1 | Jan 2025 | Added: DB schemas (§6), tRPC contracts (§15), specific rate limits (§13), cross-reference index (§20), integration with BUILD_GUIDE authority hierarchy |
 | 1.2 | Jan 2025 | Added: Session Forecast AI (§21) with A1 authority, earning prediction rules |
 | 1.3 | Feb 2026 | Added: Judge Agent cross-reference (§9 extended by JUDGE_AGENT_SPEC_LOCKED.md) |
+| 1.4 | Feb 2026 | Added: Risk & Trust Engine cross-reference (§10 extended by RISK_TRUST_ENGINE_LOCKED.md) |
 
 ### Cross-Reference: Judge Agent
 
@@ -1135,6 +1136,23 @@ This spec adds:
 
 §9 in this document remains the authority for base proof rules. The Judge Agent spec extends those rules with operational detail.
 
+### Cross-Reference: Risk & Trust Engine
+
+§10 (Fraud, Abuse, and Gaming Controls) is now extended by the comprehensive Risk & Trust Engine:
+
+**Location:** `specs/02-architecture/subsystems/RISK_TRUST_ENGINE_LOCKED.md`
+
+This spec adds:
+- AI-Dynamic Safety Pool (parametric micro-premiums, automated claims)
+- Worker Classification Fortress (6 pillars of contractor status, rate multiplier)
+- Behavioral Integrity System ("Shadow Level" — invisible fraud detection)
+- Layered Trust Defense (identity → liveness → spatial → behavioral)
+- De-leveling mechanics (graduated response instead of bans)
+- Full data models (safety_pool_ledger, claims, shadow_scores, fraud_signals)
+- 10 new invariants (INV-RISK-1 through INV-RISK-10)
+
+§10 in this document remains the authority for base anti-gaming rules. The Risk & Trust Engine extends those rules with operational systems.
+
 ---
 
-**END OF AI INFRASTRUCTURE SPECIFICATION v1.3**
+**END OF AI INFRASTRUCTURE SPECIFICATION v1.4**

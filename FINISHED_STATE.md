@@ -236,6 +236,11 @@ These are **explicitly excluded** from v1:
 - ◻ v1.5: Before/after comparison, success markers, trust-scaled evidence tiers (Phase 2)
 - ◻ v2.0: Video walkthrough, Visual SLAM, LiDAR scanning (Phase 3)
 
+### Risk & Trust Engine Phased Delivery:
+- ✅ v1.0: Stripe Identity, device binding, fixed safety fee, GPS verification, rate multiplier, classification audit (RISK_TRUST_ENGINE_LOCKED.md Phase 1)
+- ◻ v1.5: AI-dynamic premiums, automated claims (<$200), shadow score feed filtering, GPS emulator detection, liveness challenges (Phase 2)
+- ◻ v2.0: Full behavioral biometrics, deepfake detection, LiDAR claims verification, automated claims (<$500), de-leveling active (Phase 3)
+
 ### Excluded entirely:
 - ❌ Tipping (payment edge cases, incentive distortion)
 - ❌ AI autonomous actions (AI never acts without human confirm)

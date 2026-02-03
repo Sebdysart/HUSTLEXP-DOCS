@@ -1,32 +1,16 @@
 # FRAUD DETECTION SPEC
 
-**STATUS: STAGING (Stub - To Be Expanded)**
-**Owner:** Product Team
-**Last Updated:** January 2025
-**Version:** v0.1.0
-**Authority:** See PRODUCT_SPEC.md for canonical definition.
+**STATUS: SUPERSEDED**
 
----
+This stub has been replaced by the comprehensive specification:
 
-## Overview
+**Location:** `specs/02-architecture/subsystems/RISK_TRUST_ENGINE_LOCKED.md`
 
-This is a stub specification. See PRODUCT_SPEC.md for the canonical definition.
+Specifically:
+- Pillar 3: Behavioral Integrity System ("Shadow Level")
+- Pillar 4: Layered Trust Defense
+- §4.3: Anti-Spoofing Protocol (GPS emulator, app tampering, fingerprinting)
+- §4.4: De-Leveling Mechanics
+- §6.4: Fraud Signals Table
 
-Detailed implementation specification will be added when this feature enters active development.
-
----
-
-## Canonical Reference
-
-**PRODUCT_SPEC.md Section:** (See README.md for mapping)
-
----
-
-## Key Invariants
-
-(Copied from PRODUCT_SPEC.md - see canonical source)
-
----
-
-**This stub will be expanded during implementation.**
-
+**Do not expand this stub. Use RISK_TRUST_ENGINE_LOCKED.md instead.**
