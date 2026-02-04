@@ -1014,9 +1014,16 @@ async function processBackgroundCheckWebhook(
 **Purpose:** Gate verification processing fees, not access.
 
 **Allowed Payments:**
-- License verification processing (one-time fee per verification)
-- Insurance verification processing (one-time fee per verification)
-- Periodic re-verification (annual renewal fee)
+- License verification processing (one-time fee per verification — **$1.00 via Stripe**)
+- Insurance verification processing (one-time fee per verification — **$1.00 via Stripe**)
+- Periodic re-verification (annual renewal fee — **$1.00 via Stripe**)
+
+**Why $1.00:**
+- Low enough to be zero-friction (removes cost as a barrier)
+- High enough to prevent spam verifications (bot/fraud signal)
+- Validates Stripe payment method on file (confirms real person with real payment)
+- Revenue-neutral — cost covers Stripe processing fees
+- Worker earns the right to verify by building trust, then $1 activates it
 
 **Forbidden Payments:**
 - Paying to retry failed credentials (fix inputs, then resubmit for free)

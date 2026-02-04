@@ -132,7 +132,8 @@ Location: `src/screens/onboarding/capability/`
 
 | # | Screen | File | Spec Reference | Build | UAP Status | Notes |
 |---|--------|------|----------------|-------|------------|-------|
-| O5 | Capability Intro | `CapabilityIntroScreen.tsx` | ONBOARDING_SPEC §5.1 | ✅ | PENDING | What capabilities mean |
+| O5 | Capability Intro | `CapabilityIntroScreen.tsx` | ONBOARDING_SPEC §5.1 | ✅ | PENDING | Category selection (6 cards → O5b) |
+| O5b | Skill Cloud | `SkillCloudScreen.tsx` | SKILL_TAXONOMY.md, ONBOARDING_SPEC §5.1b | ✅ | PENDING | Bubble-tap granular skill selection within chosen categories. 130+ skills. IC self-selection evidence. |
 | O6 | Location Setup | `LocationSetupScreen.tsx` | ONBOARDING_SPEC §5.2 | ✅ | PENDING | Work location preferences |
 | O7 | Trade Verification | `TradeVerificationScreen.tsx` | ONBOARDING_SPEC §5.3 | ✅ | PENDING | Professional license input |
 | O8 | Insurance Upload | `InsuranceUploadScreen.tsx` | ONBOARDING_SPEC §5.4 | ✅ | PENDING | Liability insurance docs |
@@ -148,6 +149,7 @@ SignupScreen → FramingScreen → CalibrationScreen → RoleConfirmationScreen
                     PreferenceLockScreen ← CapabilitySummaryScreen
                            ↓                       ↑
                     HustlerHomeScreen    (8 capability screens)
+                                         O5 → O5b → O6 → ... → O12
 ```
 
 ---

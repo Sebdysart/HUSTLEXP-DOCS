@@ -2036,11 +2036,13 @@ CREATE TABLE IF NOT EXISTS capability_claims (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     role VARCHAR(20) NOT NULL CHECK (role IN ('hustler', 'poster', 'both')),
     claimed_trades TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    claimed_skills TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],  -- Granular skill_ids from SKILL_TAXONOMY
     license_claims JSONB NOT NULL DEFAULT '[]'::JSONB,
     insurance_claimed BOOLEAN NOT NULL DEFAULT FALSE,
     work_state CHAR(2) NOT NULL CHECK (length(work_state) = 2),
     work_region VARCHAR(255),
     risk_preferences JSONB NOT NULL DEFAULT '{"in_home_work": false, "high_risk_tasks": false, "urgent_jobs": false}'::JSONB,
+    selection_source VARCHAR(20) NOT NULL DEFAULT 'onboarding' CHECK (selection_source IN ('onboarding', 'settings', 'post_task_prompt')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     
     CONSTRAINT capability_claims_user_id_unique UNIQUE (user_id)
@@ -2048,6 +2050,33 @@ CREATE TABLE IF NOT EXISTS capability_claims (
 
 CREATE INDEX IF NOT EXISTS idx_capability_claims_user_id ON capability_claims(user_id);
 CREATE INDEX IF NOT EXISTS idx_capability_claims_work_state ON capability_claims(work_state);
+CREATE INDEX IF NOT EXISTS idx_capability_claims_skills ON capability_claims USING GIN (claimed_skills);
+
+-- ----------------------------------------------------------------------------
+-- 12.1b SKILL_CATALOG (CANONICAL SKILL ENUMERATION)
+-- Source: SKILL_TAXONOMY.md
+-- Purpose: Authoritative list of all claimable skills. If a skill is not here, it doesn't exist.
+-- ----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS skill_catalog (
+    skill_id VARCHAR(100) PRIMARY KEY,
+    display_name VARCHAR(255) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    subcategory VARCHAR(100) NOT NULL,
+    base_risk VARCHAR(10) NOT NULL CHECK (base_risk IN ('low', 'medium', 'high', 'critical')),
+    regulated BOOLEAN NOT NULL DEFAULT FALSE,
+    requires_insurance BOOLEAN NOT NULL DEFAULT FALSE,
+    requires_background BOOLEAN NOT NULL DEFAULT FALSE,
+    min_trust_tier INTEGER NOT NULL DEFAULT 1 CHECK (min_trust_tier BETWEEN 1 AND 5),
+    verification_gate VARCHAR(255),
+    adjacent_skills TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_skill_catalog_category ON skill_catalog(category);
+CREATE INDEX IF NOT EXISTS idx_skill_catalog_risk ON skill_catalog(base_risk);
+CREATE INDEX IF NOT EXISTS idx_skill_catalog_tier ON skill_catalog(min_trust_tier);
 
 -- ----------------------------------------------------------------------------
 -- 12.2 LICENSE_VERIFICATIONS (PRIMARY TRADE AUTHORITY)

@@ -1,14 +1,15 @@
-# Screen O5: Capability Intro Screen
+# Screen O5: Capability Intro Screen (Category Selection)
 ## Status: IMPLEMENTATION SPEC
-**Authority:** DESIGN_SYSTEM.md, ONBOARDING_SPEC.md
+**Authority:** DESIGN_SYSTEM.md, ONBOARDING_SPEC.md, SKILL_TAXONOMY.md
 **Cursor-Ready:** YES
 **Role:** Hustler Only
+**Successor:** O5b (Skill Cloud — bubble-tap granular skill selection within chosen categories)
 
 ---
 
 ## Overview
 
-Introduces the capability declaration process. Explains how capabilities affect task matching.
+Introduces the capability declaration process. User selects broad categories (Physical Tasks, Handy Work, Transportation, etc.), then proceeds to O5b for granular skill selection within those categories.
 
 ---
 

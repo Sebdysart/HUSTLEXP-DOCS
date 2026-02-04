@@ -79,6 +79,7 @@ These prompts use SCREEN_REGISTRY numbering (not the legacy 01-13 numbering abov
 | H5 | Active Task | `H5-active-task-screen.md` | Active |
 | H7 | En Route Map | `H7-en-route-map-screen.md` | Active |
 | O1-O12 | Onboarding Screens | `O{N}-{name}-screen.md` | Active |
+| O5b | Skill Cloud (Bubble-Tap) | `O5b-skill-cloud-screen.md` | Active |
 | P1-P4 | Poster Screens | (see legacy 04/05/10/11) | Mixed |
 | S1-S3 | Settings Screens | `S{N}-{name}-screen.md` | Active |
 | SH1 | Task Conversation | `SH1-task-conversation-screen.md` | Active |

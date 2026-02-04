@@ -348,6 +348,26 @@ HustleXP v1.0 is **DONE** when:
 
 ---
 
+## v2 Roadmap (Deferred Features — NOT for v1 Implementation)
+
+These features were evaluated and explicitly deferred due to FEATURE_FREEZE constraints.
+They are documented here for post-v1 planning only.
+
+| Feature | Freeze Conflict | v2 Trigger |
+|---------|----------------|------------|
+| Adjacent Skill Prompt | "AI task suggestions" frozen | Post-task notification: "Workers like you also do [Skill]. Tap to add." |
+| Market Demand Prompt | "Smart pricing" adjacent, frozen | Feed banner: "High demand for [Skill] in [Area] today." |
+| Quest/Gamification Language | "Gamified streaks" frozen | Gamification language layer across UI copy |
+
+**Constraints for v2 implementation:**
+- Adjacent Skill: Max 1 suggestion per completed task, max 3/day. Never suggest regulated skills without verification path. Source: `adjacent_skills[]` from SKILL_TAXONOMY (pre-computed, not AI-generated).
+- Market Demand: Feed banner only (not push). No earnings projections ("2x more" requires regulatory review). Dismissable, max 1 per session.
+- All v2 features must comply with INV-PRIVACY-1 (no background GPS for suggestions).
+
+**Source:** `staging/REACTIVE_SKILL_INTELLIGENCE_ANALYSIS.md` §6
+
+---
+
 ## SIGNATURE
 
 This document was frozen on: **January 2025**

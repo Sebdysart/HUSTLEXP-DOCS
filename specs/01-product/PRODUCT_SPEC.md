@@ -296,6 +296,34 @@ If violated, capability profiles could drift out of sync with verification recor
 
 ---
 
+### INV-PRIVACY-1: Reactive Tracking Only
+
+```
+GPS/location tracking activates ONLY during:
+  1. Active task (ACCEPTED → COMPLETED state)
+  2. EN_ROUTE navigation (worker opted in)
+  3. Liveness challenge (time-bounded, explicit consent)
+
+GPS tracking NEVER activates for:
+  - Background skill suggestion
+  - Market demand analysis
+  - Feed personalization
+  - Any passive monitoring
+```
+
+**Rationale:** Workers are independent contractors operating their own businesses. Background surveillance violates IC classification principles and user trust. All intelligence features must be reactive (triggered by in-app events), never creepy (triggered by passive monitoring).
+
+**Enforcement:**
+- Mobile SDK location permissions are requested ONLY at task acceptance, not onboarding
+- Location services are disabled on task completion or cancellation
+- No background location mode in app manifest
+- Error code: `HX901`
+
+**Violation Behavior:**
+If GPS fires outside an active task window, this is a **P0 bug requiring immediate hotfix**. Any background location access constitutes a privacy violation and potential IC misclassification risk.
+
+---
+
 ### Invariant Chain
 
 The invariants form a strict dependency chain:
@@ -310,7 +338,7 @@ Task acceptance depends on escrow funding
 
 This means: **XP is mathematically impossible without the full chain completing.**
 
-The eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8) enforce that **task access is impossible without proper credentials and trust tier**. See §17 for complete eligibility system behavior.
+The eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8) enforce that **task access is impossible without proper credentials and trust tier**. The privacy invariant (INV-PRIVACY-1) enforces that **location tracking is reactive only — never background surveillance**. See §17 for complete eligibility system behavior.
 
 ---
 

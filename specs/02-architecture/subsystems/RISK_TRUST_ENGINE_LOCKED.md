@@ -278,8 +278,10 @@ HustleXP workers are **independent contractors**, not employees. This classifica
 ├───────────────────────┼──────────────────────────┼────────────────────┤
 │ 1. Non-Exclusivity    │ Workers may use other    │ No penalties for   │
 │                       │ platforms simultaneously  │ declining tasks,   │
-│                       │                          │ no exclusivity     │
-│                       │                          │ clauses anywhere   │
+│                       │ + Self-select from 130+   │ no exclusivity     │
+│                       │ skills (SKILL_TAXONOMY)   │ clauses anywhere.  │
+│                       │ as independent businesses │ Skill self-select  │
+│                       │                          │ = IC evidence.     │
 ├───────────────────────┼──────────────────────────┼────────────────────┤
 │ 2. Task Acceptance    │ Workers choose which     │ No auto-assignment │
 │    Freedom            │ tasks to accept          │ No minimum accept  │
@@ -405,7 +407,7 @@ CREATE TABLE classification_audit (
   ) STORED,
   
   -- Evidence
-  evidence JSONB NOT NULL,          -- Specific data points checked
+  evidence JSONB NOT NULL,          -- Specific data points checked (see evidence schema below)
   auditor TEXT NOT NULL,            -- 'SYSTEM' or admin user ID
   
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -414,6 +416,28 @@ CREATE TABLE classification_audit (
 CREATE INDEX idx_classification_audit_worker ON classification_audit(worker_id);
 CREATE INDEX idx_classification_audit_failures 
   ON classification_audit(worker_id) WHERE all_pass = FALSE;
+```
+
+**Classification Audit Evidence Schema (JSONB):**
+
+The `evidence` field MUST include self-selection data when `audit_type = 'ONBOARDING'`:
+
+```json
+{
+  "pillar_1_non_exclusivity": {
+    "claimed_skills_count": 15,
+    "skills_across_categories": 4,
+    "self_selected": true,
+    "selection_source": "onboarding_skill_cloud",
+    "selection_timestamp": "2025-01-15T10:30:00Z",
+    "legal_significance": "Worker self-selected services from 130+ skill taxonomy as independent business — not assigned by platform"
+  },
+  "pillar_2_task_freedom": { "decline_penalty_exists": false },
+  "pillar_3_schedule_control": { "shift_system_exists": false },
+  "pillar_4_pricing_control": { "rate_multiplier_enabled": true, "range": "0.8x-2.0x" },
+  "pillar_5_tool_independence": { "company_equipment_issued": false },
+  "pillar_6_method_control": { "process_mandates_found": false }
+}
 ```
 
 ---

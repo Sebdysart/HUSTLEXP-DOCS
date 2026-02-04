@@ -161,7 +161,8 @@ SH4: Dispute Entry
 ```
 O2: Calibration
 O4: Preference Lock
-O5: Capability Intro
+O5: Capability Intro (Category Selection → O5b)
+O5b: Skill Cloud (Bubble-Tap Selection — granular skill claims within categories)
 O6: Location Setup
 O7: Trade Verification
 O8: Insurance Upload

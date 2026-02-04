@@ -1803,7 +1803,11 @@ Owns the Settings UI interpretability layer. Settings screens explain reality (v
 
 Owns the onboarding question flow for hustlers. Onboarding collects claims, not permissions. No question directly grants access.
 
-### 19.2 Complementary Spec
+### 19.2 Skill Taxonomy Authority
+
+`SKILL_TAXONOMY.md` is the canonical enumeration of 130+ claimable skills across 6 categories. It governs: O5/O5b UI (what bubbles appear), `capability_claims.skill_id` values (what gets stored), feed filtering (what tasks match), risk classification baseline (per-skill risk level), and verification gating (which skills require credentials). Worker self-selection from 130+ skills serves as IC classification evidence (see RISK_TRUST_ENGINE §3, Pillar 1).
+
+### 19.3 Complementary Spec
 
 `CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md` (§20) covers the architecture connecting onboarding data to feed filtering. §19 covers the UX flow; §20 covers the backend plumbing.
 
@@ -1834,6 +1838,7 @@ Owns the pipeline from onboarding claim submission → capability profile comput
 | 1.2.0 | Jan 2025 | HustleXP Core | Added: §11 Capability Profile Authority, §12 Verification Pipeline Authority, §13 Feed Eligibility Authority |
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: §14 Task State Machine Authority (Phase N2.2 cleanup) |
 | 1.4.0 | Feb 2026 | HustleXP Core | Added: §15 Judge Agent, §16 Risk & Trust Engine, §17 Risk Classifier, §18 Settings Verification, §19 Capability Onboarding, §20 Onboarding & Feed Filtering. All 10 LOCKED subsystems now referenced. |
+| 1.4.1 | Feb 2026 | HustleXP Core | §19: Added SKILL_TAXONOMY authority reference (130+ skills, IC self-selection evidence). |
 
 ---
 
