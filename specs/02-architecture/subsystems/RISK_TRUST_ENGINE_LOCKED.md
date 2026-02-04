@@ -5,7 +5,7 @@
 **Authority:** PRODUCT_SPEC.md INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8, AI_INFRASTRUCTURE.md §10
 **Applies To:** Safety pool, worker classification, fraud detection, trust defense
 **Last Updated:** February 2026
-**Replaces:** staging/FRAUD_DETECTION_SPEC.md (stub)
+**Replaces:** Former staging/FRAUD_DETECTION_SPEC.md (stub — now archived)
 
 ---
 

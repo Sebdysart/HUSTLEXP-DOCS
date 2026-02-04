@@ -1101,7 +1101,7 @@ The AI voice must be:
 | `HX703` | Invalid question type (not in 4 allowed types) | COMPLETE-5 violation |
 | `HX704` | Confidence threshold bypass attempt | COMPLETE-6 violation |
 
-**Detailed specification:** See `staging/AI_TASK_COMPLETION_SPEC.md`
+**Detailed specification:** See `specs/02-architecture/subsystems/AI_TASK_COMPLETION_LOCKED.md`
 
 ---
 
@@ -1171,7 +1171,7 @@ For each task in feed, show AI-generated explanation:
 | **DISCOVERY-4** | Filters never bypass trust tier requirements | Backend validation |
 | **DISCOVERY-5** | Explanations are advisory only (A1) | AI authority model |
 
-**Detailed specification:** See `staging/TASK_DISCOVERY_SPEC.md`
+**Detailed specification:** See `specs/01-product/features/TASK_DISCOVERY_LOCKED.md`
 
 ---
 
@@ -1225,7 +1225,7 @@ All messages scanned via AI (A2 authority):
 | **MSG-4** | Maximum 500 characters per text message | DB constraint (schema.sql line 1535) |
 | **MSG-5** | Chat history is immutable after task COMPLETED | Backend validation |
 
-**Detailed specification:** See `staging/MESSAGING_SPEC.md`
+**Detailed specification:** See `specs/01-product/features/MESSAGING_SPEC.md`
 
 ---
 
@@ -1276,7 +1276,7 @@ User can control per category:
 | **NOTIF-4** | Deep links must be valid (task exists, user has access) | Backend validation |
 | **NOTIF-5** | Notifications expire after 30 days | Backend cleanup job |
 
-**Detailed specification:** See `staging/NOTIFICATION_SPEC.md`
+**Detailed specification:** See `specs/01-product/features/NOTIFICATION_SPEC.md`
 
 ---
 
@@ -1332,7 +1332,7 @@ Both worker and poster rate each other after task completion. Ratings cannot be 
 | **RATE-6** | Stars must be 1-5 | DB CHECK constraint |
 | **RATE-7** | Comment must be ≤500 characters | DB CHECK constraint (schema.sql line 1644) |
 
-**Detailed specification:** See `staging/RATING_SYSTEM_SPEC.md`
+**Detailed specification:** See `specs/01-product/features/RATING_SYSTEM_SPEC.md`
 
 ---
 
@@ -1382,7 +1382,7 @@ Every user action is tracked. Every conversion is measured. Every decision is da
 - Retention: Raw events 90 days, aggregated metrics 2 years
 - GDPR compliance: User can export/delete all events
 
-**Detailed specification:** See `staging/ANALYTICS_SPEC.md`
+**Detailed specification:** See `specs/02-architecture/subsystems/ANALYTICS_LOCKED.md`
 
 ---
 
@@ -1438,7 +1438,7 @@ Every user, task, and transaction is risk-scored. Suspicious patterns trigger au
 | **FRAUD-3** | Critical-risk (≥0.8) entities are auto-rejected | Backend validation |
 | **FRAUD-4** | Self-match (risk = 1.0) is always blocked | Backend validation |
 
-**Detailed specification:** See `staging/FRAUD_DETECTION_SPEC.md`
+**Detailed specification:** See `specs/02-architecture/subsystems/RISK_TRUST_ENGINE_LOCKED.md`
 
 ---
 
@@ -1500,7 +1500,7 @@ Users can report content with categories: Harassment, Spam, Inappropriate, Fake 
 | **MOD-3** | Review queue items have SLA deadlines | Backend calculation |
 | **MOD-4** | Appeals are reviewed by different admin | Backend assignment |
 
-**Detailed specification:** See `staging/CONTENT_MODERATION_SPEC.md`
+**Detailed specification:** See `specs/02-architecture/subsystems/CONTENT_MODERATION_LOCKED.md`
 
 ---
 
@@ -1576,7 +1576,7 @@ GDPR compliance is not optional. It's a legal requirement. Users have the right 
 | **GDPR-4** | Legal retention periods enforced (7 years for transactions) | Backend validation |
 | **GDPR-5** | Data breach notifications sent within 72 hours | Backend alerting |
 
-**Detailed specification:** See `staging/GDPR_COMPLIANCE_SPEC.md`
+**Detailed specification:** See `specs/02-architecture/subsystems/GDPR_COMPLIANCE_LOCKED.md`
 
 ---
 
@@ -1803,9 +1803,9 @@ If a task appears in your feed, you can accept it. Period.
 - Verification (separate step) updates capability profile
 
 **For Implementation Details:**
-- See `architecture/CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md`
-- See `architecture/CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md`
-- See `architecture/FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md`
+- See `specs/02-architecture/subsystems/CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md`
+- See `specs/02-architecture/subsystems/CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md`
+- See `specs/02-architecture/subsystems/FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md`
 
 ---
 

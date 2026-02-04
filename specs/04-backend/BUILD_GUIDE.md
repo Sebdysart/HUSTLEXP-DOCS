@@ -277,7 +277,7 @@ Implements the **contract-completion engine** that ensures zero ambiguity before
 
 **This phase can be done in parallel with Phase 1** or deferred until Phase 2 is complete.
 
-**Detailed specification:** See `staging/AI_TASK_COMPLETION_SPEC.md`
+**Detailed specification:** See `specs/02-architecture/subsystems/AI_TASK_COMPLETION_LOCKED.md`
 
 ### 4.6.2 Prerequisites
 
@@ -285,7 +285,7 @@ Implements the **contract-completion engine** that ensures zero ambiguity before
 |-------------|--------------|
 | Phase 0 gate passed | Schema deployed |
 | AI_INFRASTRUCTURE.md reviewed | Authority model understood |
-| staging/AI_TASK_COMPLETION_SPEC.md reviewed | Full spec understood |
+| AI_TASK_COMPLETION_LOCKED.md reviewed | Full spec understood |
 | AI orchestration layer working | AI models accessible |
 
 ### 4.6.3 Key Implementation Steps
@@ -758,7 +758,7 @@ If production verification fails:
 
 ## §10. Phase 7: Task Discovery & Matching System (High Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §9, `staging/TASK_DISCOVERY_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §9, `specs/01-product/features/TASK_DISCOVERY_LOCKED.md`
 
 ### 10.1 Implementation Steps
 
@@ -806,7 +806,7 @@ If production verification fails:
 
 ## §11. Phase 8: Messaging System (High Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §10, `staging/MESSAGING_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §10, `specs/01-product/features/MESSAGING_SPEC.md`
 
 ### 10.1 Implementation Steps
 
@@ -846,7 +846,7 @@ If production verification fails:
 
 ## §12. Phase 9: Notification System (High Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §11, `staging/NOTIFICATION_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §11, `specs/01-product/features/NOTIFICATION_SPEC.md`
 
 ### 12.1 Implementation Steps
 
@@ -888,7 +888,7 @@ If production verification fails:
 
 ## §13. Phase 10: Rating System (Medium Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §12, `staging/RATING_SYSTEM_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §12, `specs/01-product/features/RATING_SYSTEM_SPEC.md`
 
 ### 12.1 Implementation Steps
 
@@ -930,7 +930,7 @@ If production verification fails:
 
 ## §14. Phase 11: Analytics Infrastructure (High Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §13, `staging/ANALYTICS_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §13, `specs/02-architecture/subsystems/ANALYTICS_LOCKED.md`
 
 ### 14.1 Implementation Steps
 
@@ -973,7 +973,7 @@ If production verification fails:
 
 ## §15. Phase 12: Fraud Detection System (Critical Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §14, `staging/FRAUD_DETECTION_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §14, `specs/02-architecture/subsystems/RISK_TRUST_ENGINE_LOCKED.md`
 
 ### 14.1 Implementation Steps
 
@@ -1019,7 +1019,7 @@ If production verification fails:
 
 ## §16. Phase 13: Content Moderation Workflow (High Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §15, `staging/CONTENT_MODERATION_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §15, `specs/02-architecture/subsystems/CONTENT_MODERATION_LOCKED.md`
 
 ### 16.1 Implementation Steps
 
@@ -1064,7 +1064,7 @@ If production verification fails:
 
 ## §17. Phase 14: GDPR Compliance (Critical Priority, Pre-Launch)
 
-**Spec Reference:** PRODUCT_SPEC §16, `staging/GDPR_COMPLIANCE_SPEC.md`
+**Spec Reference:** PRODUCT_SPEC §16, `specs/02-architecture/subsystems/GDPR_COMPLIANCE_LOCKED.md`
 
 ### 16.1 Implementation Steps
 

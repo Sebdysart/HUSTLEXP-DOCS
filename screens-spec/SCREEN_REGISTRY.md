@@ -36,7 +36,7 @@ All screens now track UAP compliance status. A screen is NOT complete unless:
 | Hustler | 9 | `screens/hustler/` | ✅ All build | PENDING |
 | Poster | 4 | `screens/poster/` | ✅ All build | PENDING |
 | Onboarding | 12 | `screens/onboarding/` | ⚠️ 11/12 build | PENDING |
-| Settings | 3 | `screens/settings/` | ✅ All build | PENDING |
+| Settings | 5 | `screens/settings/` | ✅ All build | PENDING |
 | Shared | 4 | `screens/shared/` | ✅ All build | PENDING |
 | Edge | 5 | `screens/edge/` | ✅ All build | PENDING |
 
@@ -163,6 +163,8 @@ Location: `src/screens/settings/`
 | S1 | Profile | `ProfileScreen.tsx` | UI_SPEC §8.1 | ✅ | PENDING | User profile management |
 | S2 | Wallet | `WalletScreen.tsx` | UI_SPEC §8.2, PRODUCT_SPEC §4 | ✅ | PENDING | Payment methods, earnings |
 | S3 | Work Eligibility | `WorkEligibilityScreen.tsx` | UI_SPEC §8.3, PRODUCT_SPEC §17.5 | ✅ | PENDING | **CRITICAL: Eligibility interpretability** |
+| S4 | Help & Support | `HelpSupportScreen.tsx` | CUSTOMER_SUPPORT_SPEC | ✅ | PENDING | Ticket creation, FAQ, contact support |
+| S5 | Tax Documents | `TaxDocumentsScreen.tsx` | TAX_REPORTING_SPEC §4 | ✅ | PENDING | 1099 downloads, W-9 status, earnings-to-date |
 
 
 ---
