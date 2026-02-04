@@ -1056,6 +1056,71 @@ Rationale: Financial auditability requires per-task premium documentation
 
 ---
 
+## 9a. Compound Pattern Detection
+
+Individual signals (cancellation, dispute, low rating) are weak. Compound patterns across rolling windows are where real abuse hides. This section defines the cross-signal rules that trigger escalation.
+
+### 9a.1 Rolling Window Metrics
+
+Every user has three rolling windows computed continuously:
+
+| Window | Period | Updated |
+|---|---|---|
+| `metrics_7d` | Last 7 calendar days | Hourly |
+| `metrics_30d` | Last 30 calendar days | Every 6 hours |
+| `metrics_90d` | Last 90 calendar days | Daily |
+
+**Metrics tracked per window:**
+- `cancellation_count` — tasks cancelled by this user
+- `late_cancel_count` — cancellations within 2h of deadline
+- `no_show_count` — auto-cancelled due to no arrival
+- `dispute_count` — disputes opened (as either party)
+- `dispute_loss_count` — disputes lost
+- `avg_rating_received` — mean rating from counterparties
+- `rating_decline_velocity` — (avg_rating_30d - avg_rating_7d)
+- `rejection_count` — proof rejections issued (posters) or received (workers)
+- `task_completion_count` — successfully completed tasks
+- `completion_rate` — completed / (completed + cancelled + no_show + expired)
+
+### 9a.2 Compound Trigger Rules
+
+| Rule ID | Condition | Action | Rationale |
+|---|---|---|---|
+| CPR-1 | `late_cancel_count_7d >= 3` | 24h acceptance cooldown + warning | Unreliable worker |
+| CPR-2 | `no_show_count_30d >= 2` | 48h cooldown + shadow flag `NO_SHOW_PATTERN` | Ghost worker |
+| CPR-3 | `dispute_loss_count_30d >= 2 AND completion_rate_30d < 0.7` | Trust tier review (possible demotion) | Pattern of poor work |
+| CPR-4 | `rating_decline_velocity < -0.5` (i.e., ratings dropping fast) | Human review flag | Quality declining |
+| CPR-5 | `rejection_count_7d >= 5` (poster) | Warning + reduced task posting rate (5/day cap) | Potentially exploitative poster |
+| CPR-6 | `cancellation_count_7d >= 3 AND dispute_count_7d >= 1` | Shadow score -15 | Combined unreliability |
+| CPR-7 | `completion_rate_90d < 0.5 AND task_completion_count_90d > 5` | Trust tier demotion | Persistent underperformance |
+| CPR-8 | `avg_rating_received_30d < 3.0 AND task_completion_count_30d >= 3` | Probation warning | Consistently poor quality |
+
+### 9a.3 Escalation Matrix
+
+Compound triggers stack. Multiple active triggers escalate severity:
+
+| Active Triggers | Severity | Action |
+|---|---|---|
+| 1 | Low | Automated warning + metric tracking |
+| 2 | Medium | Cooldown applied + human review queued |
+| 3+ | High | Account restricted, admin review required within 24h |
+| Any trigger + existing `RESTRICTED` shadow level | Critical | Immediate suspension pending review |
+
+### 9a.4 Fraud Cluster Detection (Phase 2)
+
+Cross-user compound patterns that indicate coordinated fraud:
+
+| Pattern | Detection | Action |
+|---|---|---|
+| Same poster + same worker on 5+ tasks in 7 days | SQL: pair frequency query | Flag both accounts |
+| Poster creates task → specific worker always accepts within 30s | Acceptance latency anomaly | Flag as possible collusion |
+| 3+ accounts share device fingerprint | Join `device_fingerprints` | Flag all accounts for Sybil review |
+| Worker completes tasks only for new accounts (<7 days old) | Join users by created_at | Flag for onboarding fraud |
+
+**Implementation:** Background job runs compound pattern queries every hour. Results written to `compound_pattern_alerts` table. Operations dashboard surfaces alerts by severity.
+
+---
+
 ## 10. Kill Switches
 
 ```

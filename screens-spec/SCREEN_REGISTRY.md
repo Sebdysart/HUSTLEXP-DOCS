@@ -38,7 +38,7 @@ All screens now track UAP compliance status. A screen is NOT complete unless:
 | Onboarding | 12 | `screens/onboarding/` | ⚠️ 11/12 build | PENDING |
 | Settings | 3 | `screens/settings/` | ✅ All build | PENDING |
 | Shared | 4 | `screens/shared/` | ✅ All build | PENDING |
-| Edge | 3 | `screens/edge/` | ✅ All build | PENDING |
+| Edge | 5 | `screens/edge/` | ✅ All build | PENDING |
 
 ---
 
@@ -189,6 +189,8 @@ Location: `src/screens/edge/`
 | E1 | No Tasks Available | `NoTasksAvailableScreen.tsx` | UI_SPEC §10.1 | ✅ | PENDING | Empty feed state |
 | E2 | Eligibility Mismatch | `EligibilityMismatchScreen.tsx` | UI_SPEC §10.2 | ✅ | PENDING | Why you can't see task |
 | E3 | Trust Tier Locked | `TrustTierLockedScreen.tsx` | UI_SPEC §10.3 | ✅ | PENDING | Trust too low for task |
+| E4 | Instant Mode Unavailable | `InstantModeUnavailableScreen.tsx` | PRODUCT_SPEC §3.7 | ✅ | PENDING | Live mode not yet unlocked |
+| E5 | Force Update | `ForceUpdateScreen.tsx` | API_CONTRACT Force Update | ✅ | PENDING | Blocking: app version too old |
 
 ---
 
@@ -321,7 +323,7 @@ Use this for tracking implementation status:
   [x] TrustChangeExplanationScreen
   [x] DisputeEntryScreen
 
-[ ] Edge (3/3)
+[ ] Edge (5/5)
   [x] NoTasksAvailableScreen
   [x] EligibilityMismatchScreen
   [x] TrustTierLockedScreen
@@ -355,6 +357,8 @@ Location: `ios-swiftui/HustleXP/`
 | E1 | No Tasks Available | `NoTasksAvailableScreen.swift` | E1-no-tasks-available.html | ✅ |
 | E2 | Eligibility Mismatch | `EligibilityMismatchScreen.swift` | E2-eligibility-mismatch.html | ✅ |
 | E3 | Trust Tier Locked | `TrustTierLockedScreen.swift` | E3-trust-tier-locked.html | ✅ |
+| E4 | Instant Mode Unavailable | `InstantModeUnavailableScreen.swift` | N/A | ⬜ |
+| E5 | Force Update | `ForceUpdateScreen.swift` | N/A | ⬜ |
 
 ### Design System
 - `HustleColors.swift` — Color tokens from DESIGN_SYSTEM.md

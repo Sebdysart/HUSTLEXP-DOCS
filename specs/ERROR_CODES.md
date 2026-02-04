@@ -3,7 +3,7 @@
 **STATUS: CONSTITUTIONAL AUTHORITY**
 **Owner:** Engineering Team
 **Last Updated:** January 2025
-**Version:** v1.0.0
+**Version:** v1.1.0
 **Governance:** All error codes are defined here. Application code must use these codes exactly.
 
 ---
@@ -217,6 +217,62 @@ WHERE escrow.state = 'FUNDED';  // Not RELEASED
 
 ---
 
+### HX302 - Maximum Active Tasks Reached (INV-TASK-1)
+
+**Trigger:** Worker attempts to accept a task but already has MAX_ACTIVE_TASKS in ACCEPTED or IN_PROGRESS state
+
+**Enforcement:** Application guard on `task.accept` endpoint
+
+**Message:** `Maximum active tasks reached. Complete or cancel an active task before accepting another.`
+
+**HTTP Status:** 409 Conflict
+
+**Resolution:** Complete or cancel an existing active task.
+
+---
+
+### HX303 - Maximum Proof Rejections Reached (INV-PROOF-1)
+
+**Trigger:** Poster has rejected proof 3 times on the same task. System auto-opens dispute.
+
+**Enforcement:** Application guard on `proof.reject` endpoint (checks `rejection_count >= 3`)
+
+**Message:** `Maximum proof rejections reached. Dispute auto-opened.`
+
+**HTTP Status:** 409 Conflict
+
+**Resolution:** Dispute resolution process handles the task from this point.
+
+---
+
+### HX304 - Task Price Exceeds Maximum (INV-PRICE-1)
+
+**Trigger:** Task price exceeds the maximum for its mode ($500 STANDARD, $1,000 LIVE)
+
+**Enforcement:** Database constraint + application validation on `task.create`
+
+**Message:** `Task price exceeds maximum ({mode}: ${max})`
+
+**HTTP Status:** 400 Bad Request
+
+**Resolution:** Reduce the task price to within allowed limits.
+
+---
+
+### HX305 - Acceptance Window Expired (INV-ACCEPT-1)
+
+**Trigger:** Worker's accepted task auto-cancelled because they did not transition to EN_ROUTE within the acceptance window
+
+**Enforcement:** Background job (stale acceptance checker, runs every 15 min)
+
+**Message:** `Task acceptance expired. Task returned to OPEN.`
+
+**HTTP Status:** 409 Conflict
+
+**Resolution:** Task returned to OPEN state. Worker can re-accept if still available.
+
+---
+
 ## Badge System Errors (HX401-HX499)
 
 ### HX401 - Badge Deletion Attempt
@@ -272,6 +328,20 @@ WHERE escrow.state = 'FUNDED';  // Not RELEASED
 **Message:** `User not found`
 
 **HTTP Status:** 404 Not Found
+
+---
+
+### HX505 - Admin Audit Log Violation
+
+**Trigger:** Attempting to delete or modify an admin audit log entry
+
+**Enforcement:** Database trigger `admin_audit_no_delete`
+
+**Message:** `Admin audit log entries cannot be deleted or modified`
+
+**HTTP Status:** 403 Forbidden
+
+**Resolution:** Admin audit log is append-only. Corrections require new entries.
 
 ---
 
@@ -788,6 +858,10 @@ async function handleApiError(response: Response) {
 | HX102 | XP Ledger Delete | 403 | DB Trigger |
 | HX201 | Release Without Completed | 409 | DB Trigger |
 | HX301 | Complete Without Proof | 409 | DB Trigger |
+| HX302 | Max Active Tasks Reached | 409 | Backend |
+| HX303 | Max Proof Rejections | 409 | Backend |
+| HX304 | Task Price Exceeds Max | 400 | DB + Backend |
+| HX305 | Acceptance Window Expired | 409 | Background Job |
 | HX401 | Badge Delete | 403 | DB Trigger |
 | HX701 | AI Question After Locked | 409 | Backend |
 | HX702 | Fund Before Complete | 409 | DB Trigger |
@@ -799,4 +873,13 @@ async function handleApiError(response: Response) {
 
 ---
 
-**END OF ERROR_CODES v1.0.0**
+**END OF ERROR_CODES v1.1.0**
+
+---
+
+## Amendment History
+
+| Version | Date | Summary |
+|---------|------|---------|
+| 1.0.0 | Jan 2025 | Initial error code reference |
+| 1.1.0 | Feb 2026 | Added: HX302-305 (marketplace safety invariants), HX505 (admin audit). Fixed code collisions: marketplace safety moved from HX501-504 to HX302-305 (HX501-504 reserved for user/auth system). |

@@ -1,9 +1,9 @@
-# HustleXP Architecture Specification v1.2.0
+# HustleXP Architecture Specification v1.7.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
-**Last Updated:** January 2025  
-**Version:** v1.5.2 (PostGIS infrastructure in §21 — database dependency, competitive differentiator, cross-references to FEED_QUERY/MATCHING_ALGORITHMS/schema.sql v1.4.0.)  
+**Last Updated:** February 2026  
+**Version:** v1.7.0 (All 15 LOCKED subsystems constitutionally bound. §26-§29 complete subsystem registry. 42-gap audit resolved.)  
 **Governance:** This document defines jurisdictional authority. Violations are system failures.
 
 ---
@@ -476,7 +476,7 @@ Once a badge is granted:
 
 **Enforcement:**
 - Trigger: `badge_no_delete`
-- Error: HX501
+- Error: HX401
 - No row in `badges` can ever be deleted
 
 **Exception:** Badges granted in error require admin intervention + audit entry explaining the correction (via a "revoked" flag, not deletion).
@@ -1844,6 +1844,8 @@ Owns the pipeline from onboarding claim submission → capability profile comput
 | 1.5.0 | Feb 2026 | HustleXP Core | Added: §21 Spatial Intelligence Authority (maps, geocoding, routing, poster visibility, cost optimization). 11 LOCKED subsystems now referenced. |
 | 1.5.1 | Feb 2026 | HustleXP Core | Fixed §14.6 Maps Gate poster POV to enforce INV-PRIVACY-2 graduated visibility. Archived superseded SPATIAL_INTELLIGENCE_ENGINE.md. |
 | 1.5.2 | Feb 2026 | HustleXP Core | §21: PostGIS database infrastructure (Neon), competitive differentiator (coordinate-based vs zip code), cross-references to FEED_QUERY, MATCHING_ALGORITHMS, schema.sql v1.4.0. |
+| 1.6.0 | Feb 2026 | HustleXP Core | Added: §22 AI Task Completion, §23 Analytics, §24 Content Moderation, §25 GDPR Compliance. 15 LOCKED subsystems referenced. 42-gap audit. |
+| 1.7.0 | Feb 2026 | HustleXP Core | Added: §26 Capability Profile Schema, §27 Feed Query & Eligibility, §28 Verification Payment UX, §29 Verification Pipeline. ALL 15 LOCKED subsystems constitutionally bound. Zero orphaned subsystems. |
 
 ---
 
@@ -1886,4 +1888,141 @@ Owns the pipeline from onboarding claim submission → capability profile comput
 
 ---
 
-**END OF ARCHITECTURE v1.5.2**
+## §22. AI Task Completion Authority
+
+**Constitutional Reference:** `subsystems/AI_TASK_COMPLETION_LOCKED.md`
+**Status:** LOCKED — Promoted from staging
+**Resolves:** Audit GAP-16 (AI Task Completion spec never promoted)
+
+Covers:
+- **Task Creation Assistant:** AI-powered clarity scoring, category suggestion, price recommendation
+- **Smart Pricing:** Historical data analysis for fair pricing (PRODUCT_SPEC §3.5 min/max bounds)
+- **Clarity Score:** Rates task descriptions 1-10, blocks publication below threshold 6
+- **Category Auto-Detection:** Maps task description to SKILL_TAXONOMY categories
+- **LOCATION_CLARITY:** Geocoding fallback and address validation (cross-ref: SPATIAL_INTELLIGENCE §8)
+
+**Invariants:**
+- AI suggestions are advisory only — poster has final control
+- Price recommendations never exceed INV-PRICE-1 bounds (PRODUCT_SPEC §21.3)
+- Clarity scoring uses deterministic rubric, not subjective LLM judgment
+
+---
+
+## §23. Analytics Authority
+
+**Constitutional Reference:** `subsystems/ANALYTICS_LOCKED.md`
+**Status:** LOCKED — Promoted from staging
+**Resolves:** Audit GAP-9 (analytics stub)
+
+Covers:
+- **Event Taxonomy:** 50+ tracked events across task lifecycle, user actions, and system events
+- **Data Pipeline:** `analytics_events` table → PostHog (primary) or Mixpanel (alternative)
+- **Dashboards:** Retention cohorts, revenue cohorts, conversion funnels, marketplace health
+- **Privacy:** No PII in analytics events. User IDs hashed in export. GDPR data deletion propagates to analytics store.
+- **Real-time Metrics:** Active tasks, online workers, marketplace liquidity score
+
+---
+
+## §24. Content Moderation Authority
+
+**Constitutional Reference:** `subsystems/CONTENT_MODERATION_LOCKED.md`
+**Status:** LOCKED — Promoted from staging
+**Resolves:** Audit GAP-10 (moderation stub), GAP-B7 (photo content scanning)
+
+Covers:
+- **Photo Scanning Pipeline:** ALL user-uploaded images scanned via Google Cloud Vision SafeSearch before storage
+- **CSAM Protocol:** Automatic detection → block + hash + report to NCMEC. Zero tolerance.
+- **Text Moderation:** Task descriptions, messages, profiles scanned for hate speech, threats, illegal content
+- **Human Review Queue:** Flagged content queued for admin review within SLA (4h P0, 24h P1)
+- **Appeals:** Users can appeal moderation decisions within 48h. Different reviewer.
+- **PRODUCT_SPEC §15.7 invariants:** MOD-1 through MOD-4 enforced
+
+**Cross-references:** PRODUCT_SPEC §15.7, STORAGE_SPEC (upload flow), API_CONTRACT (report endpoints)
+
+---
+
+## §25. GDPR Compliance Authority
+
+**Constitutional Reference:** `subsystems/GDPR_COMPLIANCE_LOCKED.md`
+**Status:** LOCKED — Promoted from staging
+**Resolves:** Audit GAP-17 (GDPR stub)
+
+Covers:
+- **Right to Access:** Data export in machine-readable format (JSON) within 30 days
+- **Right to Erasure:** Account deletion flow with cascading data removal (90-day retention for legal/financial records)
+- **Consent Management:** Granular consent tracking via `user_consents` table. Re-consent on policy change.
+- **Data Processing Agreement:** Template for third-party processors (Stripe, Firebase, Cloud Vision)
+- **CCPA Coverage:** California users get CCPA-equivalent rights regardless of GDPR applicability
+- **Cookie Policy:** Minimal cookies (auth only). No tracking cookies without consent.
+- **PRODUCT_SPEC §16 invariants:** GDPR-1 through GDPR-5 enforced
+
+---
+
+---
+
+## §26. Capability Profile Schema & Invariants
+
+**Constitutional Reference:** `subsystems/CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md`
+**Status:** LOCKED — Non-Negotiable Schema Authority
+
+**Core Law:** Capability Profile is never mutated directly. It is always re-derived from verification records, trust tier changes, and credential expiries.
+
+**Architecture Role:**
+- Defines the exact schema, invariants, recompute triggers, and illegal states for user capability profiles
+- Enforces that backend implementations derive access from verification records, never from direct mutation
+- Cross-references: SETTINGS_VERIFICATION_AND_ELIGIBILITY_LOCKED.md (verification source data), FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md (downstream consumer)
+
+---
+
+## §27. Feed Query & Eligibility Resolver
+
+**Constitutional Reference:** `subsystems/FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md`
+**Status:** LOCKED — Non-Negotiable Feed Authority
+**Geospatial Authority:** SPATIAL_INTELLIGENCE_LOCKED.md §4 (PostGIS, GIST index)
+
+**Core Law:** If a task appears in a user's feed, the user is eligible to accept it. There are no exceptions, warnings, disabled buttons, or soft blocks.
+
+**Architecture Role:**
+- Transforms eligibility rules into SQL/PostGIS queries that filter the task feed
+- Rejection happens BEFORE rendering, not after interaction
+- Cross-references: CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md (eligibility source), SPATIAL_INTELLIGENCE_LOCKED.md §4 (geospatial filtering), RISK_TRUST_ENGINE_LOCKED.md (risk-level feed filtering)
+
+---
+
+## §28. Verification Payment UX & Copy
+
+**Constitutional Reference:** `subsystems/VERIFICATION_PAYMENT_UX_AND_COPY_LOCKED.md`
+**Status:** LOCKED — Non-Negotiable Payment UX Authority
+
+**Core Law:** Money never buys access. Money only covers the cost of validating facts.
+
+**Architecture Role:**
+- Defines the UX and copy for verification payment flows ($1.00 verification fee)
+- Ensures monetization feels institutional and clean, not pay-to-play
+- Payment is downstream of eligibility and upstream of verification execution
+- Cross-references: VERIFICATION_PIPELINE_LOCKED.md (execution), STRIPE_INTEGRATION.md (payment processing)
+
+---
+
+## §29. Verification Pipeline
+
+**Constitutional Reference:** `subsystems/VERIFICATION_PIPELINE_LOCKED.md`
+**Status:** LOCKED — Non-Negotiable Verification Authority
+
+**Core Law:** Verification never grants access directly. Verification only updates source-of-truth records. Access is derived exclusively via Capability Profile recomputation.
+
+**Architecture Role:**
+- Prevents trust leaks and ensures legal compliance through deterministic verification enforcement
+- Manages background check integration, ID verification, and credential validation workflows
+- Cross-references: CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md (profile recomputation), RISK_TRUST_ENGINE_LOCKED.md (trust impact), STRIPE_INTEGRATION.md (verification payment capture)
+
+---
+
+*(Amendment history for §22-§29 continues from main table above)*
+
+| 1.6.0 | Feb 2026 | HustleXP Core | Added: §22 AI Task Completion, §23 Analytics, §24 Content Moderation, §25 GDPR Compliance. 15 LOCKED subsystems now referenced. 42-gap audit complete. |
+| 1.7.0 | Feb 2026 | HustleXP Core | Added: §26 Capability Profile Schema, §27 Feed Query & Eligibility, §28 Verification Payment UX, §29 Verification Pipeline. ALL 15 LOCKED subsystems now have constitutional authority sections. Zero orphaned subsystems. |
+
+---
+
+**END OF ARCHITECTURE v1.7.0**

@@ -45,3 +45,8 @@ ios-swiftui/*/.build/
 # generated native folders
 /ios
 /android
+
+# Swift build artifacts
+.build/
+*.swiftmodule
+DerivedData/

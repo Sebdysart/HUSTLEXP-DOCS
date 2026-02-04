@@ -131,6 +131,75 @@ interface TrustTierLockedProps {
 
 ---
 
+## E4: InstantModeUnavailableScreen
+
+**File:** `InstantModeUnavailableScreen.tsx`
+**Spec:** PRODUCT_SPEC §3.7
+**Stitch-Prompt:** `E4-instant-mode-unavailable.md`
+
+### Purpose
+Shown when a worker tries to access Live/Instant Mode but doesn't meet requirements.
+
+### Required Elements
+- [x] Clear explanation of why instant mode is unavailable
+- [x] Trust tier requirement display (minimum tier for instant mode)
+- [x] Current user trust tier
+- [x] Progress indicator toward eligibility
+- [x] CTA: "View requirements" or "Keep earning"
+
+### Props Interface
+```typescript
+interface InstantModeUnavailableScreenProps {
+  currentTier: number;
+  requiredTier: number;
+  reason: 'TRUST_TOO_LOW' | 'NO_LIVE_TASKS' | 'REGION_UNAVAILABLE';
+}
+```
+
+### Copy Guidelines
+- "Live Mode unlocks at Trust Level 3" (not "You're not trusted enough")
+- Show concrete progress: "2 more completed tasks to reach Level 3"
+
+---
+
+## E5: ForceUpdateScreen
+
+**File:** `ForceUpdateScreen.tsx`
+**Spec:** API_CONTRACT §Force Update Protocol
+**Stitch-Prompt:** N/A (blocking screen, no stitch needed)
+
+### Purpose
+Blocking screen shown when app version is below minimum required. User CANNOT dismiss or navigate away.
+
+### Required Elements
+- [x] HustleXP logo
+- [x] "Update Required" title
+- [x] Brief explanation: "A new version of HustleXP is available with important updates."
+- [x] Single CTA: "Update Now" → links to App Store / Google Play
+- [x] NO dismiss button, NO skip, NO close
+
+### Props Interface
+```typescript
+interface ForceUpdateScreenProps {
+  currentVersion: string;
+  minimumVersion: string;
+  storeUrl: string; // Platform-specific store URL
+}
+```
+
+### Behavior
+- Triggered when API returns `X-Force-Update: true` header
+- Covers entire screen — no navigation possible
+- Persists across app restart (cached `X-Min-Version` check)
+- "Update Now" opens platform store listing via deep link
+- App rechecks version on return from store
+
+### Copy Guidelines
+- Friendly, not alarming: "A new version is ready!"
+- Do NOT mention security vulnerabilities specifically
+
+---
+
 ## Navigation
 
 These screens are typically shown as modals or replacements:
@@ -140,11 +209,17 @@ TaskFeedScreen
     │
     ├── (empty feed) ──▶ NoTasksAvailableScreen
     │
+    ├── (instant mode blocked) ──▶ InstantModeUnavailableScreen
+    │
     └── TaskDetailScreen
             │
             ├── (not eligible) ──▶ EligibilityMismatchScreen
             │
             └── (trust too low) ──▶ TrustTierLockedScreen
+
+AppRoot
+    │
+    └── (version check fail) ──▶ ForceUpdateScreen (BLOCKING)
 ```
 
 ---

@@ -2,8 +2,8 @@
 
 **STATUS: CONSTITUTIONAL AUTHORITY**
 **Owner:** Backend Team
-**Last Updated:** January 2025
-**Version:** v1.0.0
+**Last Updated:** February 2026
+**Version:** v1.2.0 (§12 Chargeback, §13 Payment Recovery, §14 Payout Policy. 42-gap audit.)
 **Governance:** This document defines all Stripe integration patterns. Implementation must follow these specifications exactly.
 
 ---
@@ -815,4 +815,152 @@ The safety pool is a **Stripe sub-account** (Connect custom account) that collec
 
 ---
 
-**END OF STRIPE_INTEGRATION v1.1.0**
+## 12. Chargeback Protocol
+
+### 12.1 Delayed Transfers
+
+All worker transfers are delayed by **48 hours** after escrow release. This prevents chargebacks from creating unrecoverable losses.
+
+```typescript
+async function releaseEscrowWithDelay(escrowId: string) {
+  // 1. Mark escrow as RELEASED in DB immediately
+  await supabase.from('escrows').update({ state: 'RELEASED' }).eq('id', escrowId);
+  
+  // 2. Schedule transfer for 48h later
+  await supabase.from('scheduled_transfers').insert({
+    escrow_id: escrowId,
+    scheduled_for: new Date(Date.now() + 48 * 60 * 60 * 1000),
+    status: 'PENDING',
+  });
+  
+  // 3. Award XP immediately (XP is earned, transfer is operational)
+  await awardXP(escrowId);
+}
+```
+
+### 12.2 Chargeback Handling
+
+When `charge.dispute.created` webhook fires:
+
+| Escrow State | Action |
+|---|---|
+| RELEASED (transfer pending) | Cancel scheduled transfer. Escrow → DISPUTED_BY_CARD. |
+| RELEASED (transfer completed) | Create recovery record. Alert operations. Attempt clawback from worker Stripe balance. |
+| FUNDED (pre-completion) | Freeze escrow. Notify poster. |
+
+```typescript
+async function handleChargeDispute(dispute: Stripe.Dispute) {
+  const escrowId = dispute.payment_intent.metadata.escrow_id;
+  
+  // Cancel pending transfer if exists
+  await supabase.from('scheduled_transfers')
+    .update({ status: 'CANCELLED_CHARGEBACK' })
+    .eq('escrow_id', escrowId)
+    .eq('status', 'PENDING');
+  
+  // Update escrow state
+  await supabase.from('escrows')
+    .update({ state: 'DISPUTED_BY_CARD', chargeback_dispute_id: dispute.id })
+    .eq('id', escrowId);
+  
+  // Alert operations
+  await alertService.critical('CHARGEBACK', { escrow_id: escrowId, amount: dispute.amount });
+  
+  // Auto-submit evidence to Stripe (proof photos, GPS data, completion timestamp)
+  await submitChargebackEvidence(escrowId, dispute.id);
+}
+```
+
+### 12.3 Fraud Screening (Radar)
+
+Stripe Radar rules configured for HustleXP:
+
+| Rule | Action | Rationale |
+|---|---|---|
+| `risk_score >= 75` | Block payment | High-risk card |
+| `card_country != 'US'` | Review | US-only marketplace at launch |
+| `is_prepaid_card AND amount > 10000` | Review | Prepaid + high value = fraud signal |
+| Velocity: `>3 payment attempts in 1 hour` | Block | Card testing |
+| Velocity: `>$500 total charges in 24h per card` | Review | Unusual volume |
+
+### 12.4 Poster Chargeback Consequences
+
+- First chargeback: warning, payment method flagged
+- Second chargeback: account suspended, manual review required
+- Third chargeback: permanent ban, all active tasks cancelled
+
+---
+
+## 13. Payment Failure Recovery
+
+### 13.1 Card Decline During Escrow Creation
+
+| Attempt | Wait | Action |
+|---|---|---|
+| 1st decline | Immediate | Show error: "Payment declined. Try a different card." |
+| 2nd decline | 5 min cooldown | Prompt: "Update payment method in settings." |
+| 3rd decline | 15 min cooldown | Task saved as draft. "Complete payment to post task." |
+
+- Task remains in DRAFT state until payment succeeds
+- Draft expires after 7 days
+- No partial escrow creation: escrow record created only after successful payment
+
+### 13.2 Transfer Failure to Worker
+
+- Retry logic: 3 attempts with exponential backoff (1h, 4h, 24h)
+- After 3 failures: alert operations, notify worker "Payout delayed — we're working on it"
+- Common cause: worker's Stripe account has issues (bank details changed, account restricted)
+- Resolution: worker prompted to update Stripe account, transfer retried after update
+- Escrow remains in RELEASED state throughout (worker earned the money)
+
+---
+
+## 14. Payout Policy
+
+### 14.1 Payout Methods
+
+| Method | Speed | Fee | Default |
+|---|---|---|---|
+| Standard | 2 business days | Free | ✅ |
+| Instant | Minutes | 1% (min $0.50, max $5.00) | No |
+
+- Instant payout fee is clearly disclosed before worker opts in
+- Fee deducted from transfer amount, not charged separately
+
+### 14.2 Minimum Transfer Threshold
+
+- Minimum transfer: $1.00
+- Earnings below $1.00 accumulate until threshold is met
+- Worker dashboard shows: pending balance, available balance, next payout date
+
+### 14.3 Earnings Transparency
+
+Worker earnings dashboard displays:
+- **Gross earnings**: sum of task prices worker completed
+- **Platform fee**: 15% deducted per task  
+- **Safety pool premium**: per-task premium (RISK_TRUST_ENGINE)
+- **Stripe processing**: estimated Stripe fees
+- **Net earnings**: actual amount transferred
+- **Effective take rate**: (gross - net) / gross × 100
+
+### 14.4 Earnings Reconciliation
+
+Daily reconciliation job compares:
+- DB: `SUM(amount * 0.85) FROM escrows WHERE state = 'RELEASED' AND worker_id = X`
+- Stripe: `SUM(transfers) WHERE destination = worker_stripe_account_id`
+
+Discrepancy > $0.01 → alert operations team. Worker-facing transaction history must match Stripe transfers exactly.
+
+---
+
+## Amendment History
+
+| Version | Date | Summary |
+|---------|------|---------|
+| 1.0.0 | Jan 2025 | Initial Stripe integration spec |
+| 1.1.0 | Jan 2025 | Added: Safety Pool integration (§11) |
+| 1.2.0 | Feb 2026 | Added: §12 Chargeback Protocol, §13 Payment Failure Recovery, §14 Payout Policy. 42-gap audit fixes. |
+
+---
+
+**END OF STRIPE_INTEGRATION v1.2.0**

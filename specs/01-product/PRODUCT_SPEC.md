@@ -1,9 +1,9 @@
-# HustleXP Product Specification v1.5.0
+# HustleXP Product Specification v1.6.0
 
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
-**Last Updated:** January 2025  
-**Version:** v1.5.0 (Added §17 Eligibility System, integrated 8 eligibility invariants)  
+**Last Updated:** February 2026  
+**Version:** v1.6.0 (§21 Marketplace Safety Invariants, §22 Dispute Protocol, §23 Sybil Prevention, §24 Email Verification, §25 I18n. 42-gap audit resolved.)  
 **Governance:** This document is the root authority. All code, tests, and subsystems derive from it.
 
 ---
@@ -1848,7 +1848,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX201` | Release without completed task | INV-2 violation |
 | `HX301` | Complete without accepted proof | INV-3 violation |
 | `HX401` | Badge deletion attempt | Append-only violation |
-| `HX501` | Admin action audit violation | Append-only violation |
+| `HX505` | Admin action audit violation | Append-only violation |
 | `HX901` | Live broadcast without funded escrow | LIVE-1 violation |
 | `HX902` | Live task below price floor | LIVE-2 violation |
 | `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |
@@ -1956,6 +1956,252 @@ interface PauseState {
 
 ---
 
+## §21. Marketplace Safety Invariants
+
+### 21.1 Concurrent Task Limit (INV-TASK-1)
+
+```
+Workers may have at most MAX_ACTIVE_TASKS tasks in ACCEPTED or IN_PROGRESS state simultaneously.
+```
+
+| Trust Tier | MAX_ACTIVE_TASKS |
+|---|---|
+| 1 (ROOKIE) | 2 |
+| 2 (VERIFIED) | 3 |
+| 3 (TRUSTED) | 5 |
+| 4 (ELITE) | 7 |
+| 5 (MASTER) | 10 |
+
+**Enforcement:**
+- Application guard on `task.accept` endpoint: count active tasks before accepting
+- Error code: `HX302` — "Maximum active tasks reached"
+- UI: "Complete or cancel an active task before accepting another"
+
+**Rationale:** Without this limit, one bad-faith worker can lock up dozens of posters' tasks and escrows. This is the #1 marketplace abuse vector.
+
+### 21.2 Proof Rejection Loop Protection (INV-PROOF-1)
+
+```
+After MAX_REJECTIONS proof rejections on the same task, the system automatically opens a dispute.
+```
+
+**MAX_REJECTIONS = 3**
+
+**Enforcement:**
+- Track `rejection_count` per task (incremented on each `reject` transition)
+- On 3rd rejection: system auto-transitions task to DISPUTED, creates dispute record with reason `EXCESSIVE_REJECTIONS`
+- Poster can no longer reject proof; only dispute resolution can proceed
+- Error code: `HX303` — "Maximum proof rejections reached, dispute auto-opened"
+
+**Rationale:** Without this, abusive posters can extract free labor by endlessly rejecting adequate proof. Workers have no recourse.
+
+### 21.3 Maximum Task Price (INV-PRICE-1)
+
+```
+Task price CANNOT exceed MAX_PRICE per task mode.
+```
+
+| Mode | Minimum | Maximum |
+|---|---|---|
+| STANDARD | $5.00 (500¢) | $500.00 (50,000¢) |
+| LIVE | $15.00 (1,500¢) | $1,000.00 (100,000¢) |
+
+**Enforcement:**
+- Database check constraint: `amount <= 50000` for STANDARD, `amount <= 100000` for LIVE
+- Error code: `HX304` — "Task price exceeds maximum"
+- Tasks requiring higher amounts: contact support for manual approval (post-launch)
+
+**Rationale:** No ceiling = money laundering vector, chargeback exposure, Stripe account risk.
+
+### 21.4 Stale Acceptance Timeout (INV-ACCEPT-1)
+
+```
+ACCEPTED tasks auto-cancel if worker does not transition to EN_ROUTE within the acceptance window.
+```
+
+**Default acceptance window:** 4 hours (or task deadline minus 2 hours, whichever is sooner).
+
+**Enforcement:**
+- Background job checks ACCEPTED tasks every 15 minutes
+- At `acceptance_window - 60min`: push notification "Reminder: you accepted [task]. Start soon or it will be reassigned."
+- At `acceptance_window - 30min`: push notification "Final reminder: [task] will be reassigned in 30 minutes."
+- At `acceptance_window`: system auto-cancels task, returns to OPEN state, increments worker `cancellation_count`
+- Worker's `cancellation_count` incremented (counts toward trust impact)
+- Poster receives notification: "Your task is available again."
+
+**Rationale:** Without this, accepted tasks rot indefinitely. Posters can't reassign and will churn.
+
+### 21.5 Cancellation Policy
+
+**Early Cancellation (>2 hours before deadline):**
+- Worker: No trust impact. Task returns to OPEN.
+- Poster: Full escrow refund. Task cancelled.
+
+**Late Cancellation (<2 hours before deadline):**
+- Worker: `cancellation_count` incremented. Trust tier impact at thresholds:
+  - 3 late cancels in 30 days → warning notification
+  - 5 late cancels in 30 days → 24h task acceptance cooldown
+  - 10 late cancels in 30 days → trust tier review
+- Poster: Full escrow refund. Worker receives notification.
+
+**No-Show (worker doesn't arrive within 30 min of deadline):**
+- System auto-cancels task
+- Worker: `no_show_count` incremented, shadow flag `NO_SHOW_PATTERN` added
+- 2 no-shows in 30 days → 48h acceptance cooldown
+- 5 no-shows in 30 days → trust tier demotion
+
+**Poster Late Cancel After Acceptance (worker already EN_ROUTE):**
+- Poster: 15% cancellation fee from escrow (covers worker's wasted travel time)
+- Worker: receives cancellation fee via Stripe transfer
+- Remaining 85% of escrow refunded to poster
+
+**Enforcement:**
+- `cancellation_count`, `no_show_count`, `last_cancellation_at` columns on users table
+- Background job monitors no-show patterns
+- Cancellation fee calculated at API layer, processed via Stripe
+
+### 21.6 API Rate Limiting
+
+All API endpoints are rate-limited per authenticated user and per IP address.
+
+| Endpoint Category | Per-User Limit | Per-IP Limit |
+|---|---|---|
+| task.create | 10/hour | 20/hour |
+| task.accept | 20/hour | 30/hour |
+| task.list / task.getFeed | 60/min | 120/min |
+| messaging.send | 60/min | 100/min |
+| proof.submit | 10/hour | 20/hour |
+| user.* (reads) | 120/min | 200/min |
+| user.* (writes) | 20/min | 30/min |
+| auth.* | 5/min | 10/min |
+| admin.* | 60/min | N/A |
+| WebSocket connections | 5 concurrent | 10 concurrent |
+
+**Enforcement:**
+- Redis sliding window counter (BACKEND_STACK_LOCK: Redis is in stack)
+- Response: HTTP 429 with `Retry-After` header (seconds)
+- Error code: `RATE_LIMITED` — "Rate limit exceeded"
+- Burst allowance: 2× limit for 10-second window, then hard block
+
+### 21.7 User Block/Mute
+
+Users can block other users to prevent future interactions.
+
+**Block effects:**
+- Blocked user's tasks do not appear in blocker's feed
+- Blocker's tasks do not appear in blocked user's feed
+- Blocked user cannot send messages to blocker (and vice versa)
+- Existing message threads become read-only for both parties
+- Block is bidirectional for feed visibility, unidirectional for control (only the blocker can unblock)
+
+**Enforcement:**
+- `user_blocks` table: `blocker_id`, `blocked_id`, `created_at`, `reason`
+- Feed query joins against `user_blocks` to filter results
+- Messaging endpoint checks block status before allowing send
+- API: `user.block`, `user.unblock`, `user.getBlockList`
+- Maximum blocks per user: 100 (prevents abuse of block system for feed manipulation)
+
+---
+
+## §22. Dispute Resolution Protocol (Expanded)
+
+Supersedes §7 for implementation detail. §7 remains as summary.
+
+### 22.1 Dispute Timeline SLAs
+
+| Phase | SLA | Action if Breached |
+|---|---|---|
+| AI Triage | 1 hour | Auto-escalate to human review |
+| Human Review | 72 hours | Alert operations team |
+| Admin Decision | 7 days | Escalate to founder |
+| Founder Decision | 14 days | Auto-release to worker (worker-favorable default) |
+| **Total Maximum** | **21 days** | Escrow auto-releases to worker |
+
+**Rationale:** Worker-favorable default on timeout — the work was done, the poster is unresponsive. Funds should not be frozen indefinitely.
+
+### 22.2 Evidence Requirements
+
+| Evidence Type | Required From | Weight |
+|---|---|---|
+| Proof photos (existing) | Worker | High |
+| Task description (existing) | System | High |
+| Message history (existing) | System | Medium |
+| GPS movement data | System | Medium |
+| Additional photos/screenshots | Either party | Medium |
+| Written statement (500 char max) | Either party | Low |
+
+### 22.3 Resolution Options
+
+| Outcome | Escrow | XP | Trust Impact |
+|---|---|---|---|
+| Worker wins (100%) | RELEASED | Full award | Poster: dispute_loss_count++ |
+| Poster wins (100%) | REFUNDED | None | Worker: dispute_loss_count++ |
+| Split (custom %) | REFUND_PARTIAL | Proportional | Both: neutral |
+| Mutual cancel | REFUNDED | None | Neither impacted |
+
+### 22.4 Appeal Process
+
+- Either party may appeal within 48 hours of resolution
+- Appeal requires new evidence not previously submitted
+- Appeal reviewed by different admin than original decision
+- Maximum 1 appeal per dispute
+- Appeal decision is final
+
+### 22.5 Duplicate Dispute Prevention
+
+- Only ONE active dispute per task at any time
+- If both parties file simultaneously, merge into single dispute
+- Resolved disputes cannot be re-opened (appeal process is the only recourse)
+
+---
+
+## §23. Sybil Prevention & Identity Verification
+
+### 23.1 Phone Number Verification
+
+- Required during signup (after Firebase Auth email, before onboarding)
+- One phone number per account (UNIQUE constraint)
+- SMS verification code (6 digits, 5-minute expiry)
+- Banned phone numbers cannot create new accounts
+- VoIP numbers blocked (Twilio Lookup API carrier type check)
+
+### 23.2 Device Fingerprinting
+
+- Device fingerprint collected at signup and login
+- Fingerprint includes: OS version, device model, screen resolution, timezone, language
+- `device_fingerprints` table tracks all devices per user
+- Alert if >3 accounts share same device fingerprint
+- Banned user's device fingerprints are blocklisted
+
+### 23.3 Stripe Connect Deduplication
+
+- Stripe Connect account ID is UNIQUE per platform
+- SSN/EIN used for Stripe identity verification prevents duplicate workers
+- Cross-reference: if Stripe reports same SSN on two accounts → flag for review
+
+### 23.4 Ban Evasion Detection
+
+When a user is suspended/banned, the system records:
+- Phone number → `banned_phones` table
+- Device fingerprints → `banned_devices` table  
+- Stripe account ID → `banned_stripe_accounts` table
+- Email domain pattern (if disposable email service)
+
+New signups are checked against all ban lists. Match → account creation blocked with generic "Unable to create account" message (no information leakage about why).
+
+---
+
+## §24. Email Verification
+
+- Firebase Auth sends verification email on signup
+- Account is created but `email_verified = false`
+- User can browse app but CANNOT: create tasks, accept tasks, send messages, or set up Stripe
+- Verification link expires after 24 hours
+- Resend verification: max 3 per hour
+- After verification: `email_verified = true`, full access granted
+
+---
+
 ## Amendment History
 
 | Version | Date | Author | Summary |
@@ -1967,7 +2213,24 @@ interface PauseState {
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: §8 AI Task Completion System (contract-completion engine) |
 | 1.4.0 | Jan 2025 | HustleXP Core | Added: §9 Task Discovery, §10 Messaging, §11 Notifications, §12 Ratings, §13 Analytics, §14 Fraud Detection, §15 Content Moderation, §16 GDPR Compliance |
 | 1.5.0 | Jan 2025 | HustleXP Core | Added: §17 Capability-Driven Eligibility System, integrated 8 eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8), updated §3 (Task Requirements), §8 (Trust Tiers + Onboarding), renumbered sections 17→18, 18→19, 19→20 |
+| 1.6.0 | Feb 2026 | HustleXP Core | Added: §21 Marketplace Safety Invariants (concurrent task limit, rejection loop, max price, stale timeout, cancellation policy, rate limiting, user blocking), §22 Expanded Dispute Protocol, §23 Sybil Prevention, §24 Email Verification, §25 Language & Internationalization. Fixes 42-gap audit. |
 
 ---
 
-**END OF PRODUCT_SPEC v1.5.0**
+## §25. Language & Internationalization
+
+**v1 is English-only.** All UI copy, error messages, notification text, stitch prompts, AI-generated content, and legal documents are in US English.
+
+**Internationalization readiness rules:**
+- All user-facing strings SHOULD be referenced by i18n key (e.g., `i18n('task.created.success')`) even if the translation file only contains English values
+- Error messages in API responses use error codes (HX-series) as the canonical identifier; human-readable text is for developer convenience only — clients render their own localized copy
+- Stitch prompts contain hardcoded English copy; future i18n requires a copy extraction pass
+- Legal documents (ToS, Privacy Policy, IC Agreement) are English-only; translated versions require legal review before deployment
+- Date/time formatting uses ISO 8601 for storage and transfer; client formats per device locale
+- Currency is USD only (v1); amounts stored in cents as integers
+
+**Future i18n scope (not v1):** Spanish (US market), currency localization, RTL support.
+
+---
+
+**END OF PRODUCT_SPEC v1.6.0**

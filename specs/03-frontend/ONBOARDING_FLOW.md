@@ -59,11 +59,11 @@ Per UI_SPEC.md §12 (Onboarding Visual Rules):
 ### Phase Overview
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│  PHASE 0        PHASE 1         PHASE 2         PHASE 3         PHASE 4 │
-│  Welcome    →   Calibration  →  Verification →  Role Lock   →   First   │
-│  (1 screen)     (3 screens)     (optional)      (1 screen)      Task    │
-└──────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  PHASE 0       PHASE 1A       PHASE 1B          PHASE 2        PHASE 2B        PHASE 3     PHASE 4│
+│  Welcome   →   Account    →   Calibration  →   Verification →  Legal      →   Role Lock →  First  │
+│  (1 screen)    Verify (2)     (3 screens)       (optional)     Accept (1)     (1 screen)    Task   │
+└────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Phase Details
@@ -71,8 +71,10 @@ Per UI_SPEC.md §12 (Onboarding Visual Rules):
 | Phase | Purpose | Screens | Skippable |
 |-------|---------|---------|-----------|
 | **0: Welcome** | Hook + value prop | 1 | No |
-| **1: Calibration** | Determine role intent | 3 | No |
+| **1A: Account Verify** | Phone + email verification | 2 | No |
+| **1B: Calibration** | Determine role intent | 3 | No |
 | **2: Verification** | ID/Background (if required) | 1-2 | Depends on role |
+| **2B: Legal Acceptance** | ToS, Privacy, IC Agreement | 1 | No |
 | **3: Role Lock** | Confirm role selection | 1 | No |
 | **4: First Task** | Guided walkthrough | 3-5 | No |
 
@@ -113,7 +115,85 @@ Per UI_SPEC.md §12 (Onboarding Visual Rules):
 - **CTA:** Single primary button
 - **Link:** Secondary text link for sign-in
 
-### Phase 1: Calibration Screens
+### Phase 1A: Account Verification
+
+**Authority:** PRODUCT_SPEC §23 (Sybil Prevention), §24 (Email Verification)
+
+#### Screen 1A.1: Phone Number Verification
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back                                                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                  Verify your phone number                       │
+│                                                                 │
+│          We'll send a 6-digit code via SMS.                    │
+│          This helps keep HustleXP safe.                        │
+│                                                                 │
+│          ┌───────────────────────────────────┐                 │
+│          │  +1  (___) ___-____              │                 │
+│          └───────────────────────────────────┘                 │
+│                                                                 │
+│          ┌───────────────────────────────────┐                 │
+│          │         Send Code                 │                 │
+│          └───────────────────────────────────┘                 │
+│                                                                 │
+│          [After code sent: 6-digit input]                      │
+│          ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐                      │
+│          │  │ │  │ │  │ │  │ │  │ │  │                      │
+│          └──┘ └──┘ └──┘ └──┘ └──┘ └──┘                      │
+│                                                                 │
+│          Didn't receive it? Resend (60s cooldown)              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+- **Provider:** Firebase Auth phone verification (or Twilio)
+- **Rate limit:** Max 3 SMS per phone number per hour
+- **Validation:** US phone numbers only (v1), E.164 format
+- **Sybil check:** Phone number checked against `banned_phones` table before sending
+- **On success:** `phone_verified = true`, proceed to email verification
+- **Error states:** Invalid format, already registered, banned number, rate limited
+
+#### Screen 1A.2: Email Verification
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back                                                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                  Check your email                              │
+│                                                                 │
+│          We sent a verification link to                        │
+│          user@example.com                                      │
+│                                                                 │
+│          ┌───────────────────────────────────┐                 │
+│          │       Open Email App              │                 │
+│          └───────────────────────────────────┘                 │
+│                                                                 │
+│          ┌───────────────────────────────────┐                 │
+│          │    I've verified, continue →      │                 │
+│          └───────────────────────────────────┘                 │
+│                                                                 │
+│          Didn't receive it? Resend email                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+- **Provider:** Firebase Auth email verification
+- **Flow:** Firebase sends verification email → user taps link → returns to app
+- **Deep link:** `hustlexp://verify-email?oobCode=...`
+- **Polling:** App polls `email_verified` status every 5 seconds while on this screen
+- **On success:** `email_verified = true`, proceed to calibration
+- **Skip behavior:** NOT skippable. Account has limited functionality until verified.
+- **Resend cooldown:** 60 seconds between resend requests
+
+### Phase 1B: Calibration Screens
+
+**Note:** Previously labeled "Phase 1". Renumbered to accommodate Phase 1A (Account Verification).
 
 #### Screen 1.1: What brings you here?
 
@@ -262,6 +342,46 @@ Only shown if role requires verification (Hustler or Dual).
 - **Provider:** Stripe Identity or similar
 - **Time estimate:** Accurate ("about 2 minutes")
 - **Requirements:** Listed clearly before starting
+
+### Phase 2B: Legal Acceptance
+
+**Authority:** LEGAL_FRAMEWORK_SPEC, PRODUCT_SPEC §25, TAX_REPORTING_SPEC
+
+#### Screen 2B.1: Legal Documents Acceptance
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back                                                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│                  Almost there!                                 │
+│                                                                 │
+│          Before you start, please review and                   │
+│          accept the following:                                 │
+│                                                                 │
+│          ☐  Terms of Service →                                 │
+│          ☐  Privacy Policy →                                   │
+│          ☐  Independent Contractor Agreement →                 │
+│             (workers only — shown conditionally)               │
+│                                                                 │
+│          By continuing, you agree to these terms.              │
+│                                                                 │
+│          ┌───────────────────────────────────┐                 │
+│          │       Accept & Continue            │                 │
+│          └───────────────────────────────────┘                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+- **Each document link** opens a full-screen scrollable view of the document
+- **Checkboxes** are required — user must tap each to enable the Accept button
+- **IC Agreement** shown ONLY if user's inferred role includes worker (Hustler or Dual)
+- **Version tracking:** `user_consents` table records document versions accepted
+- **Re-consent:** If documents update post-signup, user is prompted on next app open
+- **Not skippable:** Account cannot proceed without acceptance
+- **W-9 note for workers:** After acceptance, Stripe Connect onboarding (Phase 2) collects tax information. W-9 data flows through Stripe Connect's identity verification.
+- **Cross-reference:** LEGAL_FRAMEWORK_SPEC §2, TAX_REPORTING_SPEC §2
 
 ### Phase 3: Role Lock Confirmation
 

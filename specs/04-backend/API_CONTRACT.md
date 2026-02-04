@@ -1,7 +1,8 @@
-# HustleXP API Contract v1.0.0
+# HustleXP API Contract v1.5.0
 
 **STATUS: CONSTITUTIONAL REFERENCE**
 **Authority:** BUILD_GUIDE.md §5, PRODUCT_SPEC.md, schema.sql
+**Last Updated:** February 2026
 **Protocol:** tRPC over HTTP
 **Authentication:** Firebase JWT tokens
 
@@ -72,6 +73,46 @@ Authorization: Bearer <firebase_jwt_token>
 - **Protected**: Valid user token required
 - **Admin**: Valid admin token required (has admin role)
 
+### Required Headers
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Protected/Admin endpoints | `Bearer <firebase_jwt_token>` |
+| `X-App-Version` | All requests | Client app version (e.g., `1.0.0`) |
+| `X-Platform` | All requests | `ios` or `android` |
+| `X-Device-Id` | All requests | Device fingerprint for sybil detection |
+
+### Force Update Protocol
+
+Server checks `X-App-Version` header against minimum required version.
+
+| Response Header | Meaning |
+|---|---|
+| `X-Min-Version: 1.0.0` | Minimum supported version |
+| `X-Force-Update: true` | Client MUST update before continuing |
+| `X-Update-URL: https://...` | App store link for update |
+
+If `X-App-Version < X-Min-Version` AND `X-Force-Update: true`:
+- Server returns HTTP 426 (Upgrade Required) for ALL endpoints
+- Client displays blocking "Update Required" screen (E5-force-update-screen)
+- No API calls succeed until app is updated
+
+Version policy: support current version + 1 previous major version.
+
+### Rate Limiting
+
+All endpoints are rate-limited per authenticated user and per IP. See PRODUCT_SPEC §21.6 for limits.
+
+Rate limit response headers on ALL responses:
+| Header | Description |
+|---|---|
+| `X-RateLimit-Limit` | Maximum requests in window |
+| `X-RateLimit-Remaining` | Requests remaining in window |
+| `X-RateLimit-Reset` | Unix timestamp when window resets |
+
+When limit exceeded: HTTP 429 with `Retry-After` header (seconds).
+Error code: `RATE_LIMITED` — "Rate limit exceeded"
+
 ---
 
 ## Error Codes
@@ -87,7 +128,11 @@ Authorization: Bearer <firebase_jwt_token>
 | HX201 | INV-2: RELEASED without COMPLETED task | Task must be completed first |
 | HX301 | INV-3: COMPLETED without ACCEPTED proof | Proof must be accepted first |
 | HX401 | INV-4: Escrow amount modification | Amount is immutable after creation |
-| HX501 | Badge immutable | Cannot delete badge entries |
+| HX302 | INV-TASK-1: Maximum active tasks reached | Complete or cancel active task |
+| HX303 | INV-PROOF-1: Max rejections reached, dispute auto-opened | Dispute resolution required |
+| HX304 | INV-PRICE-1: Task price exceeds maximum | Reduce price |
+| HX305 | INV-ACCEPT-1: Acceptance window expired | Task returned to OPEN |
+| RATE_LIMITED | Rate limit exceeded | Wait and retry |
 
 ### Application Errors
 
@@ -2573,6 +2618,127 @@ Risk classification is embedded in `task.create` — not a standalone endpoint.
 
 ---
 
+## User Safety Endpoints
+
+### user.block
+
+**Auth:** Protected
+
+```typescript
+// Mutation
+input: { blocked_user_id: string; reason?: string }
+output: { success: boolean }
+```
+
+Guard: Cannot block yourself. Max 100 blocks per user. Cannot block admin accounts.
+
+### user.unblock
+
+**Auth:** Protected
+
+```typescript
+// Mutation
+input: { blocked_user_id: string }
+output: { success: boolean }
+```
+
+### user.getBlockList
+
+**Auth:** Protected
+
+```typescript
+// Query
+input: { limit?: number; offset?: number }
+output: {
+  blocks: Array<{
+    blocked_user_id: string;
+    blocked_user_name: string;
+    created_at: string;
+    reason?: string;
+  }>;
+  total: number;
+}
+```
+
+---
+
+## Tax Document Endpoints
+
+### tax.getW9Status
+
+**Auth:** Protected
+
+```typescript
+// Query
+output: {
+  status: 'NOT_SUBMITTED' | 'PENDING' | 'VERIFIED';
+  submitted_at?: string;
+}
+```
+
+### tax.getDocuments
+
+**Auth:** Protected
+
+```typescript
+// Query
+input: { tax_year: number }
+output: {
+  documents: Array<{
+    type: '1099-NEC';
+    tax_year: number;
+    total_earnings: number;
+    available_at: string;
+    download_url: string;
+  }>;
+}
+```
+
+---
+
+## Support Endpoints
+
+### support.createTicket
+
+**Auth:** Protected
+
+```typescript
+// Mutation
+input: {
+  category: 'PAYMENT' | 'TASK' | 'ACCOUNT' | 'DISPUTE' | 'SAFETY' | 'OTHER';
+  subject: string;
+  description: string;
+  task_id?: string;
+  attachments?: string[]; // Storage URLs
+}
+output: {
+  ticket_id: string;
+  status: 'OPEN';
+  created_at: string;
+}
+```
+
+### support.getTickets
+
+**Auth:** Protected
+
+```typescript
+// Query
+input: { status?: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'; limit?: number }
+output: {
+  tickets: Array<{
+    ticket_id: string;
+    category: string;
+    subject: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+  }>;
+}
+```
+
+---
+
 ## Amendment History
 
 | Version | Date | Summary |
@@ -2582,6 +2748,7 @@ Risk classification is embedded in `task.create` — not a standalone endpoint.
 | 1.2.0 | Jan 2025 | Added rating.* endpoints (§12 compliance). Added WebSocket events schema for Live Mode. |
 | 1.3.0 | Jan 2025 | Added Admin Endpoints section. Added dispute states (EVIDENCE_REQUESTED, ESCALATED). Added Live Mode $15 minimum validation. |
 | 1.4.0 | Feb 2026 | Added §N: Judge Agent, Risk & Trust Engine, Risk Classifier endpoint references |
+| 1.5.0 | Feb 2026 | Added: Force update protocol, rate limiting headers, HX302-305/RATE_LIMITED error codes, user.block/unblock, tax document endpoints, support ticket endpoints. 42-gap audit fixes. |
 
 ---
 

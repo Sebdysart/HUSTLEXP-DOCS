@@ -2491,3 +2491,213 @@ ON CONFLICT (version) DO NOTHING;
 -- ============================================================================
 -- END OF CONSTITUTIONAL SCHEMA v1.4.0
 -- ============================================================================
+
+-- ============================================================================
+-- MIGRATION v1.5.0 — MARKETPLACE SAFETY & BUSINESS HARDENING
+-- Authority: 42-gap comprehensive audit (PRODUCT_SPEC §21-24, STRIPE §12-14, API §1.5)
+-- ============================================================================
+
+-- 1. User Safety Tracking Columns
+ALTER TABLE users ADD COLUMN IF NOT EXISTS cancellation_count INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS no_show_count INTEGER DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS last_cancellation_at TIMESTAMPTZ;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_number TEXT UNIQUE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_verified BOOLEAN DEFAULT false;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT false;
+
+-- 2. Task Safety Columns
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS rejection_count INTEGER DEFAULT 0;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS acceptance_deadline TIMESTAMPTZ;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS max_price_cents INTEGER;
+
+-- Max price constraint: STANDARD $500, LIVE $1000 (enforced at application layer per mode)
+-- DB-level absolute ceiling:
+ALTER TABLE tasks ADD CONSTRAINT tasks_max_price CHECK (amount <= 100000);
+
+-- 3. User Blocks (PRODUCT_SPEC §21.7)
+CREATE TABLE IF NOT EXISTS user_blocks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    blocker_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    blocked_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    reason TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(blocker_id, blocked_id),
+    CHECK (blocker_id != blocked_id)
+);
+CREATE INDEX IF NOT EXISTS idx_user_blocks_blocker ON user_blocks(blocker_id);
+CREATE INDEX IF NOT EXISTS idx_user_blocks_blocked ON user_blocks(blocked_id);
+
+-- 4. Sybil Prevention (PRODUCT_SPEC §23)
+CREATE TABLE IF NOT EXISTS device_fingerprints (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    fingerprint TEXT NOT NULL,
+    os_version TEXT,
+    device_model TEXT,
+    screen_resolution TEXT,
+    timezone TEXT,
+    language TEXT,
+    first_seen_at TIMESTAMPTZ DEFAULT NOW(),
+    last_seen_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_device_fp_user ON device_fingerprints(user_id);
+CREATE INDEX IF NOT EXISTS idx_device_fp_fingerprint ON device_fingerprints(fingerprint);
+
+CREATE TABLE IF NOT EXISTS banned_phones (
+    phone_number TEXT PRIMARY KEY,
+    banned_at TIMESTAMPTZ DEFAULT NOW(),
+    reason TEXT,
+    original_user_id UUID REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS banned_devices (
+    fingerprint TEXT PRIMARY KEY,
+    banned_at TIMESTAMPTZ DEFAULT NOW(),
+    reason TEXT,
+    original_user_id UUID REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS banned_stripe_accounts (
+    stripe_account_id TEXT PRIMARY KEY,
+    banned_at TIMESTAMPTZ DEFAULT NOW(),
+    reason TEXT,
+    original_user_id UUID REFERENCES users(id)
+);
+
+-- 5. Scheduled Transfers (STRIPE_INTEGRATION §12.1 — 48h delay)
+CREATE TABLE IF NOT EXISTS scheduled_transfers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    escrow_id UUID NOT NULL REFERENCES escrows(id),
+    worker_id UUID NOT NULL REFERENCES users(id),
+    amount_cents INTEGER NOT NULL,
+    scheduled_for TIMESTAMPTZ NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING'
+        CHECK (status IN ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED_CHARGEBACK')),
+    stripe_transfer_id TEXT,
+    attempts INTEGER DEFAULT 0,
+    last_attempt_at TIMESTAMPTZ,
+    error_message TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    completed_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_scheduled_transfers_status ON scheduled_transfers(status, scheduled_for);
+
+-- 6. Support Tickets (API_CONTRACT support endpoints)
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    category TEXT NOT NULL
+        CHECK (category IN ('PAYMENT', 'TASK', 'ACCOUNT', 'DISPUTE', 'SAFETY', 'OTHER')),
+    subject TEXT NOT NULL,
+    description TEXT NOT NULL,
+    task_id UUID REFERENCES tasks(id),
+    status TEXT NOT NULL DEFAULT 'OPEN'
+        CHECK (status IN ('OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED')),
+    assigned_to UUID REFERENCES users(id),
+    attachments TEXT[],
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    resolved_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_user ON support_tickets(user_id, status);
+
+-- 7. Background Job Registry (BACKGROUND_JOBS_SPEC)
+CREATE TABLE IF NOT EXISTS background_job_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    job_name TEXT NOT NULL,
+    started_at TIMESTAMPTZ DEFAULT NOW(),
+    completed_at TIMESTAMPTZ,
+    status TEXT NOT NULL DEFAULT 'RUNNING'
+        CHECK (status IN ('RUNNING', 'COMPLETED', 'FAILED', 'RETRYING')),
+    error_message TEXT,
+    rows_affected INTEGER DEFAULT 0,
+    duration_ms INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_job_log_name ON background_job_log(job_name, started_at DESC);
+
+-- 8. Dispute Expansion (PRODUCT_SPEC §22)
+ALTER TABLE disputes ADD COLUMN IF NOT EXISTS sla_phase TEXT DEFAULT 'AI_TRIAGE'
+    CHECK (sla_phase IN ('AI_TRIAGE', 'HUMAN_REVIEW', 'ADMIN_DECISION', 'FOUNDER_ESCALATION', 'AUTO_RESOLVED'));
+ALTER TABLE disputes ADD COLUMN IF NOT EXISTS sla_deadline TIMESTAMPTZ;
+ALTER TABLE disputes ADD COLUMN IF NOT EXISTS appeal_filed BOOLEAN DEFAULT false;
+ALTER TABLE disputes ADD COLUMN IF NOT EXISTS appeal_deadline TIMESTAMPTZ;
+ALTER TABLE disputes ADD COLUMN IF NOT EXISTS resolution_split_poster_pct INTEGER;
+ALTER TABLE disputes ADD COLUMN IF NOT EXISTS resolution_split_worker_pct INTEGER;
+
+-- 9. Tax Documents (TAX_REPORTING_SPEC)
+CREATE TABLE IF NOT EXISTS tax_documents (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    tax_year INTEGER NOT NULL,
+    document_type TEXT NOT NULL DEFAULT '1099-NEC',
+    total_earnings_cents INTEGER NOT NULL,
+    stripe_tax_form_id TEXT,
+    available_at TIMESTAMPTZ,
+    download_url TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, tax_year, document_type)
+);
+
+-- 10. Chargeback Tracking (STRIPE_INTEGRATION §12.2)
+ALTER TABLE escrows ADD COLUMN IF NOT EXISTS chargeback_dispute_id TEXT;
+ALTER TABLE escrows ADD COLUMN IF NOT EXISTS chargeback_at TIMESTAMPTZ;
+
+-- Add DISPUTED_BY_CARD to escrow state if not present
+-- Note: state CHECK constraint update via migration:
+-- Escrow states: PENDING, FUNDED, RELEASED, REFUNDED, DISPUTED, DISPUTED_BY_CARD, EXPIRED
+
+-- 11. Schema Version
+INSERT INTO schema_versions (version, applied_by, checksum, notes)
+VALUES (
+    '1.5.0',
+    'system',
+    'MARKETPLACE_SAFETY_V1',
+    'user_blocks, device_fingerprints, banned_phones/devices/stripe, scheduled_transfers, support_tickets, background_job_log, tax_documents. Safety columns on users (cancellation_count, no_show_count, phone). Task columns (rejection_count, acceptance_deadline, max_price constraint). Dispute SLA expansion. Chargeback tracking on escrows. 42-gap audit hardening.'
+)
+ON CONFLICT (version) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 12: Compound Pattern Detection (RISK_TRUST_ENGINE §9a)
+-- ============================================================================
+
+-- 12.1 Compound Pattern Alerts
+CREATE TABLE IF NOT EXISTS compound_pattern_alerts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    rule_id TEXT NOT NULL,                          -- CPR-1 through CPR-8
+    severity TEXT NOT NULL CHECK (severity IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')),
+    window_period TEXT NOT NULL,                     -- '7d', '30d', '90d'
+    trigger_metrics JSONB NOT NULL,                  -- snapshot of metrics that triggered
+    action_taken TEXT NOT NULL,                      -- 'WARNING', 'COOLDOWN', 'REVIEW', 'SUSPENSION'
+    resolved_at TIMESTAMPTZ,
+    resolved_by UUID REFERENCES users(id),
+    resolution_notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_cpa_user ON compound_pattern_alerts(user_id);
+CREATE INDEX IF NOT EXISTS idx_cpa_severity ON compound_pattern_alerts(severity, resolved_at);
+CREATE INDEX IF NOT EXISTS idx_cpa_rule ON compound_pattern_alerts(rule_id);
+
+-- 12.2 Rolling Metrics Cache (materialized by background job)
+CREATE TABLE IF NOT EXISTS user_rolling_metrics (
+    user_id UUID PRIMARY KEY REFERENCES users(id),
+    metrics_7d JSONB NOT NULL DEFAULT '{}',
+    metrics_30d JSONB NOT NULL DEFAULT '{}',
+    metrics_90d JSONB NOT NULL DEFAULT '{}',
+    last_computed_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Schema Version Update
+INSERT INTO schema_versions (version, applied_by, checksum, notes)
+VALUES (
+    '1.6.0',
+    'system',
+    'COMPOUND_PATTERNS_V1',
+    'compound_pattern_alerts table, user_rolling_metrics cache. RISK_TRUST_ENGINE §9a compliance. i18n statement in PRODUCT_SPEC. Full 42-gap audit resolution.'
+)
+ON CONFLICT (version) DO NOTHING;
+
+-- ============================================================================
+-- END OF CONSTITUTIONAL SCHEMA v1.6.0
+-- ============================================================================

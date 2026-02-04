@@ -227,7 +227,7 @@ Kill tests verify that the database rejects invalid operations.
 | `inv-5.test.ts` | Duplicate XP award | 23505 |
 | `terminal-task.test.ts` | Modify COMPLETED task | HX001 |
 | `terminal-escrow.test.ts` | Modify RELEASED escrow | HX002 |
-| `append-only.test.ts` | Delete XP/badge entry | HX102/HX501 |
+| `append-only.test.ts` | Delete XP/badge entry | HX102/HX401 |
 
 #### 4.5.2 Kill Test Structure
 
