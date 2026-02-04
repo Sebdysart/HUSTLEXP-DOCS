@@ -358,10 +358,16 @@ They are documented here for post-v1 planning only.
 | Adjacent Skill Prompt | "AI task suggestions" frozen | Post-task notification: "Workers like you also do [Skill]. Tap to add." |
 | Market Demand Prompt | "Smart pricing" adjacent, frozen | Feed banner: "High demand for [Skill] in [Area] today." |
 | Quest/Gamification Language | "Gamified streaks" frozen | Gamification language layer across UI copy |
+| Demand Heat Maps | Demand visualization requires background aggregation | Worker map overlay with 1km² grid demand density. Updated every 15 min (not real-time). Opt-in only. |
+| Quest Batching | AI task recommendations frozen | "There's a Grocery Haul 0.3mi away starting in 45 min." Max 1/completion, max 3/day, in-app banner only. |
+| Map Game Board | Gamification overlay on maps | XP markers + Gold indicators at completed task locations. Cosmetic only. No "nearby XP" lures (INV-PRIVACY-1). |
 
 **Constraints for v2 implementation:**
 - Adjacent Skill: Max 1 suggestion per completed task, max 3/day. Never suggest regulated skills without verification path. Source: `adjacent_skills[]` from SKILL_TAXONOMY (pre-computed, not AI-generated).
 - Market Demand: Feed banner only (not push). No earnings projections ("2x more" requires regulatory review). Dismissable, max 1 per session.
+- Demand Heat Maps: Data aggregated at 1km² grid level (no individual task locations exposed). Updated every 15 min. No earnings projections. Opt-in via settings. Cannot compute "nearby demand" without active session (INV-PRIVACY-1).
+- Quest Batching: Max 1 suggestion per task completion, max 3/day. No push notifications. Based on public task feed, NOT worker tracking. Worker must tap to view.
+- Map Game Board: Cosmetic overlay only. XP markers only at completed task locations. No "nearby XP" lures that would require background location (INV-PRIVACY-1).
 - All v2 features must comply with INV-PRIVACY-1 (no background GPS for suggestions).
 
 **Source:** `staging/REACTIVE_SKILL_INTELLIGENCE_ANALYSIS.md` §6

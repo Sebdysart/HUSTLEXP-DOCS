@@ -1,6 +1,6 @@
 # Screen O6: Location Setup Screen
 ## Status: IMPLEMENTATION SPEC
-**Authority:** DESIGN_SYSTEM.md, ONBOARDING_SPEC.md
+**Authority:** DESIGN_SYSTEM.md, ONBOARDING_SPEC.md, SPATIAL_INTELLIGENCE_LOCKED.md (§13 Location Permissions Protocol — foreground only, INV-PRIVACY-1 compliant)
 **Cursor-Ready:** YES
 **Role:** Both (Hustler & Poster)
 

@@ -392,7 +392,11 @@ Each screen lists:
 ### P2: HustlerOnWayScreen
 ```
 ✅ IMPLEMENTS:
-   - Map with hustler location (live)
+   - Map with graduated worker visibility (INV-PRIVACY-2)
+     >0.5mi: ETA + direction indicator only (no worker pin)
+     ≤0.5mi: Approximate 200m-radius zone on map
+     ≤100m: Precise worker pin
+     IN_PROGRESS: "Worker is on-site" (no live tracking)
    - Hustler info card
    - ETA display
    - Chat button
@@ -403,10 +407,12 @@ Each screen lists:
    - Multiple hustlers
    - Hustler selection
    - Route modification
+   - Show raw worker GPS at any distance >100m
 
 📥 RECEIVES:
    - task: Task
-   - hustler: { id, name, rating, photo, location }
+   - hustler: { id, name, rating, photo }
+   - posterVisibility: PosterVisibleLocation  // Server-computed, never raw coords
    - eta: number
    - isLoading: boolean
 

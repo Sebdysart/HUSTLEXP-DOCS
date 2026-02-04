@@ -1,6 +1,6 @@
 # Screen H4: Task Detail Screen (Hustler View)
 ## Status: IMPLEMENTATION SPEC
-**Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md
+**Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md, SPATIAL_INTELLIGENCE_LOCKED.md (§4.3 Tier 1 STATIC map rendering, §6.4 Arrival Instructions)
 **Cursor-Ready:** YES
 **Role:** Hustler Only
 
@@ -202,8 +202,8 @@ Button: Accept Task (disabled, grayed out)
 
 ## Map Interaction
 
-- Static map preview
-- Tap opens full-screen map
+- Static map preview (SPATIAL §4.3 Tier 1 — Google Static Maps API, cached 24h, ~$0.002/request)
+- Tap opens full-screen interactive map (SPATIAL §4.3 Tier 2 — react-native-maps MapView, $0)
 - Shows task location pin only (not exact address until accepted)
 
 ---

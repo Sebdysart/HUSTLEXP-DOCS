@@ -120,6 +120,8 @@ Create a new task.
   location: string;        // Address string
   location_lat?: number;   // Latitude
   location_lng?: number;   // Longitude
+  arrival_instructions?: string;  // Max 280 chars. Last-meters wayfinding for worker (SPATIAL_INTELLIGENCE §6.4)
+  arrival_has_gate_code?: boolean; // If true, mask instructions until worker is within 100m (SPATIAL_INTELLIGENCE §6.4)
   category: string;        // From TASK_CATEGORIES
   price: number;           // USD cents, min 500 ($5.00), min 1500 ($15.00) for LIVE mode
   deadline: string;        // ISO 8601 datetime
@@ -321,6 +323,10 @@ Get a single task by ID.
   location: string;
   location_lat: number | null;
   location_lng: number | null;
+  location_place_id: string | null;     // Google Place ID (SPATIAL_INTELLIGENCE §6.2)
+  location_precision: 'ROOFTOP' | 'RANGE_INTERPOLATED' | 'GEOMETRIC_CENTER' | 'APPROXIMATE' | null;  // Geocoding confidence (SPATIAL_INTELLIGENCE §6.2)
+  arrival_instructions: string | null;   // Max 280 chars, last-meters wayfinding (SPATIAL_INTELLIGENCE §6.4)
+  arrival_has_gate_code: boolean;        // If true, masked until worker is within 100m (SPATIAL_INTELLIGENCE §6.4)
   category: string;
   price: number;
   state: TaskState;
@@ -2144,6 +2150,35 @@ interface NewMessage {
   data: {
     task_id: string;
     message: Message;
+  };
+}
+
+// Worker location update for poster (INV-PRIVACY-2 graduated visibility)
+// Authority: SPATIAL_INTELLIGENCE_LOCKED.md §5
+// CRITICAL: Server NEVER sends raw worker coordinates to poster at >100m
+interface PosterLocationUpdate {
+  type: 'POSTER_LOCATION_UPDATE';
+  data: {
+    task_id: string;
+    visibility: 
+      | { type: 'DIRECTION_ONLY'; direction: 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'; etaMinutes: number; showWorkerPin: false }  // >0.5mi
+      | { type: 'APPROXIMATE_ZONE'; center: { lat: number; lng: number }; radiusMeters: 200; etaMinutes: number; showWorkerPin: false }         // 100m-800m (coords rounded to 200m grid)
+      | { type: 'PRECISE'; coordinates: { lat: number; lng: number }; showWorkerPin: true }                                                      // ≤100m (verified proximity)
+      | { type: 'ON_SITE'; showWorkerPin: false };                                                                                                // IN_PROGRESS (no tracking)
+    updated_at: string;
+  };
+}
+
+// Worker proximity zone trigger (approaching/arrival notifications)
+// Authority: SPATIAL_INTELLIGENCE_LOCKED.md §8
+interface ProximityZoneTrigger {
+  type: 'PROXIMITY_ZONE_TRIGGER';
+  data: {
+    task_id: string;
+    zone: 'APPROACHING' | 'ARRIVAL';  // 500m or 100m
+    distanceMeters: number;
+    target: 'WORKER' | 'POSTER';      // Who receives this event
+    message: string;                    // "Almost there!" or "Worker is nearby"
   };
 }
 ```

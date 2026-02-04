@@ -72,6 +72,7 @@ Hustler UI has two states based on economic truth:
 | **Task Feed** | Browse available tasks | Task cards, filters |
 | **Task Detail** | View & accept task | Task info, escrow, accept |
 | **Task In Progress** | Active task management | Status, timer, proof submit |
+| **En Route Map (H7)** | Navigation to task site | Map, route, ETA, travel mode, proximity zones. Authority: SPATIAL_INTELLIGENCE_LOCKED.md |
 | **Task Complete** | Celebration + XP | XP earned, badge unlock |
 | **Live Mode** | Instant task mode | Toggle, session stats |
 | **Profile** | Achievements & stats | XP, badges, trust tier |

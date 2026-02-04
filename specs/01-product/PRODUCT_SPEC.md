@@ -324,6 +324,43 @@ If GPS fires outside an active task window, this is a **P0 bug requiring immedia
 
 ---
 
+### INV-PRIVACY-2: Poster Location Visibility Graduation
+
+```
+Poster visibility of worker location graduates with proximity:
+
+  >0.5mi:  ETA countdown only ("~18 min away")
+           Worker coordinates NOT transmitted to poster device
+           Map shows: task pin only
+
+  ≤0.5mi:  Approximate zone (200m radius circle on map)
+           Worker coordinates rounded to 200m grid
+           Map shows: shaded circle approaching task pin
+
+  ≤100m:   Precise worker pin on map
+           Exact coordinates (verified by proximity check)
+           Map shows: worker pin + task pin
+
+  IN_PROGRESS: "Worker is on-site" (no live tracking)
+              Worker coordinates NOT transmitted
+              Map shows: static task location only
+```
+
+**Rationale:** Workers are independent contractors choosing their own route and timing. Exposing exact live location from the moment of acceptance enables poster surveillance of worker movement, which constitutes direction and control — employer behavior under IC classification tests. Graduated visibility provides poster confidence ("worker is coming") without enabling tracking.
+
+**Enforcement:**
+- Location graduation logic runs SERVER-SIDE (not client-side)
+- WebSocket updates transmit `PosterVisibleLocation` objects, NEVER raw `{lat, lng}` at >100m
+- Server applies 200m grid rounding for ≤0.5mi zone
+- Error code: `HX902`
+
+**Violation Behavior:**
+If raw worker coordinates are transmitted to poster at any distance >100m, this is a **P0 bug requiring immediate hotfix**. Leaking exact worker location constitutes a privacy violation and potential IC misclassification risk.
+
+**Authority:** `SPATIAL_INTELLIGENCE_LOCKED.md` §5
+
+---
+
 ### Invariant Chain
 
 The invariants form a strict dependency chain:
@@ -338,7 +375,7 @@ Task acceptance depends on escrow funding
 
 This means: **XP is mathematically impossible without the full chain completing.**
 
-The eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8) enforce that **task access is impossible without proper credentials and trust tier**. The privacy invariant (INV-PRIVACY-1) enforces that **location tracking is reactive only — never background surveillance**. See §17 for complete eligibility system behavior.
+The eligibility invariants (INV-ELIGIBILITY-1 through INV-ELIGIBILITY-8) enforce that **task access is impossible without proper credentials and trust tier**. The privacy invariants (INV-PRIVACY-1, INV-PRIVACY-2) enforce that **location tracking is reactive only — never background surveillance** and that **poster visibility of worker location graduates with proximity**. See §17 for complete eligibility system behavior.
 
 ---
 
@@ -440,7 +477,7 @@ Every task has exactly one **fulfillment mode**, declared at creation time.
 | **LIVE-1** | Live tasks require FUNDED escrow before broadcast | DB trigger (HX901) |
 | **LIVE-2** | Live tasks require $15.00 minimum price | DB constraint (HX902) |
 | **LIVE-3** | Hustlers must explicitly opt into Live Mode | UI + DB state |
-| **LIVE-4** | Live broadcasts are geo-bounded | Backend service |
+| **LIVE-4** | Live broadcasts are geo-bounded (PostGIS `ST_DWithin` on `tasks.location_geog` — SPATIAL_INTELLIGENCE §4) | Backend service |
 | **LIVE-5** | Live broadcasts are time-bounded (TTL) | Backend service |
 | **LIVE-6** | Live Mode is session-based, not permanent | State machine |
 | **LIVE-7** | No auto-accept, no AI task assignment | Constitutional |

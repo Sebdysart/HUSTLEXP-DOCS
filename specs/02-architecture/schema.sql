@@ -1,5 +1,5 @@
 -- ============================================================================
--- HustleXP Canonical Database Schema v1.3.0
+-- HustleXP Canonical Database Schema v1.4.0
 -- ============================================================================
 -- STATUS: CONSTITUTIONAL — DO NOT MODIFY WITHOUT VERSION BUMP
 -- AUTHORITY: Layer 0 (Highest) — See ARCHITECTURE.md §1
@@ -22,6 +22,16 @@ CREATE TABLE IF NOT EXISTS schema_versions (
 INSERT INTO schema_versions (version, applied_by, checksum, notes)
 VALUES ('1.0.0', 'system', 'INITIAL', 'Constitutional schema - INV-1 through INV-5, terminal state triggers, AI tables')
 ON CONFLICT (version) DO NOTHING;
+
+-- ============================================================================
+-- SECTION 0: REQUIRED EXTENSIONS
+-- ============================================================================
+-- Authority: BACKEND_STACK_LOCK §extensions, SPATIAL_INTELLIGENCE_LOCKED.md §3
+-- PostGIS: ALL geospatial queries (proximity, radius, geo-bounded broadcasts)
+-- Neon (Postgres provider) supports PostGIS natively.
+-- ============================================================================
+
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- ============================================================================
 -- SECTION 1: CORE DOMAIN TABLES
@@ -133,6 +143,11 @@ CREATE TABLE tasks (
     location VARCHAR(255),
     location_lat NUMERIC(10, 7),     -- Latitude for geo-matching
     location_lng NUMERIC(10, 7),     -- Longitude for geo-matching
+    location_geog GEOGRAPHY(POINT, 4326),  -- PostGIS geography for O(log n) spatial queries (SPATIAL_INTELLIGENCE §4, FEED_QUERY §6)
+    location_place_id VARCHAR(255),  -- Google Place ID for deduplication (SPATIAL_INTELLIGENCE §6.2)
+    location_precision VARCHAR(30) CHECK (location_precision IN ('ROOFTOP', 'RANGE_INTERPOLATED', 'GEOMETRIC_CENTER', 'APPROXIMATE')),  -- Geocoding confidence (SPATIAL_INTELLIGENCE §6.2)
+    arrival_instructions VARCHAR(280),          -- Last-meters wayfinding notes from poster (SPATIAL_INTELLIGENCE §6.4)
+    arrival_has_gate_code BOOLEAN DEFAULT false, -- If true, mask instructions until worker is within 100m (SPATIAL_INTELLIGENCE §6.4)
     category VARCHAR(50),
 
     -- Pricing (in USD cents — PRODUCT_SPEC §4.3)
@@ -182,6 +197,25 @@ CREATE INDEX idx_tasks_poster ON tasks(poster_id);
 CREATE INDEX idx_tasks_worker ON tasks(worker_id);
 CREATE INDEX idx_tasks_state ON tasks(state);
 CREATE INDEX idx_tasks_created ON tasks(created_at DESC);
+CREATE INDEX idx_tasks_location_geog ON tasks USING GIST (location_geog);  -- PostGIS spatial index for O(log n) radius queries (SPATIAL_INTELLIGENCE §4)
+
+-- Auto-populate location_geog from lat/lng on INSERT or UPDATE (backward compatible)
+-- Authority: SPATIAL_INTELLIGENCE_LOCKED.md §4, migration 006
+CREATE OR REPLACE FUNCTION sync_task_location_geog()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.location_lat IS NOT NULL AND NEW.location_lng IS NOT NULL THEN
+        NEW.location_geog := ST_SetSRID(ST_MakePoint(NEW.location_lng, NEW.location_lat), 4326)::geography;
+    ELSE
+        NEW.location_geog := NULL;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER task_sync_geog
+BEFORE INSERT OR UPDATE OF location_lat, location_lng ON tasks
+FOR EACH ROW EXECUTE FUNCTION sync_task_location_geog();
 
 -- ----------------------------------------------------------------------------
 -- 1.2.1 TASK TERMINAL STATE TRIGGER (AUDIT-4)
@@ -2327,6 +2361,10 @@ CREATE TABLE IF NOT EXISTS user_task_drafts (
     location VARCHAR(255),
     location_lat NUMERIC(10, 7),
     location_lng NUMERIC(10, 7),
+    location_place_id VARCHAR(255),  -- Google Place ID (SPATIAL_INTELLIGENCE §6.2)
+    location_precision VARCHAR(30) CHECK (location_precision IS NULL OR location_precision IN ('ROOFTOP', 'RANGE_INTERPOLATED', 'GEOMETRIC_CENTER', 'APPROXIMATE')),
+    arrival_instructions VARCHAR(280),          -- Last-meters wayfinding (SPATIAL_INTELLIGENCE §6.4)
+    arrival_has_gate_code BOOLEAN DEFAULT false, -- Mask until 100m (SPATIAL_INTELLIGENCE §6.4)
     category VARCHAR(50),
     price INTEGER CHECK (price IS NULL OR price > 0),
     deadline TIMESTAMPTZ,
@@ -2412,6 +2450,21 @@ CREATE TRIGGER user_task_drafts_updated_at
 -- ============================================================================
 -- SCHEMA VERSION UPDATE (v1.3.0)
 -- ============================================================================
+-- SCHEMA VERSION UPDATE (v1.4.0) - PostGIS Geospatial Infrastructure
+-- ============================================================================
+
+INSERT INTO schema_versions (version, applied_by, checksum, notes)
+VALUES (
+    '1.4.0',
+    'system',
+    'POSTGIS_INFRASTRUCTURE_V1',
+    'PostGIS extension, tasks.location_geog GEOGRAPHY(POINT,4326) column, GIST spatial index, auto-populate trigger from lat/lng. Unified all geospatial queries on PostGIS (SPATIAL_INTELLIGENCE §4, FEED_QUERY §6).'
+)
+ON CONFLICT (version) DO NOTHING;
+
+-- ============================================================================
+-- SCHEMA VERSION UPDATE (v1.3.0) - Retained for migration history
+-- ============================================================================
 
 INSERT INTO schema_versions (version, applied_by, checksum, notes)
 VALUES (
@@ -2436,5 +2489,5 @@ VALUES (
 ON CONFLICT (version) DO NOTHING;
 
 -- ============================================================================
--- END OF CONSTITUTIONAL SCHEMA v1.3.0
+-- END OF CONSTITUTIONAL SCHEMA v1.4.0
 -- ============================================================================

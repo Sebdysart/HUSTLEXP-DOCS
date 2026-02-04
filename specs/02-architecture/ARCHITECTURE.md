@@ -3,7 +3,7 @@
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  
-**Version:** v1.4.0 (Added §15-§20: Judge Agent, Risk & Trust Engine, Risk Classifier, Settings Verification, Capability Onboarding, Feed Filtering — All 10 LOCKED subsystems referenced)  
+**Version:** v1.5.2 (PostGIS infrastructure in §21 — database dependency, competitive differentiator, cross-references to FEED_QUERY/MATCHING_ALGORITHMS/schema.sql v1.4.0.)  
 **Governance:** This document defines jurisdictional authority. Violations are system failures.
 
 ---
@@ -1655,12 +1655,14 @@ function assertTransition(from: TaskState, to: TaskState) {
 - ETA
 - **Forbidden:** Discovery, eligibility checks, task lists
 
-**Poster POV:**
-- Hustler live location
-- Status ("On the way")
-- **Forbidden:** Control, messaging that implies permission changes
+**Poster POV (INV-PRIVACY-2 Graduated Visibility — see §21):**
+- >0.5mi: ETA + cardinal direction ONLY (no worker coordinates transmitted)
+- ≤0.5mi: Approximate 200m-radius zone on map (coordinates rounded to 200m grid)
+- ≤100m: Precise worker pin (verified proximity)
+- IN_PROGRESS: "Worker is on-site" (no live tracking)
+- **Forbidden:** Raw worker GPS at >100m, control, route direction, productivity monitoring
 
-**Authority Rule:** Maps are **execution visualizations**, not navigation or discovery surfaces.
+**Authority Rule:** Maps are **execution visualizations**, not navigation or discovery surfaces. Full spatial spec: §21 → `SPATIAL_INTELLIGENCE_LOCKED.md`.
 
 ### 14.7 Forbidden State Writes
 
@@ -1839,7 +1841,49 @@ Owns the pipeline from onboarding claim submission → capability profile comput
 | 1.3.0 | Jan 2025 | HustleXP Core | Added: §14 Task State Machine Authority (Phase N2.2 cleanup) |
 | 1.4.0 | Feb 2026 | HustleXP Core | Added: §15 Judge Agent, §16 Risk & Trust Engine, §17 Risk Classifier, §18 Settings Verification, §19 Capability Onboarding, §20 Onboarding & Feed Filtering. All 10 LOCKED subsystems now referenced. |
 | 1.4.1 | Feb 2026 | HustleXP Core | §19: Added SKILL_TAXONOMY authority reference (130+ skills, IC self-selection evidence). |
+| 1.5.0 | Feb 2026 | HustleXP Core | Added: §21 Spatial Intelligence Authority (maps, geocoding, routing, poster visibility, cost optimization). 11 LOCKED subsystems now referenced. |
+| 1.5.1 | Feb 2026 | HustleXP Core | Fixed §14.6 Maps Gate poster POV to enforce INV-PRIVACY-2 graduated visibility. Archived superseded SPATIAL_INTELLIGENCE_ENGINE.md. |
+| 1.5.2 | Feb 2026 | HustleXP Core | §21: PostGIS database infrastructure (Neon), competitive differentiator (coordinate-based vs zip code), cross-references to FEED_QUERY, MATCHING_ALGORITHMS, schema.sql v1.4.0. |
 
 ---
 
-**END OF ARCHITECTURE v1.4.0**
+## §21. Spatial Intelligence Authority
+
+**Canonical spec:** `specs/02-architecture/subsystems/SPATIAL_INTELLIGENCE_LOCKED.md` (665 lines)
+
+**Scope:** ALL map rendering, geocoding, routing, ETA computation, location sharing, proximity detection, and API cost management.
+
+**Technology lock:** `react-native-maps` with Google Maps Platform (Geocoding, Directions, Distance Matrix, Static Maps, Places Autocomplete). See BACKEND_STACK_LOCK §maps.
+
+**Database infrastructure:** PostGIS extension on Neon Postgres. `tasks.location_geog GEOGRAPHY(POINT, 4326)` with GIST spatial index for O(log n) radius queries. All geospatial queries standardized on PostGIS (schema.sql v1.4.0, migration 006). See BACKEND_STACK_LOCK §extensions.
+
+**Competitive differentiator:** Coordinate-based proximity matching, NOT zip code. Traditional platforms (TaskRabbit, Angi) use zip-code or metro-area matching — slow, imprecise, high mismatch rate. HustleXP uses PostGIS `ST_DWithin` on indexed geography points for sub-second radius queries at any scale. This enables real-time feed filtering by actual walking/driving distance, not static boundaries.
+
+**Three engines:**
+- **Geocoding Engine:** Address → coordinates with precision validation. Task creation requires ROOFTOP or RANGE_INTERPOLATED accuracy.
+- **Routing Engine:** A→B navigation with travel mode (WALKING/DRIVING/TRANSIT). ETA refresh every 30s during EN_ROUTE.
+- **Rendering Engine:** Three cost tiers — Static (feed thumbnails, ~$0.002), Interactive (detail view, $0), Live Navigation (en-route, ~$0.01/refresh).
+
+**Privacy enforcement:**
+- INV-PRIVACY-1 (existing): GPS only during active task. No background location.
+- INV-PRIVACY-2 (new): Poster visibility graduates with proximity — ETA only (>0.5mi) → approximate zone (≤0.5mi) → precise pin (≤100m). Raw worker coordinates NEVER transmitted to poster at >100m.
+
+**Arrival system:** 500m approaching notification + 100m arrival zone enables "I've Arrived" button. Manual tap required — NO auto-clock-in (IC classification protection).
+
+**Movement integrity:** Fraud signals only (stationary anomaly, impossible speed, location mismatch, oscillating position). NEVER used for productivity monitoring, route enforcement, or break detection (IC compliance). Feeds RISK_TRUST_ENGINE behavioral_scores.spatial_integrity.
+
+**v2 deferred:** Heat maps/hot zones, quest batching, map-as-game-board. All require FEATURE_FREEZE clearance.
+
+**Cross-references:**
+- RISK_TRUST_ENGINE_LOCKED.md §4.3-§4.4 (GPS integrity + movement fraud)
+- PRODUCT_SPEC INV-PRIVACY-1, INV-PRIVACY-2 (location invariants)
+- H7 en-route map screen (travel mode, proximity zones)
+- BACKEND_STACK_LOCK §maps (provider lock), §extensions (PostGIS)
+- FEED_QUERY §6 (PostGIS proximity filtering on `location_geog`)
+- MATCHING_ALGORITHMS (PostGIS `ST_Distance` for distance scoring)
+- AI Task Completion LOCATION_CLARITY (geocoding fallback)
+- schema.sql v1.4.0 (PostGIS column, GIST index, auto-populate trigger)
+
+---
+
+**END OF ARCHITECTURE v1.5.2**

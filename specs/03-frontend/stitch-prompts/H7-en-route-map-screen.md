@@ -1,6 +1,6 @@
 # Screen H7: En Route Map Screen (Hustler Navigation)
 ## Status: IMPLEMENTATION SPEC
-**Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md
+**Authority:** DESIGN_SYSTEM.md, HUSTLER_UI_SPEC.md, SPATIAL_INTELLIGENCE_LOCKED.md (§4 Routing, §5 Poster Visibility, §8 Proximity Zones)
 **Cursor-Ready:** YES
 **Role:** Hustler Only
 
@@ -43,6 +43,10 @@ Full-screen navigation view when hustler is traveling to task location. Shows ro
 │  │  │  ETA: 12 min  •  2.3 mi       │  ││  ← ETA chip
 │  │  └───────────────────────────────┘  ││
 │  │                                     ││
+│  │  ┌────────┐┌────────┐┌──────────┐  ││
+│  │  │🚶 Walk ││🚗 Drive││🚌Transit │  ││  ← Travel mode selector
+│  │  └────────┘└────────┘└──────────┘  ││
+│  │                                     ││
 │  │  ┌─────────┐  ┌─────────┐  ┌─────┐ ││
 │  │  │ Navigate│  │ Message │  │ Call│ ││  ← Quick actions
 │  │  └─────────┘  └─────────┘  └─────┘ ││
@@ -83,6 +87,7 @@ interface EnRouteMapScreenProps {
     etaMinutes: number;
     distanceMiles: number;
     polyline?: string;  // Encoded polyline
+    travelMode: 'WALKING' | 'DRIVING' | 'TRANSIT';  // SPATIAL_INTELLIGENCE §4.2
   };
 
   // Current location
@@ -102,6 +107,10 @@ interface EnRouteMapScreenProps {
   onArrived?: () => void;
   onCancel?: () => void;
   onBack?: () => void;
+  onTravelModeChange?: (mode: 'WALKING' | 'DRIVING' | 'TRANSIT') => void;
+
+  // Proximity zone (SPATIAL_INTELLIGENCE §8)
+  proximityZone?: 'DISTANT' | 'APPROACHING' | 'ARRIVAL';  // 500m and 100m thresholds
 }
 ```
 
@@ -154,12 +163,47 @@ interface EnRouteMapScreenProps {
 
 ## "I've Arrived" Button
 
-- Enabled when within 100m of task location
+- Enabled when within 100m of task location (ARRIVAL zone)
+- Disabled with tooltip "Get closer to the task location" when outside 100m
 - When tapped:
   1. Triggers location verification
   2. Updates task status to `ARRIVED`
   3. Navigates to Active Task screen
   4. Notifies poster
+
+---
+
+## Proximity Zone Visual States (SPATIAL_INTELLIGENCE §8)
+
+| Zone | Radius | Visual Change | Notification |
+|------|--------|--------------|--------------|
+| **DISTANT** | >500m | Default state. "I've Arrived" button disabled (grey). | None |
+| **APPROACHING** | ≤500m | Toast notification: "Almost there! Task location ahead." ETA chip pulses once. | In-app toast (auto-dismiss 4s) |
+| **ARRIVAL** | ≤100m | "I've Arrived" button ENABLED (primary color, full opacity). Button label animates in. | None (button state change is the signal) |
+
+- Zone transitions computed from haversine distance between `currentLocation` and `task.coordinates`
+- Zone checks run on every location update (not polling — react to OS location callbacks)
+- APPROACHING notification fires ONCE per task (do not re-trigger if worker exits and re-enters zone)
+
+---
+
+## Travel Mode Selector
+
+Three-segment toggle below ETA chip:
+
+| Mode | Icon | Label | Default When |
+|------|------|-------|-------------|
+| 🚶 | Walking person | Walk | distance < 1.5mi |
+| 🚗 | Car | Drive | distance ≥ 1.5mi, or task is DELIVERY/MOVING |
+| 🚌 | Bus | Transit | Never default (always manual) |
+
+**Behavior:**
+- Tapping a mode calls `onTravelModeChange(mode)` → triggers Directions API re-fetch
+- ETA chip updates to reflect new mode's ETA
+- Route polyline redraws for the selected mode
+- Selected mode is visually highlighted (`colors.primary[500]` background, white text)
+- Unselected modes: `colors.neutral[100]` background, `colors.neutral[600]` text
+- Worker can ALWAYS override the default (SPATIAL_INTELLIGENCE §4.2 — IC autonomy)
 
 ---
 

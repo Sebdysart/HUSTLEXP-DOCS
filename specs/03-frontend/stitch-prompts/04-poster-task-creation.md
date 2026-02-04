@@ -1,5 +1,6 @@
 # Screen 4: Poster Task Creation (AI-Assisted)
 ## Purpose: Reduce bad tasks *before* they exist
+**Authority:** DESIGN_SYSTEM.md, POSTER_UI_SPEC.md, SPATIAL_INTELLIGENCE_LOCKED.md (§6 Address Validation, §6.4 Arrival Instructions)
 
 ### Stitch Prompt
 
@@ -28,8 +29,11 @@ Content Layout (Top to Bottom):
      - AI hint below if incomplete: "💡 Add specific dimensions or quantities" (amber, size: 12px)
    - Description field: "Provide details..." (placeholder, multi-line)
      - AI hint if vague: "💡 Clarify location access instructions" (amber, size: 12px)
-   - Location field: "Where?" (with map pin icon)
+   - Location field: "Where?" (with map pin icon) — Google Places Autocomplete (SPATIAL §6.1, min 3 chars, server-side geocoding validation)
      - AI hint if missing: "💡 Location required for Instant Mode" (amber, size: 12px)
+   - Arrival instructions field (optional): "How should the hustler get in?" (placeholder, max 280 chars — SPATIAL §6.4)
+     - Toggle: "Contains gate code or access code" (if checked, instructions masked until worker is within 100m)
+     - AI hint if task is IN-HOME and empty: "💡 Add gate code or entry instructions" (amber, size: 12px)
 
 3. AI COMPLETENESS INDICATOR (Card, below form)
    - Status: "✓ Task is Instant-ready" (green) OR "⚠ Needs clarification" (amber)

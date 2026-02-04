@@ -75,7 +75,7 @@ Location: `src/screens/hustler/`
 | H4 | Task Detail | `TaskDetailScreen.tsx` | UI_SPEC §5.4, PRODUCT_SPEC §3.1 | ✅ | PENDING | Single task view before accepting |
 | H5 | Task In Progress | `TaskInProgressScreen.tsx` | UI_SPEC §5.5, PRODUCT_SPEC §3.2 | ✅ | PENDING | Active task with map |
 | H6 | Task Completion | `TaskCompletionScreen.tsx` | UI_SPEC §5.6, PRODUCT_SPEC §3.3 | ✅ | PENDING | Submit proof, mark complete |
-| H7 | En Route Map | `HustlerEnRouteMapScreen.tsx` | UI_SPEC §5.5.2 | ✅ | PENDING | Full-screen navigation |
+| H7 | En Route Map | `HustlerEnRouteMapScreen.tsx` | UI_SPEC §5.5.2, SPATIAL_INTELLIGENCE_LOCKED.md | ✅ | PENDING | Full-screen navigation, travel mode, proximity zones |
 | H8 | XP Breakdown | `XPBreakdownScreen.tsx` | UI_SPEC §7, PRODUCT_SPEC §5 | ✅ | PENDING | Detailed XP history |
 | H9 | Instant Interrupt | `InstantInterruptCard.tsx` | UI_SPEC §14, PRODUCT_SPEC §3.5 | ✅ | PENDING | Live Mode interrupt card |
 

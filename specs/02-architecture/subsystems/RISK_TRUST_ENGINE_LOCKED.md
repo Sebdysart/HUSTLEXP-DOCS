@@ -780,6 +780,8 @@ This layer verifies the worker is PHYSICALLY at the task location:
 - LiDAR/video if trust-gated (see Judge Agent §3.3)
 
 Spatial integrity feeds into Shadow Score → spatial_integrity component
+
+**Canonical movement fraud authority:** `SPATIAL_INTELLIGENCE_LOCKED.md §9 (Movement Integrity Protocol)` defines the 4 fraud signals (STATIONARY_ANOMALY, IMPOSSIBLE_SPEED, LOCATION_MISMATCH, OSCILLATING_POSITION), their thresholds, and the explicit IC compliance boundary — movement analysis is EXCLUSIVELY for fraud detection, NEVER for productivity monitoring, route enforcement, or break detection.
 ```
 
 ### 5.5 Behavioral Layer — Continuous Monitoring

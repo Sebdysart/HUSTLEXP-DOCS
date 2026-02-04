@@ -2,6 +2,7 @@
 
 **STATUS: IMPLEMENTATION SPECIFICATION**
 **Authority:** PRODUCT_SPEC.md §9, API_CONTRACT.md task.getFeed
+**Geospatial Authority:** SPATIAL_INTELLIGENCE_LOCKED.md §4 (PostGIS, `tasks.location_geog`, GIST index)
 **Cursor-Ready:** YES - All formulas implementable without additional clarification
 
 ---
@@ -644,12 +645,12 @@ SELECT
   et.title,
   et.price,
   et.category,
-  -- Distance score component
+  -- Distance score component (PostGIS — SPATIAL_INTELLIGENCE §4)
   GREATEST(0, 1 - (
-    earth_distance(
-      ll_to_earth(et.location_lat, et.location_lng),
-      ll_to_earth($2, $3)
-    ) / 1609.34 / $4  -- Convert meters to miles, divide by max radius
+    ST_Distance(
+      et.location_geog,
+      ST_SetSRID(ST_MakePoint($3, $2), 4326)::geography
+    ) / $4  -- Divide meters by max radius in meters
   )) as distance_score
 FROM eligible_tasks et
 ORDER BY distance_score DESC

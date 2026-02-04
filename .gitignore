@@ -30,6 +30,12 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# iOS SwiftUI build artifacts
+ios-swiftui/*/.build/
+*.dia
+*.swiftdeps
+*.swift.o
+
 # local env files
 .env*.local
 

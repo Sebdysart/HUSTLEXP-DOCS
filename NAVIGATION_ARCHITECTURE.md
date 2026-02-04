@@ -105,7 +105,7 @@ RootStackNavigator
 **Task-State Gated Routes:**
 - `TaskInProgress`: `hasActiveTask(state) && (isTaskAccepted(state) || isTaskWorking(state))`
 - `TaskCompletion`: `hasActiveTask(state) && isTaskCompleted(state)`
-- `HustlerEnRouteMapScreen` (future): `isTaskEnRoute(state)`
+- `HustlerEnRouteMapScreen`: `isTaskEnRoute(state)` — Full-screen navigation (SPATIAL_INTELLIGENCE_LOCKED.md §4 routing, §8 proximity zones, §13 permissions)
 
 ---
 
@@ -194,7 +194,7 @@ Guards reference state, they do not compute it.
 
 | Guard | Condition | Used For |
 |-------|-----------|----------|
-| `isTaskEnRoute(state)` | `state.currentTask.status === 'EN_ROUTE'` | HustlerEnRouteMapScreen (future) |
+| `isTaskEnRoute(state)` | `state.currentTask.status === 'EN_ROUTE'` | HustlerEnRouteMapScreen |
 | `isTaskAccepted(state)` | `state.currentTask.status === 'ACCEPTED'` | TaskInProgress entry |
 | `isTaskWorking(state)` | `state.currentTask.status === 'WORKING'` | TaskInProgress entry |
 | `isTaskCompleted(state)` | `state.currentTask.status === 'COMPLETED'` | TaskCompletion entry |
@@ -216,10 +216,20 @@ Each screen has exactly one entry point:
 |--------|-------------|-------|
 | `TaskFeedScreen` | HustlerMain → TaskFeed | `canAccessMainApp(state) && canAccessHustlerStack(state)` |
 | `TaskHistoryScreen` | HustlerMain → TaskHistory | `canAccessMainApp(state) && canAccessHustlerStack(state)` |
-| `HustlerEnRouteMapScreen` (future) | HustlerMain → TaskInProgress → HustlerEnRouteMap | `isTaskEnRoute(state)` |
+| `HustlerEnRouteMapScreen` | HustlerMain → TaskInProgress → HustlerEnRouteMap | `isTaskEnRoute(state)` |
 | `HustlerOnWayScreen` (with map) | PosterMain → HustlerOnWay | `isTaskAccepted(state) \|\| isTaskEnRoute(state) \|\| isTaskWorking(state)` |
 
 **No deep links that bypass authority.**
+
+### EN_ROUTE → ARRIVED Navigation Transition (SPATIAL_INTELLIGENCE §8)
+
+When worker taps "I've Arrived" (enabled at ≤100m, SPATIAL_INTELLIGENCE §8.2):
+```
+HustlerEnRouteMapScreen → TaskInProgress (automatic navigation pop)
+  - Task state: EN_ROUTE → ARRIVED → IN_PROGRESS
+  - Map: Dismissed (worker is on-site, no further tracking — §14)
+  - "I've Arrived" button: GPS-verified (100m) or MANUAL (no GPS) — both valid
+```
 
 ---
 

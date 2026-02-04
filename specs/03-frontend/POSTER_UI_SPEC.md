@@ -5,6 +5,7 @@
 **Last Updated:** January 2025
 **Version:** v1.0.0
 **Governance:** All Poster-facing UI must follow this spec. Violations are build failures.
+**Spatial Authority:** Worker location visibility on poster screens governed by SPATIAL_INTELLIGENCE_LOCKED.md §5 and INV-PRIVACY-2. Poster NEVER receives raw worker GPS at >100m.
 
 ---
 
@@ -69,7 +70,7 @@ POSTER UI = Clean + Calm + Professional + Trustworthy
 | **Home/Dashboard** | Task management hub | Active tasks, pending actions |
 | **Task Creation** | Post new task | Form, AI suggestions, escrow |
 | **Task Detail** | Monitor task progress | Status, hustler info, actions |
-| **Hustler On Way** | Real-time tracking | Map, ETA, hustler profile |
+| **Hustler On Way** | Graduated visibility (INV-PRIVACY-2) | ETA, proximity zone, hustler profile |
 | **Proof Review** | Approve/dispute | Proof images, action buttons |
 | **Task Complete** | Confirmation + rating | Summary, rating form |
 | **Wallet** | Payment management | Balance, transactions, funding |
@@ -172,6 +173,13 @@ POSTER UI = Clean + Calm + Professional + Trustworthy
 
 ### 2.4 Hustler On the Way (DoorDash Moment)
 
+### 2.4 Hustler On The Way
+
+**Authority:** SPATIAL_INTELLIGENCE_LOCKED.md §5, INV-PRIVACY-2
+
+Worker location visibility graduates with proximity. Poster NEVER sees raw GPS coordinates until worker is within 100m. Server transmits `PosterVisibleLocation` objects — never `{lat, lng}`.
+
+**State 1: >0.5mi (ETA + Direction Only)**
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  ← Back                                     Help moving...     │
@@ -181,41 +189,71 @@ POSTER UI = Clean + Calm + Professional + Trustworthy
 │  │                                                           │ │
 │  │                      [MAP]                                │ │
 │  │                                                           │ │
-│  │         ● Marcus                                          │ │
-│  │          \                                                │ │
-│  │           \  Route                                        │ │
-│  │            \                                              │ │
 │  │             📍 Your location                              │ │
+│  │                                                           │ │
+│  │      ← Heading your way (no worker pin shown)             │ │
 │  │                                                           │ │
 │  └───────────────────────────────────────────────────────────┘ │
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐ │
-│  │                                                           │ │
 │  │  🟢 HUSTLER ON THE WAY                                    │ │
 │  │                                                           │ │
-│  │  Marcus                                                   │ │
-│  │  ⭐ VERIFIED • 47 tasks completed                         │ │
+│  │  Marcus • ⭐ VERIFIED • 47 tasks completed                │ │
 │  │                                                           │ │
-│  │  ETA: 8 minutes                                           │ │
-│  │  Distance: 1.2 miles                                      │ │
+│  │  ETA: ~12 minutes • Heading your way                      │ │
 │  │                                                           │ │
-│  │  [ Message Marcus ]                                       │ │
-│  │                                                           │ │
+│  │  [ Contact via HustleXP ]                                 │ │
 │  └───────────────────────────────────────────────────────────┘ │
 │                                                                 │
 │  TASK DETAILS                                                   │
-│  Help moving furniture • $35.00                                 │
-│  Escrow: FUNDED ✓                                              │
-│                                                                 │
+│  Help moving furniture • $35.00 • Escrow: FUNDED ✓             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**State 2: ≤0.5mi (Approximate Zone)**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Back                                     Help moving...     │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │                                                           │ │
+│  │               ⬤ (200m radius zone)                        │ │
+│  │              /                                            │ │
+│  │             📍 Your location                              │ │
+│  │                                                           │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │  🟢 ALMOST HERE                                           │ │
+│  │  Marcus • ETA: ~3 minutes • 0.3 mi away                  │ │
+│  │  [ Contact via HustleXP ]                                 │ │
+│  └───────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**State 3: ≤100m (Precise Pin — Arrived)**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │               ● Marcus (precise pin)                      │ │
+│  │             📍 Your location                              │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │  🟢 ARRIVED                                               │ │
+│  │  Marcus is at the task location                           │ │
+│  │  [ Contact via HustleXP ]                                 │ │
+│  └───────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 **Design Rules:**
-- Real-time map with hustler location
-- Clear ETA and distance
+- Privacy-graduated map per INV-PRIVACY-2 (SPATIAL_INTELLIGENCE §5)
+- ETA + direction only at >0.5mi (NO worker pin, NO route line)
+- 200m-radius approximate zone at ≤0.5mi (coordinates rounded to 200m grid)
+- Precise worker pin ONLY at ≤100m (verified proximity)
+- Server computes `PosterVisibleLocation` — client NEVER receives raw worker GPS at >100m
+- P0 bug if raw coordinates leak to poster at any distance >100m
 - Hustler profile with trust tier (for credibility)
-- No gamification — just facts
-- Message action available
+- Contact is system-mediated ("Contact via HustleXP")
 - Escrow confirmation visible
 
 ### 2.5 Proof Review Screen

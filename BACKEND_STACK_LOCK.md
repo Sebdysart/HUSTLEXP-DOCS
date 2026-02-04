@@ -65,6 +65,17 @@ Requirements:
 - State machine constraints (CHECK, FK, triggers)
 - All invariants (INV-1 through INV-5, INV-ELIGIBILITY-1 through 8)
 
+**Required Extensions:**
+
+| Extension | Purpose | Authority |
+|-----------|---------|-----------|
+| **PostGIS** | All geospatial queries — proximity filtering, radius search, geo-bounded broadcasts | SPATIAL_INTELLIGENCE_LOCKED.md §3-§4, FEED_QUERY §6, MATCHING_ALGORITHMS |
+
+- Neon supports PostGIS natively (no add-on required)
+- Enables `GEOGRAPHY(POINT, 4326)` column type + GIST spatial index
+- O(log n) radius queries vs O(n) full table scan with `earth_distance`
+- All geospatial queries standardized on PostGIS (schema.sql v1.4.0, migration 006)
+
 **Forbidden:**
 - ❌ Supabase (auth + RLS causes hidden authority)
 - ❌ Convex (JS-first, no real SQL authority)
@@ -553,6 +564,53 @@ Requirements:
 **Strategy:**
 - GitHub (primary)
 - Daily backup to S3 (via GitHub Actions)
+
+---
+
+## 🗺️ TIER 15: MAPS & SPATIAL INTELLIGENCE
+
+**Authority:** ARCHITECTURE.md §21, SPATIAL_INTELLIGENCE_LOCKED.md
+
+### Provider: Google Maps Platform
+
+| API | Purpose | Trigger |
+|-----|---------|---------|
+| **Geocoding API** | Address → coordinates (task creation) | Task POST, server-side only |
+| **Directions API** | Route polylines + ETA (en-route nav) | EN_ROUTE state, 30s refresh |
+| **Distance Matrix API** | Batch proximity for feed | Feed load, cached 1h in Redis |
+| **Static Maps API** | Task card map thumbnails | Feed render, cached 24h via CDN |
+| **Places Autocomplete** | Address input suggestions | Task creation form, client-side |
+
+### Mobile SDK: `react-native-maps` (Google Maps provider)
+
+- iOS: Uses Google Maps SDK (not Apple Maps) for cross-platform consistency
+- Android: Native Google Maps integration
+- Map interactions: Pan, zoom, markers, polylines, circles
+- No Mapbox, no Apple Maps, no HERE Maps
+
+### Cost Controls
+
+- Static map tiles cached 24h (CDN)
+- Distance Matrix cached 1h (Redis)
+- Directions API calls ONLY during EN_ROUTE state
+- Places Autocomplete debounced (3 char minimum, 300ms delay)
+- Budget alerts: $500 / $1K / $2K / $5K monthly thresholds
+- Estimated: ~$350/month at 1K active users
+
+### Privacy Constraints
+
+- Geocoding runs SERVER-SIDE only (prevents spoofed coordinates from client)
+- No background location permissions in app manifest
+- Worker GPS transmitted to server ONLY during active task states
+- Poster receives `PosterVisibleLocation` objects, NEVER raw `{lat, lng}` at >100m
+
+### Forbidden
+
+- ❌ Mapbox (inconsistent US residential geocoding)
+- ❌ Apple Maps API (iOS-only, no Android support)
+- ❌ OpenStreetMap tiles (insufficient address accuracy for task matching)
+- ❌ Background location tracking (INV-PRIVACY-1 violation)
+- ❌ Client-side geocoding (spoofing vector)
 
 ---
 

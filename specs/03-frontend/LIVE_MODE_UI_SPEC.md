@@ -1,7 +1,7 @@
 # HustleXP Live Mode UI Specification v1.0.0
 
 **STATUS: IMPLEMENTATION SPECIFICATION**
-**Authority:** DESIGN_SYSTEM.md, API_CONTRACT.md §14 (Live Mode Endpoints)
+**Authority:** DESIGN_SYSTEM.md, API_CONTRACT.md §14 (Live Mode Endpoints), SPATIAL_INTELLIGENCE_LOCKED.md (§4 PostGIS proximity, §7 cost optimization for geo-bounded broadcasts)
 **Cursor-Ready:** YES
 **Role:** Hustler Only
 
@@ -23,6 +23,8 @@
 ### What is Live Mode?
 
 Live Mode allows hustlers to receive instant task broadcasts from nearby posters. When active, hustlers see time-sensitive tasks that require immediate acceptance.
+
+**Geospatial filtering:** Broadcasts are geo-bounded using PostGIS `ST_DWithin` queries on the worker's current location (SPATIAL_INTELLIGENCE §4, PRODUCT_SPEC LIVE-4). Only tasks within the broadcast radius reach the worker's device. Live navigation uses cost-tiered map APIs (SPATIAL_INTELLIGENCE §7) — broadcast delivery uses $0 WebSocket events, not map API calls.
 
 ### Design Principles
 

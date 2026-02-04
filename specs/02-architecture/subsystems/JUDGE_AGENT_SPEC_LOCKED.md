@@ -195,6 +195,8 @@ IF distance > task.radius * 2:
   → Action: Payment FROZEN, escalate to manual review
 ```
 
+**Spatial authority:** GPS validation coordinates with `SPATIAL_INTELLIGENCE_LOCKED.md` — task geocoding precision (§6.2), proximity zones (§8), and movement fraud signals (§9) that feed LOCATION_MISMATCH flags into RISK_TRUST_ENGINE.spatial_integrity scoring.
+
 ### 3.3 LiDAR Spatial Scanning (Trust-Gated)
 
 **Availability:** Only requested for workers below Trust Tier 3 OR for task categories flagged as `spatial_verification_required`.

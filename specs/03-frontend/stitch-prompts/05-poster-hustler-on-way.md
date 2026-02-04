@@ -1,5 +1,7 @@
 # Screen 5: Poster "Hustler on the Way" Screen
 ## Purpose: This is your DoorDash moment
+**Authority:** DESIGN_SYSTEM.md, POSTER_UI_SPEC.md, SPATIAL_INTELLIGENCE_LOCKED.md (§5 Poster Visibility Protocol)
+**Privacy:** INV-PRIVACY-2 — Worker location graduates with proximity. Raw GPS coordinates are NEVER sent to this screen at >100m. Server sends `PosterVisibleLocation` objects only.
 
 ### Stitch Prompt
 
@@ -26,7 +28,12 @@ Content Layout (Centered, Vertical):
 2. HUSTLER AVATAR (Middle 30%, centered)
    - Circular avatar (diameter: 120px)
    - Abstract design (geometric, not photo)
-   - Trust tier badge overlay: "VERIFIED (Tier 2)" (bottom-right of avatar, pill-shaped, blue #007AFF) — REFINEMENT: Human-readable "VERIFIED" with system transparency "Tier 2"
+   - Trust tier badge overlay: "{TIER_LABEL} (Tier {N})" (bottom-right of avatar, pill-shaped, blue #007AFF) — Dynamic per worker's trust tier:
+     - Tier 1 (NEW): "NEW (Tier 1)" — white text
+     - Tier 2 (VERIFIED): "VERIFIED (Tier 2)" — blue #007AFF
+     - Tier 3 (TRUSTED): "TRUSTED (Tier 3)" — green #34C759
+     - Tier 4 (ELITE): "ELITE (Tier 4)" — gold #FFD700
+     - Tier 5 (MASTER): "MASTER (Tier 5)" — purple #AF52DE
    - Subtle glow effect (not animated, just visual depth)
 
 3. HUSTLER INFO (Below avatar)
@@ -41,17 +48,26 @@ Content Layout (Centered, Vertical):
    - Step 4: "○ Completed" (upcoming, grey)
    - Visual connector line between steps
 
-5. ETA (Below progress)
+5. GRADUATED MAP VIEW (Below progress — SPATIAL_INTELLIGENCE §5.1)
+   - Small interactive map (height: 160px, rounded corners, inset 16px)
+   - Task pin always visible (center)
+   - Worker representation GRADUATES with proximity (INV-PRIVACY-2):
+     - >0.5mi: No worker marker. ETA text only. Map shows task pin + directional arrow (N/S/E/W).
+     - ≤0.5mi: Shaded 200m-radius circle approaching task pin. No exact worker location.
+     - ≤100m (ARRIVED): Precise worker pin appears on map.
+   - Server sends `PosterVisibleLocation` objects, NEVER raw `{lat, lng}` at >100m.
+
+6. ETA (Below map)
    - "Arriving in ~12 minutes" (size: 18px, weight: 600, color: white, centered)
    - "Based on current location" (subtext, size: 12px, color: #8E8E93, centered)
 
-6. TASK DETAILS (Card, below ETA)
+7. TASK DETAILS (Card, below ETA)
    - "Task: Move furniture — 2nd floor" (size: 16px, weight: 600)
    - "Pay: $45.00" (size: 14px, color: #34C759)
    - "Escrow protected" (badge, size: 12px, color: #8E8E93)
    - "HustleXP monitors this task end-to-end" (system assurance, size: 12px, color: #8E8E93, centered) — REFINEMENT: Reinforces accountability and institutional presence
 
-7. CONTACT BUTTON (Bottom, fixed)
+8. CONTACT BUTTON (Bottom, fixed)
    - "Contact via HustleXP" (button, full-width minus margins, height: 44px, background: rgba(28, 28, 30, 0.8), white text, size: 16px, weight: 600) — REFINEMENT: Reinforces system mediation, reduces poster anxiety about bothering hustler
 
 Spacing:
@@ -160,6 +176,6 @@ interface PosterHustlerOnWayProps {
 
 ### Data Flow
 - Task and worker data from `task.getById` with worker relation
-- ETA computed from worker location updates (if available)
+- ETA computed from server-side `PosterVisibleLocation` updates (SPATIAL_INTELLIGENCE §5). Never from raw worker GPS.
 - Progress steps derived from task state
 - Contact opens task conversation screen

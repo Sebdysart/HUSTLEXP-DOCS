@@ -2,6 +2,7 @@
 ## Status: APPROVED — MAX-Tier System Architecture
 ## Version: v1.0
 ## Authority: System Architecture — Non-Negotiable
+## Geospatial Authority: SPATIAL_INTELLIGENCE_LOCKED.md §4 (PostGIS, GIST index, `tasks.location_geog`)
 
 ---
 
@@ -481,7 +482,7 @@ AND t.created_at > NOW() - INTERVAL '30 minutes'
 -- ... (base query from Section 4) ...
 
 AND ST_DWithin(
-  t.location::geography,
+  t.location_geog,  -- PostGIS GEOGRAPHY column (auto-populated from lat/lng via trigger, GIST-indexed)
   ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
   :radius_meters
 )
@@ -500,7 +501,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 
 **Index for Performance:**
 ```sql
-CREATE INDEX idx_tasks_location_gist ON tasks USING GIST (location);
+CREATE INDEX idx_tasks_location_geog ON tasks USING GIST (location_geog);  -- PostGIS geography column (SPATIAL_INTELLIGENCE §4)
 ```
 
 ---
