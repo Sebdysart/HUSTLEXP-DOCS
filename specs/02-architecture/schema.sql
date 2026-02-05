@@ -2027,39 +2027,27 @@ CREATE INDEX IF NOT EXISTS idx_user_consents_granted ON user_consents(granted, c
 -- 11.9 TRIGGERS FOR NEW TABLES
 -- ----------------------------------------------------------------------------
 
--- Auto-update updated_at timestamps (reuse existing function if exists)
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'update_updated_at_column') THEN
-    CREATE FUNCTION update_updated_at_column()
-    RETURNS TRIGGER AS $$
-    BEGIN
-      NEW.updated_at = NOW();
-      RETURN NEW;
-    END;
-    $$ LANGUAGE plpgsql;
-  END IF;
-END $$;
+-- Auto-update updated_at timestamps (reuses update_updated_at() from Section 10.1)
 
 CREATE TRIGGER IF NOT EXISTS task_messages_updated_at
   BEFORE UPDATE ON task_messages
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+  EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER IF NOT EXISTS task_ratings_updated_at
   BEFORE UPDATE ON task_ratings
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+  EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER IF NOT EXISTS notification_preferences_updated_at
   BEFORE UPDATE ON notification_preferences
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+  EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER IF NOT EXISTS user_consents_updated_at
   BEFORE UPDATE ON user_consents
   FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+  EXECUTE FUNCTION update_updated_at();
 
 -- ============================================================================
 -- SCHEMA VERSION UPDATE (v1.1.0)

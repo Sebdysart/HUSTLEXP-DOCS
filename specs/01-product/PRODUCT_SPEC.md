@@ -1848,7 +1848,7 @@ amount INTEGER NOT NULL CHECK (amount >= 500)  -- $5 minimum
 | `HX201` | Release without completed task | INV-2 violation |
 | `HX301` | Complete without accepted proof | INV-3 violation |
 | `HX401` | Badge deletion attempt | Append-only violation |
-| `HX505` | Admin action audit violation | Append-only violation |
+| `HX501` | Admin action audit violation | Append-only violation |
 | `HX901` | Live broadcast without funded escrow | LIVE-1 violation |
 | `HX902` | Live task below price floor | LIVE-2 violation |
 | `HX903` | Hustler not in ACTIVE state | Live accept while OFF/COOLDOWN/PAUSED |

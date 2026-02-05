@@ -1146,8 +1146,13 @@ Content-Type: application/json
 
 **Events Handled:**
 - `payment_intent.succeeded` → Fund escrow
+- `payment_intent.payment_failed` → Mark escrow funding failed, notify poster
 - `payment_intent.canceled` → Mark escrow cancelled
 - `transfer.created` → Track transfer ID
+- `transfer.failed` → Flag failed payout, trigger admin alert + retry logic
+- `charge.dispute.created` → Lock escrow (LOCKED_DISPUTE), create internal dispute record
+
+**Idempotency:** All events are deduplicated via `processed_stripe_events` table. See STRIPE_INTEGRATION.md for full handler specifications.
 
 **Response:** 200 OK (always, to prevent retry storms)
 
@@ -1322,6 +1327,13 @@ interface VerificationStatus {
 }
 
 // Dispute summary (admin.getUser, dispute.getByTaskId)
+// NOTE: The `status` field is an API-level derivation. The database stores only 4 base states:
+//   OPEN | EVIDENCE_REQUESTED | ESCALATED | RESOLVED
+// When base state is RESOLVED, the API derives the granular status from the `outcome_escrow_action` field:
+//   outcome_escrow_action = 'RELEASE' → RESOLVED_WORKER
+//   outcome_escrow_action = 'REFUND'  → RESOLVED_POSTER
+//   outcome_escrow_action = 'SPLIT'   → RESOLVED_SPLIT
+// Service layer must implement this transformation in the dispute serializer.
 interface DisputeSummary {
   id: string;
   task_id: string;
