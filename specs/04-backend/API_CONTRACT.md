@@ -123,15 +123,19 @@ Error code: `RATE_LIMITED` — "Rate limit exceeded"
 |------|---------|----------|
 | HX001 | Task terminal state violation | Cannot modify completed/cancelled/expired task |
 | HX002 | Escrow terminal state violation | Cannot modify released/refunded escrow |
+| HX004 | INV-4: Escrow amount immutability | Amount is immutable after funding |
 | HX101 | INV-1: XP without RELEASED escrow | Task must be completed first |
 | HX102 | XP ledger immutable | Cannot delete XP entries |
 | HX201 | INV-2: RELEASED without COMPLETED task | Task must be completed first |
 | HX301 | INV-3: COMPLETED without ACCEPTED proof | Proof must be accepted first |
-| HX401 | INV-4: Escrow amount modification | Amount is immutable after creation |
 | HX302 | INV-TASK-1: Maximum active tasks reached | Complete or cancel active task |
 | HX303 | INV-PROOF-1: Max rejections reached, dispute auto-opened | Dispute resolution required |
 | HX304 | INV-PRICE-1: Task price exceeds maximum | Reduce price |
 | HX305 | INV-ACCEPT-1: Acceptance window expired | Task returned to OPEN |
+| HX401 | INV-BADGE-2: Badge deletion attempt | Badge ledger is append-only |
+| HX501 | Admin action audit immutability | Cannot delete admin audit records |
+| HX901 | LIVE-1: Live broadcast without funded escrow | Fund escrow before broadcasting |
+| HX902 | LIVE-2: Live task below $15 minimum | Increase price to $15+ |
 | RATE_LIMITED | Rate limit exceeded | Wait and retry |
 
 ### Application Errors

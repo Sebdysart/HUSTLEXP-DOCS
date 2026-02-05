@@ -1081,7 +1081,7 @@ CREATE OR REPLACE FUNCTION prevent_admin_action_delete()
 RETURNS TRIGGER AS $$
 BEGIN
     RAISE EXCEPTION 'AUDIT_IMMUTABLE: Cannot delete admin action records. Action: %', OLD.id
-        USING ERRCODE = 'HX801';
+        USING ERRCODE = 'HX501';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -1249,6 +1249,23 @@ BEGIN
         WHEN streak_days >= 7 THEN 1.20
         WHEN streak_days >= 3 THEN 1.10
         ELSE 1.00
+    END;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+-- ----------------------------------------------------------------------------
+-- 10.5 Trust Multiplier Calculation (PRODUCT_SPEC §5.2, §8.1)
+-- ----------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION calculate_trust_multiplier(trust_tier INTEGER)
+RETURNS NUMERIC(3,2) AS $$
+BEGIN
+    RETURN CASE
+        WHEN trust_tier = 5 THEN 3.00  -- MASTER
+        WHEN trust_tier = 4 THEN 2.50  -- ELITE
+        WHEN trust_tier = 3 THEN 2.00  -- TRUSTED
+        WHEN trust_tier = 2 THEN 1.50  -- VERIFIED
+        ELSE 1.00                      -- ROOKIE (tier 1)
     END;
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
@@ -1496,7 +1513,7 @@ WHERE e.worker_id IS NOT NULL;
 -- SECTION 11: ERROR CODE REFERENCE
 -- ============================================================================
 -- 
--- Core Invariants (HX0XX, HX1XX, HX2XX, HX3XX, HX4XX, HX8XX)
+-- Core Invariants (HX0XX, HX1XX, HX2XX, HX3XX, HX4XX, HX5XX)
 -- HX001: Task terminal state violation
 -- HX002: Escrow terminal state violation
 -- HX004: INV-4 violation (escrow amount immutability)
@@ -1505,7 +1522,7 @@ WHERE e.worker_id IS NOT NULL;
 -- HX201: INV-2 violation (RELEASED requires COMPLETED task)
 -- HX301: INV-3 violation (COMPLETED requires ACCEPTED proof)
 -- HX401: INV-BADGE-2 violation (badge delete attempt)
--- HX801: Admin action audit immutability
+-- HX501: Admin action audit immutability
 --
 -- Live Mode (HX9XX)
 -- HX901: LIVE-1 violation (live broadcast without funded escrow)

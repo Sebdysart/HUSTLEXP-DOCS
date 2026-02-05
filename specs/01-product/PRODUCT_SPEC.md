@@ -717,8 +717,8 @@ effective_xp = base_xp × streak_multiplier × trust_multiplier
 | Component | Calculation |
 |-----------|-------------|
 | `base_xp` | `escrow.amount / 100` (cents to XP) |
-| `streak_multiplier` | `1.0 + (streak_days × 0.05)` capped at 2.0 |
-| `trust_multiplier` | `1.0` (ROOKIE) → `1.5` (VERIFIED) → `2.0` (TRUSTED) → `2.5` (MASTER) |
+| `streak_multiplier` | Step function: 0–2 days = 1.00×, 3–6 days = 1.10×, 7–13 days = 1.20×, 14–29 days = 1.30×, 30+ days = 1.50× (cap). See `schema.sql:calculate_streak_multiplier()`. |
+| `trust_multiplier` | `1.0` (ROOKIE) → `1.5` (VERIFIED) → `2.0` (TRUSTED) → `2.5` (ELITE) → `3.0` (MASTER) |
 
 ### 5.3 XP Ledger
 
@@ -881,8 +881,8 @@ Role is determined during onboarding (see ONBOARDING_SPEC.md).
 | 1 | ROOKIE | New user | Base rates | Low risk only |
 | 2 | VERIFIED | 5 completed tasks, ID verified | 1.5× XP multiplier | Low and medium risk |
 | 3 | TRUSTED | 20 completed, 95%+ approval | 2.0× XP multiplier, priority matching | Low and medium risk |
-| 4 | ELITE | 100+ completed, <1% dispute rate, 4.8+ rating | All benefits, VIP access | Low, medium, and high risk |
-| 5 | MASTER | 500+ completed, <0.5% dispute rate, 4.9+ rating, background check verified | 2.5× XP multiplier, instant release eligible, critical risk access | Low, medium, high, and critical risk |
+| 4 | ELITE | 100+ completed, <1% dispute rate, 4.8+ rating | 2.5× XP multiplier, VIP access, priority matching | Low, medium, and high risk |
+| 5 | MASTER | 500+ completed, <0.5% dispute rate, 4.9+ rating, background check verified | 3.0× XP multiplier, instant release eligible, critical risk access | Low, medium, high, and critical risk |
 
 Trust tier changes are logged in `trust_ledger` (append-only).
 
