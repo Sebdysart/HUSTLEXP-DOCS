@@ -115,7 +115,7 @@ HUSTLEXP-DOCS/
 ├── 🧩 UI DESIGN SYSTEM
 │   ├── UI_COMPONENT_HIERARCHY.md    ← Atoms → Molecules → Sections → Screens
 │   ├── SCREEN_ARCHETYPES.md         ← 6 screen categories (A-F)
-│   ├── SCREEN_FEATURE_MATRIX.md     ← What each screen does (38 screens)
+│   ├── SCREEN_FEATURE_MATRIX.md     ← What each screen does (32 screens)
 │   └── ui-puzzle/                   ← Component specifications
 │       ├── atoms/                   ← 9 locked primitives
 │       ├── molecules/               ← 12 locked composites
@@ -134,7 +134,7 @@ HUSTLEXP-DOCS/
 │
 ├── 📱 SCREEN SPECIFICATIONS
 │   └── screens-spec/
-│       ├── SCREEN_REGISTRY.md       ← Master index of 38 screens
+│       ├── SCREEN_REGISTRY.md       ← Master index of 32 screens
 │       ├── auth/                    ← Authentication flows
 │       ├── hustler/                 ← Worker user screens
 │       ├── poster/                  ← Task creator screens
@@ -187,7 +187,7 @@ HUSTLEXP-DOCS/
 ## 🔍 Finding What You Need (Fast Lookup)
 
 ### "What screens exist?"
-→ Read `screens-spec/SCREEN_REGISTRY.md` (38 screens with metadata)
+→ Read `screens-spec/SCREEN_REGISTRY.md` (32 screens with metadata)
 
 ### "What's the database schema?"
 → Read `specs/02-architecture/schema.sql` (41 tables, 5 invariants)
@@ -353,7 +353,7 @@ AI assistants should STOP IMMEDIATELY and ask the user if:
 1. Scan existing markdown specifications
 2. Extract structured data (file paths, counts, dependencies)
 3. Create JSON manifest with exact references
-4. Validate against frozen counts (38 screens, 41 tables, etc.)
+4. Validate against frozen counts (32 screens, 61 tables with v1.7.0 gamification, etc.)
 
 ### Task: "Resolve specification contradictions"
 1. Identify conflicting definitions across files
