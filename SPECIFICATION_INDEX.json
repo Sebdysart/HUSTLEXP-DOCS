@@ -9,15 +9,15 @@
   },
   "frozen_counts": {
     "screens": 32,
-    "database_tables": 61,
+    "database_tables": 68,
     "atoms": 9,
     "molecules": 12,
     "sections": 5,
     "archetypes": 6,
     "trust_tiers": 5,
-    "database_invariants": 5,
-    "locked_subsystems": 15,
-    "note": "Table count increased from 41 to 61 with v1.7.0 gamification system additions (XP, levels, equipment, streaks, shadow reputation, Live Mode)"
+    "database_invariants": 6,
+    "locked_subsystems": 19,
+    "note": "Table count increased from 61 to 68 with v1.8.0 additions (AI agents, XP tax, earned verification unlock, self-insurance pool, fraud detection events). Subsystems increased from 15 to 19."
   },
   "core_documents": {
     "enforcement": [
@@ -299,11 +299,17 @@
       },
       {
         "path": "specs/02-architecture/subsystems/",
-        "purpose": "15 locked subsystem specifications (includes gamification subsystems)",
+        "purpose": "19 locked subsystem specifications (includes gamification + AI agents + XP tax + earned verification unlock)",
         "audience": "backend",
         "priority": "P1",
         "status": "LOCKED",
-        "count": 15
+        "count": 19,
+        "new_in_v1_8": [
+          "SCOPER_AGENT_SPEC_LOCKED.md",
+          "LOGISTICS_AGENT_SPEC_LOCKED.md",
+          "EARNED_VERIFICATION_UNLOCK_SPEC_LOCKED.md",
+          "XP_TAX_SYSTEM_SPEC_LOCKED.md"
+        ]
       }
     ],
     "frontend": [
@@ -350,11 +356,24 @@
   },
   "database": {
     "schema_file": "specs/02-architecture/schema.sql",
-    "version": "1.7.0",
-    "tables_count": 61,
+    "version": "1.8.0",
+    "tables_count": 68,
     "base_tables": 41,
     "gamification_tables": 20,
+    "ai_agent_tables": 7,
     "status": "FROZEN",
+    "new_tables_v1_8": [
+      "ai_agent_decisions",
+      "proof_submissions_enhancements",
+      "self_insurance_pool",
+      "insurance_contributions",
+      "insurance_claims",
+      "fraud_detection_events",
+      "verification_earnings_tracking",
+      "verification_earnings_ledger",
+      "xp_tax_ledger",
+      "user_xp_tax_status"
+    ],
     "invariants": [
       {
         "id": "INV-1",
@@ -385,6 +404,13 @@
         "rule": "One XP entry per escrow",
         "error_code": "HX501",
         "constraint": "UNIQUE(escrow_id)"
+      },
+      {
+        "id": "INV-6",
+        "rule": "XP blocked if offline tax unpaid",
+        "error_code": "HX201",
+        "trigger": "enforce_xp_tax_payment",
+        "version": "1.8.0"
       }
     ],
     "key_tables": [
@@ -531,6 +557,16 @@
     }
   ],
   "changelog": {
+    "2026-02-06": [
+      "ADDED: v1.8.0 - 4 new AI agent subsystem specifications",
+      "ADDED: SCOPER_AGENT_SPEC_LOCKED.md (pricing/XP proposals, authority A2)",
+      "ADDED: LOGISTICS_AGENT_SPEC_LOCKED.md (GPS validation, impossible travel detection)",
+      "ADDED: EARNED_VERIFICATION_UNLOCK_SPEC_LOCKED.md ($40 profit threshold unlock)",
+      "ADDED: XP_TAX_SYSTEM_SPEC_LOCKED.md (10% tax on offline payments, Layer 0 enforcement)",
+      "UPDATED: Database schema to v1.8.0 (61→68 tables, 5→6 invariants)",
+      "UPDATED: Subsystems count from 15 to 19",
+      "UPDATED: frozen_counts in SPECIFICATION_INDEX.json"
+    ],
     "2026-02-05": [
       "Created CLAUDE.md (AI assistant instructions)",
       "Created AI_QUICK_START.md (5-minute onboarding)",
