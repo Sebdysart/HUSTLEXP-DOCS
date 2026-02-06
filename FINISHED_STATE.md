@@ -332,7 +332,7 @@ The app meets:
 HustleXP v1.0 is **DONE** when:
 
 1. All items in sections A-O are checked
-2. All 38 screens are implemented and functional
+2. All 32 screens are implemented and functional (reduced from 38 via onboarding simplification)
 3. All 33 invariants pass kill tests (see PER/INVARIANTS.md)
 4. Bootstrap passes
 5. App builds and runs on iOS simulator

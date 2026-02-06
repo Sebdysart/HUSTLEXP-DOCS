@@ -11,8 +11,8 @@
 | Screen | Prompt | Status | Figma Link | Notes |
 |--------|--------|--------|------------|-------|
 | Settings → Work Eligibility | PROMPT 1 | ✅ COMPLETE | [Figma Link](https://www.figma.com/make/j2Bz26ckzSKI1dU7V8xkbz/Work-Eligibility-Screen-Design?t=WZBZYRo4AgknExg0-1) | Phase F-1, Task #1 |
-| Capability-Driven Onboarding (8 screens) | PROMPT 2 | ⏳ PENDING | TBD | Phase F-2, Task #3 |
-| Feed UI Shell | PROMPT 3 | ⏳ PENDING | TBD | Phase F-3, Task #5 |
+| Capability-Driven Onboarding (8 screens) | PROMPT 2 | ⏳ DEFERRED | v2.0 (Simplified onboarding in v1.0) | Phase F-2, Task #3 |
+| Feed UI Shell | PROMPT 3 | ⏳ PENDING | Not yet designed | Phase F-3, Task #5 |
 
 ---
 
@@ -53,8 +53,8 @@
 
 ### 2. Capability-Driven Onboarding Screens (8 screens)
 
-**Status:** ⏳ PENDING  
-**Figma File:** TBD  
+**Status:** ⏳ DEFERRED TO v2.0
+**Figma File:** Not yet designed (v1.0 uses simplified 6-screen onboarding)
 **Prompt Used:** FIGMA_DESIGN_PROMPTS.md — PROMPT 2  
 **Spec Reference:** `architecture/CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md`  
 **Design Tokens:** `ui-specs/tokens/colors.json`, `spacing.json`, `typography.json`  
@@ -73,8 +73,8 @@
 
 ### 3. Feed UI Shell
 
-**Status:** ⏳ PENDING  
-**Figma File:** TBD  
+**Status:** ⏳ PENDING
+**Figma File:** Not yet designed (planned for Phase F-3)
 **Prompt Used:** FIGMA_DESIGN_PROMPTS.md — PROMPT 3  
 **Spec Reference:** `architecture/FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md`  
 **Design Tokens:** `ui-specs/tokens/colors.json`, `spacing.json`, `typography.json`  

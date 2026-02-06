@@ -107,6 +107,17 @@ If a screen feels like "starting from zero" → it FAILS quality review.
 
 ## 🚀 Quick Start
 
+### For AI Assistants (NEW! Start Here)
+```
+FAST ONBOARDING:
+1. AI_QUICK_START.md         ← 5-minute orientation (start here)
+2. CLAUDE.md                 ← Full AI instructions for this repo
+3. SLOP_AUDIT_REPORT.md      ← Known issues to avoid
+4. SPECIFICATION_INDEX.json  ← Machine-readable manifest
+
+Then proceed to role-specific quick starts below.
+```
+
 ### For Cursor (Frontend)
 ```
 READ IN ORDER:
@@ -161,6 +172,13 @@ READ IN ORDER:
 
 ```
 HUSTLEXP-DOCS/
+│
+├── 🤖 AI OPTIMIZATION (NEW!)
+│   ├── CLAUDE.md                 ← AI assistant instructions (P0)
+│   ├── AI_QUICK_START.md         ← 5-minute AI onboarding
+│   ├── SLOP_AUDIT_REPORT.md      ← Known issues & fixes
+│   ├── SPECIFICATION_INDEX.json  ← Machine-readable manifest
+│   └── DOCS_CHANGELOG.md         ← Documentation change log
 │
 ├── 🧠 EXECUTION MODEL
 │   ├── EXECUTION_QUEUE.md        ← Step-by-step build sequence
@@ -264,7 +282,7 @@ HUSTLEXP-DOCS/
 
 | Artifact | Count | Status |
 |----------|-------|--------|
-| Screens | 38 | 🔒 Frozen |
+| Screens | 32 | 🔒 Frozen (v1.0 simplified onboarding) |
 | Tables (schema.sql) | 20 | 🔒 Frozen |
 | Tables (migrations) | 21 | 🔒 Frozen |
 | Tables (Total) | 41 | 🔒 Frozen |

@@ -9,10 +9,10 @@
 ## QUEUE FORMAT
 
 ```
-STEP XXX: [Action]
-Input: [Spec file]
-Output: [File path]
-Depends: [Previous step or "none"]
+STEP [NUM]: [Action Description]
+Input: [Spec file reference]
+Output: [File path to create]
+Depends: [Previous step number or "none"]
 Constraints: [Hard rules]
 Done: [ ] (check when complete)
 ```

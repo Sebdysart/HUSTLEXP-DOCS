@@ -1,0 +1,556 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "generated": "2026-02-05",
+    "generator": "Claude Sonnet 4.5",
+    "purpose": "Machine-readable index of all specifications in HUSTLEXP-DOCS",
+    "repo": "HUSTLEXP-DOCS",
+    "project": "HustleXP v1.0 MVP"
+  },
+  "frozen_counts": {
+    "screens": 32,
+    "database_tables": 41,
+    "atoms": 9,
+    "molecules": 12,
+    "sections": 5,
+    "archetypes": 6,
+    "trust_tiers": 5,
+    "database_invariants": 5,
+    "locked_subsystems": 10
+  },
+  "core_documents": {
+    "enforcement": [
+      {
+        "path": "README.md",
+        "purpose": "Repository overview and quick start",
+        "audience": "all",
+        "priority": "P0"
+      },
+      {
+        "path": "CLAUDE.md",
+        "purpose": "AI assistant instructions for HUSTLEXP-DOCS",
+        "audience": "ai_assistants",
+        "priority": "P0"
+      },
+      {
+        "path": "AI_QUICK_START.md",
+        "purpose": "5-minute AI onboarding guide",
+        "audience": "ai_assistants",
+        "priority": "P0"
+      },
+      {
+        "path": "FINISHED_STATE.md",
+        "purpose": "Product boundary (FROZEN)",
+        "audience": "all",
+        "priority": "P0",
+        "status": "FROZEN"
+      },
+      {
+        "path": "FEATURE_FREEZE.md",
+        "purpose": "What's forbidden to add",
+        "audience": "all",
+        "priority": "P0",
+        "status": "ACTIVE"
+      },
+      {
+        "path": ".cursorrules",
+        "purpose": "Frontend AI enforcement rules (Cursor)",
+        "audience": "frontend_ai",
+        "priority": "P1",
+        "lines": 450
+      },
+      {
+        "path": ".claude/instructions.md",
+        "purpose": "Backend AI enforcement rules (Claude Code)",
+        "audience": "backend_ai",
+        "priority": "P1",
+        "lines": 390
+      },
+      {
+        "path": "AI_GUARDRAILS.md",
+        "purpose": "AI behavior boundaries",
+        "audience": "ai_assistants",
+        "priority": "P1"
+      },
+      {
+        "path": "AI_CHECKPOINTS.md",
+        "purpose": "Validation gates for AI work",
+        "audience": "ai_assistants",
+        "priority": "P1"
+      }
+    ],
+    "execution_model": [
+      {
+        "path": "EXECUTION_QUEUE.md",
+        "purpose": "Step-by-step frontend build sequence",
+        "audience": "frontend",
+        "priority": "P1"
+      },
+      {
+        "path": "FRONTEND_BUILD_MAP.json",
+        "purpose": "Machine-readable dependency graph",
+        "audience": "frontend",
+        "priority": "P2",
+        "format": "json"
+      },
+      {
+        "path": "BOOTSTRAP.md",
+        "purpose": "Runtime baseline requirements",
+        "audience": "frontend",
+        "priority": "P1"
+      },
+      {
+        "path": "CURRENT_PHASE.md",
+        "purpose": "Current build phase gate",
+        "audience": "all",
+        "priority": "P1"
+      },
+      {
+        "path": "STOP_CONDITIONS.md",
+        "purpose": "When to stop building",
+        "audience": "ai_assistants",
+        "priority": "P1"
+      }
+    ],
+    "ui_design_system": [
+      {
+        "path": "UI_COMPONENT_HIERARCHY.md",
+        "purpose": "Puzzle model (Atoms → Molecules → Sections → Screens)",
+        "audience": "frontend",
+        "priority": "P1"
+      },
+      {
+        "path": "SCREEN_ARCHETYPES.md",
+        "purpose": "6 screen categories (A-F)",
+        "audience": "frontend",
+        "priority": "P1"
+      },
+      {
+        "path": "SCREEN_FEATURE_MATRIX.md",
+        "purpose": "What each screen does (38 screens)",
+        "audience": "frontend",
+        "priority": "P2",
+        "status": "FROZEN"
+      },
+      {
+        "path": "ARCHETYPE_MOLECULE_MATRIX.md",
+        "purpose": "Which molecules belong to which archetypes",
+        "audience": "frontend",
+        "priority": "P2"
+      }
+    ],
+    "architecture": [
+      {
+        "path": "specs/02-architecture/ARCHITECTURE.md",
+        "purpose": "7-layer authority model",
+        "audience": "all",
+        "priority": "P1"
+      },
+      {
+        "path": "specs/02-architecture/schema.sql",
+        "purpose": "Database constitution (41 tables)",
+        "audience": "backend",
+        "priority": "P0",
+        "status": "FROZEN",
+        "version": "1.4.0"
+      },
+      {
+        "path": "specs/02-architecture/AI_INFRASTRUCTURE.md",
+        "purpose": "AI proposal systems (Layer 3)",
+        "audience": "backend",
+        "priority": "P2"
+      }
+    ],
+    "governance": [
+      {
+        "path": "PER/PER_MASTER_INDEX.md",
+        "purpose": "Persistent Execution Rails framework",
+        "audience": "backend_ai",
+        "priority": "P1"
+      },
+      {
+        "path": "PER/INVARIANTS.md",
+        "purpose": "5 core database invariants",
+        "audience": "backend",
+        "priority": "P0",
+        "status": "FROZEN"
+      },
+      {
+        "path": "PER/OMEGA_PROTOCOL.md",
+        "purpose": "Emergency recovery protocol",
+        "audience": "backend_ai",
+        "priority": "P2"
+      }
+    ]
+  },
+  "registries": {
+    "screens": {
+      "path": "screens-spec/SCREEN_REGISTRY.md",
+      "count": 38,
+      "status": "FROZEN",
+      "version": "1.1.0",
+      "categories": [
+        {"code": "A", "name": "Auth", "count": 3, "location": "screens-spec/auth/"},
+        {"code": "H", "name": "Hustler", "count": 9, "location": "screens-spec/hustler/"},
+        {"code": "P", "name": "Poster", "count": 4, "location": "screens-spec/poster/"},
+        {"code": "O", "name": "Onboarding", "count": 12, "location": "screens-spec/onboarding/"},
+        {"code": "S", "name": "Settings", "count": 5, "location": "screens-spec/settings/"},
+        {"code": "E", "name": "Shared", "count": 4, "location": "screens-spec/shared/"},
+        {"code": "F", "name": "Edge/System", "count": 5, "location": "screens-spec/edge/"}
+      ],
+      "issues": [
+        {
+          "severity": "CRITICAL",
+          "description": "Conflicting onboarding definitions (12 screens in SCREEN_REGISTRY vs 6 in EXECUTION_QUEUE)",
+          "reference": "SLOP_AUDIT_REPORT.md#issue-2"
+        },
+        {
+          "severity": "HIGH",
+          "description": "Missing A4 auth screen in registry count",
+          "reference": "SLOP_AUDIT_REPORT.md#issue-3"
+        }
+      ]
+    },
+    "atoms": {
+      "path": "ui-puzzle/atoms/ATOM_REGISTRY.md",
+      "count": 9,
+      "status": "LOCKED",
+      "items": [
+        {"name": "Button", "spec": "ui-puzzle/atoms/Button.md"},
+        {"name": "Text", "spec": "ui-puzzle/atoms/Text.md"},
+        {"name": "Input", "spec": "ui-puzzle/atoms/Input.md"},
+        {"name": "Icon", "spec": "ui-puzzle/atoms/Icon.md"},
+        {"name": "Avatar", "spec": "ui-puzzle/atoms/Avatar.md"},
+        {"name": "Badge", "spec": "ui-puzzle/atoms/Badge.md"},
+        {"name": "Divider", "spec": "ui-puzzle/atoms/Divider.md"},
+        {"name": "Spacer", "spec": "ui-puzzle/atoms/Spacer.md"},
+        {"name": "Image", "spec": "ui-puzzle/atoms/Image.md"}
+      ]
+    },
+    "molecules": {
+      "path": "ui-puzzle/molecules/MOLECULE_REGISTRY.md",
+      "count": 12,
+      "status": "LOCKED",
+      "items": [
+        {"name": "TaskCard", "spec": "ui-puzzle/molecules/TaskCard.md", "exists": true, "complete": true},
+        {"name": "BrandCluster", "spec": "ui-puzzle/molecules/BrandCluster/", "exists": true, "complete": false},
+        {"name": "CTAStack", "spec": "ui-puzzle/molecules/CTAStack/", "exists": true, "complete": false},
+        {"name": "MarketField", "spec": "ui-puzzle/molecules/MarketField/", "exists": true, "complete": false},
+        {"name": "UserHeader", "spec": "ui-puzzle/molecules/UserHeader.md", "exists": false},
+        {"name": "PriceDisplay", "spec": "ui-puzzle/molecules/PriceDisplay.md", "exists": false},
+        {"name": "RatingStars", "spec": "ui-puzzle/molecules/RatingStars.md", "exists": false},
+        {"name": "ProgressBar", "spec": "ui-puzzle/molecules/ProgressBar.md", "exists": false},
+        {"name": "StatusBadge", "spec": "ui-puzzle/molecules/StatusBadge.md", "exists": false},
+        {"name": "EmptyState", "spec": "ui-puzzle/molecules/EmptyState.md", "exists": false},
+        {"name": "ErrorState", "spec": "ui-puzzle/molecules/ErrorState.md", "exists": false},
+        {"name": "LoadingState", "spec": "ui-puzzle/molecules/LoadingState.md", "exists": false},
+        {"name": "ListItem", "spec": "ui-puzzle/molecules/ListItem.md", "exists": false},
+        {"name": "FormField", "spec": "ui-puzzle/molecules/FormField.md", "exists": false},
+        {"name": "ActionBar", "spec": "ui-puzzle/molecules/ActionBar.md", "exists": false}
+      ],
+      "issues": [
+        {
+          "severity": "CRITICAL",
+          "description": "11 of 12 molecules missing spec files",
+          "reference": "SLOP_AUDIT_REPORT.md#issue-1"
+        }
+      ]
+    },
+    "sections": {
+      "path": "ui-puzzle/sections/SECTION_REGISTRY.md",
+      "count": 5,
+      "status": "LOCKED",
+      "items": [
+        {"name": "ScreenHeader", "spec": "ui-puzzle/sections/ScreenHeader.md"},
+        {"name": "ContentScroll", "spec": "ui-puzzle/sections/ContentScroll.md"},
+        {"name": "ActionFooter", "spec": "ui-puzzle/sections/ActionFooter.md"},
+        {"name": "NavigationBar", "spec": "ui-puzzle/sections/NavigationBar.md"},
+        {"name": "TabBar", "spec": "ui-puzzle/sections/TabBar.md"}
+      ]
+    },
+    "archetypes": {
+      "path": "SCREEN_ARCHETYPES.md",
+      "count": 6,
+      "status": "LOCKED",
+      "items": [
+        {"code": "A", "name": "Entry/Commitment", "purpose": "User decides to engage", "examples": ["Login", "Signup", "Role Selection"]},
+        {"code": "B", "name": "Feed/Opportunity", "purpose": "User discovers options", "examples": ["Task Feed", "History"]},
+        {"code": "C", "name": "Task Lifecycle", "purpose": "Active work flow", "examples": ["Task Detail", "In Progress", "Proof"]},
+        {"code": "D", "name": "Calibration/Capability", "purpose": "User configures self", "examples": ["Onboarding", "Settings", "Verification"]},
+        {"code": "E", "name": "Progress/Status", "purpose": "User sees standing", "examples": ["Home", "Profile", "XP Breakdown"]},
+        {"code": "F", "name": "System/Interrupt", "purpose": "System communicates", "examples": ["Errors", "Maintenance", "Force Update"]}
+      ]
+    }
+  },
+  "specifications": {
+    "product": [
+      {
+        "path": "specs/01-product/PRODUCT_SPEC.md",
+        "purpose": "Core product requirements",
+        "audience": "all",
+        "priority": "P1"
+      },
+      {
+        "path": "specs/01-product/ONBOARDING_SPEC.md",
+        "purpose": "Onboarding flow specification",
+        "audience": "frontend",
+        "priority": "P2"
+      }
+    ],
+    "architecture": [
+      {
+        "path": "specs/02-architecture/ARCHITECTURE.md",
+        "purpose": "7-layer model and authority boundaries",
+        "audience": "all",
+        "priority": "P0"
+      },
+      {
+        "path": "specs/02-architecture/schema.sql",
+        "purpose": "Database constitution (41 tables, 5 invariants)",
+        "audience": "backend",
+        "priority": "P0",
+        "status": "FROZEN",
+        "lines": 2000,
+        "version": "1.4.0"
+      },
+      {
+        "path": "specs/02-architecture/subsystems/",
+        "purpose": "10 locked subsystem specifications",
+        "audience": "backend",
+        "priority": "P1",
+        "status": "LOCKED",
+        "count": 10
+      }
+    ],
+    "frontend": [
+      {
+        "path": "specs/03-frontend/UI_SPEC.md",
+        "purpose": "UI design system rules",
+        "audience": "frontend",
+        "priority": "P1"
+      },
+      {
+        "path": "specs/03-frontend/COMPONENT_LIBRARY.md",
+        "purpose": "Component specifications",
+        "audience": "frontend",
+        "priority": "P2"
+      },
+      {
+        "path": "specs/03-frontend/FIGMA_DESIGN_REFERENCES.md",
+        "purpose": "Design file references",
+        "audience": "frontend",
+        "priority": "P3",
+        "issues": [
+          {
+            "severity": "LOW",
+            "description": "TBD markers for Figma file links",
+            "reference": "SLOP_AUDIT_REPORT.md#issue-10"
+          }
+        ]
+      }
+    ],
+    "backend": [
+      {
+        "path": "specs/04-backend/BUILD_GUIDE.md",
+        "purpose": "Backend build phases and sequence",
+        "audience": "backend",
+        "priority": "P1"
+      },
+      {
+        "path": "specs/04-backend/API_CONTRACT.md",
+        "purpose": "tRPC API definitions",
+        "audience": "backend",
+        "priority": "P2"
+      }
+    ]
+  },
+  "database": {
+    "schema_file": "specs/02-architecture/schema.sql",
+    "version": "1.4.0",
+    "tables_count": 41,
+    "status": "FROZEN",
+    "invariants": [
+      {
+        "id": "INV-1",
+        "rule": "XP requires RELEASED escrow",
+        "error_code": "HX101",
+        "trigger": "xp_requires_released_escrow"
+      },
+      {
+        "id": "INV-2",
+        "rule": "RELEASED escrow requires COMPLETED task",
+        "error_code": "HX201",
+        "trigger": "escrow_released_requires_completed_task"
+      },
+      {
+        "id": "INV-3",
+        "rule": "COMPLETED task requires ACCEPTED proof",
+        "error_code": "HX301",
+        "trigger": "task_completed_requires_accepted_proof"
+      },
+      {
+        "id": "INV-4",
+        "rule": "Escrow amount is IMMUTABLE",
+        "error_code": "HX401",
+        "trigger": "escrow_amount_immutable"
+      },
+      {
+        "id": "INV-5",
+        "rule": "One XP entry per escrow",
+        "error_code": "HX501",
+        "constraint": "UNIQUE(escrow_id)"
+      }
+    ],
+    "key_tables": [
+      "users",
+      "tasks",
+      "escrows",
+      "proofs",
+      "messages",
+      "xp_ledger",
+      "transaction_ledger",
+      "capability_profiles",
+      "verification_records",
+      "risk_scores",
+      "ratings",
+      "disputes",
+      "audit_log"
+    ]
+  },
+  "design_tokens": {
+    "colors": {
+      "path": "ui-puzzle/tokens/colors.md",
+      "format": "markdown",
+      "json_export": "ui-puzzle/tokens/colors.json",
+      "key_colors": {
+        "primary": "#FF6B35",
+        "background": "#0D0D0D",
+        "surface": "#1A1A1A",
+        "text_primary": "#FFFFFF",
+        "text_secondary": "#9CA3AF",
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "error": "#EF4444"
+      }
+    },
+    "typography": {
+      "path": "ui-puzzle/tokens/typography.md",
+      "format": "markdown",
+      "json_export": "ui-puzzle/tokens/typography.json",
+      "presets": ["Display", "Title", "Headline", "Body", "Caption", "Micro"]
+    },
+    "spacing": {
+      "path": "ui-puzzle/tokens/spacing.md",
+      "format": "markdown",
+      "json_export": "ui-puzzle/tokens/spacing.json",
+      "base_unit": "4px",
+      "scale": ["xs", "sm", "md", "lg", "xl", "2xl"]
+    }
+  },
+  "tracking": {
+    "execution_index": "tracking/EXECUTION_INDEX.md",
+    "execution_todo": "tracking/EXECUTION_TODO.md",
+    "audits_directory": "tracking/audits/",
+    "audit_count": 14,
+    "latest_audit": "tracking/audits/frontend_audit_2025_02_01.md"
+  },
+  "reference_implementation": {
+    "directory": "reference/",
+    "language": "TypeScript + JavaScript",
+    "framework": "React Native 0.81.5",
+    "runtime": "Expo 54.0.31",
+    "package_json": "reference/package.json",
+    "components": "reference/components/",
+    "screens": "reference/screens/",
+    "constants": "reference/constants/",
+    "navigation": "reference/navigation/",
+    "purpose": "Scaffold code examples (NOT canonical, specs are canonical)"
+  },
+  "testing": {
+    "test_directory": "__tests__/",
+    "jest_config": "jest.config.js",
+    "jest_setup": "jest.setup.js",
+    "coverage_requirement": "70%",
+    "test_types": ["components", "state", "utils"]
+  },
+  "prompts": {
+    "directory": "prompts/",
+    "templates": [
+      "CLAUDE_CODE_PROMPT_TEMPLATE.md",
+      "CURSOR_PROMPT_TEMPLATE.md",
+      "CURSOR_FRONTEND.md",
+      "ENTRY_SCREEN_MASTER_PROMPT.md"
+    ]
+  },
+  "archive": {
+    "directory": "_archive/",
+    "active_references": 0,
+    "purpose": "Retired files from iteration history",
+    "note": "Clean separation - no active docs reference archive"
+  },
+  "known_issues": {
+    "source": "SLOP_AUDIT_REPORT.md",
+    "generated": "2026-02-05",
+    "total_issues": 17,
+    "critical": 6,
+    "medium": 5,
+    "low": 6,
+    "top_issues": [
+      {
+        "id": 1,
+        "severity": "CRITICAL",
+        "summary": "11 of 12 molecule spec files missing",
+        "reference": "SLOP_AUDIT_REPORT.md#issue-1"
+      },
+      {
+        "id": 2,
+        "severity": "CRITICAL",
+        "summary": "Conflicting onboarding screen definitions (3 sources)",
+        "reference": "SLOP_AUDIT_REPORT.md#issue-2"
+      },
+      {
+        "id": 3,
+        "severity": "HIGH",
+        "summary": "Missing A4 auth screen in registry",
+        "reference": "SLOP_AUDIT_REPORT.md#issue-3"
+      },
+      {
+        "id": 5,
+        "severity": "CRITICAL",
+        "summary": "Duplicate TaskCompletionScreen for two roles",
+        "reference": "SLOP_AUDIT_REPORT.md#issue-5"
+      }
+    ]
+  },
+  "validation_rules": {
+    "frozen_counts_match": false,
+    "all_cross_references_valid": false,
+    "no_placeholder_text": false,
+    "version_numbers_consistent": false,
+    "registry_matches_reality": false,
+    "notes": "See SLOP_AUDIT_REPORT.md for detailed validation failures"
+  },
+  "related_repositories": [
+    {
+      "name": "HUSTLEXPFINAL1",
+      "purpose": "React Native frontend implementation (ACTIVE)",
+      "url": "https://github.com/Sebdysart/HUSTLEXPFINAL1",
+      "enforcement_file": ".cursorrules"
+    },
+    {
+      "name": "hustlexp-ai-backend",
+      "purpose": "Backend services implementation",
+      "url": "https://github.com/Sebdysart/hustlexp-ai-backend",
+      "enforcement_file": ".claude/instructions.md"
+    }
+  ],
+  "changelog": {
+    "2026-02-05": [
+      "Created CLAUDE.md (AI assistant instructions)",
+      "Created AI_QUICK_START.md (5-minute onboarding)",
+      "Created SLOP_AUDIT_REPORT.md (comprehensive audit)",
+      "Created SPECIFICATION_INDEX.json (this file)",
+      "Identified 17 issues across critical/medium/low severity"
+    ]
+  }
+}
