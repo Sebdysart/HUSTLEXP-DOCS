@@ -1,11 +1,11 @@
 {
   "meta": {
-    "version": "1.7.0",
-    "generated": "2026-02-05",
+    "version": "1.8.0",
+    "generated": "2026-02-06",
     "generator": "Claude Sonnet 4.5",
     "purpose": "Machine-readable index of all specifications in HUSTLEXP-DOCS",
     "repo": "HUSTLEXP-DOCS",
-    "project": "HustleXP v1.0 MVP + v1.7.0 Gamification"
+    "project": "HustleXP v1.0 MVP + v1.8.0 Gamification + AI Agents"
   },
   "frozen_counts": {
     "screens": 32,
@@ -149,11 +149,11 @@
       },
       {
         "path": "specs/02-architecture/schema.sql",
-        "purpose": "Database constitution (61 tables with v1.7.0 gamification)",
+        "purpose": "Database constitution (68 tables with v1.8.0 gamification + AI agents)",
         "audience": "backend",
         "priority": "P0",
         "status": "FROZEN",
-        "version": "1.7.0"
+        "version": "1.8.0"
       },
       {
         "path": "specs/02-architecture/AI_INFRASTRUCTURE.md",
@@ -290,12 +290,12 @@
       },
       {
         "path": "specs/02-architecture/schema.sql",
-        "purpose": "Database constitution (61 tables with v1.7.0, 5 invariants)",
+        "purpose": "Database constitution (68 tables with v1.8.0, 6 invariants)",
         "audience": "backend",
         "priority": "P0",
         "status": "FROZEN",
         "lines": 2500,
-        "version": "1.7.0"
+        "version": "1.8.0"
       },
       {
         "path": "specs/02-architecture/subsystems/",
