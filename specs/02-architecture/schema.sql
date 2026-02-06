@@ -2699,5 +2699,230 @@ VALUES (
 ON CONFLICT (version) DO NOTHING;
 
 -- ============================================================================
--- END OF CONSTITUTIONAL SCHEMA v1.6.0
+-- SECTION 13: Gamification System (GAMIFICATION_SYSTEM.md)
+-- ============================================================================
+
+-- 13.1 Worker Gamification Columns (added to existing workers table)
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS total_xp INTEGER DEFAULT 0;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS current_level INTEGER DEFAULT 0;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS xp_to_next_level INTEGER DEFAULT 1000;
+
+-- Streaks
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS current_streak INTEGER DEFAULT 0;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS longest_streak INTEGER DEFAULT 0;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS last_task_completed_date DATE;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS streak_freeze_tokens INTEGER DEFAULT 0;
+
+-- Equipment (bitfield for unlocked equipment)
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS unlocked_equipment BIGINT DEFAULT 1;  -- bit 0 = starter pack
+
+-- Shadow Reputation
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS integrity_score DECIMAL(5,2) DEFAULT 100.00;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS shadow_ban_status VARCHAR(20) DEFAULT 'normal'
+    CHECK (shadow_ban_status IN ('trusted', 'normal', 'monitored', 'probation', 'banned'));
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS manual_review_required BOOLEAN DEFAULT FALSE;
+
+-- Live Mode
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS live_mode_enabled BOOLEAN DEFAULT FALSE;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS asap_tasks_today INTEGER DEFAULT 0;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS last_asap_task_timestamp TIMESTAMPTZ;
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS last_known_location GEOGRAPHY(POINT, 4326);
+
+-- 13.2 Task Gamification Columns (added to existing tasks table)
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS is_asap BOOLEAN DEFAULT FALSE;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS urgency_reason VARCHAR(50)
+    CHECK (urgency_reason IN ('coffee_run', 'package_pickup', 'event_setup', 'emergency', 'last_minute'));
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS acceptance_deadline TIMESTAMPTZ;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS asap_payment_multiplier DECIMAL(3,2) DEFAULT 1.50;
+ALTER TABLE tasks ADD COLUMN IF NOT EXISTS asap_xp_multiplier DECIMAL(3,2) DEFAULT 1.50;
+
+-- 13.3 XP Transactions (audit trail for all XP awards)
+CREATE TABLE IF NOT EXISTS xp_transactions (
+    xp_transaction_id SERIAL PRIMARY KEY,
+    worker_id INTEGER NOT NULL REFERENCES workers(worker_id),
+    task_id INTEGER REFERENCES tasks(task_id),
+    xp_earned INTEGER NOT NULL,
+    xp_multiplier DECIMAL(3,2) DEFAULT 1.0,
+    reason VARCHAR(100),  -- 'base', 'streak', 'first_task', 'speed', 'quality', 'asap_task'
+    details JSONB,  -- { base_xp, streak_multiplier, first_task_bonus, speed_bonus, quality_bonus }
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_xp_transactions_worker_date
+    ON xp_transactions(worker_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_xp_transactions_task
+    ON xp_transactions(task_id);
+
+-- 13.4 Equipment Unlocks (tracks when equipment was unlocked)
+CREATE TABLE IF NOT EXISTS equipment_unlocks (
+    unlock_id SERIAL PRIMARY KEY,
+    worker_id INTEGER NOT NULL REFERENCES workers(worker_id),
+    equipment_id INTEGER NOT NULL,  -- references equipment enum (0-19)
+    equipment_name VARCHAR(50) NOT NULL,  -- 'STARTER_PACK', 'MAP_VIEW', 'AUTO_ACCEPT', etc.
+    unlocked_at TIMESTAMPTZ DEFAULT NOW(),
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+CREATE INDEX IF NOT EXISTS idx_equipment_unlocks_worker
+    ON equipment_unlocks(worker_id, equipment_id);
+
+-- 13.5 Streak History (daily streak tracking)
+CREATE TABLE IF NOT EXISTS streak_history (
+    streak_id SERIAL PRIMARY KEY,
+    worker_id INTEGER NOT NULL REFERENCES workers(worker_id),
+    streak_date DATE NOT NULL,
+    tasks_completed INTEGER DEFAULT 0,
+    freeze_used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(worker_id, streak_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_streak_history_worker_date
+    ON streak_history(worker_id, streak_date DESC);
+
+-- 13.6 Shadow Reputation Log (audit trail for fraud detection)
+CREATE TABLE IF NOT EXISTS shadow_reputation_log (
+    log_id SERIAL PRIMARY KEY,
+    worker_id INTEGER NOT NULL REFERENCES workers(worker_id),
+    event_type VARCHAR(50) NOT NULL,
+        -- 'low_completion_rate', 'high_proof_rejection_rate', 'geographic_impossibility',
+        -- 'rating_farming', 'sudden_rating_drop', 'rigid_time_pattern', 'no_task_diversity',
+        -- 'status_escalation', 'status_recovery'
+    integrity_score_before DECIMAL(5,2),
+    integrity_score_after DECIMAL(5,2),
+    trigger_reason TEXT,  -- JSON string with event details
+    shadow_status_before VARCHAR(20),
+    shadow_status_after VARCHAR(20),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_shadow_log_worker
+    ON shadow_reputation_log(worker_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_shadow_log_event
+    ON shadow_reputation_log(event_type);
+
+-- 13.7 Level Requirements (lookup table for levels 0-20+)
+CREATE TABLE IF NOT EXISTS level_requirements (
+    level INTEGER PRIMARY KEY,
+    xp_required INTEGER NOT NULL,
+    title VARCHAR(50) NOT NULL,  -- 'Novice', 'Expert', 'Legend', etc.
+    equipment_id INTEGER,  -- NULL if no equipment at this level
+    equipment_name VARCHAR(50)  -- 'MAP_VIEW', 'AUTO_ACCEPT', etc.
+);
+
+-- Populate level requirements (Levels 0-20)
+INSERT INTO level_requirements (level, xp_required, title, equipment_id, equipment_name) VALUES
+    (0, 0, 'Tutorial', NULL, NULL),
+    (1, 1000, 'Novice', 0, 'STARTER_PACK'),
+    (2, 3000, 'Apprentice', 1, 'MAP_VIEW'),
+    (3, 6000, 'Journeyman', 2, 'AUTO_ACCEPT'),
+    (4, 10000, 'Skilled', 3, 'PRICE_NEGOTIATION'),
+    (5, 15000, 'Expert', 4, 'TASK_BUNDLING'),
+    (6, 21000, 'Master', 5, 'FAST_TRAVEL'),
+    (7, 28000, 'Elite', 6, 'SHIELD'),
+    (8, 36000, 'Veteran', 7, 'PROOF_TEMPLATES'),
+    (9, 45000, 'Champion', 8, 'ESCROW_INSIGHT'),
+    (10, 55000, 'Legend', 9, 'TRUST_BADGE'),
+    (11, 67000, 'Legend II', NULL, NULL),
+    (12, 79000, 'Legend III', 11, 'INSTANT_PAYOUT'),
+    (13, 91000, 'Legend IV', NULL, NULL),
+    (14, 103000, 'Legend V', NULL, NULL),
+    (15, 115000, 'Mythic', 14, 'GHOST_MODE'),
+    (16, 127000, 'Mythic II', NULL, NULL),
+    (17, 139000, 'Mythic III', NULL, NULL),
+    (18, 151000, 'Mythic IV', 17, 'VIP_QUEUE'),
+    (19, 163000, 'Mythic V', NULL, NULL),
+    (20, 175000, 'Prestige', 19, 'PRESTIGE_EMBLEM')
+ON CONFLICT (level) DO NOTHING;
+
+-- 13.8 Geospatial Index for Live Mode (PostGIS)
+CREATE INDEX IF NOT EXISTS idx_workers_live_location
+    ON workers USING GIST(last_known_location)
+    WHERE live_mode_enabled = true;
+
+-- 13.9 ASAP Task Indexes
+CREATE INDEX IF NOT EXISTS idx_tasks_asap
+    ON tasks(is_asap, status, acceptance_deadline)
+    WHERE is_asap = true;
+
+-- 13.10 Gamification Triggers
+
+-- Trigger: Reset daily ASAP counter at midnight
+CREATE OR REPLACE FUNCTION reset_daily_asap_counter()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF DATE(NEW.last_asap_task_timestamp) < CURRENT_DATE THEN
+        NEW.asap_tasks_today = 0;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_reset_asap_counter
+BEFORE UPDATE ON workers
+FOR EACH ROW
+WHEN (NEW.last_asap_task_timestamp IS NOT NULL)
+EXECUTE FUNCTION reset_daily_asap_counter();
+
+-- Trigger: Award XP when escrow is released
+CREATE OR REPLACE FUNCTION award_xp_on_escrow_release()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'released' AND OLD.status != 'released' THEN
+        -- This will be handled by backend service (LEVELING_ENGINE_LOCKED.md)
+        -- Trigger just marks task as ready for XP award
+        UPDATE tasks
+        SET metadata = jsonb_set(
+            COALESCE(metadata, '{}'::jsonb),
+            '{xp_award_pending}',
+            'true'
+        )
+        WHERE task_id = NEW.task_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_award_xp_on_release
+AFTER UPDATE ON escrow_transactions
+FOR EACH ROW
+WHEN (NEW.status = 'released' AND OLD.status != 'released')
+EXECUTE FUNCTION award_xp_on_escrow_release();
+
+-- Trigger: Check shadow reputation on proof rejection
+CREATE OR REPLACE FUNCTION check_shadow_rep_on_proof_rejection()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'rejected' AND OLD.status != 'rejected' THEN
+        -- Mark for shadow reputation check
+        UPDATE workers
+        SET metadata = jsonb_set(
+            COALESCE(metadata, '{}'::jsonb),
+            '{shadow_rep_check_pending}',
+            'true'
+        )
+        WHERE worker_id = NEW.worker_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_shadow_rep_check
+AFTER UPDATE ON task_proof
+FOR EACH ROW
+WHEN (NEW.status = 'rejected' AND OLD.status != 'rejected')
+EXECUTE FUNCTION check_shadow_rep_on_proof_rejection();
+
+-- Schema Version Update
+INSERT INTO schema_versions (version, applied_by, checksum, notes)
+VALUES (
+    '1.7.0',
+    'system',
+    'GAMIFICATION_V1',
+    'Added gamification system: XP/leveling (workers.total_xp, workers.current_level), streaks (workers.current_streak), equipment unlocks (workers.unlocked_equipment bitfield), shadow reputation (workers.integrity_score, workers.shadow_ban_status), Live Mode ASAP tasks (tasks.is_asap, workers.live_mode_enabled). New tables: xp_transactions, equipment_unlocks, streak_history, shadow_reputation_log, level_requirements. Geospatial index for Live Mode. Triggers for XP award and shadow rep checks. See GAMIFICATION_SYSTEM.md, LEVELING_ENGINE_LOCKED.md, SHADOW_REPUTATION_SYSTEM.md, LIVE_MODE_SPEC.md.'
+)
+ON CONFLICT (version) DO NOTHING;
+
+-- ============================================================================
+-- END OF CONSTITUTIONAL SCHEMA v1.7.0
 -- ============================================================================
