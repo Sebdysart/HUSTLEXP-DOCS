@@ -802,66 +802,60 @@ const status = await apiClient.getUserOnboardingStatus(userId);
 
 ### 14.1 Core Technologies
 
-- **Framework:** React Native (Expo)
-- **Navigation:** React Navigation (Native Stack, Bottom Tabs)
-- **State Management:** React Hooks + State Machines
-- **API Client:** Fetch API (REST endpoints)
-- **Styling:** StyleSheet (React Native)
-- **Testing:** Jest + React Native Testing Library
+- **Framework:** Native SwiftUI (iOS 17+)
+- **Navigation:** NavigationStack + TabView (SwiftUI native)
+- **State Management:** @Observable / @StateObject / @EnvironmentObject
+- **API Client:** TRPCClient (custom async/await tRPC caller)
+- **Styling:** Custom Design System (ColorTokens, TypographyTokens, AdaptiveLayout)
+- **Testing:** XCTest + Swift Testing
+- **Note:** Originally spec'd as React Native/Expo but implemented as native SwiftUI
 
 ---
 
-### 14.2 Project Structure
+### 14.2 Project Structure (Actual SwiftUI Implementation)
 
 ```
-HUSTLEXP-DOCS/
-├── App.js                    # Entry point
-├── app.json                  # Expo configuration
-├── package.json              # Dependencies
+hustleXP final1/
+├── hustleXP_final1App.swift      # App entry point
+├── ContentView.swift              # Root navigation
 │
-├── components/              # Reusable UI components
-│   ├── Button.js
-│   ├── Card.js
-│   ├── Text.js
-│   ├── Input.js
-│   ├── FirstXPCelebration.js
-│   ├── LockedGamificationUI.js
-│   ├── MoneyTimeline.js
-│   ├── FailureRecovery.js
-│   └── LiveModeUI.js
+├── DesignSystem/                  # Design tokens & components
+│   ├── ColorTokens.swift          # Brand colors (#5B2DFF primary)
+│   ├── TypographyTokens.swift     # Typography scale
+│   ├── AdaptiveLayout.swift       # Responsive layout
+│   └── Atoms/                     # 8 atomic components
 │
-├── screens/                 # Screen components
-│   ├── HomeScreen.js
-│   ├── TasksScreen.js
-│   ├── WalletScreen.js
-│   ├── ProfileScreen.js
-│   └── onboarding/
-│       ├── FramingScreen.js
-│       ├── CalibrationScreen.js
-│       ├── RoleConfirmationScreen.js
-│       └── PreferenceLockScreen.js
+├── Components/                    # 31 molecule components
+│   ├── HXButton.swift
+│   ├── HXCard.swift
+│   ├── HXTextField.swift
+│   └── ... (31 total)
 │
-├── navigation/              # Navigation structure
-│   ├── AuthNavigator.js
-│   ├── OnboardingNavigator.js
-│   └── TabNavigator.js
+├── Screens/                       # 39+ screens
+│   ├── Onboarding/               # Auth & role selection
+│   ├── Poster/                   # Task posting flow
+│   ├── Hustler/                  # Task discovery & proof
+│   ├── Shared/                   # Profile, wallet, settings
+│   └── Navigation/               # Tab & navigation structure
 │
-├── state/                   # State machines
-│   ├── TaskStateMachine.js
-│   ├── EscrowStateMachine.js
-│   ├── ProofStateMachine.js
-│   └── OnboardingStateMachine.js
+├── Services/                      # tRPC API services
+│   ├── TRPCClient.swift          # Generic tRPC caller
+│   ├── AuthService.swift         # Firebase Auth
+│   ├── TaskService.swift         # Task CRUD & discovery
+│   ├── EscrowService.swift       # Payments & escrow
+│   ├── MessagingService.swift    # In-app messaging & ratings
+│   ├── ProofService.swift        # Photo upload & proof
+│   ├── SkillService.swift        # Worker skills & licenses
+│   └── TaxService.swift          # XP tax & insurance
 │
-├── constants/               # Design tokens
-│   ├── colors.js           # Color system
-│   ├── animations.js      # Animation constraints
-│   ├── spacing.js         # Spacing scale
-│   └── typography.js      # Typography scale
+├── Models/                        # 11 model files
+│   ├── Task.swift
+│   ├── Message.swift
+│   ├── UserProfile.swift
+│   └── ... (11 total)
 │
-└── utils/                   # Utilities
-    ├── apiClient.js        # Backend integration
-    ├── runtimeGuards.js    # UI_SPEC enforcement
-    └── initGuards.js      # Guard initialization
+└── Utils/                         # Utilities
+    └── MockDataService.swift      # Dev mock data
 ```
 
 ---
@@ -871,14 +865,11 @@ HUSTLEXP-DOCS/
 ### 15.1 Local Development
 
 ```bash
-# Install dependencies
-npm install
+# Open in Xcode
+open "hustleXP final1.xcodeproj"
 
-# Start Expo dev server
-npm start
-
-# Launch iOS simulator
-npm run ios
+# Build and run (Cmd+R in Xcode)
+# Target: iOS 17+ Simulator or Device
 
 # Launch Android emulator
 npm run android

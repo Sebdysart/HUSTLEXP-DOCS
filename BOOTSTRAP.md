@@ -27,7 +27,7 @@ Until Bootstrap passes:
 
 ```typescript
 // Brand
-const BRAND_PRIMARY = '#1FAD7E';     // HustleXP teal-green
+const BRAND_PRIMARY = '#5B2DFF';     // HustleXP purple
 const BRAND_YELLOW = '#FFD900';      // Instant mode
 
 // Apple System Colors
@@ -79,7 +79,7 @@ const TEXT_MUTED = '#8E8E93';
 ❌ Use any state management beyond local useState
 ❌ Import any packages not in current package.json
 ❌ Use #0D0D0D (wrong) — use #000000
-❌ Use #FF6B35 (wrong) — use #1FAD7E (brand) or #34C759 (success)
+❌ Use #FF6B35 (wrong) — use #5B2DFF (brand) or #34C759 (success)
 ```
 
 ---
@@ -392,7 +392,7 @@ open ios/HustleXP.xcworkspace
 [ ] App builds without errors
 [ ] App launches without crashing
 [ ] Black screen with "HustleXP" text visible
-[ ] Teal-green (#1FAD7E) "Get Started" button visible
+[ ] Teal-green (#5B2DFF) "Get Started" button visible
 [ ] Tap button → "Button pressed" appears in Xcode console
 [ ] App does not crash after 30 seconds idle
 ```
