@@ -13,7 +13,8 @@
 // Configuration
 // ============================================================================
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://hustlexp-ai-backend-production.up.railway.app';
+// SECURITY: Never hardcode production URLs. Set EXPO_PUBLIC_API_URL in your .env file.
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
 
 // ============================================================================
 // API Client
