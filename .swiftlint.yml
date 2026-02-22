@@ -1,0 +1,137 @@
+# HustleXP SwiftLint Configuration
+# AUDIT FIX: Enforce Swift code quality standards
+#
+# Install: brew install swiftlint
+# Run:     swiftlint lint --config .swiftlint.yml
+# Fix:     swiftlint lint --fix --config .swiftlint.yml
+
+# ============================================================================
+# INCLUDED / EXCLUDED PATHS
+# ============================================================================
+
+included:
+  - ui-puzzle
+  - _archive/ios-swiftui-prototype
+
+excluded:
+  - Pods
+  - Carthage
+  - .build
+  - DerivedData
+  - node_modules
+
+# ============================================================================
+# CRITICAL RULES (errors — must fix before merge)
+# ============================================================================
+
+opt_in_rules:
+  - force_unwrapping           # Prevent runtime crashes from force unwraps
+  - implicitly_unwrapped_optional  # Flag implicitly unwrapped optionals
+  - empty_count                # Use isEmpty instead of count == 0
+  - closure_spacing            # Consistent closure formatting
+  - fatal_error_message        # Require message in fatalError()
+  - first_where                # Use .first(where:) over .filter().first
+  - contains_over_first_not_nil  # Use .contains() instead of .first != nil
+  - empty_string               # Use .isEmpty instead of == ""
+  - redundant_nil_coalescing   # Remove redundant ?? nil
+  - yoda_condition             # Avoid Yoda conditions (42 == x)
+  - unowned_variable_capture   # Flag unowned captures that may crash
+  - override_in_extension      # Prevent overrides in extensions
+  - multiline_arguments        # Consistent multiline argument formatting
+  - multiline_parameters       # Consistent multiline parameter formatting
+  - toggle_bool                # Use .toggle() instead of x = !x
+
+# ============================================================================
+# RULE SEVERITY OVERRIDES
+# ============================================================================
+
+force_unwrapping:
+  severity: error              # Force unwraps MUST be fixed (crash risk)
+
+implicitly_unwrapped_optional:
+  severity: warning            # Flag but don't block (IBOutlets need them)
+
+force_cast:
+  severity: error              # Force casts MUST be fixed
+
+force_try:
+  severity: error              # Force try MUST be fixed
+
+# ============================================================================
+# LINE / FILE LENGTH LIMITS
+# ============================================================================
+
+line_length:
+  warning: 140
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+  ignores_interpolated_strings: true
+
+file_length:
+  warning: 500
+  error: 1000
+
+type_body_length:
+  warning: 300
+  error: 500
+
+function_body_length:
+  warning: 50
+  error: 100
+
+# ============================================================================
+# NAMING CONVENTIONS
+# ============================================================================
+
+type_name:
+  min_length: 3
+  max_length: 50
+  validates_start_with_lowercase: false
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - i
+    - j
+    - x
+    - y
+    - z
+    - r
+    - g
+    - b
+    - to
+
+# ============================================================================
+# COMPLEXITY LIMITS
+# ============================================================================
+
+cyclomatic_complexity:
+  warning: 15
+  error: 25
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+nesting:
+  type_level:
+    warning: 2
+  function_level:
+    warning: 4
+
+# ============================================================================
+# DISABLED RULES (too noisy for this project)
+# ============================================================================
+
+disabled_rules:
+  - trailing_whitespace        # Auto-fixable, too noisy in CI
+  - todo                       # Allow TODOs in development
+  - large_tuple                # SwiftUI uses tuples extensively
+  - opening_brace              # SwiftUI style conflicts
