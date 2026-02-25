@@ -4,12 +4,12 @@
 
 ```mermaid
 flowchart LR
-    User[User Data] -->|Collect| App[iOS/Android App]
+    User[User Data] -->|Collect| App[iOS App - SwiftUI]
     App -->|HTTPS/TLS 1.3| LB[Load Balancer]
-    LB -->|Validate| API[Hono API]
-    API -->|Query| DB[(PostgreSQL)]
+    LB -->|Validate| API[Fastify API]
+    API -->|Query| DB[(PostgreSQL - Neon)]
     DB -->|Encrypt at Rest| AES[AES-256-GCM]
-    DB -->|Backup| S3[Encrypted S3]
+    DB -->|Backup| R2[Encrypted R2]
     API -->|Cache| Redis[Upstash Redis]
     API -->|Process| Workers[BullMQ Workers]
 ```
@@ -123,7 +123,7 @@ Response: {
 ### Encryption
 | Layer | Algorithm | Key Management |
 |-------|-----------|----------------|
-| At Rest | AES-256-GCM | AWS KMS / Neon |
+| At Rest | AES-256-GCM | Neon managed encryption |
 | In Transit | TLS 1.3 | Let's Encrypt |
 | Database | pgcrypto | PostgreSQL native |
 

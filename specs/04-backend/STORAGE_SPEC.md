@@ -428,12 +428,12 @@ export const r2Client = new S3Client({
   region: 'auto',
   endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: env.R2_ACCESS_KEY,
-    secretAccessKey: env.R2_SECRET_KEY,
+    accessKeyId: env.R2_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
   },
 });
 
-export const BUCKET_NAME = env.R2_BUCKET;
+export const BUCKET_NAME = env.R2_BUCKET_NAME;
 export const PUBLIC_URL = env.R2_PUBLIC_URL;
 ```
 
@@ -563,11 +563,11 @@ async function extractExif(buffer: Buffer): Promise<ExifData> {
 ## Environment Variables
 
 ```bash
-# Cloudflare R2
+# Cloudflare R2 (must match backend/src/config.ts)
 R2_ACCOUNT_ID=your-account-id
-R2_ACCESS_KEY=your-access-key
-R2_SECRET_KEY=your-secret-key
-R2_BUCKET=hustlexp-prod
+R2_ACCESS_KEY_ID=your-access-key-id
+R2_SECRET_ACCESS_KEY=your-secret-access-key
+R2_BUCKET_NAME=hustlexp-storage
 R2_PUBLIC_URL=https://storage.hustlexp.com
 ```
 
