@@ -461,7 +461,7 @@ Requirements:
 - SIGTERM handler (drain connections)
 - Max 30s shutdown grace period
 
-**Alternative:** Fly.io (similar to Railway, equally acceptable)
+**Alternative:** Fly.io (similar to Railway, equally acceptable if migrating)
 
 **Forbidden:**
 - ❌ Vercel (no stateful workers, edge runtime limitations)

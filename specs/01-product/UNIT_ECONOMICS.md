@@ -35,7 +35,7 @@
 
 | Service | Cost | Notes |
 |---|---|---|
-| Fly.io hosting | $50-150 | 2-3 machines, auto-scale |
+| Railway hosting | $50-150 | 2-3 instances, auto-scale |
 | Neon database | $19-69 | Pro plan, branching |
 | Redis (Upstash) | $10-30 | Rate limiting, job queues |
 | Google Maps API | $200-500 | Geocoding, directions, Places |
@@ -45,7 +45,7 @@
 | Analytics (PostHog/Mixpanel) | $0-50 | Free tier initially |
 | Stripe Radar (fraud) | $0.05/screened | Per transaction |
 | Image moderation API | $1-5/1K images | Cloud Vision or Rekognition |
-| Push notifications (Expo) | Free | EAS Push included |
+| Push notifications (APNs) | Free | Apple Push Notification service |
 | **Total monthly fixed** | **~$400-1,000** | At 1K users |
 
 ---
