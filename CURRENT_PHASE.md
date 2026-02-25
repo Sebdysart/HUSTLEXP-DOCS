@@ -17,7 +17,7 @@ All prior phases have been completed:
 ## Current Work: Cross-Repo Alignment
 
 **Frontend:** Native SwiftUI (iOS 17+), 128 Swift files, 39 screens, real tRPC client
-**Backend:** Hono + tRPC, Neon PostgreSQL + PostGIS, 22 routers, deployed on Railway
+**Backend:** Fastify + tRPC, Neon PostgreSQL + PostGIS, 22 routers, deployed on Railway
 **Brand:** Purple (#5B2DFF) primary, not teal-green
 
 ### Active Tasks
