@@ -149,11 +149,10 @@ async function createConnectedAccount(userId: string, email: string) {
   });
 
   // 2. Store in database
-  await supabase.from('stripe_connected_accounts').insert({
-    user_id: userId,
-    stripe_account_id: account.id,
-    onboarding_complete: false,
-  });
+  await sql`
+    INSERT INTO stripe_connected_accounts (user_id, stripe_account_id, onboarding_complete)
+    VALUES (${userId}, ${account.id}, false)
+  `;
 
   // 3. Create onboarding link
   const accountLink = await stripe.accountLinks.create({
@@ -171,11 +170,11 @@ async function createConnectedAccount(userId: string, email: string) {
 
 ```typescript
 async function checkConnectedAccountStatus(userId: string) {
-  const { data: connectedAccount } = await supabase
-    .from('stripe_connected_accounts')
-    .select('stripe_account_id')
-    .eq('user_id', userId)
-    .single();
+  const [connectedAccount] = await sql`
+    SELECT stripe_account_id FROM stripe_connected_accounts
+    WHERE user_id = ${userId}
+    LIMIT 1
+  `;
 
   if (!connectedAccount) {
     return { status: 'NOT_STARTED' };
@@ -217,15 +216,11 @@ async function createTaskPaymentIntent(
   }
 
   // 2. Create escrow record
-  const { data: escrow } = await supabase
-    .from('escrows')
-    .insert({
-      task_id: taskId,
-      amount: amount,
-      state: 'PENDING',
-    })
-    .select()
-    .single();
+  const [escrow] = await sql`
+    INSERT INTO escrows (task_id, amount, state)
+    VALUES (${taskId}, ${amount}, 'PENDING')
+    RETURNING *
+  `;
 
   // 3. Create PaymentIntent
   const paymentIntent = await stripe.paymentIntents.create({
@@ -245,12 +240,10 @@ async function createTaskPaymentIntent(
   });
 
   // 4. Update escrow with PaymentIntent ID
-  await supabase
-    .from('escrows')
-    .update({
-      stripe_payment_intent_id: paymentIntent.id,
-    })
-    .eq('id', escrow.id);
+  await sql`
+    UPDATE escrows SET stripe_payment_intent_id = ${paymentIntent.id}
+    WHERE id = ${escrow.id}
+  `;
 
   return {
     clientSecret: paymentIntent.client_secret,
@@ -284,14 +277,10 @@ async function handlePaymentIntentSucceeded(
 ) {
   const escrowId = paymentIntent.metadata.escrow_id;
 
-  await supabase
-    .from('escrows')
-    .update({
-      state: 'FUNDED',
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', escrowId)
-    .eq('state', 'PENDING');  // Only if still PENDING
+  await sql`
+    UPDATE escrows SET state = 'FUNDED', updated_at = NOW()
+    WHERE id = ${escrowId} AND state = 'PENDING'
+  `;
 
   // Notify poster
   await notificationService.send({
@@ -318,29 +307,24 @@ async function handlePaymentIntentSucceeded(
  */
 async function releaseEscrow(escrowId: string) {
   // 1. Get escrow and task details
-  const { data: escrow } = await supabase
-    .from('escrows')
-    .select(`
-      *,
-      tasks!inner (
-        worker_id,
-        state
-      )
-    `)
-    .eq('id', escrowId)
-    .single();
+  const [escrow] = await sql`
+    SELECT e.*, t.worker_id AS task_worker_id, t.state AS task_state
+    FROM escrows e
+    JOIN tasks t ON t.id = e.task_id
+    WHERE e.id = ${escrowId}
+  `;
 
   // 2. Validate task is COMPLETED (defense in depth)
-  if (escrow.tasks.state !== 'COMPLETED') {
+  if (escrow.task_state !== 'COMPLETED') {
     throw new HXError('HX201', 'Task must be COMPLETED to release escrow');
   }
 
   // 3. Get worker's connected account
-  const { data: connectedAccount } = await supabase
-    .from('stripe_connected_accounts')
-    .select('stripe_account_id')
-    .eq('user_id', escrow.tasks.worker_id)
-    .single();
+  const [connectedAccount] = await sql`
+    SELECT stripe_account_id FROM stripe_connected_accounts
+    WHERE user_id = ${escrow.task_worker_id}
+    LIMIT 1
+  `;
 
   if (!connectedAccount) {
     throw new HXError('HX_NO_PAYOUT_ACCOUNT', 'Worker has no connected account');
@@ -357,23 +341,19 @@ async function releaseEscrow(escrowId: string) {
     metadata: {
       escrow_id: escrowId,
       task_id: escrow.task_id,
-      worker_user_id: escrow.tasks.worker_id,
+      worker_user_id: escrow.task_worker_id,
     },
   });
 
   // 6. Update escrow state
-  await supabase
-    .from('escrows')
-    .update({
-      state: 'RELEASED',
-      stripe_transfer_id: transfer.id,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', escrowId);
+  await sql`
+    UPDATE escrows SET state = 'RELEASED', stripe_transfer_id = ${transfer.id}, updated_at = NOW()
+    WHERE id = ${escrowId}
+  `;
 
   // 7. Award XP (triggers INV-1 validation)
   await xpService.awardXP(
-    escrow.tasks.worker_id,
+    escrow.task_worker_id,
     escrow.task_id,
     escrowId
   );
@@ -396,11 +376,9 @@ async function releaseEscrow(escrowId: string) {
  * SPEC: PRODUCT_SPEC.md §4.3
  */
 async function refundEscrow(escrowId: string, reason: string) {
-  const { data: escrow } = await supabase
-    .from('escrows')
-    .select('*')
-    .eq('id', escrowId)
-    .single();
+  const [escrow] = await sql`
+    SELECT * FROM escrows WHERE id = ${escrowId}
+  `;
 
   // Only refund FUNDED escrows
   if (escrow.state !== 'FUNDED') {
@@ -418,14 +396,10 @@ async function refundEscrow(escrowId: string, reason: string) {
   });
 
   // Update escrow
-  await supabase
-    .from('escrows')
-    .update({
-      state: 'REFUNDED',
-      stripe_refund_id: refund.id,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', escrowId);
+  await sql`
+    UPDATE escrows SET state = 'REFUNDED', stripe_refund_id = ${refund.id}, updated_at = NOW()
+    WHERE id = ${escrowId}
+  `;
 
   return refund;
 }
@@ -443,16 +417,12 @@ async function partialRefundEscrow(
   workerPercent: number  // 0-100
 ) {
   // Fetch escrow with task relation to get worker_id
-  const { data: escrow } = await supabase
-    .from('escrows')
-    .select(`
-      *,
-      tasks!inner (
-        worker_id
-      )
-    `)
-    .eq('id', escrowId)
-    .single();
+  const [escrow] = await sql`
+    SELECT e.*, t.worker_id AS task_worker_id
+    FROM escrows e
+    JOIN tasks t ON t.id = e.task_id
+    WHERE e.id = ${escrowId}
+  `;
 
   const releaseAmount = Math.floor(escrow.amount * (workerPercent / 100));
   const refundAmount = escrow.amount - releaseAmount;
@@ -464,11 +434,11 @@ async function partialRefundEscrow(
   });
 
   // 2. Transfer worker portion (via task relation)
-  const { data: connectedAccount } = await supabase
-    .from('stripe_connected_accounts')
-    .select('stripe_account_id')
-    .eq('user_id', escrow.tasks.worker_id)
-    .single();
+  const [connectedAccount] = await sql`
+    SELECT stripe_account_id FROM stripe_connected_accounts
+    WHERE user_id = ${escrow.task_worker_id}
+    LIMIT 1
+  `;
 
   const transfer = await stripe.transfers.create({
     amount: Math.floor(releaseAmount * 0.85),  // After platform fee
@@ -477,17 +447,16 @@ async function partialRefundEscrow(
   });
 
   // 3. Update escrow
-  await supabase
-    .from('escrows')
-    .update({
-      state: 'REFUND_PARTIAL',
-      stripe_refund_id: refund.id,
-      stripe_transfer_id: transfer.id,
-      refund_amount: refundAmount,
-      release_amount: releaseAmount,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', escrowId);
+  await sql`
+    UPDATE escrows SET
+      state = 'REFUND_PARTIAL',
+      stripe_refund_id = ${refund.id},
+      stripe_transfer_id = ${transfer.id},
+      refund_amount = ${refundAmount},
+      release_amount = ${releaseAmount},
+      updated_at = NOW()
+    WHERE id = ${escrowId}
+  `;
 }
 ```
 
@@ -517,11 +486,9 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
   }
 
   // Idempotency check
-  const { data: existing } = await supabase
-    .from('processed_stripe_events')
-    .select('id')
-    .eq('event_id', event.id)
-    .single();
+  const [existing] = await sql`
+    SELECT id FROM processed_stripe_events WHERE event_id = ${event.id} LIMIT 1
+  `;
 
   if (existing) {
     return new Response('Already processed', { status: 200 });
@@ -532,10 +499,10 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
     await processStripeEvent(event);
 
     // Record as processed
-    await supabase.from('processed_stripe_events').insert({
-      event_id: event.id,
-      event_type: event.type,
-    });
+    await sql`
+      INSERT INTO processed_stripe_events (event_id, event_type)
+      VALUES (${event.id}, ${event.type})
+    `;
 
     return new Response('OK', { status: 200 });
   } catch (err) {
@@ -567,12 +534,10 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
   const escrowId = paymentIntent.metadata.escrow_id;
 
   // Log failure
-  await supabase.from('payment_failures').insert({
-    escrow_id: escrowId,
-    payment_intent_id: paymentIntent.id,
-    error_code: paymentIntent.last_payment_error?.code,
-    error_message: paymentIntent.last_payment_error?.message,
-  });
+  await sql`
+    INSERT INTO payment_failures (escrow_id, payment_intent_id, error_code, error_message)
+    VALUES (${escrowId}, ${paymentIntent.id}, ${paymentIntent.last_payment_error?.code ?? null}, ${paymentIntent.last_payment_error?.message ?? null})
+  `;
 
   // Notify poster
   await notificationService.send({
@@ -590,12 +555,10 @@ async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
 ```typescript
 async function handleTransferFailed(transfer: Stripe.Transfer) {
   // Add to retry queue
-  await supabase.from('transfer_retry_queue').insert({
-    transfer_id: transfer.id,
-    escrow_id: transfer.metadata.escrow_id,
-    retry_count: 0,
-    next_retry_at: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
-  });
+  await sql`
+    INSERT INTO transfer_retry_queue (transfer_id, escrow_id, retry_count, next_retry_at)
+    VALUES (${transfer.id}, ${transfer.metadata.escrow_id}, 0, ${new Date(Date.now() + 60 * 60 * 1000).toISOString()})
+  `;
 
   // Alert operations
   await alertService.critical('Transfer failed', {
@@ -610,11 +573,10 @@ async function handleTransferFailed(transfer: Stripe.Transfer) {
 ```typescript
 // Background job: Retry failed transfers
 async function retryFailedTransfers() {
-  const { data: retries } = await supabase
-    .from('transfer_retry_queue')
-    .select('*')
-    .lt('next_retry_at', new Date().toISOString())
-    .lt('retry_count', 3);  // Max 3 retries
+  const retries = await sql`
+    SELECT * FROM transfer_retry_queue
+    WHERE next_retry_at < NOW() AND retry_count < 3
+  `;
 
   for (const retry of retries ?? []) {
     try {
@@ -622,20 +584,16 @@ async function retryFailedTransfers() {
       await releaseEscrow(retry.escrow_id);
 
       // Remove from queue
-      await supabase
-        .from('transfer_retry_queue')
-        .delete()
-        .eq('id', retry.id);
+      await sql`DELETE FROM transfer_retry_queue WHERE id = ${retry.id}`;
     } catch (err) {
       // Update retry count
-      await supabase
-        .from('transfer_retry_queue')
-        .update({
-          retry_count: retry.retry_count + 1,
-          next_retry_at: new Date(Date.now() + 60 * 60 * 1000 * (retry.retry_count + 1)),
-          last_error: err.message,
-        })
-        .eq('id', retry.id);
+      await sql`
+        UPDATE transfer_retry_queue SET
+          retry_count = ${retry.retry_count + 1},
+          next_retry_at = ${new Date(Date.now() + 60 * 60 * 1000 * (retry.retry_count + 1)).toISOString()},
+          last_error = ${err.message}
+        WHERE id = ${retry.id}
+      `;
     }
   }
 }
@@ -824,14 +782,13 @@ All worker transfers are delayed by **48 hours** after escrow release. This prev
 ```typescript
 async function releaseEscrowWithDelay(escrowId: string) {
   // 1. Mark escrow as RELEASED in DB immediately
-  await supabase.from('escrows').update({ state: 'RELEASED' }).eq('id', escrowId);
+  await sql`UPDATE escrows SET state = 'RELEASED' WHERE id = ${escrowId}`;
   
   // 2. Schedule transfer for 48h later
-  await supabase.from('scheduled_transfers').insert({
-    escrow_id: escrowId,
-    scheduled_for: new Date(Date.now() + 48 * 60 * 60 * 1000),
-    status: 'PENDING',
-  });
+  await sql`
+    INSERT INTO scheduled_transfers (escrow_id, scheduled_for, status)
+    VALUES (${escrowId}, ${new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()}, 'PENDING')
+  `;
   
   // 3. Award XP immediately (XP is earned, transfer is operational)
   await awardXP(escrowId);
@@ -853,15 +810,16 @@ async function handleChargeDispute(dispute: Stripe.Dispute) {
   const escrowId = dispute.payment_intent.metadata.escrow_id;
   
   // Cancel pending transfer if exists
-  await supabase.from('scheduled_transfers')
-    .update({ status: 'CANCELLED_CHARGEBACK' })
-    .eq('escrow_id', escrowId)
-    .eq('status', 'PENDING');
+  await sql`
+    UPDATE scheduled_transfers SET status = 'CANCELLED_CHARGEBACK'
+    WHERE escrow_id = ${escrowId} AND status = 'PENDING'
+  `;
   
   // Update escrow state
-  await supabase.from('escrows')
-    .update({ state: 'DISPUTED_BY_CARD', chargeback_dispute_id: dispute.id })
-    .eq('id', escrowId);
+  await sql`
+    UPDATE escrows SET state = 'DISPUTED_BY_CARD', chargeback_dispute_id = ${dispute.id}
+    WHERE id = ${escrowId}
+  `;
   
   // Alert operations
   await alertService.critical('CHARGEBACK', { escrow_id: escrowId, amount: dispute.amount });
