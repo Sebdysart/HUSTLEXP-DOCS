@@ -469,18 +469,20 @@
   "reference_implementation": {
     "directory": "reference/",
     "language": "TypeScript + JavaScript",
-    "framework": "Swift / SwiftUI (iOS 17+)",
-    "runtime": "Xcode 16+",
+    "framework": "React Native 0.81.5 (LEGACY — actual app is Swift/SwiftUI)",
+    "runtime": "Expo 54.0.31",
     "package_json": "reference/package.json",
     "components": "reference/components/",
     "screens": "reference/screens/",
     "constants": "reference/constants/",
     "navigation": "reference/navigation/",
-    "purpose": "Scaffold code examples (NOT canonical, specs are canonical)"
+    "purpose": "Legacy scaffold code (React Native). The active iOS app (HUSTLEXPFINAL1) uses Swift/SwiftUI. These examples are NOT canonical."
   },
   "testing": {
     "test_directory": "__tests__/",
-    "vitest_config": "vitest.config.ts",
+    "jest_config": "jest.config.js",
+    "jest_setup": "jest.setup.js",
+    "note": "Tests in this docs repo use Jest (legacy scaffold). The backend repo uses Vitest.",
     "coverage_requirement": "70%",
     "test_types": ["components", "state", "utils"]
   },

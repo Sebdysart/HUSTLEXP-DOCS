@@ -161,7 +161,7 @@ HUSTLEXP-DOCS/
 │       └── audits/                  ← Historical audit reports
 │
 ├── 📦 REFERENCE IMPLEMENTATION
-│   └── reference/                   ← Scaffold code (Swift/SwiftUI)
+│   └── reference/                   ← Scaffold code (legacy React Native + Expo)
 │       ├── components/              ← Example components
 │       ├── screens/                 ← Example screens
 │       ├── constants/               ← Design tokens in code
