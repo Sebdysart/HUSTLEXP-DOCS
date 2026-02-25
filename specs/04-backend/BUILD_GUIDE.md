@@ -428,7 +428,7 @@ Implements frontend state machines that **mirror** backend state.
 | Requirement | Verification |
 |-------------|--------------|
 | Phase 2 gate passed | All API tests pass |
-| React Native configured | `react-native` installed |
+| iOS app configured | Xcode project builds (NOTE: originally React Native — active app is Swift/SwiftUI) |
 | tRPC client installed | `@trpc/react-query` |
 | State library chosen | XState or custom FSM |
 

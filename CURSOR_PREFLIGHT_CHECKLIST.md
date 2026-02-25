@@ -1,5 +1,7 @@
 # Cursor Preflight Checklist
 
+> **⚠️ TECH STACK NOTE:** This checklist was written for a React Native / Expo scaffold. The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map React Native patterns (React Navigation, Expo, etc.) to SwiftUI equivalents (NavigationStack, native APIs). Design tokens and spec references remain authoritative.
+
 **PURPOSE:** Verification checklist before Cursor begins frontend implementation.
 **TARGET:** 100% specification coverage with zero ambiguity.
 
@@ -311,10 +313,10 @@ HUSTLEXP-DOCS/
 Recommended build sequence:
 
 ### Phase 1: Foundation
-1. Set up Expo project with TypeScript
-2. Copy `src/types/index.ts` to project
-3. Configure ESLint with `.eslintrc.json`
-4. Configure Jest with `jest.config.js`
+1. Set up Xcode project with Swift/SwiftUI (NOTE: originally Expo — active app is native iOS)
+2. Copy `src/types/index.ts` to project (adapt TypeScript types to Swift structs/enums)
+3. Configure SwiftLint (NOTE: ESLint is for the legacy scaffold; active app uses SwiftLint)
+4. Configure XCTest (NOTE: Jest is for the legacy scaffold; active app uses XCTest)
 
 ### Phase 2: Design System
 1. Implement color constants from UI_SPEC §2
@@ -329,7 +331,7 @@ Recommended build sequence:
 4. Build List, ProgressBar, Skeleton
 
 ### Phase 4: Navigation & Screens
-1. Set up React Navigation
+1. Set up NavigationStack / TabView (NOTE: originally React Navigation — active app uses SwiftUI navigation)
 2. Implement TabBar, Header
 3. Build screen shells with safe areas
 4. Implement screen-specific state patterns

@@ -1,6 +1,8 @@
 # Frontend Implementation Guide: HustleXP v1.8.0 Gamification Features
 
-**Target Audience:** Frontend Team (React Native)
+> **⚠️ TECH STACK NOTE:** This guide was written for a React Native scaffold. The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Code examples below use React Native / tRPC React Query patterns — map to Swift equivalents (async/await, TRPCClient.swift). The API contracts and tRPC router names remain authoritative.
+
+**Target Audience:** Frontend Team (Swift/SwiftUI — originally React Native)
 **Backend Version:** v1.8.0 (hustlexp-ai-backend)
 **Documentation:** HUSTLEXP-DOCS v1.8.0
 **Release Date:** 2026-02-06

@@ -124,7 +124,7 @@ Before any UI implementation, verify:
 
 If this invariant is violated:
 1. Cursor will produce minimal/incorrect output
-2. iOS SwiftUI and React Native will be visually inconsistent
+2. iOS SwiftUI implementation will be visually inconsistent with specs (NOTE: React Native scaffold is legacy)
 3. STITCH HTML specs will not match implementation
 
 **All design token violations must be fixed before any other work proceeds.**

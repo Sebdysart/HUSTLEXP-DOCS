@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Navigation structure for HustleXP app using React Navigation. Declarative route guards reference state (do not compute it). Canonical entry points enforce authority boundaries.
+Navigation structure for HustleXP app. Originally designed for React Navigation (legacy scaffold); the active iOS app (HUSTLEXPFINAL1) uses **SwiftUI NavigationStack / TabView**. Declarative route guards reference state (do not compute it). Canonical entry points enforce authority boundaries.
 
 ---
 
@@ -339,13 +339,18 @@ hustlexp-app/navigation/
 
 ## Dependencies
 
-**Required:**
+**Required (legacy React Native scaffold):**
 - `@react-navigation/native` (✅ installed)
 - `@react-navigation/stack` (needs installation)
 - `react-native-screens` (✅ installed)
 - `react-native-safe-area-context` (✅ installed)
 
-**Installation:**
+**Active iOS app (Swift/SwiftUI):**
+- SwiftUI `NavigationStack` (built-in)
+- SwiftUI `TabView` (built-in)
+- No additional dependencies required
+
+**Installation (legacy scaffold only):**
 ```bash
 npm install @react-navigation/stack
 ```

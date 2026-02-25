@@ -1,5 +1,7 @@
 # BOOTSTRAP CONTRACT — HUSTLEXP RUNTIME BASELINE
 
+> **⚠️ TECH STACK NOTE:** Code examples in this document use React Native / Expo syntax (legacy scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. The bootstrap verification steps (Xcode build, simulator launch) remain valid. Map React Native APIs to SwiftUI equivalents.
+
 **STATUS: BLOCKING — Nothing else proceeds until this passes**
 **Owner: Frontend (Cursor)**
 **Validator: Xcode Simulator**

@@ -1,5 +1,7 @@
 # EXECUTION QUEUE — HustleXP v1.0 FRONTEND
 
+> **⚠️ TECH STACK NOTE:** Some steps reference React Native patterns (react-native core, @react-navigation). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map to SwiftUI equivalents (NavigationStack, TabView, SafeAreaView → `.ignoresSafeArea()`). Step structure and spec references remain authoritative.
+
 **STATUS: ACTIVE — This is the ONLY file Cursor reads during build**  
 **Frontend Repo: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)**  
 **Rule: Execute steps in order. No skipping. No inventing. No "improving."**

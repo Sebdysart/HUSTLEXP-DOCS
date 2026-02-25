@@ -202,7 +202,7 @@ Layer 6: Human Override            ← BOUNDED INTERVENTION (With audit)
 
 | Aspect | Value |
 |--------|-------|
-| **Name** | React Native state management |
+| **Name** | SwiftUI state management (NOTE: originally React Native — active app is Swift/SwiftUI) |
 | **Owner** | Cursor (Frontend) |
 | **Authority** | UX state only |
 | **Location** | Mobile app `state/` directory |
@@ -244,7 +244,7 @@ Layer 6: Human Override            ← BOUNDED INTERVENTION (With audit)
 
 | Aspect | Value |
 |--------|-------|
-| **Name** | React Native components, Rive animations |
+| **Name** | SwiftUI views, Rive animations (NOTE: originally React Native — active app is Swift/SwiftUI) |
 | **Owner** | Cursor (Frontend) |
 | **Authority** | Visual representation only |
 | **Location** | Mobile app `components/`, `screens/` |

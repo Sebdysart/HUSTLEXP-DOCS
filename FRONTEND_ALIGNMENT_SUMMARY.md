@@ -1,5 +1,7 @@
 # Frontend Alignment Summary
 
+> **⚠️ TECH STACK NOTE:** This summary documents alignment work done on the React Native / Expo scaffold (legacy). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Design tokens, UI rules, and spec references remain authoritative regardless of framework.
+
 **Date:** January 2025  
 **Status:** ✅ Complete  
 **Authority:** UI_SPEC.md v1.3.0, ONBOARDING_SPEC.md v1.3.0
@@ -215,7 +217,7 @@ The frontend scaffold has been aligned with HustleXP constitutional specificatio
 - ✅ Animation duration limits
 - ✅ Forbidden copy patterns
 - ✅ Accessibility rules (touch targets, contrast)
-- ✅ React Native best practices
+- ✅ Platform best practices (originally React Native; active app uses SwiftLint)
 
 **Custom Rules Required:**
 - ⚠️ 12 custom ESLint rules documented (need plugin implementation)
@@ -270,7 +272,7 @@ The frontend scaffold has been aligned with HustleXP constitutional specificatio
    - See `.eslintrc.js` for full list
 
 2. **AccessibilityInfo Integration** (UI_SPEC §3.6)
-   - Integrate React Native `AccessibilityInfo` for reduced motion
+   - Integrate platform accessibility API for reduced motion (SwiftUI: `@Environment(\.accessibilityReduceMotion)`; legacy RN: `AccessibilityInfo`)
    - Update `ReducedMotionGuard` to check system setting
 
 3. **Server API Integration**
