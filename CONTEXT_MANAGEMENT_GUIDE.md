@@ -86,7 +86,7 @@ Level 3 (Reference, if needed):
 
 **Total: ~6-8k tokens**
 
-### Scenario 2: Implement iOS SwiftUI Screen (legacy heading: React Native)
+### Scenario 2: Implement iOS SwiftUI Screen
 
 ```
 Level 1 (Foundation):
@@ -96,33 +96,18 @@ Level 1 (Foundation):
 Level 2 (Task):
   ├── CURSOR_INSTRUCTIONS.md
   ├── specs/03-frontend/DESIGN_SYSTEM.md
-  └── screens-spec/{category}/{SCREEN}.md
+  ├── screens-spec/{category}/{SCREEN}.md
+  └── (if STITCH-driven) specs/03-frontend/stitch-prompts/{SCREEN}.md
 
 Level 3 (Reference, if needed):
-  └── reference/components/
-```
-
-**Total: ~8-10k tokens**
-
-### Scenario 3: Implement iOS SwiftUI Screen
-
-```
-Level 1 (Foundation):
-  ├── .cursorrules
-  └── CURRENT_PHASE.md
-
-Level 2 (Task):
-  ├── ios-swiftui/HustleXP/README.md
-  └── STITCH HTML file for screen
-
-Level 3 (Reference, if needed):
+  ├── reference/components/  (legacy React Native patterns)
   ├── HustleColors.swift
   └── HustleTypography.swift
 ```
 
-**Total: ~6-8k tokens**
+**Total: ~8-10k tokens**
 
-### Scenario 4: Backend Endpoint Work
+### Scenario 3: Backend Endpoint Work
 
 ```
 Level 1 (Foundation):
@@ -140,7 +125,7 @@ Level 3 (Reference, if needed):
 
 **Total: ~10-12k tokens**
 
-### Scenario 5: Bug Fix (Minimal Context)
+### Scenario 4: Bug Fix (Minimal Context)
 
 ```
 Level 1 (Foundation):
@@ -155,7 +140,7 @@ Level 3 (Reference, if needed):
 
 **Total: ~4-6k tokens**
 
-### Scenario 6: Architecture Understanding
+### Scenario 5: Architecture Understanding
 
 ```
 Level 1:
