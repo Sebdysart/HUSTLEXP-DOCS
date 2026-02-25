@@ -539,7 +539,7 @@ Requirements:
 - `R2_ACCOUNT_ID` — Cloudflare R2 account ID
 - `R2_ACCESS_KEY_ID` — Cloudflare R2 access key
 - `R2_SECRET_ACCESS_KEY` — Cloudflare R2 secret key
-- `R2_BUCKET_NAME` — Cloudflare R2 bucket name (default: `hustlexp-media`)
+- `R2_BUCKET_NAME` — Cloudflare R2 bucket name (default: `hustlexp-storage`)
 - `SENDGRID_API_KEY` — Email sending
 - `TWILIO_AUTH_TOKEN` — SMS sending
 - `SENTRY_DSN` — Error tracking
@@ -612,7 +612,7 @@ Requirements:
 ### Forbidden
 
 - ❌ Mapbox (inconsistent US residential geocoding)
-- ❌ Apple Maps API (iOS-only, no Android support)
+- ✅ Apple MapKit (iOS native map display — app is iOS-only SwiftUI)
 - ❌ OpenStreetMap tiles (insufficient address accuracy for task matching)
 - ❌ Background location tracking (INV-PRIVACY-1 violation)
 - ❌ Client-side geocoding (spoofing vector)
