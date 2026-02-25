@@ -1,5 +1,7 @@
 # HustleXP UI Specification v1.6.0
 
+> **⚠️ TECH STACK NOTE:** Some code examples in this spec use React Native / Expo syntax (legacy scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map React Native APIs to SwiftUI equivalents. The behavioral constraints, color authority, animation rules, and layered hierarchy are authoritative regardless of framework.
+
 **STATUS: CONSTITUTIONAL AUTHORITY — MAX-TIER COMPLETE + LAYERED HIERARCHY**  
 **Owner:** HustleXP Core  
 **Last Updated:** January 2025  

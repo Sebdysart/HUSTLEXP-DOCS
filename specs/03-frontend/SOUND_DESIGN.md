@@ -1,5 +1,7 @@
 # HustleXP Sound Design System
 
+> **⚠️ TECH STACK NOTE:** Code examples in this spec use `expo-av` and `expo-haptics` (React Native / Expo scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Use `AVAudioPlayer` (AVFoundation) for audio and `UIImpactFeedbackGenerator` / Core Haptics for haptics. Sound categories, volume hierarchy, and design rules remain authoritative.
+
 **STATUS: CONSTITUTIONAL AUTHORITY**
 **Owner:** Design/Frontend Team
 **Last Updated:** January 2025

@@ -11,7 +11,7 @@
 ## How to Use This Guide
 
 1. Generate screen from stitch prompt using Google Stitch
-2. Export to React Native / Expo
+2. Export to SwiftUI (or React Native / Expo for legacy scaffold)
 3. Use this guide to wire mock data to each screen component
 
 ---
@@ -454,7 +454,7 @@ export const handlers = [
 | API Contract | `API_CONTRACT.md` |
 | Mock API Routes | `MOCK_API_ROUTES.md` |
 | Screen Specs | Individual stitch prompts |
-| State Management | React Native / Expo patterns |
+| State Management | SwiftUI @State / @Observable (originally React Native / Expo patterns) |
 
 ---
 

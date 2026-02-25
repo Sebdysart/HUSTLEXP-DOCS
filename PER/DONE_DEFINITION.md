@@ -1,5 +1,7 @@
 # DONE DEFINITION — BINARY COMPLETION CRITERIA
 
+> **⚠️ TECH STACK NOTE:** Some checklist items reference React Native / Expo patterns (e.g., `expo-linear-gradient`). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map to SwiftUI equivalents (e.g., `LinearGradient`). The completion criteria and verification methodology remain authoritative.
+
 **STATUS: AUTHORITATIVE**
 **PURPOSE: Remove ambiguity about when something is "done"**
 **RULE: If ANY checkbox is unchecked → NOT DONE**

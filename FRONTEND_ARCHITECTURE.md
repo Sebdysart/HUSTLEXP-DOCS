@@ -1,5 +1,8 @@
 # HustleXP Frontend Architecture
 
+> **⚠️ TECH STACK NOTE:** Code examples in this document use JavaScript/React patterns (legacy scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map to SwiftUI equivalents (NavigationContainer → NavigationStack, state machines → Swift enums, etc.). The architectural principles, color authority, animation constraints, and UI rules remain authoritative regardless of framework.
+> - **Note:** Originally spec'd as React Native/Expo but implemented as native SwiftUI
+
 **Authority:** UI_SPEC.md v1.3.0, ONBOARDING_SPEC.md v1.3.0, ARCHITECTURE.md  
 **Status:** Constitutional Implementation Guide  
 **Last Updated:** January 2025
