@@ -58,7 +58,7 @@ These are **mechanically enforced** at the database level. No code can bypass th
 | Team | Tool | Builds |
 |------|------|--------|
 | Backend | Claude Code | Database, Services, API |
-| Frontend | Cursor | React Native screens |
+| Frontend | Cursor | SwiftUI screens (iOS) |
 
 ### Backend (Claude Code)
 - Read: `.claude/instructions.md`
@@ -137,7 +137,7 @@ Full list: `screens-spec/SCREEN_REGISTRY.md`
 | Repo | Purpose | Link |
 |------|---------|------|
 | **HUSTLEXP-DOCS** | This repo (specs, docs) | You're here |
-| **HUSTLEXPFINAL1** | React Native frontend | [GitHub](https://github.com/Sebdysart/HUSTLEXPFINAL1) |
+| **HUSTLEXPFINAL1** | iOS app (Swift/SwiftUI) | [GitHub](https://github.com/Sebdysart/HUSTLEXPFINAL1) |
 | **hustlexp-ai-backend** | Backend services | [GitHub](https://github.com/Sebdysart/hustlexp-ai-backend) |
 
 ---

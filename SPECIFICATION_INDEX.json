@@ -469,8 +469,8 @@
   "reference_implementation": {
     "directory": "reference/",
     "language": "TypeScript + JavaScript",
-    "framework": "React Native 0.81.5",
-    "runtime": "Expo 54.0.31",
+    "framework": "Swift / SwiftUI (iOS 17+)",
+    "runtime": "Xcode 16+",
     "package_json": "reference/package.json",
     "components": "reference/components/",
     "screens": "reference/screens/",
@@ -480,8 +480,7 @@
   },
   "testing": {
     "test_directory": "__tests__/",
-    "jest_config": "jest.config.js",
-    "jest_setup": "jest.setup.js",
+    "vitest_config": "vitest.config.ts",
     "coverage_requirement": "70%",
     "test_types": ["components", "state", "utils"]
   },
@@ -545,7 +544,7 @@
   "related_repositories": [
     {
       "name": "HUSTLEXPFINAL1",
-      "purpose": "React Native frontend implementation (ACTIVE)",
+      "purpose": "iOS app — Swift/SwiftUI (ACTIVE)",
       "url": "https://github.com/Sebdysart/HUSTLEXPFINAL1",
       "enforcement_file": ".cursorrules"
     },

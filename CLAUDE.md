@@ -68,7 +68,7 @@ When working on specs, always indicate which layer(s) are affected.
 
 1. **Determine which repo** the user is working in:
    - **HUSTLEXP-DOCS** (this repo): Specifications and documentation
-   - **HUSTLEXPFINAL1**: React Native frontend implementation
+   - **HUSTLEXPFINAL1**: iOS app (Swift/SwiftUI)
    - **hustlexp-ai-backend**: Backend services implementation
 
 2. **Read role-specific enforcement files:**
@@ -161,7 +161,7 @@ HUSTLEXP-DOCS/
 │       └── audits/                  ← Historical audit reports
 │
 ├── 📦 REFERENCE IMPLEMENTATION
-│   └── reference/                   ← Scaffold code (React Native + Expo)
+│   └── reference/                   ← Scaffold code (Swift/SwiftUI)
 │       ├── components/              ← Example components
 │       ├── screens/                 ← Example screens
 │       ├── constants/               ← Design tokens in code
@@ -334,7 +334,7 @@ AI assistants should STOP IMMEDIATELY and ask the user if:
 | Repository | Purpose | AI Instructions |
 |------------|---------|----------------|
 | **HUSTLEXP-DOCS** (this repo) | Specifications | Read `CLAUDE.md` |
-| **HUSTLEXPFINAL1** | React Native frontend | Read `.cursorrules` |
+| **HUSTLEXPFINAL1** | iOS app (Swift/SwiftUI) | Read `.cursorrules` |
 | **hustlexp-ai-backend** | Backend services | Read `.claude/instructions.md` |
 
 **CRITICAL:** Do not confuse repositories. Each has its own enforcement rules.

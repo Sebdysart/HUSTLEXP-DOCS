@@ -213,10 +213,11 @@ Requirements:
 
 ## 📁 TIER 5: FILE STORAGE
 
-### ✅ AWS S3 (via AWS SDK v3)
+### ✅ Cloudflare R2 (S3-compatible API)
 
 **Why:**
-- Industry standard
+- S3-compatible API (drop-in replacement)
+- Zero egress fees (significant cost savings)
 - Presigned URLs (client-direct upload)
 - No backend proxying (bandwidth savings)
 - Lifecycle policies (auto-delete old proofs)
@@ -229,14 +230,14 @@ Requirements:
 **Upload Flow:**
 1. Client requests presigned URL from backend
 2. Backend generates presigned POST URL (10min TTL)
-3. Client uploads directly to S3
+3. Client uploads directly to R2
 4. Client confirms upload to backend
-5. Backend validates file exists, stores S3 key in DB
+5. Backend validates file exists, stores R2 key in DB
 
 **Security:**
 - Presigned URLs expire after 10 minutes
 - All objects private (no public read)
-- Backend serves via CloudFront CDN (signed URLs)
+- Backend serves via Cloudflare CDN
 
 **Forbidden:**
 - ❌ Cloudinary (expensive, unnecessary features)
@@ -364,7 +365,7 @@ Requirements:
 
 **Log Destination:**
 - Development: stdout (pretty-printed)
-- Production: stdout → Fly.io logs → Logtail/Papertrail
+- Production: stdout → Railway logs → Logtail/Papertrail
 
 ### ✅ Metrics: Prometheus + Grafana
 
@@ -390,13 +391,13 @@ Requirements:
 
 ## 🧪 TIER 10: TESTING
 
-### ✅ Unit Tests: Jest
+### ✅ Unit Tests: Vitest
 
 **Why:**
-- Industry standard
-- Great TypeScript support
-- Snapshot testing
-- Code coverage
+- Vite-native, fast execution
+- ESM-first with great TypeScript support
+- Jest-compatible API (easy migration)
+- Built-in code coverage (v8/istanbul)
 
 **Test Types:**
 - Unit tests: Services, utilities
@@ -428,24 +429,26 @@ Requirements:
 
 **Forbidden:**
 - ❌ Manual testing (not reproducible)
-- ❌ Mocha (Jest is better)
+- ❌ Jest (slower, CJS-first; migrated to Vitest)
+- ❌ Mocha (Vitest is better)
 - ❌ AVA (immature)
 
 ---
 
 ## 🚀 TIER 11: DEPLOYMENT
 
-### ✅ Platform: Fly.io
+### ✅ Platform: Railway
 
 **Why:**
-- Simple deployment (Dockerfile)
-- Global edge network
-- Postgres proximity (low latency to Neon)
+- Simple deployment (Dockerfile or Nixpacks)
+- Automatic scaling
+- Low latency to Neon Postgres
 - No vendor lock-in (Docker-based)
+- Excellent DX (GitHub integration, preview environments)
 
 **Architecture:**
-- API server: 2+ instances (auto-scaling)
-- Worker process: 1+ instances (separate app)
+- API server: auto-scaling instances
+- Worker process: separate Railway service
 - Redis: Upstash (managed)
 - Postgres: Neon (managed)
 
@@ -458,7 +461,7 @@ Requirements:
 - SIGTERM handler (drain connections)
 - Max 30s shutdown grace period
 
-**Alternative:** Railway (similar to Fly.io, equally acceptable)
+**Alternative:** Fly.io (similar to Railway, equally acceptable)
 
 **Forbidden:**
 - ❌ Vercel (no stateful workers, edge runtime limitations)
@@ -525,7 +528,7 @@ Requirements:
 
 **Where:**
 - Development: `.env.local` (gitignored)
-- Production: Fly.io secrets (encrypted)
+- Production: Railway environment variables (encrypted)
 
 **Required Secrets:**
 - `DATABASE_URL` — Neon connection string
@@ -533,8 +536,9 @@ Requirements:
 - `FIREBASE_ADMIN_KEY` — Firebase Admin SDK JSON
 - `STRIPE_SECRET_KEY` — Stripe API key
 - `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret
-- `AWS_ACCESS_KEY_ID` — S3 access
-- `AWS_SECRET_ACCESS_KEY` — S3 secret
+- `R2_ACCESS_KEY_ID` — Cloudflare R2 access
+- `R2_SECRET_ACCESS_KEY` — Cloudflare R2 secret
+- `R2_ENDPOINT` — Cloudflare R2 endpoint URL
 - `SENDGRID_API_KEY` — Email sending
 - `TWILIO_AUTH_TOKEN` — SMS sending
 - `SENTRY_DSN` — Error tracking

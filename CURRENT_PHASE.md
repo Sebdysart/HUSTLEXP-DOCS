@@ -22,7 +22,7 @@ All prior phases have been completed:
 
 ### Active Tasks
 - Frontend-backend endpoint alignment (field names, input schemas)
-- Docs accuracy (SwiftUI not React Native, correct colors)
+- Docs accuracy (aligned to SwiftUI, correct colors, R2 not S3, Vitest not Jest, Railway not Fly.io)
 - Integration testing
 
 ---

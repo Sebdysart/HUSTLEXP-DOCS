@@ -38,12 +38,11 @@ HUSTLERS: "Earn money completing tasks nearby."
 
 ## TECH STACK
 
-### Frontend (Dual Platform)
+### Frontend (iOS Native)
 
 | Platform | Stack | Status |
 |----------|-------|--------|
-| **React Native** | React Native + Expo + TypeScript | Bootstrap Phase |
-| **iOS Native** | SwiftUI (iOS 17+) | 15/38 screens synced |
+| **iOS Native** | Swift / SwiftUI (iOS 17+) | Active Development |
 
 ### Backend
 
@@ -238,8 +237,8 @@ Layer 0: PostgreSQL         ← ENFORCES (triggers, constraints)
 Layer 1: Backend Services   ← VALIDATES (tRPC, state machines)
 Layer 2: API Gateway        ← GUARDS (rate limits, auth)
 Layer 3: AI Services        ← PROPOSES (never auto-decides money)
-Layer 4: Frontend Logic     ← DERIVES (Zustand, React Query)
-Layer 5: UI Components      ← DISPLAYS (React Native, SwiftUI)
+Layer 4: Frontend Logic     ← DERIVES (SwiftUI @State, Combine)
+Layer 5: UI Components      ← DISPLAYS (SwiftUI)
 Layer 6: Native Shell       ← HOSTS (iOS, Android)
 ```
 

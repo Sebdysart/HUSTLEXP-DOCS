@@ -94,11 +94,11 @@ If a screen feels like "starting from zero" → it FAILS quality review.
 
 | Check | Status |
 |-------|--------|
-| App builds in Xcode | ❌ |
-| App launches without crash | ❌ |
-| BootstrapScreen renders | ❌ |
-| Button logs to console | ❌ |
-| 30-second stability | ❌ |
+| App builds in Xcode | ✅ |
+| App launches without crash | ✅ |
+| BootstrapScreen renders | ✅ |
+| Button logs to console | ✅ |
+| 30-second stability | ✅ |
 
 📋 **[BOOTSTRAP.md](BOOTSTRAP.md)** — The runtime baseline  
 📋 **[CURRENT_PHASE.md](CURRENT_PHASE.md)** — What's allowed right now
@@ -298,7 +298,7 @@ HUSTLEXP-DOCS/
 
 | Repository | Purpose |
 |------------|---------|
-| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | **React Native Frontend (ACTIVE)** |
+| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | **iOS App — Swift/SwiftUI (ACTIVE)** |
 | [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend) | Backend services |
 
 ---
