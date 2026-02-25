@@ -18,7 +18,7 @@
 - Separate Supabase/Neon projects per environment
 - Separate Stripe accounts (test mode for staging, live for production)
 - Separate Firebase projects
-- Separate Fly.io apps
+- Separate Railway projects
 
 ---
 
@@ -33,7 +33,7 @@
 | Type check | TypeScript `tsc --noEmit` | Block merge |
 | Unit tests | Jest / Vitest | Block merge |
 | Integration tests | Supertest + test DB | Block merge |
-| Build (frontend) | EAS Build (Expo) | Block merge |
+| Build (frontend) | Xcode build (SwiftUI) | Block merge |
 | Build (backend) | Docker build | Block merge |
 | Schema validation | `pg_prove` or SQL syntax check | Block merge |
 
@@ -48,19 +48,19 @@
 
 ### 3.1 Staging Deployment
 - Trigger: merge to `staging` branch
-- Backend: `flyctl deploy --app hustlexp-staging`
-- Frontend: EAS Update (OTA) to staging channel
+- Backend: Railway auto-deploy from `staging` branch
+- Frontend: Xcode archive + TestFlight distribution
 - Database: Run pending migrations against staging DB
 
 ### 3.2 Production Deployment
-- Trigger: manual (GitHub Actions workflow dispatch OR `flyctl deploy`)
+- Trigger: manual (Railway promote from staging OR GitHub Actions workflow dispatch)
 - Pre-deploy checklist:
   1. Staging tested and stable for ≥24 hours
   2. No open P0 bugs
   3. Database migration tested on staging
   4. Rollback plan documented in deploy PR
-- Backend: `flyctl deploy --app hustlexp-production --strategy rolling`
-- Frontend: EAS Submit to App Store / Google Play (binary updates) OR EAS Update (OTA for JS-only changes)
+- Backend: Railway promote from staging (rolling deploy)
+- Frontend: Xcode archive + App Store submission
 - Database: Run pending migrations against production DB
 
 ---
@@ -91,9 +91,8 @@
 
 | Component | Rollback Method | Time |
 |---|---|---|
-| Backend API | `flyctl releases rollback --app hustlexp-production` | < 1 min |
-| Frontend (OTA) | `eas update --branch production --message "rollback"` | < 5 min |
-| Frontend (binary) | App store rollback not possible; push hotfix | Hours |
+| Backend API | Railway rollback to previous deploy | < 1 min |
+| Frontend (binary) | App Store rollback not possible; push hotfix | Hours |
 | Database | Run DOWN migrations | Varies |
 
 **Rollback decision criteria:**

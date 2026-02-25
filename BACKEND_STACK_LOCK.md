@@ -536,9 +536,10 @@ Requirements:
 - `FIREBASE_ADMIN_KEY` — Firebase Admin SDK JSON
 - `STRIPE_SECRET_KEY` — Stripe API key
 - `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret
-- `R2_ACCESS_KEY_ID` — Cloudflare R2 access
-- `R2_SECRET_ACCESS_KEY` — Cloudflare R2 secret
-- `R2_ENDPOINT` — Cloudflare R2 endpoint URL
+- `R2_ACCOUNT_ID` — Cloudflare R2 account ID
+- `R2_ACCESS_KEY_ID` — Cloudflare R2 access key
+- `R2_SECRET_ACCESS_KEY` — Cloudflare R2 secret key
+- `R2_BUCKET_NAME` — Cloudflare R2 bucket name (default: `hustlexp-media`)
 - `SENDGRID_API_KEY` — Email sending
 - `TWILIO_AUTH_TOKEN` — SMS sending
 - `SENTRY_DSN` — Error tracking
@@ -567,7 +568,7 @@ Requirements:
 
 **Strategy:**
 - GitHub (primary)
-- Daily backup to S3 (via GitHub Actions)
+- Daily backup to R2 (via GitHub Actions)
 
 ---
 
@@ -585,12 +586,12 @@ Requirements:
 | **Static Maps API** | Task card map thumbnails | Feed render, cached 24h via CDN |
 | **Places Autocomplete** | Address input suggestions | Task creation form, client-side |
 
-### Mobile SDK: `react-native-maps` (Google Maps provider)
+### Mobile SDK: MapKit (iOS native)
 
-- iOS: Uses Google Maps SDK (not Apple Maps) for cross-platform consistency
-- Android: Native Google Maps integration
+- iOS: Uses Apple MapKit (native SwiftUI integration)
 - Map interactions: Pan, zoom, markers, polylines, circles
-- No Mapbox, no Apple Maps, no HERE Maps
+- No Mapbox, no HERE Maps
+- NOTE: The active app is Swift/SwiftUI (HUSTLEXPFINAL1), not React Native
 
 ### Cost Controls
 

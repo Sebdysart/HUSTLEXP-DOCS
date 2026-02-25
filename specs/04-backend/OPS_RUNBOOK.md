@@ -20,7 +20,7 @@
 
 **v1 (solo founder):** Founder is on-call 24/7. Set up:
 - PagerDuty or Opsgenie for alerting
-- Fly.io status alerts → PagerDuty
+- Railway status alerts → PagerDuty
 - Neon status alerts → PagerDuty
 - Stripe webhook failure alerts → PagerDuty
 - Sentry error spike alerts → PagerDuty
@@ -37,10 +37,10 @@
 - RTO (Recovery Time Objective): < 15 minutes
 - RPO (Recovery Point Objective): < 1 minute (WAL-based)
 
-### 3.2 File Storage (Supabase Storage / S3)
-- Proof photos and uploads: S3 versioning enabled
-- Backup: S3 cross-region replication (if budget allows)
-- Recovery: restore from S3 version history
+### 3.2 File Storage (Cloudflare R2)
+- Proof photos and uploads: R2 with versioning
+- Backup: R2 cross-region replication (if budget allows)
+- Recovery: restore from R2 version history
 
 ### 3.3 Redis (Upstash)
 - Ephemeral by design — rate limits and job queues rebuild automatically
@@ -52,7 +52,7 @@
 
 | Service | Failure | Failover |
 |---|---|---|
-| Fly.io API machine | Machine crash | Auto-restart (Fly.io health checks). If region down → failover to backup region |
+| Railway API instance | Instance crash | Auto-restart (Railway health checks). If region down → failover to backup region |
 | Neon database | Primary down | Neon auto-failover to read replica. Manual promote if needed |
 | Stripe | Outage | Queue payment actions, retry when Stripe recovers. Show user "Payment processing delayed" |
 | Firebase Auth | Outage | Users can't log in. No failover possible. Display maintenance screen |
@@ -84,7 +84,7 @@ VALUES ('founder_id', 'manual_escrow_fix', 'escrow', 'YYY', 'Reason: ...');
 1. Check Neon dashboard for connection count
 2. Identify long-running queries: `SELECT * FROM pg_stat_activity WHERE state = 'active';`
 3. Kill stuck queries: `SELECT pg_terminate_backend(pid);`
-4. If persistent: restart Fly.io machines to reset connection pool
+4. If persistent: restart Railway instances to reset connection pool
 
 ---
 
@@ -93,7 +93,7 @@ VALUES ('founder_id', 'manual_escrow_fix', 'escrow', 'YYY', 'Reason: ...');
 - Tool: Atlassian Statuspage or instatus.com
 - URL: `status.hustlexp.com`
 - Components monitored: API, Payments, Messaging, Maps, Authentication
-- Auto-update from Fly.io and Stripe health checks
+- Auto-update from Railway and Stripe health checks
 
 ---
 

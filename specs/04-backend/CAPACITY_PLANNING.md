@@ -20,7 +20,7 @@
 
 ## §2. Infrastructure Sizing
 
-### 2.1 Fly.io Compute
+### 2.1 Railway Compute
 | Component | Size | Count | Auto-Scale |
 |---|---|---|---|
 | API server | shared-cpu-2x (512MB) | 2 min, 5 max | CPU > 70% for 2 min |
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | Pro ($19/mo) | 100 pooled (PgBouncer) | 50GB | 0.25-2 CU auto-scale |
 
-**Connection limits:** Application uses connection pooling. Each Fly.io machine gets 10 connections from pool.
+**Connection limits:** Application uses connection pooling. Each Railway instance gets 10 connections from pool.
 
 ### 2.3 Redis (Upstash)
 | Use | Memory | Commands/Day |
@@ -47,7 +47,7 @@
 
 | Metric | Threshold | Action |
 |---|---|---|
-| API p95 latency | > 500ms | Add Fly.io machine |
+| API p95 latency | > 500ms | Add Railway instance |
 | DB connection utilization | > 80% | Upgrade Neon plan |
 | WebSocket connections | > 80% of limit | Add WebSocket machine |
 | Redis memory | > 80% | Upgrade Upstash plan |
@@ -58,7 +58,7 @@
 
 ## §4. Cost Projections
 
-| Users | Fly.io | Neon | Redis | Maps | Total/mo |
+| Users | Railway | Neon | Redis | Maps | Total/mo |
 |---|---|---|---|---|---|
 | 1K | $30 | $19 | $10 | $200 | $259 |
 | 5K | $80 | $69 | $30 | $600 | $779 |
