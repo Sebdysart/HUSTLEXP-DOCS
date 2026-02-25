@@ -80,7 +80,7 @@ hustlexp-storage/
 |-------------|-------------|------------|
 | Development | `hustlexp-dev` | `https://dev-storage.hustlexp.com` |
 | Staging | `hustlexp-staging` | `https://staging-storage.hustlexp.com` |
-| Production | `hustlexp-prod` | `https://storage.hustlexp.com` |
+| Production | `hustlexp-storage` | `https://storage.hustlexp.com` |
 
 ---
 

@@ -35,25 +35,24 @@ This document tells you:
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║                     PHASE: BOOTSTRAP (FRONTEND)                           ║
+║                PHASE: INTEGRATION & ALIGNMENT                              ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
-║  STATUS: IN PROGRESS                                                      ║
-║  OWNER:  Cursor (Frontend Agent)                                          ║
-║  GATE:   App must build + launch + render + not crash                     ║
+║  STATUS: POST-BOOTSTRAP — Cross-repo alignment active                     ║
+║  OWNER:  Multi-agent (Backend, iOS, Docs)                                 ║
+║  GATE:   All repos aligned to actual tech stack, CI passing               ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
 ### Phase Progression
 
 ```
-[CURRENT] Bootstrap (Frontend)
-          ↓ must pass before
-          Phase 0: Schema Verification (Backend)
-          ↓ must pass before
-          Phase 1: Navigation Shell (Frontend)
-          ↓ must pass before
-          Phase 1: Core Services (Backend)
-          ↓ ...continues
+[DONE]    Bootstrap (Frontend) ✓
+[DONE]    Phase 0: Schema Verification (Backend) ✓
+[DONE]    Phase 1: Navigation Shell (Frontend) ✓
+[DONE]    Phase 1: Core Services (Backend) ✓
+[CURRENT] Integration & Alignment (Cross-repo)
+          ↓ next
+          Phase 2: End-to-end testing & hardening
 ```
 
 ---
@@ -80,96 +79,95 @@ This document tells you:
 
 ## CURRENT FOCUS
 
-### Today's Focus (2026-01-24)
+### Today's Focus (2026-02-25)
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  GOAL: Pass Bootstrap Gate                                          │
+│  GOAL: Cross-repo alignment & hardening                             │
 │                                                                     │
 │  SUCCESS CRITERIA:                                                  │
-│  [ ] App builds in Xcode without errors                             │
-│  [ ] App launches in iOS Simulator without crashing                 │
-│  [ ] EntryScreen renders with purple brand                          │
-│  [ ] "Get Started" button visible and tappable                      │
-│  [ ] No crashes for 30 seconds idle                                 │
-│  [ ] Colors match COLOR_SEMANTICS_LAW.md                            │
+│  [x] All docs aligned to actual tech stack                          │
+│  [x] Backend security hardening (CORS, auth, DLQ, Redis budget)     │
+│  [x] iOS SSL pin rotation + offline queue                           │
+│  [ ] CI passing on all repos                                        │
+│  [ ] End-to-end integration smoke test                              │
 │                                                                     │
-│  FORBIDDEN:                                                         │
-│  - Network requests                                                 │
-│  - Navigation to other screens                                      │
-│  - Maps or location services                                        │
-│  - New dependencies                                                 │
-│  - Any screen other than EntryScreen                                │
+│  ACTIVE WORK:                                                       │
+│  - Backend PR #9: Security hardening & audit fixes                  │
+│  - iOS PR #4: SSL pin rotation + offline queue                      │
+│  - Docs PR #2: Tech stack alignment                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Reference Files for Current Focus
 | File | Purpose |
 |------|---------|
-| `BOOTSTRAP.md` | Success criteria (authoritative) |
-| `reference/components/EntryScreen.js` | Copy this, not minimal patterns |
-| `reference/constants/colors.js` | Authoritative color tokens |
+| `BACKEND_STACK_LOCK.md` | Authoritative tech stack decisions |
+| `CURRENT_PHASE.md` | Current phase status |
 | `COLOR_SEMANTICS_LAW.md` | What colors mean |
 | `PER/UI_ACCEPTANCE_PROTOCOL.md` | UAP gates |
+| `specs/04-backend/STRIPE_INTEGRATION.md` | Stripe/escrow integration spec |
 
 ---
 
 ## NEXT LEGAL ACTION
 
 ### What You CAN Do Right Now
-1. Create/edit EntryScreen to pass Bootstrap criteria
-2. Fix build errors in Xcode
-3. Fix crashes in iOS Simulator
-4. Verify colors match specification
+1. Fix cross-repo alignment issues (docs ↔ backend ↔ iOS)
+2. Security hardening and audit fixes
+3. Backend service integration and testing
+4. iOS service layer improvements
+5. CI/CD pipeline fixes
 
 ### What You CANNOT Do Right Now
-- Add new screens (BLOCKED until Bootstrap passes)
-- Add navigation (BLOCKED until Bootstrap passes)
-- Add backend calls (BLOCKED until Bootstrap passes)
-- Add maps/SVG (BLOCKED until Bootstrap passes)
-- Add new dependencies (BLOCKED until Bootstrap passes)
-- Modify invariants (NEVER allowed)
 - Add new features (FEATURE_FREEZE active)
+- Modify invariants (NEVER allowed)
+- Change the tech stack (BACKEND_STACK_LOCK active)
+- Add new database tables without schema review
 
 ---
 
 ## FRONTEND STATUS
 
-### App Structure
+### App Structure (iOS — Swift/SwiftUI)
 ```
-hustlexp-app/
-├── App.tsx                    → Entry point (renders EntryScreen)
-├── screens/
-│   └── EntryScreen.tsx        → The ONLY screen for Bootstrap
-├── package.json               → Dependencies (DO NOT ADD)
-└── ios/                       → Native iOS project
+HUSTLEXPFINAL1/hustleXP final1/
+├── hustleXP_final1App.swift   → App entry point
+├── Services/                  → TRPCClient, AuthService, EscrowService, etc.
+├── Views/                     → SwiftUI screens
+├── Utilities/                 → AppConfig, KeychainManager, HXLogger
+└── Config/                    → Environment configuration
 ```
 
-### Screen Registry (38 total, 0 implemented)
+### Screen Registry (38 total)
 | Phase | Screen | Status |
 |-------|--------|--------|
-| Bootstrap | EntryScreen | IN PROGRESS |
-| Phase 1 | All others | BLOCKED |
+| Bootstrap | EntryScreen | COMPLETE |
+| Phase 1 | Navigation shell | COMPLETE |
+| Integration | All screens | IN PROGRESS |
 
-### iOS Native (15 SwiftUI screens synced)
-- **Location:** `ios-swiftui/HustleXP/Sources/Screens/`
-- **Status:** Synced with React Native specs
+### iOS Native (SwiftUI)
+- **Location:** `HUSTLEXPFINAL1/hustleXP final1/`
+- **Status:** Native Swift/SwiftUI implementation active
 - **Authority:** STITCH HTML files are source of truth
 
 ---
 
 ## BACKEND STATUS
 
-### Current Phase: WAITING
-Backend work is BLOCKED until Frontend Bootstrap passes.
+### Current Phase: INTEGRATION & ALIGNMENT
+Backend is active — security hardening and service integration in progress.
 
 ### Database Schema
 - **31 tables defined** in `specs/02-architecture/schema.sql`
 - **33 invariants defined** in `PER/INVARIANTS.md`
 - **24 kill tests required** (not yet implemented)
+- **DLQ migration added** for webhook_dead_letter_queue
 
 ### API Status
-- **tRPC routers:** Defined in spec, not implemented
-- **Endpoints:** 0 implemented
+- **tRPC routers:** Active in `backend/src/`
+- **Fastify routes:** Active in `src/index.ts` (4500+ lines)
+- **Stripe integration:** StripeService + StripeMoneyEngine (SAGA 3.0)
+- **AI orchestration:** Multi-model (DeepSeek, Groq, GPT-4o, Google, OpenRouter)
 
 ---
 
@@ -250,7 +248,7 @@ Layer 2: API Gateway (rate limits, auth)              ← GUARDS
 Layer 3: AI Services (proposals only)                 ← PROPOSES
 Layer 4: Frontend Logic (state management)            ← DERIVES
 Layer 5: UI Components (rendering)                    ← DISPLAYS
-Layer 6: Native Shell (iOS/Android)                   ← HOSTS
+Layer 6: Native Shell (iOS SwiftUI)                    ← HOSTS
 ```
 
 ---
@@ -258,29 +256,32 @@ Layer 6: Native Shell (iOS/Android)                   ← HOSTS
 ## QUICK START FOR AI
 
 ### Step 1: Confirm Phase
-You are in **BOOTSTRAP** phase. Only EntryScreen work is allowed.
+You are in **INTEGRATION & ALIGNMENT** phase. Cross-repo alignment and hardening work is active.
 
-### Step 2: Confirm Colors
+### Step 2: Confirm Tech Stack
+- **iOS:** Swift/SwiftUI (HUSTLEXPFINAL1) — NOT React Native
+- **Backend:** Fastify + tRPC + node-postgres — NOT Hono/Supabase
+- **Database:** Neon PostgreSQL — NOT Supabase
+- **Storage:** Cloudflare R2 — NOT AWS S3
+- **Deploy:** Railway — NOT Fly.io
+- **Tests:** Vitest — NOT Jest
+
+### Step 3: Confirm Colors
 - Brand: Black (#0B0B0F) + Purple (#5B2DFF)
 - Entry screens: Purple gradient, NOT green
 - Green: SUCCESS-ONLY (never on entry)
 
-### Step 3: Confirm Pattern
-- Copy `reference/components/EntryScreen.js`
-- Do NOT copy minimal patterns
-- UAP-5 (Full-Canvas) is REQUIRED
-
 ### Step 4: Check Constraints
-- No network requests
-- No new screens
-- No new dependencies
-- Must pass Bootstrap criteria
+- No new features (FEATURE_FREEZE active)
+- No invariant modifications
+- No tech stack changes (BACKEND_STACK_LOCK active)
+- UAP-5 (Full-Canvas) is REQUIRED for entry screens
 
 ### Step 5: Output
-Only produce work that passes:
-1. Bootstrap success criteria
-2. UAP-5 Full-Canvas Immersion
-3. COLOR_SEMANTICS_LAW compliance
+Only produce work that:
+1. Aligns repos to actual tech stack
+2. Passes CI on all repos
+3. Maintains COLOR_SEMANTICS_LAW compliance
 
 ---
 

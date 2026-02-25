@@ -612,7 +612,6 @@ Requirements:
 ### Forbidden
 
 - ❌ Mapbox (inconsistent US residential geocoding)
-- ✅ Apple MapKit (iOS native map display — app is iOS-only SwiftUI)
 - ❌ OpenStreetMap tiles (insufficient address accuracy for task matching)
 - ❌ Background location tracking (INV-PRIVACY-1 violation)
 - ❌ Client-side geocoding (spoofing vector)
