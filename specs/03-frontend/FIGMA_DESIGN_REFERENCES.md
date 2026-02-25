@@ -45,8 +45,8 @@
 
 **Code Status:**
 - ⚠️ Figma exported **Web React** code (Tailwind CSS)
-- ⚠️ Must be adapted to **React Native** using FRONTEND_EXECUTION_PROMPTS.md PROMPT 1
-- ✅ React Native components already exist (GlassCard, PrimaryActionButton, SectionHeader)
+- ⚠️ Must be adapted to **Swift/SwiftUI** (active app is native iOS, not React Native). Original spec referenced FRONTEND_EXECUTION_PROMPTS.md PROMPT 1 for RN adaptation.
+- ✅ SwiftUI components exist for equivalent patterns (GlassCard, PrimaryActionButton, SectionHeader)
 - ✅ Design tokens already exist (colors, spacing, typography)
 
 ---

@@ -1,5 +1,7 @@
 # Stitch Prompt Wiring Guide
 
+> **⚠️ TECH STACK NOTE:** This guide was written for a React Native / Expo scaffold. The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map React Native patterns to SwiftUI equivalents. The tRPC wiring approach and mock data patterns remain conceptually valid.
+
 **PURPOSE:** This guide provides consistent mock API wiring instructions for implementing stitch prompt screens.
 
 **PHASE:** Wiring Phase (connecting UI to mock data)
