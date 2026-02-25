@@ -97,40 +97,42 @@
 
 ---
 
-### 5. FLY.IO (Hosting)
+### 5. RAILWAY (Hosting)
 
-**What you need:** Fly.io account with 2+ machines
+**What you need:** Railway account with project
 **Products used:**
-- **API server** — 2+ instances with auto-scaling
-- **Worker process** — separate app for BullMQ background jobs
+- **API server** — auto-scaling instances
+- **Worker process** — separate service for BullMQ background jobs
 - **Health checks** — GET /health every 10s
 - **Secrets management** — encrypted env vars in production
-- **Logs** — stdout → Fly.io log drain
+- **Logs** — stdout → Railway log viewer
 
-**Env vars:** All secrets stored via `fly secrets set`
+**Env vars:** All secrets stored via Railway dashboard
 
-**Cost:** $50-150/month (2-3 machines)
-**Signup:** https://fly.io
-**Notes:** Docker-based deployment. Alternative: Railway (equally acceptable per stack lock).
+**Cost:** $5-50/month (usage-based)
+**Signup:** https://railway.app
+**Notes:** Git-based deployment. Docker optional.
 
 ---
 
-### 6. AWS S3 (File Storage)
+### 6. CLOUDFLARE R2 (File Storage)
 
-**What you need:** AWS account + S3 buckets + CloudFront distribution
+**What you need:** Cloudflare account + R2 bucket
 **Products used:**
-- **S3 buckets:** `hustlexp-proof-photos`, `hustlexp-verification-docs`, `hustlexp-user-avatars`
+- **R2 bucket:** `hustlexp-storage` (proof photos, verification docs, user avatars)
 - **Presigned URLs** — client-direct upload (no backend proxying)
-- **CloudFront CDN** — signed URL delivery for images
+- **R2 CDN** — built-in CDN with custom domain support
 - **Lifecycle policies** — auto-delete old proof photos
 
 **Env vars:**
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
+- `R2_ACCOUNT_ID`
+- `R2_ACCESS_KEY_ID`
+- `R2_SECRET_ACCESS_KEY`
+- `R2_BUCKET_NAME`
 
-**Cost:** ~$5-20/month at launch (S3 storage + CloudFront)
-**Signup:** https://aws.amazon.com
-**Notes:** STORAGE_SPEC.md references Cloudflare R2 as alternative, but BACKEND_STACK_LOCK locks AWS S3. Use S3 SDK v3.
+**Cost:** Free egress, $0.015/GB storage (~$1-5/month at launch)
+**Signup:** https://dash.cloudflare.com
+**Notes:** S3-compatible API. Uses AWS SDK v3 with custom endpoint. Zero egress fees (major cost advantage over S3).
 
 ---
 
@@ -144,7 +146,7 @@
 - **Static Maps API** — task card map thumbnails (cached 24h via CDN)
 - **Places Autocomplete** — address input suggestions (client-side)
 
-**Mobile SDK:** `react-native-maps` (Google Maps provider for both iOS + Android)
+**Mobile SDK:** MapKit (native iOS) for map display; Google APIs for server-side geocoding/directions
 
 **Env vars:**
 - `GOOGLE_MAPS_API_KEY` (server-side, restricted)
@@ -171,22 +173,21 @@
 
 ---
 
-### 9. EXPO (Frontend Build & Distribution)
+### 9. APPLE DEVELOPER (Frontend Build & Distribution)
 
-**What you need:** Expo account (EAS Build subscription)
+**What you need:** Apple Developer Program membership
 **Products used:**
-- **EAS Build** — iOS + Android builds in CI
-- **EAS Submit** — App Store + Google Play submission
-- **EAS Update** — OTA JavaScript-only updates (no binary rebuild)
-- **Expo Push Notifications** — unified push delivery (routes to APNs/FCM)
-- **Expo SDK** — camera, haptics, status bar, etc.
+- **Xcode** — iOS builds (SwiftUI)
+- **TestFlight** — beta distribution
+- **App Store Connect** — App Store submission
+- **APNs** — push notification delivery (via Firebase Cloud Messaging)
 
 **Env vars:**
-- `EXPO_TOKEN` (for CI/CD)
+- Apple Developer account credentials (for Xcode signing)
 
-**Cost:** Free tier for push. EAS Build: $0 (free tier) or $99/month (priority builds)
-**Signup:** https://expo.dev
-**Notes:** Expo Push handles APNs (iOS) and FCM (Android) routing. No separate APNs/FCM setup needed.
+**Cost:** $99/year (Apple Developer Program)
+**Signup:** https://developer.apple.com
+**Notes:** Native SwiftUI app — no Expo/React Native. Push notifications via Firebase Cloud Messaging which routes to APNs.
 
 ---
 
@@ -281,7 +282,7 @@
 - **Event tracking** — user behavior, funnel analysis, retention cohorts
 - **Session replay** — debugging UX issues
 - **Feature flags** — gradual rollouts
-- **React Native SDK** + **Node SDK** (server events)
+- **iOS SDK** (Swift) + **Node SDK** (server events)
 
 **Fallback:** Mixpanel (if PostHog insufficient)
 
@@ -295,7 +296,7 @@
 
 **What you need:** Log aggregation service account
 **Products used:**
-- **Production log drain** — Fly.io stdout → aggregation service
+- **Production log drain** — Railway stdout → aggregation service
 - **Structured JSON logs** via Pino
 - **Log search + alerting**
 
@@ -367,7 +368,7 @@
 ### 22. DOCKER
 
 **Products used:**
-- Dockerfile-based deployment to Fly.io
+- Dockerfile-based deployment to Railway
 - Local development (Docker Compose for local Postgres)
 
 **Cost:** Free (Docker Desktop personal use)
@@ -387,11 +388,13 @@ FIREBASE_ADMIN_KEY=              # Firebase Admin SDK JSON (base64 encoded)
 STRIPE_SECRET_KEY=               # sk_test_... or sk_live_...
 STRIPE_WEBHOOK_SECRET=           # whsec_...
 STRIPE_CONNECT_CLIENT_ID=       # ca_...
-AWS_ACCESS_KEY_ID=               # S3 + CloudFront
-AWS_SECRET_ACCESS_KEY=           # S3 + CloudFront
+R2_ACCOUNT_ID=                   # Cloudflare R2
+R2_ACCESS_KEY_ID=                # Cloudflare R2
+R2_SECRET_ACCESS_KEY=            # Cloudflare R2
+R2_BUCKET_NAME=                  # Cloudflare R2
 GOOGLE_MAPS_API_KEY=             # Server-side (restricted)
 GOOGLE_CLOUD_VISION_KEY=         # Same GCP project or service account
-EXPO_TOKEN=                      # EAS Build CI/CD
+# Apple Developer credentials managed via Xcode signing
 SENTRY_DSN=                      # Error tracking
 SENDGRID_API_KEY=                # Transactional email
 
@@ -418,10 +421,10 @@ PAGERDUTY_INTEGRATION_KEY=       # On-call alerting (optional)
 | 2 | Google Cloud | console.cloud.google.com | Maps + Vision, billing setup |
 | 3 | Firebase | console.firebase.google.com | Auth project setup |
 | 4 | Neon | neon.tech | Database provisioning |
-| 5 | AWS | aws.amazon.com | S3 + CloudFront setup |
+| 5 | Cloudflare | dash.cloudflare.com | R2 storage setup |
 | 6 | Upstash | upstash.com | Redis instance |
-| 7 | Fly.io | fly.io | Hosting setup |
-| 8 | Expo | expo.dev | EAS Build access |
+| 7 | Railway | railway.app | Hosting setup |
+| 8 | Apple Developer | developer.apple.com | iOS build + distribution |
 | 9 | SendGrid | sendgrid.com | Email delivery |
 | 10 | Sentry | sentry.io | Error tracking |
 | 11 | Twilio | twilio.com | SMS + phone verification |
@@ -440,11 +443,11 @@ PAGERDUTY_INTEGRATION_KEY=       # On-call alerting (optional)
 | Firebase Auth | $0 (free tier) |
 | Neon (Pro) | $19-69 |
 | Upstash Redis | $10-30 |
-| Fly.io (2-3 machines) | $50-150 |
-| AWS S3 + CloudFront | $5-20 |
+| Railway | $5-50 |
+| Cloudflare R2 | $1-5 |
 | Google Maps | $0-200 ($200 free credit) |
 | Google Cloud Vision | $5-15 |
-| Expo EAS | $0-99 |
+| Apple Developer | $99/year |
 | Sentry | $26 |
 | SendGrid | $0-20 |
 | Twilio | $5-15 |
@@ -460,11 +463,11 @@ At 10K users: ~$2,000-6,000/month
 
 ## SPEC CONFLICTS / NOTES
 
-1. **S3 vs R2:** STORAGE_SPEC.md references Cloudflare R2, but BACKEND_STACK_LOCK §5 locks AWS S3. **Use S3** (stack lock wins).
-2. **Firebase Storage references:** Some stitch prompts reference "Firebase Storage URL" for avatars/task images. These should be S3/CloudFront URLs per stack lock.
+1. **Storage:** Backend uses Cloudflare R2 (S3-compatible API, zero egress fees). Env vars: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`.
+2. **Firebase Storage references:** Some stitch prompts reference "Firebase Storage URL" for avatars/task images. These should be R2 URLs.
 3. **Supabase references:** Some older spec code samples use `await supabase.from(...)`. These are pseudocode — actual implementation uses `pg` (node-postgres) direct SQL per stack lock.
 4. **PostHog vs Mixpanel:** ANALYTICS_LOCKED locks PostHog as primary, Mixpanel as fallback. UNIT_ECONOMICS lists both. **Use PostHog first.**
-5. **Expo Push vs separate APNs/FCM:** NOTIFICATION_SPEC mentions APNs + FCM directly. Expo Push handles both. **No separate Apple/Google push setup needed.**
+5. **Push Notifications:** Firebase Cloud Messaging handles push delivery to iOS via APNs. No Expo Push needed (native SwiftUI app).
 6. **Twilio vs Firebase Phone Auth:** Firebase Auth handles phone OTP natively. Twilio Lookup is needed separately for VoIP number blocking (Sybil prevention). Both are needed.
 
 ---

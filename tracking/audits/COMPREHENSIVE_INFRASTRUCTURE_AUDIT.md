@@ -22,7 +22,7 @@ HustleXP is an ambitious, feature-rich gig economy platform with impressive tech
 
 ### The Good (What's Working)
 
-- ✅ **Solid Architectural Foundation**: tRPC + Hono + PostgreSQL + Redis is a battle-tested stack
+- ✅ **Solid Architectural Foundation**: tRPC + Fastify + PostgreSQL + Redis is a battle-tested stack
 - ✅ **AI-First Approach**: Multi-model routing (OpenAI, Groq, DeepSeek, Claude) with fallback chains
 - ✅ **Comprehensive Feature Set**: 58 iOS screens, 38 backend routers, 261 procedures
 - ✅ **Strong Documentation**: 136 commits in docs repo, extensive specs, Cursor integration
@@ -58,14 +58,14 @@ HustleXP is an ambitious, feature-rich gig economy platform with impressive tech
 
 ```
 Runtime:        Node.js + TypeScript (ES Modules)
-Framework:      Hono (lightweight, Express alternative)
+Framework:      Fastify (high-performance Node.js framework)
 API Layer:      tRPC v11 (38 routers, 261 procedures)
 Database:       PostgreSQL (Neon) — 103 tables
 Cache:          Upstash Redis (rate limiting + session)
 Queue:          BullMQ (23 workers)
 Auth:           Firebase Admin SDK
 AI:             Multi-provider (OpenAI, Groq, DeepSeek, Anthropic, Alibaba)
-Storage:        AWS S3 + Rekognition
+Storage:        Cloudflare R2 (S3-compatible)
 Payments:       Stripe Connect
 Notifications:  Twilio SMS, SendGrid Email, FCM Push
 ```
@@ -83,13 +83,13 @@ backend/
 │   ├── realtime/       ⚠️ WebSocket implementation
 │   ├── routers/        ✅ 38 tRPC routers
 │   ├── services/       ✅ 68 business services
-│   ├── storage/        ✅ S3 integration
+│   ├── storage/        ✅ R2 integration
 │   ├── tests/          ✅ Vitest test suite
 │   ├── config.ts       ✅ Centralized config
 │   ├── db.ts           ⚠️ Direct pg client (no ORM)
 │   ├── logger.ts       ✅ Pino logging
 │   ├── sentry.ts       ✅ Error tracking
-│   ├── server.ts       ✅ Hono server
+│   ├── server.ts       ✅ Fastify server
 │   ├── trpc.ts         ✅ tRPC setup
 │   └── types.ts        ✅ Shared types
 ├── database/

@@ -15,7 +15,7 @@
 | Production | Live users | `api.hustlexp.com` | Manual promote from staging |
 
 **Environment isolation:**
-- Separate Supabase/Neon projects per environment
+- Separate Neon projects per environment
 - Separate Stripe accounts (test mode for staging, live for production)
 - Separate Firebase projects
 - Separate Railway projects

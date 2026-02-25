@@ -144,16 +144,16 @@ All formulas are provided with TypeScript implementations and fallback logic.
 
 ```
 Frontend:
-  - React Native / Expo (iOS + Android)
-  - TypeScript
-  - Zustand or Jotai (state management)
-  - React Query (server state)
+  - iOS 17+ (SwiftUI)
+  - Swift
+  - @State / @ObservedObject (state management)
+  - Custom tRPC client (server state)
 
 Backend:
   - Node.js + TypeScript
-  - tRPC (API layer)
-  - PostgreSQL (Supabase or Neon)
-  - Redis (caching, live mode)
+  - Fastify + tRPC (API layer)
+  - PostgreSQL (Neon)
+  - Upstash Redis (caching, live mode)
 
 Authentication:
   - Firebase Auth
@@ -176,13 +176,13 @@ AI:
 ### Phase 1: Foundation (Week 1-2)
 
 ```
-1. Set up monorepo (apps/mobile, packages/api, packages/db)
-2. Implement schema.sql in PostgreSQL
-3. Set up tRPC server with authentication middleware
+1. Set up backend project (Node.js + TypeScript)
+2. Implement schema.sql in PostgreSQL (Neon)
+3. Set up Fastify + tRPC server with authentication middleware
 4. Implement core endpoints:
    - user.getProfile
    - user.updateProfile
-5. Set up React Native project with navigation
+5. Set up Xcode project with SwiftUI navigation
 ```
 
 ### Phase 2: Task Flow (Week 2-3)
