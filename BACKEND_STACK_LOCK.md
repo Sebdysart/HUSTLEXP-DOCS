@@ -222,10 +222,11 @@ Requirements:
 - No backend proxying (bandwidth savings)
 - Lifecycle policies (auto-delete old proofs)
 
-**Buckets:**
-- `hustlexp-proof-photos` — task proof photos
-- `hustlexp-verification-docs` — license, insurance docs
-- `hustlexp-user-avatars` — profile photos
+**Bucket:** `hustlexp-storage` (single bucket, prefix-based paths per STORAGE_SPEC.md)
+- `proofs/` — task proof photos
+- `verifications/` — license, insurance docs
+- `avatars/` — profile photos
+- `messages/` — chat attachments
 
 **Upload Flow:**
 1. Client requests presigned URL from backend

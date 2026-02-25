@@ -470,7 +470,7 @@
     "directory": "reference/",
     "language": "TypeScript + JavaScript",
     "framework": "React Native 0.81.5 (LEGACY — actual app is Swift/SwiftUI)",
-    "runtime": "Expo 54.0.31",
+    "runtime": "Expo 54.0.31 (LEGACY — actual app is Swift/SwiftUI)",
     "package_json": "reference/package.json",
     "components": "reference/components/",
     "screens": "reference/screens/",

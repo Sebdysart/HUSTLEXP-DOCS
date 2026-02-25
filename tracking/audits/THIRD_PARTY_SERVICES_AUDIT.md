@@ -336,7 +336,7 @@
 - Content moderation fallback if Google Cloud Vision is down
 
 **Cost:** $1.00/1K images (only used as fallback)
-**Signup:** Same AWS account as S3
+**Signup:** https://aws.amazon.com (separate AWS account needed — storage moved to Cloudflare R2)
 
 ---
 
