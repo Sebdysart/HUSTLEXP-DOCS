@@ -186,7 +186,7 @@ Layer 6: Human Override            ← BOUNDED AUTHORITY
 
 ### 2.4 Layer 4 — Frontend Logic
 
-**Name:** React Native state management  
+**Name:** SwiftUI state management (NOTE: active app is native Swift/SwiftUI, not React Native)  
 **Authority:** UX state only  
 **Location:** Mobile app `state/` directory
 
@@ -215,9 +215,9 @@ Layer 6: Human Override            ← BOUNDED AUTHORITY
 
 ### 2.5 Layer 5 — UI / Animation
 
-**Name:** React Native components, Rive animations  
+**Name:** SwiftUI views, Rive animations (NOTE: active app is native Swift/SwiftUI, not React Native)  
 **Authority:** Visual representation only  
-**Location:** Mobile app `components/`, `screens/`
+**Location:** Mobile app `Views/`, `Screens/`
 
 **Can:**
 - Render state received from Layer 4
@@ -1855,7 +1855,7 @@ Owns the pipeline from onboarding claim submission → capability profile comput
 
 **Scope:** ALL map rendering, geocoding, routing, ETA computation, location sharing, proximity detection, and API cost management.
 
-**Technology lock:** `react-native-maps` with Google Maps Platform (Geocoding, Directions, Distance Matrix, Static Maps, Places Autocomplete). See BACKEND_STACK_LOCK §maps.
+**Technology lock:** Apple MapKit (iOS native) + Google Maps Platform server-side APIs (Geocoding, Directions, Distance Matrix, Static Maps, Places Autocomplete). See BACKEND_STACK_LOCK §maps. NOTE: The active app is Swift/SwiftUI — `react-native-maps` references are from the legacy scaffold.
 
 **Database infrastructure:** PostGIS extension on Neon Postgres. `tasks.location_geog GEOGRAPHY(POINT, 4326)` with GIST spatial index for O(log n) radius queries. All geospatial queries standardized on PostGIS (schema.sql v1.4.0, migration 006). See BACKEND_STACK_LOCK §extensions.
 
