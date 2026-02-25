@@ -70,18 +70,20 @@ HUSTLERS: "Earn money completing tasks nearby."
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  PHASE: BOOTSTRAP                                                              ║
-║  FOCUS: EntryScreen must render in iOS Simulator                               ║
-║  GATE:  Build + Launch + Render + No Crash                                     ║
+║  PHASE: INTEGRATION & ALIGNMENT                                                ║
+║  FOCUS: Align all repos (backend, iOS, docs) for production readiness          ║
+║  GATE:  All repos consistent, audited, and hardened                             ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
 ### Phase Progression
 
 ```
-[CURRENT]  Bootstrap (Frontend)        ← You are here
+[DONE]     Bootstrap (Frontend)
            ↓
-           Phase 0: Schema Verification (Backend)
+[DONE]     Phase 0: Schema Verification (Backend)
+           ↓
+[CURRENT]  Integration & Alignment     ← You are here
            ↓
            Phase 1: Navigation Shell (Frontend)
            ↓
@@ -146,7 +148,7 @@ HUSTLERS: "Earn money completing tasks nearby."
 | Screens Implemented | 15/38 |
 | Source | STITCH HTML specs |
 | Build Status | ✅ Compiles |
-| Location | `ios-swiftui/HustleXP/` |
+| Location | `HUSTLEXPFINAL1/hustleXP final1/` |
 
 ### Key Screens
 
@@ -395,8 +397,8 @@ AI must be able to answer all of these:
 
 ```
 [ ] What is HustleXP? (Local task marketplace)
-[ ] What phase are we in? (Bootstrap)
-[ ] What is the current focus? (EntryScreen)
+[ ] What phase are we in? (Integration & Alignment)
+[ ] What is the current focus? (Repo alignment & hardening)
 [ ] What are the brand colors? (Black #0B0B0F + Purple #5B2DFF)
 [ ] What color on entry screens? (Purple gradient, NEVER green)
 [ ] How many screens total? (38)
