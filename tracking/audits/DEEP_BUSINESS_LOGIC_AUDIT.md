@@ -133,7 +133,7 @@
 
 ### GAP-B11: No Background Job Orchestration Spec
 **Evidence:** 8+ cron jobs referenced across specs (credential expiry, XP decay, transfer retries, notification cleanup, task expiry, analytics rollup, evidence retention, moderation SLA). No unified spec.
-**Problem:** No technology lock for job scheduler (BullMQ? Quirrel? Fly.io scheduled machines? Supabase pg_cron?). No failure handling. No monitoring. No dead letter queue. No idempotency guarantees. If credential expiry job fails for 3 days, expired-credential workers keep accessing restricted tasks.
+**Problem:** No technology lock for job scheduler (BullMQ? Quirrel? Railway cron? pg_cron?). No failure handling. No monitoring. No dead letter queue. No idempotency guarantees. If credential expiry job fails for 3 days, expired-credential workers keep accessing restricted tasks.
 **Fix:** Create BACKGROUND_JOBS_SPEC.md. Define: technology (pg_cron for DB-layer, BullMQ for application-layer), job registry with schedule, failure handling (retry 3x, then alert), monitoring (job completion logs), idempotency patterns.
 
 ### GAP-B12: No App Store Compliance Spec
@@ -169,8 +169,8 @@
 **Fix:** Move to `_archive/staging-history/spatial/`. Keep only V6 (final) or none.
 
 ### GAP-B16: No Load Testing / Capacity Planning
-**Problem:** No expected capacity targets: max concurrent WebSocket connections (Live Mode), max tasks/second, database connection pool size, Fly.io machine scaling rules. Google Maps costs estimated but infrastructure costs not modeled.
-**Fix:** Create CAPACITY_PLANNING.md. Define: target load (1K concurrent users at launch), WebSocket limits (Fly.io proxy limits), DB connection pooling (Neon serverless limits), auto-scaling triggers.
+**Problem:** No expected capacity targets: max concurrent WebSocket connections (Live Mode), max tasks/second, database connection pool size, Railway scaling rules. Google Maps costs estimated but infrastructure costs not modeled.
+**Fix:** Create CAPACITY_PLANNING.md. Define: target load (1K concurrent users at launch), WebSocket limits (Railway proxy limits), DB connection pooling (Neon serverless limits), auto-scaling triggers.
 
 ### GAP-B17: No Internationalization Architecture
 **Problem:** English-only implied but never stated. No copy string extraction. Hardcoded English in stitch prompts, UI specs, error messages. If internationalization is ever needed, it requires touching every file.

@@ -198,7 +198,7 @@
 
 ### GAP-23: No Disaster Recovery / Business Continuity Spec
 **Location:** BACKEND_STACK_LOCK mentions Neon database backups. Nothing else.
-**Problem:** No spec for: database point-in-time recovery, service failover, DNS failover, incident response playbook, on-call rotation, status page. If Fly.io goes down at 2am, what happens?
+**Problem:** No spec for: database point-in-time recovery, service failover, DNS failover, incident response playbook, on-call rotation, status page. If Railway goes down at 2am, what happens?
 **Fix:** Create OPS_RUNBOOK.md. Define: backup recovery procedure, failover plan, incident severity levels, on-call schedule, status page (StatusPage.io or similar), post-incident review template.
 
 ### GAP-24: No Email Verification During Signup

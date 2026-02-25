@@ -383,11 +383,11 @@ Generate signed URLs at request time.
 ```typescript
 async function cleanupExpiredFiles() {
   // 1. Find tasks in terminal state > 90 days
-  const { data: expiredTasks } = await supabase
-    .from('tasks')
-    .select('id')
-    .in('state', ['COMPLETED', 'CANCELLED', 'EXPIRED'])
-    .lt('updated_at', ninetyDaysAgo);
+  const expiredTasks = await sql`
+    SELECT id FROM tasks
+    WHERE state IN ('COMPLETED', 'CANCELLED', 'EXPIRED')
+    AND updated_at < ${ninetyDaysAgo}
+  `;
 
   // 2. Delete associated proof photos
   for (const task of expiredTasks) {
@@ -400,10 +400,11 @@ async function cleanupExpiredFiles() {
   }
 
   // 3. Update database (mark as deleted, not hard delete)
-  await supabase
-    .from('proof_photos')
-    .update({ deleted_at: new Date() })
-    .in('task_id', expiredTasks.map(t => t.id));
+  const taskIds = expiredTasks.map(t => t.id);
+  await sql`
+    UPDATE proof_photos SET deleted_at = NOW()
+    WHERE task_id = ANY(${taskIds})
+  `;
 }
 ```
 
