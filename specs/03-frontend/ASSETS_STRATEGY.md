@@ -1,5 +1,7 @@
 # HustleXP Assets Strategy
 
+> **⚠️ TECH STACK NOTE:** Code examples in this spec use React Native APIs and `lucide-react-native` (legacy scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Use SF Symbols or equivalent Swift icon packages. Design principles (naming, sizing, theming) remain authoritative.
+
 **AUTHORITY:** FRONTEND_ARCHITECTURE.md, DESIGN_SYSTEM.md
 **STATUS:** Constitutional Reference for Cursor
 **VERSION:** 1.0.0

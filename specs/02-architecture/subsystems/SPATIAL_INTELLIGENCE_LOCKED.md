@@ -49,7 +49,7 @@ Spatial Intelligence governs ALL map rendering, geocoding, routing, ETA computat
 
 | Component | Provider | Justification |
 |---|---|---|
-| **Mobile Map SDK** | `react-native-maps` (Google Maps provider) | Cross-platform, battle-tested, supports both iOS/Android |
+| **Mobile Map SDK** | Apple MapKit (iOS native). Original spec referenced `react-native-maps` (legacy scaffold). | Native iOS performance, no additional SDK dependency |
 | **Geocoding API** | Google Maps Geocoding API | Address → coordinates. Required for task creation validation. |
 | **Directions API** | Google Maps Directions API | Route polylines + ETA. Supports walking/driving/transit modes. |
 | **Distance Matrix API** | Google Maps Distance Matrix API | Batch ETA calculations for feed proximity display. |
@@ -58,7 +58,7 @@ Spatial Intelligence governs ALL map rendering, geocoding, routing, ETA computat
 
 **Provider lock rationale:** Google Maps Platform chosen over Mapbox for:
 - Superior geocoding accuracy in US suburban/residential areas (HustleXP's primary market)
-- Native integration with `react-native-maps` (zero additional SDK)
+- Native integration with Apple MapKit on iOS (zero additional SDK). Original spec referenced `react-native-maps` (legacy scaffold).
 - Walking directions quality (pedestrian routing critical for task workers)
 - Single billing account covers all 5 APIs
 
@@ -143,8 +143,8 @@ Three rendering tiers based on context:
 | Tier | Context | Technology | Cost per Request | Interactivity |
 |---|---|---|---|---|
 | **STATIC** | Task card in feed | Static Maps API (image URL) | ~$0.002 | None (image only) |
-| **INTERACTIVE** | Task detail / poster view | `react-native-maps` MapView | $0 (SDK, no API call) | Pan, zoom, tap |
-| **LIVE NAVIGATION** | En-route (H7 screen) | `react-native-maps` + Directions API | ~$0.01/refresh | Real-time tracking |
+| **INTERACTIVE** | Task detail / poster view | Apple MapKit MKMapView (iOS native) | $0 (SDK, no API call) | Pan, zoom, tap |
+| **LIVE NAVIGATION** | En-route (H7 screen) | Apple MapKit + Directions API | ~$0.01/refresh | Real-time tracking |
 
 ---
 
@@ -522,7 +522,7 @@ XP markers, Gold indicators, and badge progress overlaid on the map view. Worker
 Before implementation, verify:
 
 - [ ] Google Maps Platform API key provisioned with all 5 APIs enabled
-- [ ] `react-native-maps` installed with Google Maps provider configured
+- [ ] Apple MapKit configured in Xcode project (iOS native). Original spec referenced `react-native-maps` (legacy scaffold).
 - [ ] PostGIS extension enabled (`CREATE EXTENSION postgis`)
 - [ ] `tasks` table has `location_geog GEOGRAPHY(POINT, 4326)` column with GIST index
 - [ ] `sync_task_location_geog` trigger auto-populates geography from lat/lng

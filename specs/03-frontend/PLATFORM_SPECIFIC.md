@@ -1,10 +1,12 @@
 # HustleXP Platform-Specific Guidelines
 
+> **⚠️ TECH STACK NOTE:** This spec was written for a React Native scaffold. The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Code examples below use React Native APIs — map to SwiftUI equivalents (SafeAreaView → `.ignoresSafeArea()`, KeyboardAvoidingView → `.scrollDismissesKeyboard()`, Platform checks → `#if os(iOS)`, etc.).
+
 **AUTHORITY:** FRONTEND_ARCHITECTURE.md, DESIGN_SYSTEM.md
 **STATUS:** Constitutional Reference for Cursor
 **VERSION:** 1.0.0
 
-This document defines platform-specific handling for iOS and Android. Cursor MUST follow these patterns.
+This document defines platform-specific handling for iOS. Cursor MUST follow these patterns.
 
 ---
 

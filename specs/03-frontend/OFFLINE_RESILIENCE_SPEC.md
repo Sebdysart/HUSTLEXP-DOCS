@@ -1,5 +1,7 @@
 # OFFLINE RESILIENCE SPECIFICATION
 
+> **⚠️ TECH STACK NOTE:** This spec was written for a React Native scaffold. The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Implementation references below (AsyncStorage, NetInfo) should be mapped to their Swift equivalents (UserDefaults/Keychain, NWPathMonitor). See `TRPCClient.swift` for the actual offline queue implementation.
+
 **Authority:** SPATIAL_INTELLIGENCE_LOCKED §14 | PLATFORM_SPECIFIC.md
 **Status:** v1.0 — Launch-ready specification
 **Subsystem:** LOCKED
@@ -37,7 +39,7 @@ Workers perform tasks in basements, rural areas, and buildings with poor connect
 
 ## §3. Queue Behavior
 
-**Storage:** AsyncStorage (React Native) with encryption.
+**Storage:** UserDefaults with Keychain encryption (Swift/SwiftUI). Original spec referenced AsyncStorage (React Native scaffold).
 
 **On action attempt while offline:**
 1. Action added to local queue with timestamp and payload
@@ -83,8 +85,8 @@ Workers perform tasks in basements, rural areas, and buildings with poor connect
 
 ## §6. Implementation Notes
 
-- Use `@react-native-community/netinfo` for connectivity detection
-- Queue stored in AsyncStorage under key `offline_action_queue`
+- Use `NWPathMonitor` (Network framework) for connectivity detection (Swift). Original spec referenced `@react-native-community/netinfo` (React Native scaffold).
+- Queue stored in UserDefaults under key `offlineQueue` (Swift). Original spec referenced AsyncStorage.
 - Queue encrypted with device keychain key
 - Maximum queue size: 50 actions (prevent storage abuse)
 - Queue persists across app restarts

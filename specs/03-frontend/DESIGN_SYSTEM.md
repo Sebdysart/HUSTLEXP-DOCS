@@ -1,5 +1,7 @@
 # HustleXP Design System
 
+> **⚠️ TECH STACK NOTE:** Code examples in this spec use React Native / Reanimated syntax (legacy scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Map React Native APIs to SwiftUI equivalents. Design tokens (colors, spacing, typography) remain authoritative regardless of framework.
+
 **STATUS: CONSTITUTIONAL AUTHORITY**
 **Owner:** Design/Frontend Team
 **Last Updated:** January 2025
