@@ -56,7 +56,7 @@
 | Neon database | Primary down | Neon auto-failover to read replica. Manual promote if needed |
 | Stripe | Outage | Queue payment actions, retry when Stripe recovers. Show user "Payment processing delayed" |
 | Firebase Auth | Outage | Users can't log in. No failover possible. Display maintenance screen |
-| Google Maps | Outage | Fallback to cached map tiles. Disable real-time navigation. Static task locations still work |
+| Apple MapKit | Outage | Fallback to cached map tiles. Disable real-time navigation. Static task locations still work |
 
 ---
 

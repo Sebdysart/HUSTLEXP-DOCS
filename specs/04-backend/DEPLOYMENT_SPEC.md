@@ -28,10 +28,10 @@
 
 | Step | Tool | Failure = |
 |---|---|---|
-| Lint (frontend) | ESLint + custom rules (ESLINT_CUSTOM_RULES.md) | Block merge |
+| Lint (frontend) | SwiftLint (Swift/SwiftUI) | Block merge |
 | Lint (backend) | ESLint | Block merge |
 | Type check | TypeScript `tsc --noEmit` | Block merge |
-| Unit tests | Jest / Vitest | Block merge |
+| Unit tests | Vitest | Block merge |
 | Integration tests | Supertest + test DB | Block merge |
 | Build (frontend) | Xcode build (SwiftUI) | Block merge |
 | Build (backend) | Docker build | Block merge |
