@@ -438,9 +438,9 @@ const MOCK_DATA: HustlerHomeData = {
  * Date: 2026-01-23
  *
  * This file is the SINGLE SOURCE OF TRUTH for all UI implementations:
- * - React Native (Expo)
- * - iOS SwiftUI
+ * - iOS SwiftUI (active app — HUSTLEXPFINAL1)
  * - STITCH HTML specs
+ * - (Legacy: React Native / Expo scaffold — for reference only)
  *
  * Any deviation from these values is a BUG.
  */
