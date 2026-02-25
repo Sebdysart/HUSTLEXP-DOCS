@@ -1,5 +1,7 @@
 # HustleXP Frontend Execution Prompts — MAX-TIER
 
+> **TECH STACK NOTE:** Prompts in this file generate React Native / TypeScript code (legacy scaffold). The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. When using these prompts, adapt outputs to Swift/SwiftUI equivalents. The architectural rules (UI-only, props-driven, spec-fidelity) remain authoritative.
+
 **Status:** LOCKED  
 **Date:** January 2025  
 **Purpose:** Exact prompts for Cursor to generate frontend screens without hallucination or backend assumptions

@@ -43,8 +43,8 @@ This guide teaches progressive context loading — getting exactly what you need
 
 | Task Type | Files to Add |
 |-----------|--------------|
-| **Frontend (React Native)** | `CURSOR_INSTRUCTIONS.md`, `specs/03-frontend/DESIGN_SYSTEM.md` |
-| **Frontend (iOS SwiftUI)** | `ios-swiftui/HustleXP/README.md`, `specs/03-frontend/DESIGN_SYSTEM.md` |
+| **Frontend (iOS SwiftUI)** | `CURSOR_INSTRUCTIONS.md`, `specs/03-frontend/DESIGN_SYSTEM.md` |
+| **Frontend (legacy React Native scaffold)** | `reference/README.md`, `specs/03-frontend/DESIGN_SYSTEM.md` |
 | **Backend Implementation** | `specs/04-backend/BUILD_GUIDE.md`, `specs/04-backend/API_CONTRACT.md` |
 | **Database Work** | `specs/02-architecture/schema.sql`, `PER/INVARIANTS.md` |
 | **Screen Work** | Specific screen spec from `screens-spec/` |
@@ -86,7 +86,7 @@ Level 3 (Reference, if needed):
 
 **Total: ~6-8k tokens**
 
-### Scenario 2: Implement React Native Screen
+### Scenario 2: Implement iOS SwiftUI Screen (legacy heading: React Native)
 
 ```
 Level 1 (Foundation):

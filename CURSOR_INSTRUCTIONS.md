@@ -1,7 +1,9 @@
 # CURSOR FRONTEND INSTRUCTIONS
 
+> **TECH STACK NOTE:** This guide was written for a React Native / Expo scaffold. The active iOS app (HUSTLEXPFINAL1) is **native Swift/SwiftUI**. Code examples below use React Native patterns (View, Text, StyleSheet, SafeAreaView) — map to SwiftUI equivalents (VStack, Text, ViewModifier, .ignoresSafeArea). The architectural rules (props-only, no business logic, spec-driven) remain authoritative regardless of framework.
+
 **Purpose:** Step-by-step guide for Cursor to build HustleXP frontend WITHOUT hallucination
-**Scope:** FRONTEND ONLY — React Native / Expo
+**Scope:** FRONTEND ONLY — iOS Swift/SwiftUI (originally React Native / Expo)
 **Status:** ACTIVE
 
 ---
