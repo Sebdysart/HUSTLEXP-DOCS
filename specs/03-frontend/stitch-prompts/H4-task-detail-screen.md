@@ -203,7 +203,7 @@ Button: Accept Task (disabled, grayed out)
 ## Map Interaction
 
 - Static map preview (SPATIAL §4.3 Tier 1 — Google Static Maps API, cached 24h, ~$0.002/request)
-- Tap opens full-screen interactive map (SPATIAL §4.3 Tier 2 — react-native-maps MapView, $0)
+- Tap opens full-screen interactive map (SPATIAL §4.3 Tier 2 — Apple MapKit MKMapView via SwiftUI Map, $0)
 - Shows task location pin only (not exact address until accepted)
 
 ---
