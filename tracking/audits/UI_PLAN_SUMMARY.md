@@ -799,12 +799,13 @@ setTaskState(result.state); // Server-confirmed
 
 ## 🏗️ Technical Stack
 
-**Framework:** React Native / Expo  
-**Navigation:** React Navigation (Bottom Tabs + Stack)  
-**State Management:** React Context + State Machines  
-**API Integration:** tRPC client  
-**Styling:** StyleSheet (React Native)  
-**Design Tokens:** constants/colors.js, constants/typography.js, constants/spacing.js, constants/animations.js
+**Framework:** Swift / SwiftUI (native iOS)  
+**Navigation:** NavigationStack + TabView  
+**State Management:** @Observable + State Machines  
+**API Integration:** tRPC client (custom Swift implementation)  
+**Styling:** SwiftUI modifiers + ViewModifiers  
+**Design Tokens:** Theme.swift (colors, typography, spacing, animations)  
+**NOTE:** Originally spec'd as React Native/Expo but implemented as native SwiftUI. See `reference/` for legacy RN scaffold.
 
 ---
 

@@ -25,7 +25,7 @@ This document tells you:
 |-------|-------|
 | **Product Name** | HustleXP |
 | **Type** | Local task marketplace (Uber meets TaskRabbit) |
-| **Platforms** | iOS (React Native + Expo), Backend (tRPC + PostgreSQL) |
+| **Platforms** | iOS (Swift/SwiftUI native), Backend (tRPC + Fastify + PostgreSQL) |
 | **Brand Colors** | Black (#0B0B0F) + Purple (#5B2DFF) — NOT GREEN |
 | **Design System** | iOS HIG + Glassmorphism + SF Pro |
 
