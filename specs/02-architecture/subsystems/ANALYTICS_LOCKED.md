@@ -10,7 +10,7 @@
 ## §1. Analytics Architecture
 
 ```
-Client Event → analytics_events table → Nightly ETL → Warehouse (Supabase) → Dashboard (PostHog)
+Client Event → analytics_events table → Nightly ETL → Warehouse (Neon PostgreSQL) → Dashboard (PostHog)
 ```
 
 **Technology lock:** PostHog (self-hosted or cloud). Open-source, GDPR-compliant, supports event tracking + session replay + feature flags.
@@ -132,7 +132,7 @@ Client Event → analytics_events table → Nightly ETL → Warehouse (Supabase)
 ### 4.1 Event Collection
 
 ```
-Client SDK (PostHog React Native) → PostHog Cloud/Self-hosted → PostgreSQL
+Client SDK (PostHog iOS Swift) → PostHog Cloud/Self-hosted → PostgreSQL
 Server-side events → PostHog API → PostgreSQL
 ```
 

@@ -41,7 +41,7 @@
 |---|---|---|---|
 | Stripe | Financial, identity | Yes | Stripe DPA covers |
 | Firebase/Google | Auth tokens, push tokens | Yes | Google Cloud DPA |
-| Supabase | All DB data | Yes | Supabase DPA |
+| Neon | All DB data | Yes | Neon DPA |
 | Checkr | Identity for background checks | Yes | Checkr DPA |
 | PostHog | Analytics events (anonymized) | Yes | PostHog DPA |
 | Google Maps | Location queries (no user ID) | No (anonymized) | N/A |
@@ -158,7 +158,7 @@ When Privacy Policy or ToS changes:
 
 ### 6.1 Detection
 
-- Automated monitoring: Supabase audit logs, unusual data access patterns
+- Automated monitoring: Neon database audit logs, unusual data access patterns
 - Human reporting: Any team member can report suspected breach
 
 ### 6.2 Response Timeline (GDPR Art. 33/34)
