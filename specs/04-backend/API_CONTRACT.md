@@ -1,8 +1,8 @@
 # HustleXP API Contract v1.5.0
 
-**STATUS: CONSTITUTIONAL REFERENCE**
-**Authority:** BUILD_GUIDE.md §5, PRODUCT_SPEC.md, schema.sql
-**Last Updated:** February 2026
+**STATUS: RECONCILIATION IN PROGRESS**
+**Authority:** `backend/src/routers` implementation, `HUSTLEXPFINAL1` service call surface, `schema.sql`, and this document
+**Last Updated:** March 8, 2026
 **Protocol:** tRPC over HTTP
 **Authentication:** Firebase JWT tokens
 
@@ -29,6 +29,91 @@
 ---
 
 ## Overview
+
+### Reconciliation Snapshot (March 8, 2026)
+
+Live authority analysis from `omni-link-hustlexp` currently reports:
+
+- documented procedures in this file: `66`
+- live backend procedures detected in `backend/src/routers`: `247`
+- live Swift tRPC calls detected in `HUSTLEXPFINAL1`: `169`
+- direct Swift↔backend bridge matches: `150`
+- docs-only procedures still requiring implementation or removal: `53`
+- backend-only procedures still requiring documentation: `234`
+- obsolete Swift calls still requiring removal or remapping: `30`
+- payload drift findings still requiring normalization: `72`
+
+This means the contract is still authoritative in intent, but incomplete as a live implementation reference. Until reconciliation is complete:
+
+- `backend/src/routers` is the implemented source of truth
+- `HUSTLEXPFINAL1` service calls are the consumer source of truth
+- this document must be updated in lockstep with backend/client contract changes
+
+### First Reconciliation Tranche
+
+**Backend-only procedures to document next:**
+- `task.getState`
+- `task.listByPoster`
+- `task.listByWorker`
+- `task.listOpen`
+- `task.start`
+- `task.getProof`
+- `task.reviewProof`
+- `escrow.getById`
+- `escrow.getState`
+- `escrow.createPaymentIntent`
+- `escrow.confirmFunding`
+- `user.me`
+- `user.getById`
+- `user.xpHistory`
+- `live.toggle`
+- `live.getStatus`
+- `health.ping`
+- `health.status`
+- `instant.listAvailable`
+- `instant.accept`
+
+**Docs-only procedures to verify or remove:**
+- `task.list`
+- `escrow.createIntent`
+- `proof.submit`
+- `proof.accept`
+- `proof.reject`
+- `proof.getByTaskId`
+- `user.getProfile`
+- `user.getXP`
+- `user.getBadges`
+- `user.getTrustTier`
+- `dispute.create`
+- `dispute.resolve`
+- `dispute.getByTaskId`
+- `messaging.getThread`
+- `messaging.markRead`
+- `notification.list`
+- `notification.markRead`
+- `onboarding.getProgress`
+- `onboarding.setRole`
+- `onboarding.submitCapabilities`
+
+**Obsolete Swift calls to remove or remap first:**
+- `flags.getFlags`
+- `tracking.startSession`
+- `tracking.stopSession`
+- `tracking.getStats`
+- `tracking.updateLocation`
+- `insurance.getCurrentTier`
+- `insurance.upgradeToPremium`
+- `insurance.confirmInsuranceUpgrade`
+- `recurringTask.create`
+- `recurringTask.listMine`
+- `task.listApplicants`
+- `task.assignWorker`
+- `task.rejectApplicant`
+- `task.applyForTask`
+- `task.withdrawApplication`
+
+**Payload drift hotspot to normalize first:**
+- `escrow.getByTaskId` currently drifts on `task_id` vs `taskId` input naming and on multiple snake_case vs camelCase output fields. This endpoint should be normalized before expanding more consumer-side contract work.
 
 ### Base URL
 ```

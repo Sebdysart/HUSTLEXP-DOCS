@@ -1,52 +1,47 @@
-# CURRENT PHASE: BOOTSTRAP
+# CURRENT PHASE: RECONCILIATION / INTEGRATION HARDENING
 
-**Frontend Repo: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)**
+**Repos under authority:**
+- Frontend: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)
+- Backend: [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend)
+- Authority docs: [HUSTLEXP-DOCS](https://github.com/Sebdysart/HUSTLEXP-DOCS)
 
-## Frontend (Cursor)
+**Observed from live omni-link-hustlexp benchmark on March 8, 2026:**
+- iOS repo is already beyond bootstrap: navigation, screens, view models, service layer, and tRPC integration are implemented.
+- Backend repo is already beyond schema verification: routers, services, jobs, realtime, and integration logic are implemented.
+- Docs authority is behind the live codebase and contract surface, so the current gate is reconciliation, not bootstrap.
 
-**ALLOWED RIGHT NOW:**
-- Make the app build in Xcode
-- Make the app launch without crashing
-- Render BootstrapScreen (text + button)
-- Nothing else
+## What This Phase Means
 
-**BLOCKED UNTIL BOOTSTRAP PASSES:**
-- All 38 screens
-- Navigation
-- Maps
-- SVG
-- Backend calls
-- New dependencies
-
-**Success criteria:** See `BOOTSTRAP.md`
-
----
-
-## Backend (Claude Code)
+This phase is a controlled alignment phase. The product already has real implementation depth, but the docs authority and API contract are materially behind the live repos.
 
 **ALLOWED RIGHT NOW:**
-- Verify schema.sql triggers exist
-- Verify kill tests are defined
-- Nothing else until frontend bootstrap passes
+- Reconcile `CURRENT_PHASE.md`, `FINISHED_STATE.md`, and `API_CONTRACT.md` upward to the real implementation state
+- Document backend procedures already live in `backend/src/routers`
+- Remove or retarget obsolete Swift tRPC calls
+- Normalize request/response payload naming drift between Swift, backend, and docs
+- Stability, test, and contract-hardening work
 
-**BLOCKED UNTIL BOOTSTRAP PASSES:**
-- Service implementation
-- API endpoints
-- Integration work
+**BLOCKED UNTIL RECONCILIATION PASSES:**
+- Net-new feature families that expand the contract surface further
+- Blind multi-repo automation against the product repos
+- Declaring bootstrap-only restrictions that contradict the implemented app/backend state
 
----
+## Reconciliation Success Criteria
 
-## Phase Progression
+- `CURRENT_PHASE.md` and `FINISHED_STATE.md` describe the real implementation state
+- `API_CONTRACT.md` is brought into alignment with the authoritative backend router surface
+- Obsolete Swift tRPC calls are removed or mapped to live backend procedures
+- High-signal payload drift is documented and then worked down systematically
+- Authority drift no longer blocks bounded apply/review workflows
+
+## Next Phase
 
 ```
-CURRENT: Bootstrap (Frontend)
-         ↓ (passes)
-NEXT:    Phase 0 — Schema Verification (Backend)
-         ↓ (passes)  
-NEXT:    Phase 1 — Navigation Shell (Frontend)
-         ↓ (passes)
-NEXT:    Phase 1 — Core Services (Backend)
-         ...
+CURRENT: Reconciliation / Integration Hardening
+         ↓ (authority drift reduced, contract synced, obsolete calls removed)
+NEXT:    Contract-locked feature delivery
+         ↓
+NEXT:    Risk-bounded automation on reconciled repos
 ```
 
-**No skipping. No parallel work. Sequential gates.**
+**Rule:** no pretending the system is still in bootstrap when the codebase is already operating beyond it.
