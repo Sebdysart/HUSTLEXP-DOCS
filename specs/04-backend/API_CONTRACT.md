@@ -34,14 +34,14 @@
 
 Live authority analysis from `omni-link-hustlexp` currently reports:
 
-- documented procedures in this file: `66`
+- documented procedures in this file: `100`
 - live backend procedures detected in `backend/src/routers`: `247`
-- live Swift tRPC calls detected in `HUSTLEXPFINAL1`: `169`
+- live Swift tRPC calls detected in `HUSTLEXPFINAL1`: `139`
 - direct Swift↔backend bridge matches: `150`
-- docs-only procedures still requiring implementation or removal: `53`
-- backend-only procedures still requiring documentation: `234`
-- obsolete Swift calls still requiring removal or remapping: `30`
-- payload drift findings still requiring normalization: `72`
+- docs-only procedures still requiring implementation or removal: `33`
+- backend-only procedures still requiring documentation: `180`
+- obsolete Swift calls still requiring removal or remapping: `0`
+- payload drift findings still requiring normalization: `57`
 
 This means the contract is still authoritative in intent, but incomplete as a live implementation reference. Until reconciliation is complete:
 
@@ -49,41 +49,25 @@ This means the contract is still authoritative in intent, but incomplete as a li
 - `HUSTLEXPFINAL1` service calls are the consumer source of truth
 - this document must be updated in lockstep with backend/client contract changes
 
-### First Reconciliation Tranche
+### Current Reconciliation Focus
 
-**Backend-only procedures to document next:**
-- `task.getState`
-- `task.listByPoster`
-- `task.listByWorker`
-- `task.listOpen`
-- `task.start`
-- `task.getProof`
-- `task.reviewProof`
-- `escrow.getById`
-- `escrow.getState`
-- `escrow.createPaymentIntent`
-- `escrow.confirmFunding`
-- `user.me`
-- `user.getById`
-- `user.xpHistory`
-- `live.toggle`
-- `live.getStatus`
-- `health.ping`
-- `health.status`
-- `instant.listAvailable`
-- `instant.accept`
+**Tranche completed in this pass:**
+- `task.*` authority now covers the live task router surface (`create`, `accept`, `start`, `submitProof`, `getProof`, `reviewProof`, `complete`, `cancel`, `getById`, `getState`, `listByPoster`, `listByWorker`, `listOpen`)
+- `escrow.*` authority now covers the live escrow router surface (`getById`, `getState`, `getByTaskId`, `createPaymentIntent`, `confirmFunding`, `release`, `refund`, `lockForDispute`, `getHistory`, `awardXP`)
+- `user.*` authority now reflects the live mobile-facing procedures (`me`, `getById`, `register`, `updateProfile`, `xpHistory`, `badges`, onboarding, verification)
+- `live.*`, `health.*`, and `instant.*` authority sections now match the current live routers
+- `messaging.*`, `notification.*`, and `rating.*` authority sections now match the current live mobile/backend surface
+- stale headings from the previous contract naming (`task.list`, `escrow.createIntent`, `user.getProfile`, `user.getXP`, `user.getBadges`, `user.getTrustTier`, `liveMode.*`) are now explicitly marked legacy/deprecated instead of being counted as active authority
 
-**Docs-only procedures to verify or remove:**
-- `task.list`
-- `escrow.createIntent`
+**Backend-only families to document next:**
+- `gdpr.*`, `analytics.*`, `fraud.*`, `moderation.*`
+- `skills.*`, `pricing.*`, `geofence.*`, `heatmap.*`, `featured.*`, `subscription.*`, `capability.*`
+
+**Docs-only procedures still to verify or remove:**
 - `proof.submit`
 - `proof.accept`
 - `proof.reject`
 - `proof.getByTaskId`
-- `user.getProfile`
-- `user.getXP`
-- `user.getBadges`
-- `user.getTrustTier`
 - `dispute.create`
 - `dispute.resolve`
 - `dispute.getByTaskId`
@@ -94,26 +78,17 @@ This means the contract is still authoritative in intent, but incomplete as a li
 - `onboarding.getProgress`
 - `onboarding.setRole`
 - `onboarding.submitCapabilities`
+- admin/support/tax contract entries that still lack live router parity
 
 **Obsolete Swift calls to remove or remap first:**
-- `flags.getFlags`
-- `tracking.startSession`
-- `tracking.stopSession`
-- `tracking.getStats`
-- `tracking.updateLocation`
-- `insurance.getCurrentTier`
-- `insurance.upgradeToPremium`
-- `insurance.confirmInsuranceUpgrade`
-- `recurringTask.create`
-- `recurringTask.listMine`
-- `task.listApplicants`
-- `task.assignWorker`
-- `task.rejectApplicant`
-- `task.applyForTask`
-- `task.withdrawApplication`
+- completed in the current reconciliation pass: previously stale `flags.*`, `tracking.*`, `insurance` premium-upgrade calls, `recurringTask.*`, task batching, legacy skill verification, and stale squad task calls have been removed from the live Swift contract surface
+- current consumer drift is now concentrated in payload shape mismatches and in still-undocumented backend procedures, not in dead Swift procedure names
 
-**Payload drift hotspot to normalize first:**
-- `escrow.getByTaskId` currently drifts on `task_id` vs `taskId` input naming and on multiple snake_case vs camelCase output fields. This endpoint should be normalized before expanding more consumer-side contract work.
+**Payload drift hotspots to normalize next:**
+- `escrow.confirmFunding` still drifts on output shape beyond the current authority fields (`posterId`, `workerId`, fee fields, payout helpers)
+- `task.submitProof` and `task.getProof` still drift between backend reality, Swift models, and the authority contract
+- `user.getOnboardingStatus` still drifts between the backend response and the current Swift `OnboardingStatus` model
+- `notification.getPreferences` still drifts heavily between docs authority and the Swift consumer shape
 
 ### Base URL
 ```
@@ -238,6 +213,8 @@ Error code: `RATE_LIMITED` — "Rate limit exceeded"
 
 ## Task Endpoints
 
+**Reconciliation note:** the client-facing tRPC contract in this section is documented in camelCase. Legacy headings are retained only as non-authoritative notes so the authority surface matches the live router names.
+
 ### task.create
 
 Create a new task.
@@ -248,20 +225,17 @@ Create a new task.
 **Input:**
 ```typescript
 {
-  title: string;           // 1-255 chars
-  description: string;     // 1-5000 chars
-  requirements?: string;   // Optional, max 2000 chars
-  location: string;        // Address string
-  location_lat?: number;   // Latitude
-  location_lng?: number;   // Longitude
-  arrival_instructions?: string;  // Max 280 chars. Last-meters wayfinding for worker (SPATIAL_INTELLIGENCE §6.4)
-  arrival_has_gate_code?: boolean; // If true, mask instructions until worker is within 100m (SPATIAL_INTELLIGENCE §6.4)
-  category: string;        // From TASK_CATEGORIES
-  price: number;           // USD cents, min 500 ($5.00), min 1500 ($15.00) for LIVE mode
-  deadline: string;        // ISO 8601 datetime
-  mode?: 'STANDARD' | 'LIVE'; // Default: STANDARD
-  requires_proof?: boolean;   // Default: true
-  proof_instructions?: string;
+  title: string;
+  description: string;
+  price: number;                 // USD cents
+  requirements?: string;
+  location?: string;
+  category?: string;
+  deadline?: string;             // ISO 8601 datetime
+  requiresProof?: boolean;       // Default true
+  mode?: 'STANDARD' | 'LIVE';    // Default STANDARD
+  liveBroadcastRadiusMiles?: number;
+  instantMode?: boolean;         // Default false
 }
 ```
 
@@ -269,11 +243,14 @@ Create a new task.
 ```typescript
 {
   id: string;
-  poster_id: string;
+  posterId: string;
+  title: string;
+  description: string;
   state: 'OPEN';
-  created_at: string;
-  escrow_id: string;      // Created escrow
-  payment_intent_id: string; // Stripe PI for funding
+  mode: 'STANDARD' | 'LIVE';
+  price: number;
+  requiresProof: boolean;
+  createdAt: string;
 }
 ```
 
@@ -281,7 +258,7 @@ Create a new task.
 
 ### task.accept
 
-Accept an open task (as worker).
+Accept an open task as the worker.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -289,7 +266,7 @@ Accept an open task (as worker).
 **Input:**
 ```typescript
 {
-  task_id: string;
+  taskId: string;
 }
 ```
 
@@ -298,22 +275,42 @@ Accept an open task (as worker).
 {
   id: string;
   state: 'ACCEPTED';
-  worker_id: string;
-  accepted_at: string;
+  workerId: string;
+  acceptedAt: string;
 }
 ```
 
-**Errors:**
-- `NOT_FOUND` - Task not found
-- `FORBIDDEN` - User is the poster (self-accept)
-- `CONFLICT` - Task not in OPEN state
-- `FORBIDDEN` - User doesn't meet trust tier requirement
+---
+
+### task.start
+
+Mark an accepted task as actively in progress on the client workflow.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  taskId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  state: string;
+  workerId: string;
+  acceptedAt: string | null;
+}
+```
 
 ---
 
 ### task.submitProof
 
-Submit proof of completion (as worker).
+Submit proof of completion for a task.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -321,38 +318,92 @@ Submit proof of completion (as worker).
 **Input:**
 ```typescript
 {
-  task_id: string;
-  description: string;    // 1-2000 chars
-  photo_urls: string[];   // 1-5 photo URLs (from upload)
+  taskId: string;
+  description?: string;
+  photoUrls?: string[];
+  notes?: string;
+  gpsLatitude?: number;
+  gpsLongitude?: number;
+  biometricHash?: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  task: {
-    id: string;
-    state: 'PROOF_SUBMITTED';
-    proof_submitted_at: string;
-  };
-  proof: {
-    id: string;
-    state: 'SUBMITTED';
-  };
+  id: string;
+  state: 'PROOF_SUBMITTED';
+  proofSubmittedAt: string | null;
 }
 ```
 
-**Errors:**
-- `NOT_FOUND` - Task not found
-- `FORBIDDEN` - User is not the worker
-- `CONFLICT` - Task not in ACCEPTED state
-- `VALIDATION_ERROR` - Photos required
+---
+
+### task.getProof
+
+Get the latest proof submission for a task.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  taskId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  taskId: string;
+  submitterId: string;
+  state: string;
+  description?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  rejectionReason?: string;
+}
+```
+
+---
+
+### task.reviewProof
+
+Accept or reject a proof submission.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  proofId?: string;
+  taskId?: string;
+  decision?: 'ACCEPTED' | 'REJECTED';
+  approved?: boolean;
+  reason?: string;
+  feedback?: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  state: 'ACCEPTED' | 'REJECTED';
+  reviewedBy: string;
+  reviewedAt: string;
+  rejectionReason?: string;
+}
+```
 
 ---
 
 ### task.complete
 
-Complete a task (as poster, after accepting proof).
+Complete a task after proof has been accepted.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -360,36 +411,18 @@ Complete a task (as poster, after accepting proof).
 **Input:**
 ```typescript
 {
-  task_id: string;
+  taskId: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  task: {
-    id: string;
-    state: 'COMPLETED';
-    completed_at: string;
-  };
-  escrow: {
-    id: string;
-    state: 'RELEASED';
-    released_at: string;
-  };
-  xp_awarded?: {
-    base_xp: number;
-    streak_multiplier: number;
-    effective_xp: number;
-  };
+  id: string;
+  state: 'COMPLETED';
+  completedAt: string;
 }
 ```
-
-**Errors:**
-- `NOT_FOUND` - Task not found
-- `FORBIDDEN` - User is not the poster
-- `CONFLICT` - Task not in PROOF_SUBMITTED state
-- `HX301` - Proof not in ACCEPTED state
 
 ---
 
@@ -403,45 +436,8 @@ Cancel a task.
 **Input:**
 ```typescript
 {
-  task_id: string;
-  reason?: string;        // Optional cancellation reason
-}
-```
-
-**Output:**
-```typescript
-{
-  task: {
-    id: string;
-    state: 'CANCELLED';
-    cancelled_at: string;
-  };
-  escrow: {
-    id: string;
-    state: 'REFUNDED';
-    refunded_at: string;
-  };
-}
-```
-
-**Errors:**
-- `NOT_FOUND` - Task not found
-- `FORBIDDEN` - User is not poster or admin
-- `CONFLICT` - Task already in terminal state
-
----
-
-### task.getById
-
-Get a single task by ID.
-
-**Auth:** Protected
-**Method:** Query
-
-**Input:**
-```typescript
-{
-  task_id: string;
+  taskId: string;
+  reason?: string;
 }
 ```
 
@@ -449,44 +445,16 @@ Get a single task by ID.
 ```typescript
 {
   id: string;
-  poster_id: string;
-  worker_id: string | null;
-  title: string;
-  description: string;
-  requirements: string | null;
-  location: string;
-  location_lat: number | null;
-  location_lng: number | null;
-  location_place_id: string | null;     // Google Place ID (SPATIAL_INTELLIGENCE §6.2)
-  location_precision: 'ROOFTOP' | 'RANGE_INTERPOLATED' | 'GEOMETRIC_CENTER' | 'APPROXIMATE' | null;  // Geocoding confidence (SPATIAL_INTELLIGENCE §6.2)
-  arrival_instructions: string | null;   // Max 280 chars, last-meters wayfinding (SPATIAL_INTELLIGENCE §6.4)
-  arrival_has_gate_code: boolean;        // If true, masked until worker is within 100m (SPATIAL_INTELLIGENCE §6.4)
-  category: string;
-  price: number;
-  state: TaskState;
-  mode: 'STANDARD' | 'LIVE';
-  deadline: string;
-  requires_proof: boolean;
-  proof_instructions: string | null;
-  accepted_at: string | null;
-  proof_submitted_at: string | null;
-  completed_at: string | null;
-  cancelled_at: string | null;
-  created_at: string;
-  updated_at: string;
-  // Expanded relations
-  poster: UserSummary;
-  worker: UserSummary | null;
-  escrow: EscrowSummary | null;
-  proof: ProofSummary | null;
+  state: 'CANCELLED';
+  cancelledAt: string | null;
 }
 ```
 
 ---
 
-### task.list
+### task.getById
 
-List tasks with filters.
+Get a task by ID.
 
 **Auth:** Protected
 **Method:** Query
@@ -494,40 +462,226 @@ List tasks with filters.
 **Input:**
 ```typescript
 {
-  filter?: {
-    state?: TaskState | TaskState[];
-    category?: string;
-    mode?: 'STANDARD' | 'LIVE';
-    poster_id?: string;
-    worker_id?: string;
-    min_price?: number;
-    max_price?: number;
-  };
-  sort?: {
-    field: 'created_at' | 'price' | 'deadline';
-    direction: 'asc' | 'desc';
-  };
-  pagination?: {
-    limit?: number;   // Default 20, max 100
-    offset?: number;  // Default 0
-  };
+  taskId: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  tasks: TaskSummary[];
-  total: number;
-  has_more: boolean;
+  id: string;
+  posterId: string;
+  workerId: string | null;
+  title: string;
+  description: string;
+  requirements?: string;
+  location?: string;
+  category?: string;
+  price: number;
+  state: string;
+  mode: 'STANDARD' | 'LIVE';
+  deadline?: string;
+  requiresProof: boolean;
+  acceptedAt?: string;
+  proofSubmittedAt?: string;
+  completedAt?: string;
+  cancelledAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 ```
 
 ---
 
+### task.getState
+
+Get the server-authoritative state for a task.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  taskId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  state: string;
+}
+```
+
+---
+
+### task.listByPoster
+
+List tasks posted by the current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  posterId?: string;
+  state?: string;
+}
+```
+
+**Output:**
+```typescript
+TaskSummary[]
+```
+
+---
+
+### task.listByWorker
+
+List tasks assigned to the current worker.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  workerId?: string;
+  state?: string;
+}
+```
+
+**Output:**
+```typescript
+TaskSummary[]
+```
+
+---
+
+### task.listOpen
+
+List open tasks for the mobile feed.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  limit?: number;
+  offset?: number;
+}
+```
+
+**Output:**
+```typescript
+TaskSummary[]
+```
+
+---
+
+#### Legacy / Planned: task.list
+
+This older aggregate list contract is not part of the authoritative live router surface during reconciliation.
+
 ## Escrow Endpoints
 
-### escrow.createIntent
+### escrow.getById
+
+Get an escrow by ID.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  escrowId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  taskId: string;
+  posterId?: string;
+  workerId?: string;
+  amountCents: number;
+  state: string;
+  stripePaymentIntentId?: string;
+  stripeTransferId?: string;
+  stripeRefundId?: string;
+  fundedAt?: string;
+  releasedAt?: string;
+  refundedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+---
+
+### escrow.getState
+
+Get the server-authoritative state for an escrow.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  escrowId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  state: string;
+}
+```
+
+---
+
+### escrow.getByTaskId
+
+Get the escrow for a task.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  taskId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  taskId: string;
+  amountCents: number;
+  state: string;
+  stripePaymentIntentId?: string;
+  stripeTransferId?: string;
+  stripeRefundId?: string;
+  fundedAt?: string;
+  releasedAt?: string;
+  refundedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+---
+
+### escrow.createPaymentIntent
 
 Create a Stripe PaymentIntent for escrow funding.
 
@@ -537,25 +691,26 @@ Create a Stripe PaymentIntent for escrow funding.
 **Input:**
 ```typescript
 {
-  task_id: string;
+  taskId: string;
+  amount?: number;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  escrow_id: string;
-  payment_intent_id: string;
-  client_secret: string;  // For Stripe.js
-  amount: number;
+  escrowId: string;
+  paymentIntentId: string;
+  clientSecret: string;
+  amountCents: number;
 }
 ```
 
 ---
 
-### escrow.release
+### escrow.confirmFunding
 
-Release escrow to worker (internal, called by task.complete).
+Confirm an escrow has been funded after Stripe payment succeeds.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -563,7 +718,36 @@ Release escrow to worker (internal, called by task.complete).
 **Input:**
 ```typescript
 {
-  escrow_id: string;
+  escrowId: string;
+  stripePaymentIntentId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  taskId: string;
+  state: 'FUNDED';
+  stripePaymentIntentId: string;
+  fundedAt: string;
+}
+```
+
+---
+
+### escrow.release
+
+Release escrow to the worker.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  escrowId: string;
+  stripeTransferId?: string;
 }
 ```
 
@@ -572,27 +756,24 @@ Release escrow to worker (internal, called by task.complete).
 {
   id: string;
   state: 'RELEASED';
-  released_at: string;
-  transfer_id: string;  // Stripe Transfer ID
+  stripeTransferId?: string;
+  releasedAt: string;
 }
 ```
-
-**Errors:**
-- `HX201` - Task not in COMPLETED state
 
 ---
 
 ### escrow.refund
 
-Refund escrow to poster.
+Refund escrow to the poster.
 
-**Auth:** Protected (admin or poster)
+**Auth:** Protected
 **Method:** Mutation
 
 **Input:**
 ```typescript
 {
-  escrow_id: string;
+  escrowId: string;
 }
 ```
 
@@ -601,24 +782,24 @@ Refund escrow to poster.
 {
   id: string;
   state: 'REFUNDED';
-  refunded_at: string;
-  refund_id: string;  // Stripe Refund ID
+  stripeRefundId?: string;
+  refundedAt: string;
 }
 ```
 
 ---
 
-### escrow.getByTaskId
+### escrow.lockForDispute
 
-Get escrow for a task.
+Lock escrow while a dispute is being resolved.
 
 **Auth:** Protected
-**Method:** Query
+**Method:** Mutation
 
 **Input:**
 ```typescript
 {
-  task_id: string;
+  escrowId: string;
 }
 ```
 
@@ -626,20 +807,65 @@ Get escrow for a task.
 ```typescript
 {
   id: string;
-  task_id: string;
-  amount: number;
-  state: EscrowState;
-  stripe_payment_intent_id: string;
-  stripe_transfer_id: string | null;
-  stripe_refund_id: string | null;
-  funded_at: string | null;
-  released_at: string | null;
-  refunded_at: string | null;
-  created_at: string;
+  state: 'LOCKED_DISPUTE';
 }
 ```
 
 ---
+
+### escrow.getHistory
+
+Get escrow history for the current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  limit?: number;
+}
+```
+
+**Output:**
+```typescript
+Escrow[]
+```
+
+---
+
+### escrow.awardXP
+
+Award XP after a released escrow.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  taskId: string;
+  escrowId: string;
+  baseXP: number;
+}
+```
+
+**Output:**
+```typescript
+{
+  entryId: string;
+  amount: number;
+  reason: string;
+  taskId: string;
+  awardedAt: string;
+}
+```
+
+---
+
+#### Legacy / Planned: escrow.createIntent
+
+This older name is superseded by `escrow.createPaymentIntent` in the live router surface.
 
 ## Proof Endpoints
 
@@ -737,9 +963,9 @@ Get proof for a task.
 
 ## User Endpoints
 
-### user.getProfile
+### user.me
 
-Get current user's profile.
+Get the current authenticated user profile in the mobile-compatible shape.
 
 **Auth:** Protected
 **Method:** Query
@@ -750,19 +976,94 @@ Get current user's profile.
 ```typescript
 {
   id: string;
+  name: string;
   email: string;
-  phone: string | null;
-  full_name: string;
-  avatar_url: string | null;
-  default_mode: 'worker' | 'poster';
-  trust_tier: number;
-  xp_total: number;
-  current_level: number;
-  current_streak: number;
-  is_verified: boolean;
-  verified_at: string | null;
-  onboarding_completed_at: string | null;
-  created_at: string;
+  phone?: string;
+  bio?: string;
+  avatarURL?: string;
+  role: 'hustler' | 'poster';
+  trustTier: string;
+  rating: number;
+  totalRatings: number;
+  xp: number;
+  tasksCompleted: number;
+  tasksPosted: number;
+  totalEarnings: number;
+  totalSpent: number;
+  isVerified: boolean;
+  hasCompletedOnboarding: boolean;
+  defaultMode: 'worker' | 'poster';
+  unpaidTaxCents: number;
+  xpHeldBack: number;
+  verificationEarnedCents: number;
+  insuranceContributionsCents: number;
+  createdAt: string;
+}
+```
+
+---
+
+### user.getById
+
+Get a user profile by ID.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  userId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  name: string;
+  avatarURL?: string;
+  bio?: string;
+  role: 'hustler' | 'poster';
+  trustTier: string;
+  xp: number;
+  isVerified: boolean;
+  rating: number;
+  totalRatings: number;
+  tasksCompleted: number;
+  createdAt: string;
+}
+```
+
+---
+
+### user.register
+
+Register a new HustleXP user after Firebase authentication.
+
+**Auth:** Public
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  firebaseUid: string;
+  email: string;
+  fullName: string;
+  defaultMode?: 'worker' | 'poster' | 'hustler';
+  dateOfBirth: string;        // YYYY-MM-DD
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  name: string;
+  email: string;
+  role: 'hustler' | 'poster';
+  isVerified: boolean;
+  createdAt: string;
 }
 ```
 
@@ -770,7 +1071,7 @@ Get current user's profile.
 
 ### user.updateProfile
 
-Update user profile.
+Update the current user's profile.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -778,9 +1079,11 @@ Update user profile.
 **Input:**
 ```typescript
 {
-  full_name?: string;
-  avatar_url?: string;
-  default_mode?: 'worker' | 'poster';
+  fullName?: string;
+  bio?: string;
+  avatarUrl?: string;
+  phone?: string;
+  defaultMode?: 'worker' | 'poster' | 'hustler';
 }
 ```
 
@@ -788,18 +1091,20 @@ Update user profile.
 ```typescript
 {
   id: string;
-  full_name: string;
-  avatar_url: string | null;
-  default_mode: 'worker' | 'poster';
-  updated_at: string;
+  name: string;
+  bio?: string;
+  avatarURL?: string;
+  phone?: string;
+  role: 'hustler' | 'poster';
+  updatedAt: string;
 }
 ```
 
 ---
 
-### user.getXP
+### user.xpHistory
 
-Get XP summary and history.
+Get XP history for the current user.
 
 **Auth:** Protected
 **Method:** Query
@@ -807,56 +1112,36 @@ Get XP summary and history.
 **Input:**
 ```typescript
 {
-  limit?: number;  // History entries, default 10
+  limit?: number;
 }
 ```
 
 **Output:**
 ```typescript
-{
-  total_xp: number;
-  current_level: number;
-  current_streak: number;
-  level_progress: {
-    current_threshold: number;
-    next_threshold: number;
-    progress_percent: number;
-  };
-  recent_entries: XPLedgerEntry[];
-}
+XPHistoryEntry[]
 ```
 
 ---
 
-### user.getBadges
+### user.badges
 
-Get user's badges.
+Get badges for the current user.
 
 **Auth:** Protected
 **Method:** Query
 
-**Input:**
-```typescript
-{
-  user_id?: string;  // Default: current user
-}
-```
+**Input:** None
 
 **Output:**
 ```typescript
-{
-  earned_badges: Badge[];
-  available_badges: BadgeDefinition[];
-  total_earned: number;
-  total_available: number;
-}
+UserBadge[]
 ```
 
 ---
 
-### user.getTrustTier
+### user.getOnboardingStatus
 
-Get trust tier info.
+Get onboarding and first-task completion state.
 
 **Auth:** Protected
 **Method:** Query
@@ -866,19 +1151,122 @@ Get trust tier info.
 **Output:**
 ```typescript
 {
-  current_tier: number;       // 1-4
-  tier_name: string;          // "Newcomer", "Trusted", etc.
-  next_tier: number | null;   // null if at max
-  requirements_for_next: {
-    tasks_completed: { required: number; current: number };
-    approval_rate: { required: number; current: number };
-    avg_rating: { required: number; current: number };
-  } | null;
-  tier_benefits: string[];
+  onboardingComplete: boolean;
+  role: 'hustler' | 'poster';
+  xpFirstCelebrationShownAt?: string;
+  hasCompletedFirstTask: boolean;
 }
 ```
 
 ---
+
+### user.completeOnboarding
+
+Mark onboarding as complete and persist role confidence metadata.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  version: string;
+  roleConfidenceWorker: number;
+  roleConfidencePoster: number;
+  roleCertaintyTier: 'STRONG' | 'MODERATE' | 'WEAK';
+  inconsistencyFlags?: string[];
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  hasCompletedOnboarding: boolean;
+  defaultMode: 'worker' | 'poster';
+  updatedAt: string;
+}
+```
+
+---
+
+### user.getVerificationUnlockStatus
+
+Get earned verification progress.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  earnedCents: number;
+  thresholdCents: number;
+  percentage: number;
+  unlocked: boolean;
+  tasksCompleted: number;
+  remainingCents: number;
+}
+```
+
+---
+
+### user.checkVerificationEligibility
+
+Check whether verification has been unlocked.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  isEligible: boolean;
+}
+```
+
+---
+
+### user.getVerificationEarningsLedger
+
+Get the earned-verification ledger.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  limit?: number;
+}
+```
+
+**Output:**
+```typescript
+VerificationEarningsEntry[]
+```
+
+---
+
+#### Legacy / Deprecated: user.getProfile
+
+Superseded by `user.me`.
+
+#### Legacy / Deprecated: user.getXP
+
+Superseded by `user.xpHistory`.
+
+#### Legacy / Deprecated: user.getBadges
+
+Superseded by `user.badges`.
+
+#### Legacy / Deprecated: user.getTrustTier
+
+No standalone live router procedure currently exposes this shape.
 
 ## Dispute Endpoints
 
@@ -998,50 +1386,9 @@ Get dispute for a task.
 
 ## Messaging Endpoints
 
-### messaging.getThread
-
-Get messages for a task.
-
-**Auth:** Protected (must be poster or worker)
-**Method:** Query
-
-**Input:**
-```typescript
-{
-  task_id: string;
-  limit?: number;     // Default 50
-  before?: string;    // Message ID for pagination
-}
-```
-
-**Output:**
-```typescript
-{
-  messages: Message[];
-  has_more: boolean;
-}
-```
-
-```typescript
-// Message type
-{
-  id: string;
-  task_id: string;
-  sender_id: string;
-  message_type: 'TEXT' | 'PHOTO' | 'LOCATION' | 'AUTO_STATUS' | 'SYSTEM';
-  content: string;
-  photo_url?: string;
-  location?: { lat: number; lng: number };
-  read_at: string | null;
-  created_at: string;
-}
-```
-
----
-
 ### messaging.sendMessage
 
-Send a message in a task thread.
+Send a text or auto-message in a task thread.
 
 **Auth:** Protected (must be poster or worker)
 **Method:** Mutation
@@ -1049,14 +1396,10 @@ Send a message in a task thread.
 **Input:**
 ```typescript
 {
-  task_id: string;
-  message_type: 'TEXT' | 'PHOTO' | 'LOCATION';
-  content: string;          // Max 2000 chars for TEXT
-  photo_urls?: string[];    // Required for PHOTO, max 3
-  location?: {              // Required for LOCATION
-    lat: number;
-    lng: number;
-  };
+  taskId: string;
+  messageType: 'TEXT' | 'AUTO';
+  content?: string; // Required for TEXT, max 500 chars
+  autoMessageTemplate?: 'on_my_way' | 'running_late' | 'completed' | 'question';
 }
 ```
 
@@ -1064,11 +1407,14 @@ Send a message in a task thread.
 ```typescript
 {
   id: string;
-  task_id: string;
-  sender_id: string;
-  message_type: string;
+  taskId: string;
+  senderId: string;
+  messageType: 'TEXT' | 'AUTO' | 'PHOTO';
   content: string;
-  created_at: string;
+  photoUrls?: string[];
+  caption?: string | null;
+  readAt?: string | null;
+  createdAt: string;
 }
 ```
 
@@ -1078,9 +1424,60 @@ Send a message in a task thread.
 
 ---
 
-### messaging.markRead
+### messaging.sendPhotoMessage
 
-Mark messages as read.
+Send a photo message in a task thread.
+
+**Auth:** Protected (must be poster or worker)
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  taskId: string;
+  photoUrls: string[]; // 1-3 URLs
+  caption?: string;    // Max 200 chars
+}
+```
+
+**Output:** same shape as `messaging.sendMessage`
+
+---
+
+### messaging.getTaskMessages
+
+Get all messages for a task thread.
+
+**Auth:** Protected (must be poster or worker)
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  taskId: string;
+}
+```
+
+**Output:**
+```typescript
+Array<{
+  id: string;
+  taskId: string;
+  senderId: string;
+  messageType: 'TEXT' | 'AUTO' | 'PHOTO';
+  content: string;
+  photoUrls?: string[];
+  caption?: string | null;
+  readAt?: string | null;
+  createdAt: string;
+}>
+```
+
+---
+
+### messaging.markAsRead
+
+Mark a single message as read.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -1088,23 +1485,93 @@ Mark messages as read.
 **Input:**
 ```typescript
 {
-  task_id: string;
-  message_ids: string[];
+  messageId: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  marked_count: number;
+  id: string;
+  taskId: string;
+  senderId: string;
+  readAt: string;
 }
+```
+
+---
+
+### messaging.markAllAsRead
+
+Mark all messages in a task thread as read.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  taskId: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  marked: number;
+}
+```
+
+---
+
+### messaging.getUnreadCount
+
+Get unread message count for the current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  unreadCount: number;
+  count: number;
+}
+```
+
+---
+
+### messaging.getConversations
+
+Get task-scoped conversation summaries for the current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+Array<{
+  id: string; // taskId
+  taskId: string;
+  taskTitle: string;
+  otherUserId: string;
+  otherUserName: string;
+  otherUserRole: string;
+  lastMessage?: string | null;
+  lastMessageAt?: string | null;
+  unreadCount: number;
+}>
 ```
 
 ---
 
 ## Notification Endpoints
 
-### notification.list
+### notification.getList
 
 Get notifications for current user.
 
@@ -1114,42 +1581,68 @@ Get notifications for current user.
 **Input:**
 ```typescript
 {
-  unread_only?: boolean;   // Default false
-  limit?: number;          // Default 20, max 100
-  offset?: number;         // Default 0
+  unreadOnly?: boolean;   // Default false
+  limit?: number;         // Default 50, max 100
+  offset?: number;        // Default 0
 }
 ```
 
 **Output:**
 ```typescript
-{
-  notifications: Notification[];
-  unread_count: number;
-  total: number;
-}
-```
-
-```typescript
-// Notification type
-{
+Array<{
   id: string;
-  user_id: string;
+  userId: string;
   type: NotificationType;
   title: string;
   body: string;
-  priority: 'HIGH' | 'NORMAL' | 'LOW';
-  task_id?: string;
-  badge_id?: string;
-  read: boolean;
-  created_at: string;
+  data?: Record<string, string>;
+  isRead: boolean;
+  isClicked: boolean;
+  createdAt: string;
+}>
+```
+
+---
+
+### notification.getUnreadCount
+
+Get unread notification count for current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  count: number;
 }
 ```
 
 ---
 
-### notification.markRead
+### notification.getById
 
-Mark notifications as read.
+Get a single notification by ID.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  notificationId: string;
+}
+```
+
+**Output:** same shape as a single item from `notification.getList`
+
+---
+
+### notification.markAsRead
+
+Mark a single notification as read.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -1157,16 +1650,47 @@ Mark notifications as read.
 **Input:**
 ```typescript
 {
-  notification_ids: string[];
+  notificationId: string;
 }
 ```
+
+**Output:** same shape as a single item from `notification.getList`
+
+---
+
+### notification.markAllAsRead
+
+Mark all notifications as read for the current user.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:** None
 
 **Output:**
 ```typescript
 {
-  marked_count: number;
+  marked: number;
 }
 ```
+
+---
+
+### notification.markAsClicked
+
+Mark a notification as clicked for analytics tracking.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  notificationId: string;
+}
+```
+
+**Output:** same shape as a single item from `notification.getList`
 
 ---
 
@@ -1182,20 +1706,17 @@ Get notification preferences.
 **Output:**
 ```typescript
 {
-  push_enabled: boolean;
-  email_enabled: boolean;
-  sms_enabled: boolean;
-  quiet_hours: {
-    enabled: boolean;
-    start: string;    // "22:00"
-    end: string;      // "08:00"
-  };
-  categories: {
-    task_updates: boolean;
-    messages: boolean;
-    xp_badges: boolean;
-    marketing: boolean;
-  };
+  pushEnabled: boolean;
+  emailEnabled: boolean;
+  smsEnabled?: boolean;
+  quietHoursEnabled?: boolean;
+  quietHoursStart?: string;
+  quietHoursEnd?: string;
+  categoryPreferences?: Record<string, boolean>;
+  taskUpdates?: boolean;
+  paymentUpdates?: boolean;
+  messageNotifications?: boolean;
+  marketingEmails?: boolean;
 }
 ```
 
@@ -1208,9 +1729,75 @@ Update notification preferences.
 **Auth:** Protected
 **Method:** Mutation
 
-**Input:** (same shape as getPreferences output, all fields optional)
+**Input:** all fields optional
+```typescript
+{
+  quietHoursEnabled?: boolean;
+  quietHoursStart?: string;
+  quietHoursEnd?: string;
+  pushEnabled?: boolean;
+  emailEnabled?: boolean;
+  smsEnabled?: boolean;
+  categoryPreferences?: Record<string, boolean>;
+}
+```
 
 **Output:** (same as getPreferences)
+
+---
+
+### notification.registerDeviceToken
+
+Register an FCM device token for push notifications.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  fcmToken: string;
+  deviceType?: 'ios' | 'android';
+  deviceName?: string;
+  appVersion?: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  userId: string;
+  fcmToken: string;
+  deviceType: 'ios' | 'android';
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+---
+
+### notification.unregisterDeviceToken
+
+Deactivate an FCM device token without deleting the historical record.
+
+**Auth:** Protected
+**Method:** Mutation
+
+**Input:**
+```typescript
+{
+  fcmToken: string;
+}
+```
+
+**Output:**
+```typescript
+{
+  success: boolean;
+}
+```
 
 ---
 
@@ -1822,46 +2409,9 @@ Get computed capability profile.
 
 ## Live Mode Endpoints
 
-### liveMode.activate
+### live.toggle
 
-Activate live mode for the current user.
-
-**Auth:** Protected
-**Method:** Mutation
-
-**Input:**
-```typescript
-{
-  location: {
-    lat: number;
-    lng: number;
-  };
-  radius_miles?: number;              // Default: 5, max: 25
-  categories?: string[];              // Optional category filter
-}
-```
-
-**Output:**
-```typescript
-{
-  session_id: string;
-  state: 'ACTIVE';
-  started_at: string;
-  location: { lat: number; lng: number };
-  radius_miles: number;
-  categories: string[] | null;
-}
-```
-
-**Errors:**
-- `FORBIDDEN` - User in COOLDOWN or BANNED state
-- `VALIDATION_ERROR` - Invalid location
-
----
-
-### liveMode.deactivate
-
-Deactivate live mode.
+Toggle live mode on or off for the current user.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -1869,32 +2419,26 @@ Deactivate live mode.
 **Input:**
 ```typescript
 {
-  reason?: 'MANUAL' | 'FATIGUE';      // Default: MANUAL
+  enabled: boolean;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  session_id: string;
-  state: 'OFF';
-  ended_at: string;
-  end_reason: string;
-  session_stats: {
-    duration_minutes: number;
-    tasks_accepted: number;
-    tasks_declined: number;
-    tasks_completed: number;
-    earnings_cents: number;
-  };
+  state: 'OFF' | 'ACTIVE' | 'COOLDOWN';
+  sessionStartedAt?: string;
+  bannedUntil?: string;
+  totalTasks: number;
+  completionRate: number;
 }
 ```
 
 ---
 
-### liveMode.getStatus
+### live.getStatus
 
-Get current live mode status.
+Get live mode status for the current user.
 
 **Auth:** Protected
 **Method:** Query
@@ -1904,31 +2448,152 @@ Get current live mode status.
 **Output:**
 ```typescript
 {
-  state: 'OFF' | 'ACTIVE' | 'COOLDOWN' | 'PAUSED';
-  session: {
-    id: string;
-    started_at: string;
-    location: { lat: number; lng: number };
-    radius_miles: number;
-    tasks_accepted: number;
-    earnings_cents: number;
-  } | null;
-  cooldown_ends_at: string | null;
-  ban_ends_at: string | null;
-  stats_today: {
-    sessions: number;
-    total_minutes: number;
-    tasks_completed: number;
-    earnings_cents: number;
-  };
+  state: 'OFF' | 'ACTIVE' | 'COOLDOWN';
+  sessionStartedAt?: string;
+  bannedUntil?: string;
+  totalTasks: number;
+  completionRate: number;
 }
 ```
 
 ---
 
-### liveMode.updateLocation
+### live.listBroadcasts
 
-Update location while in live mode.
+Get active live broadcasts near the caller.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  latitude: number;
+  longitude: number;
+  radiusMiles?: number;
+}
+```
+
+**Output:**
+```typescript
+LiveBroadcast[]
+```
+
+---
+
+#### Legacy / Deprecated: liveMode.activate
+
+Superseded by `live.toggle`.
+
+#### Legacy / Deprecated: liveMode.deactivate
+
+Superseded by `live.toggle`.
+
+#### Legacy / Deprecated: liveMode.getStatus
+
+Superseded by `live.getStatus`.
+
+#### Legacy / Deprecated: liveMode.updateLocation
+
+Not part of the current live router surface.
+
+#### Legacy / Deprecated: liveMode.respondToBroadcast
+
+Not part of the current live router surface.
+
+## Health Endpoints
+
+### health.ping
+
+Basic system liveness check.
+
+**Auth:** Public
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  status: 'ok';
+  timestamp: string;
+}
+```
+
+---
+
+### health.status
+
+Get full system health.
+
+**Auth:** Public
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  status: 'healthy' | 'degraded';
+  timestamp: string;
+  services: {
+    database: unknown;
+    stripe: unknown;
+    firebase: unknown;
+    redis: unknown;
+  };
+  environment: string;
+}
+```
+
+---
+
+### health.verifySchema
+
+Verify the live database schema against the expected constitutional schema.
+
+**Auth:** Public
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  valid: boolean;
+  schemaVersion: string;
+  tables: unknown;
+  triggers: unknown;
+  views: unknown;
+}
+```
+
+## Instant Mode Endpoints
+
+### instant.listAvailable
+
+List instant-available tasks.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  limit?: number;
+}
+```
+
+**Output:**
+```typescript
+InstantTask[]
+```
+
+---
+
+### instant.accept
+
+Accept an instant-available task.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -1936,30 +2601,23 @@ Update location while in live mode.
 **Input:**
 ```typescript
 {
-  location: {
-    lat: number;
-    lng: number;
-  };
+  taskId: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  location: { lat: number; lng: number };
-  updated_at: string;
-  nearby_broadcast_count: number;
+  task: HXTask;
+  timeToAcceptSeconds?: number;
 }
 ```
 
-**Errors:**
-- `CONFLICT` - Not in ACTIVE state
-
 ---
 
-### liveMode.respondToBroadcast
+### instant.dismiss
 
-Respond to a live task broadcast.
+Dismiss an instant-task notification.
 
 **Auth:** Protected
 **Method:** Mutation
@@ -1967,32 +2625,41 @@ Respond to a live task broadcast.
 **Input:**
 ```typescript
 {
-  broadcast_id: string;
-  response: 'ACCEPT' | 'DECLINE' | 'SKIP';
-  decline_reason?: string;            // Required if DECLINE
+  taskId: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  success: boolean;
-  task?: {                            // Only if ACCEPT succeeded
-    id: string;
-    title: string;
-    price: number;
-    location: string;
-    deadline: string;
-  };
-  message?: string;                   // If already claimed by another
+  dismissed: boolean;
 }
 ```
 
 ---
+
+### instant.metrics
+
+Get instant-mode acceptance and notification metrics.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  timeToAccept: unknown;
+  notificationLatency: unknown;
+  dismissRate: number;
+  dismissStats: unknown;
+}
+```
 
 ## Task Feed Endpoints
 
-### task.getFeed
+#### Legacy / Planned: task.getFeed
 
 Get personalized task feed for hustlers.
 
@@ -2055,7 +2722,7 @@ Get personalized task feed for hustlers.
 
 ---
 
-### task.getMatchingScore
+#### Legacy / Planned: task.getMatchingScore
 
 Get detailed matching score breakdown for a task.
 
@@ -2096,7 +2763,7 @@ Get detailed matching score breakdown for a task.
 
 ## Rating Endpoints
 
-### rating.submit
+### rating.submitRating
 
 Submit a rating after task completion.
 
@@ -2106,7 +2773,7 @@ Submit a rating after task completion.
 **Input:**
 ```typescript
 {
-  task_id: string;
+  taskId: string;
   stars: number;           // 1-5, required
   comment?: string;        // Max 500 chars, optional
   tags?: string[];         // Optional, from predefined list
@@ -2121,13 +2788,13 @@ Submit a rating after task completion.
 ```typescript
 {
   id: string;
-  task_id: string;
-  rater_id: string;
-  ratee_id: string;
+  taskId: string;
+  raterId: string;
+  rateeId: string;
   stars: number;
   comment: string | null;
   tags: string[];
-  created_at: string;
+  createdAt: string;
 }
 ```
 
@@ -2140,7 +2807,7 @@ Submit a rating after task completion.
 
 ---
 
-### rating.getForTask
+### rating.getTaskRatings
 
 Get ratings for a specific task.
 
@@ -2150,35 +2817,28 @@ Get ratings for a specific task.
 **Input:**
 ```typescript
 {
-  task_id: string;
+  taskId: string;
 }
 ```
 
 **Output:**
 ```typescript
-{
-  poster_rating: {
-    id: string;
-    stars: number;
-    comment: string | null;
-    tags: string[];
-    created_at: string;
-  } | null;
-  worker_rating: {
-    id: string;
-    stars: number;
-    comment: string | null;
-    tags: string[];
-    created_at: string;
-  } | null;
-  both_submitted: boolean;
-  rating_window_expires_at: string | null;
-}
+Array<{
+  id: string;
+  taskId: string;
+  raterId: string;
+  rateeId: string;
+  stars: number;
+  comment: string | null;
+  tags: string[];
+  isPublic: boolean;
+  createdAt: string;
+}>
 ```
 
 ---
 
-### rating.getForUser
+### rating.getUserRatingSummary
 
 Get aggregated ratings for a user.
 
@@ -2188,37 +2848,90 @@ Get aggregated ratings for a user.
 **Input:**
 ```typescript
 {
-  user_id: string;
-  role?: 'poster' | 'worker';  // Filter by role
-  limit?: number;              // Recent ratings, default 10, max 50
+  userId: string;
 }
 ```
 
 **Output:**
 ```typescript
 {
-  user_id: string;
-  aggregate: {
-    average_stars: number;       // 0.0 to 5.0
-    total_ratings: number;
-    star_distribution: {
-      '1': number;
-      '2': number;
-      '3': number;
-      '4': number;
-      '5': number;
-    };
-    common_tags: { tag: string; count: number }[];
+  averageRating: number;
+  totalRatings: number;
+  ratingDistribution: {
+    '1': number;
+    '2': number;
+    '3': number;
+    '4': number;
+    '5': number;
   };
-  recent_ratings: {
-    id: string;
-    task_id: string;
-    stars: number;
-    comment: string | null;
-    tags: string[];
-    rater: UserSummary;
-    created_at: string;
-  }[];
+}
+```
+
+---
+
+### rating.getMyRatings
+
+Get ratings submitted by the current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  limit?: number;
+  offset?: number;
+}
+```
+
+**Output:**
+```typescript
+Array<{
+  id: string;
+  taskId: string;
+  taskTitle?: string;
+  fromUserId?: string;
+  fromUserName?: string;
+  rating: number;
+  review?: string | null;
+  createdAt: string;
+}>
+```
+
+---
+
+### rating.getRatingsReceived
+
+Get public ratings received by the current user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  limit?: number;
+  offset?: number;
+}
+```
+
+**Output:** same shape as `rating.getMyRatings`
+
+---
+
+### rating.processAutoRatings
+
+Process overdue auto-ratings.
+
+**Auth:** Admin
+**Method:** Mutation
+
+**Input:** None
+
+**Output:**
+```typescript
+{
+  processed: number;
 }
 ```
 
