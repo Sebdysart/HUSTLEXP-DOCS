@@ -84,11 +84,16 @@ This means the contract is still authoritative in intent, but incomplete as a li
 - completed in the current reconciliation pass: previously stale `flags.*`, `tracking.*`, `insurance` premium-upgrade calls, `recurringTask.*`, task batching, legacy skill verification, and stale squad task calls have been removed from the live Swift contract surface
 - current consumer drift is now concentrated in payload shape mismatches and in still-undocumented backend procedures, not in dead Swift procedure names
 
-**Payload drift hotspots to normalize next:**
+**Payload drift hotspots — Tranche 1 RESOLVED (Mar 9 2026):**
+- ✅ `task.submitProof` — input schema corrected (removed phantom `description`, `photoUrls` now required); output now documents nested `{ task, proof }` shape
+- ✅ `task.getProof` — output now documents full proof DB row with all snake_case→camelCase columns
+- ✅ `task.reviewProof` — output now documents full proof DB row after review (with `approved: boolean`)
+- ✅ `user.getOnboardingStatus` — output fields reconciled with backend (`onboardingComplete`, `role`, `hasCompletedFirstTask`, `xpFirstCelebrationShownAt`)
+- ✅ `notification.getPreferences` — phantom top-level category fields removed; `categoryPreferences` (JSONB) documented as canonical source for category toggles
+- ✅ `TRPCClient.swift` — added `keyDecodingStrategy = .convertFromSnakeCase` (root fix for all snake_case DB row decode failures)
+
+**Remaining payload drift:**
 - `escrow.confirmFunding` still drifts on output shape beyond the current authority fields (`posterId`, `workerId`, fee fields, payout helpers)
-- `task.submitProof` and `task.getProof` still drift between backend reality, Swift models, and the authority contract
-- `user.getOnboardingStatus` still drifts between the backend response and the current Swift `OnboardingStatus` model
-- `notification.getPreferences` still drifts heavily between docs authority and the Swift consumer shape
 
 ### Base URL
 ```
@@ -319,8 +324,7 @@ Submit proof of completion for a task.
 ```typescript
 {
   taskId: string;
-  description?: string;
-  photoUrls?: string[];
+  photoUrls: string[];       // required — at least one photo URL
   notes?: string;
   gpsLatitude?: number;
   gpsLongitude?: number;
@@ -328,12 +332,30 @@ Submit proof of completion for a task.
 }
 ```
 
-**Output:**
+**Output:** Nested `{ task, proof }` — both records returned so the caller can update task state and display the proof.
 ```typescript
 {
-  id: string;
-  state: 'PROOF_SUBMITTED';
-  proofSubmittedAt: string | null;
+  task: {
+    id: string;
+    state: 'PROOF_SUBMITTED';
+    proofSubmittedAt: string | null;
+    // ...other HXTask fields (see task.getById output shape)
+  };
+  proof: {
+    id: string;
+    taskId: string;
+    submitterId: string;       // worker who submitted
+    photoUrls: string[];
+    notes?: string;
+    gpsLatitude?: number;
+    gpsLongitude?: number;
+    biometricHash?: string;
+    submittedAt: string;
+    reviewedAt?: string;
+    reviewedBy?: string;       // poster who reviewed (populated after review)
+    approved?: boolean;
+    reviewerFeedback?: string;
+  };
 }
 ```
 
@@ -353,17 +375,22 @@ Get the latest proof submission for a task.
 }
 ```
 
-**Output:**
+**Output:** Full proof DB row (snake_case columns returned as camelCase via decoder).
 ```typescript
 {
   id: string;
   taskId: string;
-  submitterId: string;
-  state: string;
-  description?: string;
-  reviewedBy?: string;
-  reviewedAt?: string;
-  rejectionReason?: string;
+  submitterId: string;         // DB: submitter_id — worker who submitted
+  photoUrls: string[];         // DB: photo_urls
+  notes?: string;
+  gpsLatitude?: number;        // DB: gps_latitude
+  gpsLongitude?: number;       // DB: gps_longitude
+  biometricHash?: string;      // DB: biometric_hash
+  submittedAt: string;         // DB: submitted_at
+  reviewedAt?: string;         // DB: reviewed_at
+  reviewedBy?: string;         // DB: reviewed_by — poster who reviewed
+  approved?: boolean;
+  reviewerFeedback?: string;   // DB: reviewer_feedback
 }
 ```
 
@@ -388,14 +415,22 @@ Accept or reject a proof submission.
 }
 ```
 
-**Output:**
+**Output:** Full proof DB row after review (same shape as task.getProof).
 ```typescript
 {
   id: string;
-  state: 'ACCEPTED' | 'REJECTED';
-  reviewedBy: string;
-  reviewedAt: string;
-  rejectionReason?: string;
+  taskId: string;
+  submitterId: string;         // worker who submitted the proof
+  photoUrls: string[];
+  notes?: string;
+  gpsLatitude?: number;
+  gpsLongitude?: number;
+  biometricHash?: string;
+  submittedAt: string;
+  reviewedAt: string;          // populated when review completes
+  reviewedBy: string;          // poster ID who performed the review
+  approved: boolean;           // true = ACCEPTED, false = REJECTED
+  reviewerFeedback?: string;
 }
 ```
 
@@ -607,13 +642,16 @@ Get an escrow by ID.
 {
   id: string;
   taskId: string;
-  posterId?: string;
-  workerId?: string;
-  amountCents: number;
-  state: string;
+  amount: number;              // USD cents — field is "amount" (not "amountCents")
+  state: 'PENDING' | 'FUNDED' | 'LOCKED_DISPUTE' | 'RELEASED' | 'REFUNDED' | 'REFUND_PARTIAL';
+  refundAmount?: number;
+  releaseAmount?: number;
   stripePaymentIntentId?: string;
   stripeTransferId?: string;
   stripeRefundId?: string;
+  // Only on getById — this procedure JOINs tasks (unique among escrow.* queries)
+  posterId?: string;
+  workerId?: string;
   fundedAt?: string;
   releasedAt?: string;
   refundedAt?: string;
@@ -666,11 +704,15 @@ Get the escrow for a task.
 {
   id: string;
   taskId: string;
-  amountCents: number;
-  state: string;
+  amount: number;              // USD cents — field name is "amount" (not "amountCents")
+  state: 'PENDING' | 'FUNDED' | 'LOCKED_DISPUTE' | 'RELEASED' | 'REFUNDED' | 'REFUND_PARTIAL';
+  refundAmount?: number;       // set on REFUNDED/REFUND_PARTIAL
+  releaseAmount?: number;      // set on RELEASED
   stripePaymentIntentId?: string;
   stripeTransferId?: string;
   stripeRefundId?: string;
+  posterId?: string;           // always null here — no JOIN (only escrow.getById JOINs tasks)
+  workerId?: string;           // always null here — no JOIN
   fundedAt?: string;
   releasedAt?: string;
   refundedAt?: string;
@@ -678,6 +720,10 @@ Get the escrow for a task.
   updatedAt: string;
 }
 ```
+
+> **Note:** `getByTaskId` runs `SELECT * FROM escrows WHERE task_id = $1` (no JOIN).
+> `posterId` and `workerId` are always null in this response.
+> Use `escrow.getById` if you need those joined fields.
 
 ---
 
@@ -728,11 +774,21 @@ Confirm an escrow has been funded after Stripe payment succeeds.
 {
   id: string;
   taskId: string;
+  amount: number;              // USD cents
   state: 'FUNDED';
-  stripePaymentIntentId: string;
-  fundedAt: string;
+  refundAmount?: number;
+  releaseAmount?: number;
+  stripePaymentIntentId: string; // now set
+  stripeTransferId?: string;
+  stripeRefundId?: string;
+  posterId?: string;             // always null here — no JOIN (only set on escrow.getById)
+  workerId?: string;             // always null here — no JOIN
+  fundedAt: string;              // now set
+  releasedAt?: string;
+  refundedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
-```
 
 ---
 
@@ -755,11 +811,28 @@ Release escrow to the worker.
 ```typescript
 {
   id: string;
+  taskId: string;
+  amount: number;              // USD cents
   state: 'RELEASED';
-  stripeTransferId?: string;
-  releasedAt: string;
+  refundAmount?: number;
+  releaseAmount?: number;
+  stripePaymentIntentId?: string;
+  stripeTransferId?: string;   // set if Stripe transfer was used
+  stripeRefundId?: string;
+  posterId?: string;           // always null here — no JOIN (only escrow.getById JOINs tasks)
+  workerId?: string;           // always null here — no JOIN
+  fundedAt?: string;
+  releasedAt: string;          // now set
+  refundedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 ```
+
+> **Implementation detail:** Returns `RETURNING *` from the `escrows` table (no JOIN).
+> `posterId` and `workerId` are always null in this response.
+> Note: `escrow.release` also auto-awards XP via `XPService.awardXP` internally —
+> but XP ledger data is returned separately via `escrow.awardXP`.
 
 ---
 
@@ -781,11 +854,26 @@ Refund escrow to the poster.
 ```typescript
 {
   id: string;
+  taskId: string;
+  amount: number;              // USD cents
   state: 'REFUNDED';
-  stripeRefundId?: string;
-  refundedAt: string;
+  refundAmount?: number;       // set on full refund
+  releaseAmount?: number;
+  stripePaymentIntentId?: string;
+  stripeTransferId?: string;
+  stripeRefundId?: string;     // set if Stripe refund was issued
+  posterId?: string;           // always null here — no JOIN (only escrow.getById JOINs tasks)
+  workerId?: string;           // always null here — no JOIN
+  fundedAt?: string;
+  releasedAt?: string;
+  refundedAt: string;          // now set
+  createdAt: string;
+  updatedAt: string;
 }
 ```
+
+> **Implementation detail:** Returns `RETURNING *` from the `escrows` table (no JOIN).
+> `posterId` and `workerId` are always null in this response.
 
 ---
 
@@ -807,9 +895,26 @@ Lock escrow while a dispute is being resolved.
 ```typescript
 {
   id: string;
+  taskId: string;
+  amount: number;              // USD cents
   state: 'LOCKED_DISPUTE';
+  refundAmount?: number;
+  releaseAmount?: number;
+  stripePaymentIntentId?: string;
+  stripeTransferId?: string;
+  stripeRefundId?: string;
+  posterId?: string;           // always null here — no JOIN (only escrow.getById JOINs tasks)
+  workerId?: string;           // always null here — no JOIN
+  fundedAt?: string;
+  releasedAt?: string;
+  refundedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 ```
+
+> **Implementation detail:** Returns `RETURNING *` from the `escrows` table (no JOIN).
+> `posterId` and `workerId` are always null in this response.
 
 ---
 
@@ -852,14 +957,30 @@ Award XP after a released escrow.
 
 **Output:**
 ```typescript
+// XPLedgerEntry — full row from xp_ledger table (XPService.ts)
 {
-  entryId: string;
-  amount: number;
-  reason: string;
+  id: string;              // ledger entry UUID (was "entryId" — CORRECTED)
+  userId: string;          // user who received XP
   taskId: string;
+  escrowId: string;
+  baseXp: number;          // raw XP before multipliers (was "amount" — CORRECTED)
+  streakMultiplier: number;
+  trustMultiplier: number;
+  liveModeMultiplier: number; // 1.25 for Live tasks, 1.0 for Standard
+  effectiveXp: number;     // = baseXp × streakMultiplier × trustMultiplier × liveModeMultiplier
+  reason: string;
+  userXpBefore: number;
+  userXpAfter: number;
+  userLevelBefore: number;
+  userLevelAfter: number;
+  userStreakAtAward: number;
   awardedAt: string;
 }
 ```
+
+> **Breaking correction:** Previous docs showed `{ entryId, amount, reason, taskId, awardedAt }` —
+> this was WRONG. The actual return type is `XPLedgerEntry` from `XPService.ts` (lines 40-57).
+> iOS clients must update `EscrowService.awardXP()` decode struct accordingly.
 
 ---
 
@@ -1405,18 +1526,30 @@ Send a text or auto-message in a task thread.
 
 **Output:**
 ```typescript
+// TaskMessage — full row from task_messages table (MessagingService.ts)
 {
   id: string;
   taskId: string;
   senderId: string;
-  messageType: 'TEXT' | 'AUTO' | 'PHOTO';
-  content: string;
-  photoUrls?: string[];
-  caption?: string | null;
-  readAt?: string | null;
+  receiverId: string;                   // always present — the other participant
+  messageType: 'TEXT' | 'AUTO' | 'PHOTO' | 'LOCATION';
+  content?: string;                     // present for TEXT messages (max 500 chars)
+  autoMessageTemplate?: string;         // present for AUTO messages
+  photoUrls?: string[];                 // present for PHOTO messages (max 3)
+  photoCount?: number;                  // count of attached photos
+  locationLatitude?: number;            // present for LOCATION messages
+  locationLongitude?: number;
+  locationExpiresAt?: string;
+  readAt?: string | null;               // null = unread; set when receiver reads
+  moderationStatus?: 'pending' | 'approved' | 'flagged' | 'quarantined';
+  moderationFlags?: string[];
   createdAt: string;
+  updatedAt: string;
 }
 ```
+
+> **Correction:** `caption` was never a field in the `task_messages` schema — removed.
+> Backend uses `content` for text (including photo captions).
 
 **Errors:**
 - `FORBIDDEN` - Task not in ACCEPTED/PROOF_SUBMITTED/DISPUTED state
@@ -1460,18 +1593,29 @@ Get all messages for a task thread.
 
 **Output:**
 ```typescript
+// Array of TaskMessage rows — same shape as messaging.sendMessage output
 Array<{
   id: string;
   taskId: string;
   senderId: string;
-  messageType: 'TEXT' | 'AUTO' | 'PHOTO';
-  content: string;
+  receiverId: string;
+  messageType: 'TEXT' | 'AUTO' | 'PHOTO' | 'LOCATION';
+  content?: string;
+  autoMessageTemplate?: string;
   photoUrls?: string[];
-  caption?: string | null;
+  photoCount?: number;
+  locationLatitude?: number;
+  locationLongitude?: number;
+  locationExpiresAt?: string;
   readAt?: string | null;
+  moderationStatus?: 'pending' | 'approved' | 'flagged' | 'quarantined';
+  moderationFlags?: string[];
   createdAt: string;
+  updatedAt: string;
 }>
 ```
+
+> Ordered by `created_at ASC`. Requires caller to be poster or worker on the task.
 
 ---
 
@@ -1703,20 +1847,21 @@ Get notification preferences.
 
 **Input:** None
 
-**Output:**
+**Output:** Raw DB row. `taskUpdates`, `paymentUpdates`, `messageNotifications`, `marketingEmails` are **NOT** top-level fields — they are keys inside `categoryPreferences` (JSONB). Consumers must expand `categoryPreferences` client-side for category-level toggles.
 ```typescript
 {
+  id: string;
+  userId: string;
   pushEnabled: boolean;
   emailEnabled: boolean;
-  smsEnabled?: boolean;
-  quietHoursEnabled?: boolean;
-  quietHoursStart?: string;
-  quietHoursEnd?: string;
+  smsEnabled: boolean;
+  quietHoursEnabled: boolean;
+  quietHoursStart?: string;    // HH:MM format
+  quietHoursEnd?: string;      // HH:MM format
   categoryPreferences?: Record<string, boolean>;
-  taskUpdates?: boolean;
-  paymentUpdates?: boolean;
-  messageNotifications?: boolean;
-  marketingEmails?: boolean;
+  // categoryPreferences may include: { taskUpdates, paymentUpdates, messageNotifications, marketingEmails }
+  createdAt: string;
+  updatedAt: string;
 }
 ```
 
@@ -2650,12 +2795,32 @@ Get instant-mode acceptance and notification metrics.
 **Output:**
 ```typescript
 {
-  timeToAccept: unknown;
-  notificationLatency: unknown;
+  timeToAccept: {
+    count: number;
+    median?: number;
+    p90?: number;
+    min?: number;
+    max?: number;
+    all: number[];
+  };
+  notificationLatency: {
+    count: number;
+    median?: number;
+    p90?: number;
+    min?: number;
+    max?: number;
+    all: number[];
+  };
   dismissRate: number;
-  dismissStats: unknown;
+  dismissStats: {
+    total: number;
+    dismissed: number;
+  };
 }
 ```
+
+> **Shape note:** `timeToAccept` and `notificationLatency` are nested objects, not flat fields.
+> iOS decodes these via `InstantTimeStats` and `InstantDismissStats` nested structs in `LiveModeService.swift`.
 
 ## Task Feed Endpoints
 
