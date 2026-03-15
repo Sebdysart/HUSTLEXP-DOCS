@@ -135,7 +135,7 @@ if (retryCount < 3) // Why 3?
 db.query(`SELECT * FROM users WHERE id = '${userId}'`)
 
 // 🚨 Hardcoded secret
-const API_KEY = 'sk_live_abc123'
+const API_KEY = '<REDACTED_EXAMPLE_SECRET>'
 
 // 🚨 Sensitive data logged
 console.log('Payment details:', paymentData)

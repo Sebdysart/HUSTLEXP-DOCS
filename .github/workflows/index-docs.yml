@@ -1,0 +1,28 @@
+name: Index Docs to Knowledge Graph
+
+on:
+  push:
+    branches: [main]
+    paths: ['**/*.md']
+
+jobs:
+  index:
+    name: Update Knowledge Graph
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: sebastiandysart/hustlexp-ai-backend
+          path: backend
+          token: ${{ secrets.CROSS_REPO_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install backend dependencies
+        run: cd backend && npm ci
+      - name: Index documentation
+        run: cd backend && tsx scripts/index-docs.ts --docs-path ../
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
