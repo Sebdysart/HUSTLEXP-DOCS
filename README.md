@@ -1,295 +1,192 @@
-# HustleXP Product Requirements Repository
+# HustleXP — Product Documentation
 
-> **The single source of truth for building HustleXP v1.0**
+HustleXP is a **gamified local task marketplace** connecting workers ("Hustlers") and employers ("Posters") for short-form local task completion. Every completed task builds XP, trust tiers, and a verifiable platform reputation that compounds over time instead of resetting. Think TaskRabbit, but your reputation actually matters.
 
----
-
-## 🧠 EXECUTION MENTAL MODEL (NON-NEGOTIABLE)
-
-```
-HustleXP UI is built as a PUZZLE, not as isolated screens.
-
-┌─────────────────────────────────────────────────────────────┐
-│  SCREENS    — Assembly ONLY (no invention allowed)          │
-├─────────────────────────────────────────────────────────────┤
-│  SECTIONS   — Narrative regions (header, content, actions)  │
-├─────────────────────────────────────────────────────────────┤
-│  MOLECULES  — Combinations of atoms (cards, forms, lists)   │
-├─────────────────────────────────────────────────────────────┤
-│  ATOMS      — Primitive elements (buttons, inputs, text)    │
-└─────────────────────────────────────────────────────────────┘
-
-RULES:
-- Atoms are LOCKED once approved
-- Molecules are LOCKED once approved
-- Screens ASSEMBLE existing pieces — they do NOT invent new visuals
-- If you need something new → create it at Atom/Molecule layer FIRST
-
-Cursor is FORBIDDEN from inventing new visuals at the Screen level.
-```
-
-📋 **[UI_COMPONENT_HIERARCHY.md](UI_COMPONENT_HIERARCHY.md)** — Full hierarchy spec
+**The core thesis:** Workers who invest in building their trust tier — completing tasks, earning ratings, maintaining low dispute rates — unlock better tasks, higher XP multipliers, Live Mode access, and squad formation. The platform rewards consistency with compounding returns. Commoditized gig labor does not.
 
 ---
 
-## 🎯 SCREEN ARCHETYPE ROUTING (MANDATORY)
+## ⚡ Current Status — Live Truth
 
-**All screens belong to an ARCHETYPE. Identify the archetype BEFORE implementation.**
-
-| Archetype | Purpose | Screens |
-|-----------|---------|---------|
-| **A. Entry/Commitment** | User decides to engage | Login, Signup, Role Selection |
-| **B. Feed/Opportunity** | User discovers options | Task Feed, History |
-| **C. Task Lifecycle** | Active work flow | Task Detail, In Progress, Proof |
-| **D. Calibration/Capability** | User configures self | Onboarding, Verification, Settings |
-| **E. Progress/Status** | User sees standing | XP Breakdown, Trust Tier, Earnings |
-| **F. System/Interrupt** | System communicates | Errors, Maintenance, Force Update |
-
-```
-Cursor may NOT treat screens as unique design problems.
-Screens inherit visuals, motion, and hierarchy from their archetype.
-
-If archetype is unclear → STOP and ask.
-```
-
-📋 **[SCREEN_ARCHETYPES.md](SCREEN_ARCHETYPES.md)** — Full archetype specs
+| Metric | Value |
+|--------|-------|
+| **Phase** | 🟢 Private Beta — Launch Ready |
+| **Ecosystem Health** | 100/100 |
+| **Beta Gate** | 100/100 — all P0 blockers resolved |
+| **iOS App** | 58 screens, SwiftUI (iOS 17+) |
+| **Backend** | 38 tRPC routers, 290+ procedures |
+| **Database** | 103 PostgreSQL tables + PostGIS |
+| **Tests** | 5,448 passing, 239 files, 0 failures |
+| **Coverage** | 89.6% statement, 77.6% branch |
+| **API Contracts** | 219 bridges, 0 mismatches |
+| **Background Workers** | 23 BullMQ workers |
+| **AI Agents** | 4 live (Judge, Matchmaker, Dispute, Reputation) |
+| **Last Updated** | 2026-03-14 |
 
 ---
 
-## ✨ CHOSEN-STATE REQUIREMENT (GLOBAL)
+## For New Contributors — Read This First
 
-```
-All Entry, Feed, and Onboarding screens must imply:
+You can get oriented in 10 minutes by reading these in order:
 
-✅ The user is ALREADY selected
-✅ The system is ALREADY active  
-✅ A successful outcome is LIKELY or GUARANTEED
+1. **This file** — What the project is, current status, what's live
+2. [`PROJECT-AUDIT-2026-03.md`](PROJECT-AUDIT-2026-03.md) — Complete in-depth audit: both user POVs, all 58 screens, full feature inventory, technical depth
+3. [`CURRENT_PHASE.md`](CURRENT_PHASE.md) — What phase we're in, what work is allowed, what's frozen
+4. [`specs/04-backend/API_CONTRACT.md`](specs/04-backend/API_CONTRACT.md) — The source of truth for all API shapes
+5. [`private-beta/scorecard.json`](private-beta/scorecard.json) — Machine-readable gate status (check this first every session)
 
-FORBIDDEN:
-❌ Empty states that feel like "starting from zero"
-❌ Neutral or tentative language
-❌ UI that makes the user feel unqualified
-
-If a screen feels like "starting from zero" → it FAILS quality review.
-```
-
----
-
-## ⚠️ PRODUCT IS FROZEN
-
-| Document | Purpose | Status |
-|----------|---------|--------|
-| **[FINISHED_STATE.md](FINISHED_STATE.md)** | What "done" means | 🔒 FROZEN |
-| **[FEATURE_FREEZE.md](FEATURE_FREEZE.md)** | No new features | 🔒 ACTIVE |
-| **[AI_GUARDRAILS.md](AI_GUARDRAILS.md)** | AI behavior rules | 🔒 ACTIVE |
-| **[SCREEN_FEATURE_MATRIX.md](SCREEN_FEATURE_MATRIX.md)** | What each screen does | 🔒 FROZEN |
-
-**No feature may be added without modifying FINISHED_STATE.md first.**
+**Answer these 5 questions and you're oriented:**
+1. What is HustleXP? → Gamified local task marketplace. Reputation compounds, doesn't reset.
+2. What's the current state? → 100/100 health, private beta ready, iOS + Railway backend live.
+3. What are the 3 differentiators? → Trust tier progression, Live Mode radar, proof-of-work chain.
+4. What's the architecture? → SwiftUI iOS → Firebase JWT → Hono/tRPC → Neon Postgres + Upstash Redis + BullMQ.
+5. What's not done? → Checkr (blocked), Rekognition liveness (planned), dispute submission iOS stub (fix in progress).
 
 ---
 
-## ⚠️ CURRENT PHASE: BOOTSTRAP
+## What's Live Right Now
 
-**Ready for MVP: CONDITIONAL (per CURRENT_PHASE.md)**
+Everything below is implemented and deployed in production:
 
-| Check | Status |
-|-------|--------|
-| App builds in Xcode | ❌ |
-| App launches without crash | ❌ |
-| BootstrapScreen renders | ❌ |
-| Button logs to console | ❌ |
-| 30-second stability | ❌ |
+**Core Marketplace**
+- ✅ Full task lifecycle (OPEN → ACCEPTED → PROOF_SUBMITTED → COMPLETED) with 9-state machine
+- ✅ Stripe escrow (PENDING → FUNDED → RELEASED / REFUNDED / LOCKED_DISPUTE)
+- ✅ Bidirectional ratings (Hustler ↔ Poster), auto-rating on inactivity
+- ✅ In-app task-scoped messaging with photo attachments and FCM push
 
-📋 **[BOOTSTRAP.md](BOOTSTRAP.md)** — The runtime baseline  
-📋 **[CURRENT_PHASE.md](CURRENT_PHASE.md)** — What's allowed right now
+**Gamification**
+- ✅ XP system with stacked multipliers (streak × trust tier × live mode)
+- ✅ Trust tiers: Rookie → Verified → Trusted → Elite → Master
+- ✅ Badge system (append-only, immutable, 4 tiers per badge type)
+- ✅ Daily streaks with multiplier (1.0 + streak_days × 0.05, cap 2.0)
+- ✅ Daily challenges (backend wired; iOS screen in progress)
 
----
+**Features**
+- ✅ Live Mode / ASAP task broadcasting with real-time SSE radar
+- ✅ Squads (Elite+ team formation, shared XP + earnings, levels 1–6)
+- ✅ Recurring tasks (template series, preferred worker assignment)
+- ✅ Tipping (in-app, 100% to worker, min $1, max 50% of task price)
+- ✅ Referral system (referral codes, bonuses on referee's first task)
+- ✅ Featured task promotion ($2.99–$7.99, Stripe-wired)
+- ✅ Batch quests (multi-task, AI route optimization)
+- ✅ Heat map (geographic demand visualization)
 
-## 🚀 Quick Start
+**Trust & Safety**
+- ✅ Fraud detection (real-time risk scoring, velocity checks, pattern detection)
+- ✅ Content moderation (toxicity API, moderation queue, appeal workflow)
+- ✅ Biometric proof (GPS + photo + device biometric at submission)
+- ✅ KYC gate (payouts_enabled + stripe_connect_id before any escrow release)
+- ✅ 6-tier rate limiting (Auth / AI / Financial / Mutation / Upload / General)
+- ✅ Geofencing (GPS coordinates validated against task location radius)
 
-### For Cursor (Frontend)
-```
-READ IN ORDER:
-1. EXECUTION_QUEUE.md        ← Find next step, execute ONLY that
-2. SCREEN_ARCHETYPES.md      ← Which archetype is this screen?
-3. UI_COMPONENT_HIERARCHY.md ← What atoms/molecules exist?
-4. STOP_CONDITIONS.md        ← Know when to STOP
-5. .cursorrules              ← ENFORCEMENT (not guidance)
-```
+**Compliance & Finance**
+- ✅ Subscriptions (Free / Premium $14.99 / Pro $29.99 — Stripe recurring billing)
+- ✅ XP tax (10% on offline payments; Stripe payment intent; DB trigger enforced)
+- ✅ 1099-NEC generation (Stripe Tax API, workers >$600/year, annual filing)
+- ✅ Insurance claims (self-insurance pool, file + review + pay workflow)
+- ✅ GDPR data export + deletion rights
 
-### For Claude Code (Backend)
-```
-READ IN ORDER:
-1. .claude/instructions.md   ← ENFORCEMENT (not guidance)
-2. FINISHED_STATE.md         ← What the product IS
-3. AI_GUARDRAILS.md          ← Your behavior rules
-4. CURRENT_PHASE.md          ← Wait for frontend bootstrap
-```
+**AI Agents**
+- ✅ Judge (proof verification: GPS + photo + biometric → APPROVE/REVIEW/REJECT)
+- ✅ Matchmaker (worker ranking, price suggestions)
+- ✅ Dispute (fault scoring, split ratio recommendations)
+- ✅ Reputation (dynamic trust scoring, anomaly detection, tier eligibility)
+- ✅ AIRouter cost governance (per-user daily budgets, provider fallback chains, $500/day global cap)
 
----
-
-## 🔐 The Rules
-
-### Rule 1: Product is Frozen
-- 38 screens defined (no more)
-- 32 tables defined (no more)
-- Features listed in FINISHED_STATE.md (no more)
-
-### Rule 2: AI Executes, Not Designs
-- Cursor: Assembles from existing atoms/molecules — NO invention
-- Claude Code: Layers 0-2 only
-- Both: No inventing features
-
-### Rule 3: Archetype First
-- Identify screen archetype BEFORE implementation
-- Inherit visuals from archetype
-- Do NOT treat screens as unique design problems
-
-### Rule 4: Chosen-State Always
-- Users feel selected, not tested
-- System feels active, not waiting
-- Outcomes feel likely, not uncertain
-
-### Rule 5: Stop on Uncertainty
-- If unclear, STOP and ASK
-- Do not guess
-- Do not "help" by filling gaps
+**Infrastructure**
+- ✅ 23 BullMQ workers (payment, escrow, fraud, push, email, SMS, biometric, recurring, tax, etc.)
+- ✅ SSE real-time broadcasting (`/realtime/stream`)
+- ✅ CI pipeline: Zenith Codex (16 layers, PR classifier, readiness score, Greptile review)
 
 ---
 
-## 📁 Repository Structure
+## What's Deferred
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Checkr background checks | ⏸ Blocked | Account authorization pending — B3 post-beta |
+| AWS Rekognition liveness | 🔵 Planned | Full biometric step-up auth. Amplify SDK not yet installed. |
+| Dispute submission (iOS) | 🔧 Fix in progress | Currently a UI stub — no API call. Critical fix. |
+| Android client | 📋 Roadmap | Post-iOS-beta |
+| Video proof / LiDAR | 📋 Roadmap | Judge Agent Phase 2 |
+| AI-dynamic insurance | 📋 Roadmap | Risk Engine Phase 2 |
+| Background check freemium | 📋 Roadmap | "Earn enough tasks → platform covers your check" model |
+
+---
+
+## Repository Map
 
 ```
 HUSTLEXP-DOCS/
-│
-├── 🧠 EXECUTION MODEL
-│   ├── EXECUTION_QUEUE.md        ← Step-by-step build sequence
-│   ├── STOP_CONDITIONS.md        ← When to stop building
-│   ├── FRONTEND_BUILD_MAP.json   ← Machine-readable dependencies
-│   ├── UI_COMPONENT_HIERARCHY.md ← Atoms → Molecules → Screens
-│   └── SCREEN_ARCHETYPES.md      ← Screen categories
-│
-├── 🔒 PRODUCT DEFINITION (Frozen)
-│   ├── FINISHED_STATE.md         ← What "done" means
-│   ├── FEATURE_FREEZE.md         ← No new features
-│   ├── AI_GUARDRAILS.md          ← AI behavior rules
-│   └── SCREEN_FEATURE_MATRIX.md  ← What each screen does
-│
-├── 🚨 PHASE CONTROL
-│   ├── BOOTSTRAP.md              ← Runtime baseline
-│   └── CURRENT_PHASE.md          ← Current phase gate
-│
-├── 🤖 AI ENFORCEMENT
-│   ├── .cursorrules              ← Cursor hard constraints
-│   └── .claude/instructions.md   ← Claude Code hard constraints
-│
-├── 📚 SPECIFICATIONS
-│   └── specs/
-│       ├── 00-overview/          ← Quick Start guide
-│       ├── 01-product/           ← Product spec, onboarding, features
-│       ├── 02-architecture/      ← Architecture, schema.sql, subsystems/ (10 LOCKED)
-│       ├── 03-frontend/          ← UI spec, stitch prompts, components
-│       └── 04-backend/           ← API contract, Stripe, matching, storage
-│
-├── 📱 SCREEN SPECIFICATIONS
-│   └── screens-spec/             ← SCREEN_REGISTRY + per-screen specs
-│
-├── 🧩 UI PUZZLE MODEL
-│   └── ui-puzzle/                ← atoms/, molecules/, sections/, screens/, tokens/
-│
-├── ⚙️ AUTHORITY & ENFORCEMENT (Top-Level)
-│   ├── AI_CHECKPOINTS.md         ← Enforcement gates
-│   ├── ARCHETYPE_MOLECULE_MATRIX.md ← Archetype-to-molecule binding
-│   ├── COLOR_AUTHORITY_RESOLUTION.md ← Color system authority
-│   ├── COLOR_SEMANTICS_LAW.md    ← Color semantic rules (13 refs)
-│   ├── CURSOR_INSTRUCTIONS.md    ← Cursor behavior rules (7 refs)
-│   ├── TYPOGRAPHY_AUTHORITY_RESOLUTION.md ← Type system authority
-│   ├── NAVIGATION_ARCHITECTURE.md ← Nav structure
-│   ├── TASK_CREATION_STATE_MACHINE.md ← Task creation flow
-│   ├── TASK_CLARIFICATION_QUESTION_BANK.md ← Question bank for tasks
-│   └── TASK_EXECUTION_REQUIREMENTS.md ← Task execution rules
-│
-├── 📊 tracking/                  ← Implementation status + historical audits
-├── 📦 reference/                 ← Scaffold code
-├── 📂 staging/                   ← Stub specs (post-v1) + SUPERSEDED redirects
-├── 📂 PER/                       ← Persistent Execution Rails (legacy framework)
-├── 📂 prompts/                   ← Prompt templates
-└── 📂 archive/                   ← Retired files (0 active references)
+├── PROJECT-AUDIT-2026-03.md      # ← Start here. Complete project audit.
+├── CURRENT_PHASE.md              # What phase we're in. What's allowed.
+├── PRIVATE_BETA_SPEC.md          # Beta gate definitions + journey specs
+├── private-beta/
+│   └── scorecard.json            # Machine-readable gate status (auto-updated)
+├── specs/
+│   ├── 01-product/               # Product requirements
+│   ├── 04-backend/
+│   │   └── API_CONTRACT.md       # SOURCE OF TRUTH for all API shapes
+│   └── 05-ios/                   # iOS screen specs
+├── docs/
+│   └── plans/                    # Implementation design docs + plans
+│       └── 2026-03-14-readme-vision-reset-design.md
+├── tracking/                     # Sprint tracking, orbit state
+├── _archive/                     # Legacy docs — DO NOT USE for current work
+├── FINISHED_STATE.md             # ⚠️ STALE — reflects Jan 2025 scope (3x features have since shipped)
+├── FEATURE_FREEZE.md             # ⚠️ STALE — original freeze list pre-dates live features
+└── BUILD_READINESS.md            # ⚠️ STALE — predates SwiftUI pivot, 32-table era
 ```
 
----
-
-## 📱 Product Summary (v1.0)
-
-### Includes:
-- ✅ Core marketplace (task lifecycle)
-- ✅ Trust & eligibility system
-- ✅ Messaging (in-task)
-- ✅ Maps & location (EN_ROUTE only)
-- ✅ Disputes & safety
-- ✅ Notifications (push + email)
-- ✅ Ratings (1-5 stars)
-- ✅ Admin operations
-
-### Does NOT Include (v2+):
-- ❌ AI task suggestions
-- ❌ Smart pricing
-- ❌ Gamified streaks
-- ❌ Text reviews
-- ❌ Tipping
-- ❌ Recurring tasks
-- ❌ Team tasks
-- ❌ Video proof
-
-### 🔒 LOCKED Subsystem Architecture (specs/02-architecture/subsystems/)
-
-| Subsystem | File | Lines |
-|-----------|------|-------|
-| Judge Agent (Proof Verification) | `JUDGE_AGENT_SPEC_LOCKED.md` | 750+ |
-| Risk & Trust Engine | `RISK_TRUST_ENGINE_LOCKED.md` | 1,096 |
-| Risk Classifier (Task Creation) | `POSTER_TASK_CREATION_RISK_CLASSIFIER_LOCKED.md` | 400+ |
-| Capability Profile Schema | `CAPABILITY_PROFILE_SCHEMA_AND_INVARIANTS_LOCKED.md` | 600+ |
-| Capability Onboarding (UX) | `CAPABILITY_DRIVEN_ONBOARDING_LOCKED.md` | 1,042 |
-| Capability Onboarding (Backend) | `CAPABILITY_ONBOARDING_AND_FEED_FILTERING_LOCKED.md` | 838 |
-| Feed Eligibility Resolver | `FEED_QUERY_AND_ELIGIBILITY_RESOLVER_LOCKED.md` | 500+ |
-| Verification Pipeline | `VERIFICATION_PIPELINE_LOCKED.md` | 400+ |
-| Verification Payment UX | `VERIFICATION_PAYMENT_UX_AND_COPY_LOCKED.md` | 400+ |
-| Settings & Verification | `SETTINGS_VERIFICATION_AND_ELIGIBILITY_LOCKED.md` | 400+ |
-
-**Full list: [FINISHED_STATE.md](FINISHED_STATE.md)**
+> ⚠️ `FINISHED_STATE.md`, `FEATURE_FREEZE.md`, and `BUILD_READINESS.md` reflect the original Jan 2025 MVP scope. They explicitly exclude tipping, recurring tasks, referral, AI agents, and subscriptions — all of which are now live. These documents have not been updated. Use `PROJECT-AUDIT-2026-03.md` and `CURRENT_PHASE.md` as the source of current truth.
 
 ---
 
-## 📊 Counts (Frozen)
+## Authority Hierarchy
 
-| Artifact | Count | Status |
-|----------|-------|--------|
-| Screens | 38 | 🔒 Frozen |
-| Tables (schema.sql) | 20 | 🔒 Frozen |
-| Tables (migrations) | 21 | 🔒 Frozen |
-| Tables (Total) | 41 | 🔒 Frozen |
-| LOCKED Subsystems | 10 | 🔒 Frozen |
-| Views | 4 | 🔒 Frozen |
-| Invariants | 5+ | 🔒 Frozen |
-| Archetypes | 6 | 🔒 Frozen |
-| Trust Tiers | 5 | 🔒 Frozen (ROOKIE → VERIFIED → TRUSTED → ELITE → MASTER) |
+When docs and code disagree, this is the resolution order:
 
----
+```
+1. private-beta/scorecard.json     (gate status — machine truth)
+2. CURRENT_PHASE.md                (what phase + what's allowed — human truth)
+3. specs/04-backend/API_CONTRACT.md (API shapes — contract truth)
+4. Backend code                    (implementation truth)
+5. iOS code                        (client truth)
+```
 
-## 🔗 Related Repositories
-
-| Repository | Purpose |
-|------------|---------|
-| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | **React Native Frontend (ACTIVE)** |
-| [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend) | Backend services |
+If FINISHED_STATE.md or FEATURE_FREEZE.md conflict with the above — the above wins. Those docs are historical artifacts.
 
 ---
 
-## 👤 Contact
+## The 2-Year North Star
 
-**Owner:** Sebastian Dysart  
-**Project:** HustleXP v1.0
+HustleXP becomes a **skilled-labor credentialing network with a marketplace on top**, not a marketplace with badges bolted on.
+
+A Master Hustler (100+ tasks, 4.95+ stars, $10k+ earned, zero disputes) holds a credential more verifiable than a resume. Squads of Elite workers can bid on commercial contracts ($500+) no individual can take alone. The XP economy extends into:
+- Insurance discounts at higher trust tiers
+- Earned wage advance at Trusted+
+- Verified worker identity exportable to other platforms
+- AI agents shift from assistive to predictive: demand forecasting, hot zone routing, pre-positioning
+
+The long-term moat is not the marketplace — it's the identity layer. Workers who have invested years building trust on HustleXP won't start over somewhere else.
 
 ---
 
-**The product is defined. The scope is frozen. Assemble from existing pieces. Build exactly this.**
+## AI Tool Instructions
+
+> This section is for Cursor, Claude Code, and other AI coding agents.
+
+**At session start:**
+1. Read `private-beta/scorecard.json` — state the current score and top blocker
+2. Read `CURRENT_PHASE.md` — confirm what work is allowed in this phase
+3. Check `specs/04-backend/API_CONTRACT.md` before generating any API calls
+
+**Iron laws:**
+- `payloadDrift=11` is the irreducible floor — all type-repr artifacts. Do NOT chase these.
+- `health=100/100` — do not regress this.
+- Do NOT modify API contracts without running `/impact` first.
+- Do NOT work on B3 items (Checkr, Squads insurance, video proof) — deferred post-beta.
+- `FINISHED_STATE.md` is stale — do not use it to determine what features exist.
+
+**Orbit config:** `~/.claude/omni-link/orbit-config.json`
+**Workflow reference:** `/Users/sebastiandysart/omni-link-hustlexp/WORKFLOW.md`
