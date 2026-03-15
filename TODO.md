@@ -33,14 +33,14 @@ These are bugs where the platform earns $0 or less than it should. All identifie
 
 ### P0 — Platform is not collecting fees correctly
 
-- [ ] **Fix `application_fee_amount` in `StripeService.ts:162`** — platform fee is stored in PaymentIntent metadata only. `application_fee_amount` is NEVER passed to Stripe API. The 15% fee is an accounting fiction until this is fixed. Fix: pass `application_fee_amount: Math.round(taskPrice * 0.15 * 100)` to `stripe.paymentIntents.create`.
-- [ ] **Fix escrow fee calculation in `EscrowService.ts:337`** — `grossPayoutCents = task.price` should be `escrow.amount`. Platform misses the surge premium cut because surge is applied to escrow amount, not base task price.
+- [x] **Platform fee collection** — FIXED via Separate Charges and Transfers model. `escrow-action-worker.ts` now computes `platformFeeCents = Math.round(escrowAmount * 0.15)` and transfers only `netPayoutCents = escrowAmount - platformFeeCents` to the worker. Platform implicitly keeps the fee difference. Commit `850f9207`.
+- [x] **Fix escrow fee calculation in `EscrowService.ts:337`** — `grossPayoutCents = task.price` should be `escrow.amount`. Platform misses the surge premium cut because surge is applied to escrow amount, not base task price. Fixed in commit `850f9207`.
 
 ### P1 — Revenue leaks
 
-- [ ] **Wire `SelfInsurancePoolService.recordContribution()`** — method exists but is never called from `EscrowService.release()`. Self-insurance pool is permanently $0. Wire the call on every successful escrow release.
+- [x] **Wire `SelfInsurancePoolService.recordContribution()`** — method exists but is never called from `EscrowService.release()`. Self-insurance pool is permanently $0. Wired the call on every successful escrow release. Fixed in commit `850f9207`.
 - [ ] **Add platform cut on tips in `TippingService.ts:98`** — tips currently earn $0 and cost the platform Stripe processing fees. Add 5–8% platform cut. Update Poster Agreement and Hustler Agreement fee disclosures accordingly.
-- [ ] **Fix subscription renewal revenue logging** — Stripe `invoice.paid` webhook not wired for recurring subscriptions. Only month 1 revenue is logged. Wire the `case 'invoice.paid':` handler in `stripe-event-worker.ts`.
+- [x] **Fix subscription renewal revenue logging** — Stripe `invoice.paid` webhook not wired for recurring subscriptions. Only month 1 revenue is logged. Added `invoice.paid` + `charge.dispute.*` handlers in `stripe-event-worker.ts`. Fixed in commit `850f9207`.
 - [ ] **Fix XP tax dead code path in `EscrowService.ts:336`** — `paymentMethod` hardcoded to `'escrow'`, making the XP tax path unreachable for non-escrow payment methods. Derive from task metadata.
 
 ### P2 — Future revenue
@@ -55,8 +55,8 @@ Features that exist in the backend but are stubbed, mocked, or broken in the iOS
 
 ### P0 — Financial safety path broken
 
-- [ ] **Implement backend `dispute.create` procedure** — No `dispute` router exists in the backend. `DisputeScreen.swift` cannot be wired to a real tRPC call until this is built. Create `backend/src/routers/dispute.ts` with a `create` mutation accepting `{ taskId: string, reason: string, description: string }`. Register in `backend/src/routers/index.ts`. This is a prerequisite for the DisputeScreen iOS fix below.
-- [ ] **Wire real dispute submission in `DisputeScreen.swift:73-85`** (requires backend `dispute.create` procedure — see item above) — currently uses `DispatchQueue.main.asyncAfter(deadline: .now() + 2)` fake success with NO tRPC call. This is the financial safety path. Fix: replace fake with real `disputeRouter.create` tRPC call.
+- [x] **Implement backend `dispute.create` procedure** — No `dispute` router existed in the backend. Created `backend/src/routers/dispute.ts` with `create`, `getById`, `getByTask`, and `getMine` procedures. Registered in `backend/src/routers/index.ts`. Commit `c6e9ce57`.
+- [x] **Wire real dispute submission in `DisputeScreen.swift:73-85`** — previously used `DispatchQueue.main.asyncAfter(deadline: .now() + 2)` fake success with NO tRPC call. Replaced with real `disputeRouter.create` tRPC call. Commit `9f94e39`.
 
 ### P1 — High priority stubs
 
@@ -65,7 +65,8 @@ Features that exist in the backend but are stubbed, mocked, or broken in the iOS
   - `getSquadTasks()` returns `[]` — backend `squad.listTasks` exists at `squad.ts:550`
   - `acceptSquadTask()` throws 501 — backend `squad.acceptTask` exists
   - `getLeaderboard()` returns `[]` — backend `squad.leaderboard` exists at `squad.ts:826`
-- [ ] **Fix `squad.disband` field name mismatch** — iOS `SquadService.swift` sends `DisbandInput(id: id)` but backend `squad.ts:455` validates `.input(z.object({ squadId: Schemas.uuid }))`. The validation rejects the iOS payload. Fix: either change backend schema to `{ id: Schemas.uuid }` OR update iOS `DisbandInput` struct to use `squadId`. Verify against the DB column name (`squads.id` vs `squads.squad_id`) before deciding which side to fix.
+- [ ] **Fix `squad.disband` field mismatch** — `SquadService.swift:82` sends `DisbandInput(id: id)` but backend `squad.ts:455` validates `z.object({ squadId: Schemas.uuid })`. LIVE BUG — disband silently fails. Fix: rename struct field from `id` to `squadId` in iOS. Do NOT change the backend schema.
+- [x] **Fix pre-existing build errors in ConversationScreen + NotificationService** — `HXMessage.senderName` no longer exists (use `senderId`); `NotificationPreferences` convenience init added. Commit `9f94e39`.
 - [ ] **Commit 1 uncommitted change in `hustlexp-ios`** — omni-link digest shows 1 uncommitted change. Identify and commit.
 
 ### P2 — Missing screens
@@ -83,7 +84,8 @@ From omni-link evolution analysis and domain reorganization audit.
 
 ### P1
 
-- [ ] **Zod validation audit** — verify all 456 tRPC procedures have `.input(z.object(...))` schemas. Current coverage: ~66% (~300/456). Target: 95%+. The `hustlerProcedure` and `posterProcedure` role guards added in commit `acef5c42` are a good foundation — validation should be the next layer.
+- [ ] **Zod validation audit** — verify all 460 tRPC procedures have `.input(z.object(...))` schemas. Current coverage: 65.9% (303/460 across 50 routers). Target: 95%+. The `hustlerProcedure` and `posterProcedure` role guards added in commit `acef5c42` are a good foundation — validation should be the next layer.
+- [ ] **Rate limiting coverage audit** — omni-link digest flags 140 mutation routes with no rate-limiting middleware detected. Audit `security.ts` to confirm actual coverage. If gaps exist, add Hono-compatible rate limiting per route group.
 - [ ] **Fix pre-existing test failure in `task-router.test.ts`** — `task.getById > throws NOT_FOUND when task does not exist` fails with mock setup issue (`TaskService.getById` returning `undefined` instead of `{ success: false }`). Pre-existing, not introduced by role guard changes.
 
 ### P2
@@ -137,3 +139,11 @@ Do NOT work on these until beta is proven and revenue is flowing.
 - [x] Full legal document suite (6 documents, audited + patched + re-verified bulletproof)
 - [x] Audit: KYC gate fixed, 1099 form gen wired, DB pool configurable
 - [x] Tranche 1 + 2 payload reconciliation (57 → 11 drift)
+- [x] P0 revenue: escrow-action-worker.ts platform fee fix (Separate Charges and Transfers, 15% deducted from transfer) — commit `850f9207`
+- [x] P0 revenue: EscrowService.ts:337 escrow.amount fix (was task.price, missing surge premium) — commit `850f9207`
+- [x] P1 revenue: SelfInsurancePool wired at 2% per release — commit `850f9207`
+- [x] P1 revenue: invoice.paid + charge.dispute.* Stripe webhook handlers — commit `850f9207`
+- [x] P0 safety: backend dispute router created (dispute.create/getById/getByTask/getMine) — commit `c6e9ce57`
+- [x] P0 safety: DisputeScreen.swift wired to real dispute.create tRPC — commit `9f94e39`
+- [x] ConversationScreen build errors fixed (senderName→senderId, content optional) — commit `9f94e39`
+- [x] NotificationService.swift convenience init added for 6-field settings screen — commit `9f94e39`
