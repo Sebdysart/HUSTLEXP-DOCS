@@ -60,14 +60,11 @@ Features that exist in the backend but are stubbed, mocked, or broken in the iOS
 
 ### P1 — High priority stubs
 
-- [ ] **Fix biometric proof result in `ProofSubmissionViewModel.swift:280-284`** — `dataService.validateBiometricProof()` returns a local mock result, not the API response. Fix: use actual response from `biometric.submitVerification` tRPC call.
-- [ ] **Remove squad stubs in `SquadService.swift:151-171`** — 3 methods hardcoded as stubs when live backend procedures exist:
-  - `getSquadTasks()` returns `[]` — backend `squad.listTasks` exists at `squad.ts:550`
-  - `acceptSquadTask()` throws 501 — backend `squad.acceptTask` exists
-  - `getLeaderboard()` returns `[]` — backend `squad.leaderboard` exists at `squad.ts:826`
-- [ ] **Fix `squad.disband` field mismatch** — `SquadService.swift:82` sends `DisbandInput(id: id)` but backend `squad.ts:455` validates `z.object({ squadId: Schemas.uuid })`. LIVE BUG — disband silently fails. Fix: rename struct field from `id` to `squadId` in iOS. Do NOT change the backend schema.
+- [x] **Fix biometric proof result in `ProofSubmissionViewModel.swift:280-284`** — Both `dataService.validateBiometricProof()` calls (happy path + catch fallback) replaced with real `biometric.submitBiometricProof` via `BiometricService.shared`. Commit `3d76679`.
+- [x] **Remove squad stubs in `SquadService.swift:151-171`** — All 3 stubs replaced with real tRPC calls: `getSquadTasks` → `squad.listTasks`, `acceptSquadTask` → `squad.acceptTask`, `getLeaderboard` → `squad.leaderboard`. Commit `0d34ead`.
+- [x] **Fix `squad.disband` field mismatch** — `DisbandInput.id` renamed to `.squadId` in iOS `SquadService.swift` to match backend Zod schema. Commit `0d34ead`.
 - [x] **Fix pre-existing build errors in ConversationScreen + NotificationService** — `HXMessage.senderName` no longer exists (use `senderId`); `NotificationPreferences` convenience init added. Commit `9f94e39`.
-- [ ] **Commit 1 uncommitted change in `hustlexp-ios`** — omni-link digest shows 1 uncommitted change. Identify and commit.
+- [x] **Commit 1 uncommitted change in `hustlexp-ios`** — Resolved via commits `3d76679` and `0d34ead`.
 
 ### P2 — Missing screens
 
@@ -84,8 +81,8 @@ From omni-link evolution analysis and domain reorganization audit.
 
 ### P1
 
-- [ ] **Zod validation audit** — verify all 460 tRPC procedures have `.input(z.object(...))` schemas. Current coverage: 65.9% (303/460 across 50 routers). Target: 95%+. The `hustlerProcedure` and `posterProcedure` role guards added in commit `acef5c42` are a good foundation — validation should be the next layer.
-- [ ] **Rate limiting coverage audit** — omni-link digest flags 140 mutation routes with no rate-limiting middleware detected. Audit `security.ts` to confirm actual coverage. If gaps exist, add Hono-compatible rate limiting per route group.
+- [x] **Zod validation audit** — ✅ 100% (294/294 procedures, 50 routers). Real coverage was always ~99.7%; only gap was `dispute.ts getMine` missing `.input(z.void())`. Previous "65.9%" figure was a grep measurement artifact (was counting `db.query()` calls). Fixed in commit `ab669a0d`.
+- [x] **Rate limiting coverage audit** — ✅ All 49 tRPC namespaces audited. `subscription.*` promoted to financial tier (10/min). `recurringTask`, `dispute`, `xpTax`, `incidents` added to mutation tier (60/min). Commit `f46c2979`.
 - [ ] **Fix pre-existing test failure in `task-router.test.ts`** — `task.getById > throws NOT_FOUND when task does not exist` fails with mock setup issue (`TaskService.getById` returning `undefined` instead of `{ success: false }`). Pre-existing, not introduced by role guard changes.
 
 ### P2
