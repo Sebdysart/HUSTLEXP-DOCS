@@ -55,7 +55,8 @@ Features that exist in the backend but are stubbed, mocked, or broken in the iOS
 
 ### P0 — Financial safety path broken
 
-- [ ] **Wire real dispute submission in `DisputeScreen.swift:73-85`** — currently uses `DispatchQueue.main.asyncAfter(deadline: .now() + 2)` fake success with NO tRPC call. This is the financial safety path. Fix: replace fake with real `disputeRouter.create` tRPC call.
+- [ ] **Implement backend `dispute.create` procedure** — No `dispute` router exists in the backend. `DisputeScreen.swift` cannot be wired to a real tRPC call until this is built. Create `backend/src/routers/dispute.ts` with a `create` mutation accepting `{ taskId: string, reason: string, description: string }`. Register in `backend/src/routers/index.ts`. This is a prerequisite for the DisputeScreen iOS fix below.
+- [ ] **Wire real dispute submission in `DisputeScreen.swift:73-85`** (requires backend `dispute.create` procedure — see item above) — currently uses `DispatchQueue.main.asyncAfter(deadline: .now() + 2)` fake success with NO tRPC call. This is the financial safety path. Fix: replace fake with real `disputeRouter.create` tRPC call.
 
 ### P1 — High priority stubs
 
@@ -64,6 +65,7 @@ Features that exist in the backend but are stubbed, mocked, or broken in the iOS
   - `getSquadTasks()` returns `[]` — backend `squad.listTasks` exists at `squad.ts:550`
   - `acceptSquadTask()` throws 501 — backend `squad.acceptTask` exists
   - `getLeaderboard()` returns `[]` — backend `squad.leaderboard` exists at `squad.ts:826`
+- [ ] **Fix `squad.disband` field name mismatch** — iOS `SquadService.swift` sends `DisbandInput(id: id)` but backend `squad.ts:455` validates `.input(z.object({ squadId: Schemas.uuid }))`. The validation rejects the iOS payload. Fix: either change backend schema to `{ id: Schemas.uuid }` OR update iOS `DisbandInput` struct to use `squadId`. Verify against the DB column name (`squads.id` vs `squads.squad_id`) before deciding which side to fix.
 - [ ] **Commit 1 uncommitted change in `hustlexp-ios`** — omni-link digest shows 1 uncommitted change. Identify and commit.
 
 ### P2 — Missing screens
