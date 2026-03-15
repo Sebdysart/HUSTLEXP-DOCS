@@ -83,7 +83,7 @@ From omni-link evolution analysis and domain reorganization audit.
 
 - [x] **Zod validation audit** — ✅ 100% (294/294 procedures, 50 routers). Real coverage was always ~99.7%; only gap was `dispute.ts getMine` missing `.input(z.void())`. Previous "65.9%" figure was a grep measurement artifact (was counting `db.query()` calls). Fixed in commit `ab669a0d`.
 - [x] **Rate limiting coverage audit** — ✅ All 49 tRPC namespaces audited. `subscription.*` promoted to financial tier (10/min). `recurringTask`, `dispute`, `xpTax`, `incidents` added to mutation tier (60/min). Commit `f46c2979`.
-- [ ] **Fix pre-existing test failure in `task-router.test.ts`** — `task.getById > throws NOT_FOUND when task does not exist` fails with mock setup issue (`TaskService.getById` returning `undefined` instead of `{ success: false }`). Pre-existing, not introduced by role guard changes.
+- [x] **Pre-existing test failure in `task-router.test.ts`** — resolved by Coverage Sprint rewrite (`00623989`). The specific test `task.getById > throws NOT_FOUND when task does not exist` was replaced during the coverage sprint. Suite now passes 0 failures.
 
 ### P2
 

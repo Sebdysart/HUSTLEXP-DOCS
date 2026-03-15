@@ -14,14 +14,14 @@ HustleXP is a **gamified local task marketplace** connecting workers ("Hustlers"
 | **Ecosystem Health** | 100/100 |
 | **Beta Gate** | 100/100 — all P0 blockers resolved |
 | **iOS App** | 58 screens, SwiftUI (iOS 17+) |
-| **Backend** | 38 tRPC routers, 290+ procedures |
+| **Backend** | 50 tRPC routers, 294 procedures |
 | **Database** | 103 PostgreSQL tables + PostGIS |
 | **Tests** | 5,448 passing, 239 files, 0 failures |
 | **Coverage** | 89.6% statement, 77.6% branch |
 | **API Contracts** | 219 bridges, 0 mismatches |
 | **Background Workers** | 23 BullMQ workers |
 | **AI Agents** | 4 live (Judge, Matchmaker, Dispute, Reputation) |
-| **Last Updated** | 2026-03-14 |
+| **Last Updated** | 2026-03-15 |
 
 ---
 
@@ -127,7 +127,7 @@ HUSTLEXP-DOCS/
 │   ├── 01-product/               # Product requirements
 │   ├── 04-backend/
 │   │   └── API_CONTRACT.md       # SOURCE OF TRUTH for all API shapes
-│   └── 05-ios/                   # iOS screen specs
+│   └── (05-ios/ → see screens-spec/ below)
 ├── docs/
 │   └── plans/                    # Implementation design docs + plans
 │       └── 2026-03-14-readme-vision-reset-design.md

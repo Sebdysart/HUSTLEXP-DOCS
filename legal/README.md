@@ -13,11 +13,13 @@ All documents drafted 2026-03-15. Verified bulletproof via 6-point legal audit +
 | `HustleXP-Arbitration-Agreement.docx` | Standalone mandatory arbitration agreement + class action waiver. FAA-governed, AAA Consumer Rules, PAGA waiver (Viking River), mass arbitration protocol, 18-month batch cap, jury waiver. | ✅ Bulletproof |
 | `HustleXP-Background-Check-Consent.docx` | FCRA § 604(b)(2)(A) compliant disclosure + Checkr authorization + supplemental interview consent. Includes NY Article 23-A, adverse action process, state-specific disclosures (CA/MN/OK/NY/MA). | ✅ Bulletproof |
 
-## Before Going Live — 3 Things Counsel Must Do
+## Before Going Live — 5 Things Required
 
-1. **Fill `[State]`** — choose governing jurisdiction (note: California creates PAGA and AB5 complications — discuss with counsel)
-2. **Fill `[Effective Date]`** — populate in all documents before execution
+1. **Fill `[State]`** — choose governing jurisdiction (note: California creates PAGA and AB5 complications — discuss with counsel before deciding)
+2. **Fill `[Effective Date]`** — populate in all 6 documents before execution
 3. **Fill `[Address]`** — HustleXP legal department mailing address in Arbitration Agreement (Sections 3.2 and 5.1)
+4. **Engage gig economy counsel** — priority review items: PAGA waiver enforceability in target state, AAA 2024 fee schedule alignment, FCRA adverse action timeline for Checkr integration
+5. **Publish cancellation fee schedule** at `https://hustlexp.com/legal/cancellation-fees` — Poster Agreement Exhibit A references this URL live; the page must exist before any Poster Agreement is executed
 
 ## Audit Trail
 
