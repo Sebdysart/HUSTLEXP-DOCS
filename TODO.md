@@ -40,8 +40,8 @@ These are bugs where the platform earns $0 or less than it should. All identifie
 
 - [ ] **Wire `SelfInsurancePoolService.recordContribution()`** — method exists but is never called from `EscrowService.release()`. Self-insurance pool is permanently $0. Wire the call on every successful escrow release.
 - [ ] **Add platform cut on tips in `TippingService.ts:98`** — tips currently earn $0 and cost the platform Stripe processing fees. Add 5–8% platform cut. Update Poster Agreement and Hustler Agreement fee disclosures accordingly.
-- [ ] **Fix subscription renewal revenue logging** — Stripe `invoice.payment_succeeded` webhook not wired for recurring subscriptions. Only month 1 revenue is logged. Wire the webhook handler.
-- [ ] **Fix XP tax dead code path in `EscrowService.ts:436`** — `paymentMethod` hardcoded to `'escrow'`, making the XP tax path unreachable for non-escrow payment methods. Derive from task metadata.
+- [ ] **Fix subscription renewal revenue logging** — Stripe `invoice.paid` webhook not wired for recurring subscriptions. Only month 1 revenue is logged. Wire the `case 'invoice.paid':` handler in `stripe-event-worker.ts`.
+- [ ] **Fix XP tax dead code path in `EscrowService.ts:336`** — `paymentMethod` hardcoded to `'escrow'`, making the XP tax path unreachable for non-escrow payment methods. Derive from task metadata.
 
 ### P2 — Future revenue
 
@@ -83,7 +83,7 @@ From omni-link evolution analysis and domain reorganization audit.
 
 ### P1
 
-- [ ] **Zod validation audit** — verify all 290+ tRPC mutation procedures have `.input(z.object(...))` schemas. Current coverage: ~79% (229/290). Target: 95%+. The `hustlerProcedure` and `posterProcedure` role guards added in commit `acef5c42` are a good foundation — validation should be the next layer.
+- [ ] **Zod validation audit** — verify all 456 tRPC procedures have `.input(z.object(...))` schemas. Current coverage: ~66% (~300/456). Target: 95%+. The `hustlerProcedure` and `posterProcedure` role guards added in commit `acef5c42` are a good foundation — validation should be the next layer.
 - [ ] **Fix pre-existing test failure in `task-router.test.ts`** — `task.getById > throws NOT_FOUND when task does not exist` fails with mock setup issue (`TaskService.getById` returning `undefined` instead of `{ success: false }`). Pre-existing, not introduced by role guard changes.
 
 ### P2
