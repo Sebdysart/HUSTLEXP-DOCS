@@ -1391,6 +1391,17 @@ No standalone live router procedure currently exposes this shape.
 
 ## Dispute Endpoints
 
+> Backend commit: `c6e9ce57`. Four procedures: `create`, `getById`, `getByTask`, `getMine`.
+
+| Procedure | Type | Auth | Description |
+|-----------|------|------|-------------|
+| `create` | mutation | protectedProcedure | Opens a dispute, transitions task to DISPUTED, locks escrow to LOCKED_DISPUTE |
+| `getById` | query | protectedProcedure | Get dispute by ID |
+| `getByTask` | query | protectedProcedure | Get dispute for a task |
+| `getMine` | query | protectedProcedure | List all disputes filed by the current user |
+
+---
+
 ### dispute.create
 
 Open a dispute on a task.
@@ -1500,6 +1511,64 @@ Get dispute for a task.
   resolved_by: string | null;
   resolved_at: string | null;
   created_at: string;
+}
+```
+
+---
+
+### dispute.getById
+
+Get a dispute by its ID.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:**
+```typescript
+{
+  disputeId: string; // uuid
+}
+```
+
+**Output:**
+```typescript
+{
+  id: string;
+  task_id: string;
+  opened_by: string;
+  reason: string;
+  description: string;
+  evidence: Evidence[];
+  state: 'OPEN' | 'EVIDENCE_REQUESTED' | 'ESCALATED' | 'RESOLVED';
+  resolution: string | null;
+  resolved_by: string | null;
+  resolved_at: string | null;
+  created_at: string;
+}
+```
+
+---
+
+### dispute.getMine
+
+List all disputes filed by the current authenticated user.
+
+**Auth:** Protected
+**Method:** Query
+
+**Input:** (none)
+
+**Output:**
+```typescript
+{
+  disputes: Array<{
+    id: string;
+    task_id: string;
+    reason: string;
+    state: 'OPEN' | 'EVIDENCE_REQUESTED' | 'ESCALATED' | 'RESOLVED';
+    resolution: string | null;
+    created_at: string;
+  }>;
 }
 ```
 

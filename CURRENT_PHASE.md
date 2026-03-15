@@ -1,47 +1,67 @@
-# CURRENT PHASE: RECONCILIATION / INTEGRATION HARDENING
+# CURRENT PHASE: BETA LAUNCH PREP
 
 **Repos under authority:**
 - Frontend: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)
 - Backend: [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend)
 - Authority docs: [HUSTLEXP-DOCS](https://github.com/Sebdysart/HUSTLEXP-DOCS)
 
-**Observed from live omni-link-hustlexp benchmark on March 8, 2026:**
-- iOS repo is already beyond bootstrap: navigation, screens, view models, service layer, and tRPC integration are implemented.
-- Backend repo is already beyond schema verification: routers, services, jobs, realtime, and integration logic are implemented.
-- Docs authority is behind the live codebase and contract surface, so the current gate is reconciliation, not bootstrap.
+**Status as of 2026-03-15:**
+- Ecosystem health: 100/100
+- Beta scorecard: 100/100 (B1=100%, B2=100%)
+- Code is complete. The only remaining blocker before public beta launch is Gate 1 (Legal).
+
+---
+
+## Gate Status
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| Gate 1 — Legal | 🔴 Hard block | Terms of Service and Privacy Policy contain unfilled placeholders: `[State]`, `[Effective Date]`, `[Address]`. Legal team must supply these before launch. |
+| Gate 2 — Backend | ✅ Closed | All routers live, 88.88%+ test coverage, 0 failing tests |
+| Gate 3 — iOS | ✅ Closed | 58 screens, all P0 journeys wired to real API calls |
+| Gate 4 — Integrations | ✅ Closed | Stripe, Firebase Auth, R2, FCM, SSE, Geolocation, AI all verified |
+| Gate 5 — Compliance | ✅ Closed | KYC gate, 1099-NEC, escrow safety, rate limiting all in place |
+
+---
 
 ## What This Phase Means
 
-This phase is a controlled alignment phase. The product already has real implementation depth, but the docs authority and API contract are materially behind the live repos.
+The product is feature-complete and hardened. Reconciliation (payload drift reduction, contract alignment, test coverage) is done. The codebase is not waiting on code work — it is waiting on the legal team to finalize the user-facing legal documents.
 
 **ALLOWED RIGHT NOW:**
-- Reconcile `CURRENT_PHASE.md`, `FINISHED_STATE.md`, and `API_CONTRACT.md` upward to the real implementation state
-- Document backend procedures already live in `backend/src/routers`
-- Remove or retarget obsolete Swift tRPC calls
-- Normalize request/response payload naming drift between Swift, backend, and docs
-- Stability, test, and contract-hardening work
+- Bug fixes and minor hardening
+- Documentation updates
+- Backfilling API contract entries for shipped backend procedures
+- Legal document preparation and review
 
-**BLOCKED UNTIL RECONCILIATION PASSES:**
-- Net-new feature families that expand the contract surface further
-- Blind multi-repo automation against the product repos
-- Declaring bootstrap-only restrictions that contradict the implemented app/backend state
+**BLOCKED UNTIL GATE 1 CLEARS:**
+- Public beta user invitations
+- App Store submission
+- Any marketing or press activity
 
-## Reconciliation Success Criteria
+**DEFERRED (B3 — post-beta):**
+- Checkr background checks (account authorization pending)
+- AWS Rekognition liveness step-up auth
+- Android client
+- Video proof / LiDAR
+- AI-dynamic insurance
 
-- `CURRENT_PHASE.md` and `FINISHED_STATE.md` describe the real implementation state
-- `API_CONTRACT.md` is brought into alignment with the authoritative backend router surface
-- Obsolete Swift tRPC calls are removed or mapped to live backend procedures
-- High-signal payload drift is documented and then worked down systematically
-- Authority drift no longer blocks bounded apply/review workflows
+---
+
+## Payload Drift Status
+
+`payloadDrift=11` is the **irreducible floor** — all remaining items are Swift↔TypeScript type-representation differences (named enums vs strings, `[String:Bool]` vs `Record<string,boolean>`, named structs vs inline objects). Zero real field mismatches. This is not a blocker and must not be chased.
+
+---
 
 ## Next Phase
 
 ```
-CURRENT: Reconciliation / Integration Hardening
-         ↓ (authority drift reduced, contract synced, obsolete calls removed)
-NEXT:    Contract-locked feature delivery
+CURRENT: Beta Launch Prep
+         ↓ (Gate 1 cleared by legal team)
+NEXT:    Private Beta — user onboarding, feedback collection
          ↓
-NEXT:    Risk-bounded automation on reconciled repos
+NEXT:    Public launch + App Store submission
 ```
 
-**Rule:** no pretending the system is still in bootstrap when the codebase is already operating beyond it.
+**Rule:** do not regress health (100/100), do not modify API contracts without running `/impact` first, do not work on B3 items.

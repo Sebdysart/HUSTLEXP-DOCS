@@ -40,7 +40,7 @@ You can get oriented in 10 minutes by reading these in order:
 2. What's the current state? → 100/100 health, private beta ready, iOS + Railway backend live.
 3. What are the 3 differentiators? → Trust tier progression, Live Mode radar, proof-of-work chain.
 4. What's the architecture? → SwiftUI iOS → Firebase JWT → Hono/tRPC → Neon Postgres + Upstash Redis + BullMQ.
-5. What's not done? → Checkr (blocked), Rekognition liveness (planned), dispute submission iOS stub (fix in progress).
+5. What's not done? → Checkr (blocked), Rekognition liveness (planned), legal doc placeholders (Gate 1 hard block).
 
 ---
 
@@ -106,7 +106,7 @@ Everything below is implemented and deployed in production:
 |---------|--------|-------|
 | Checkr background checks | ⏸ Blocked | Account authorization pending — B3 post-beta |
 | AWS Rekognition liveness | 🔵 Planned | Full biometric step-up auth. Amplify SDK not yet installed. |
-| Dispute submission (iOS) | 🔧 Fix in progress | Currently a UI stub — no API call. Critical fix. |
+| Dispute submission (iOS) | ✅ Complete | Wired to `dispute.create` / `dispute.getByTask` / `dispute.getMine` (backend commit `c6e9ce57`) |
 | Android client | 📋 Roadmap | Post-iOS-beta |
 | Video proof / LiDAR | 📋 Roadmap | Judge Agent Phase 2 |
 | AI-dynamic insurance | 📋 Roadmap | Risk Engine Phase 2 |
