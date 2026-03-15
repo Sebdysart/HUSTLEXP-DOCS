@@ -93,6 +93,24 @@ From omni-link evolution analysis and domain reorganization audit.
 
 ---
 
+## 🧪 iOS E2E Testing Plugin Track
+
+### P1 — Infrastructure investment (post-revenue-fix, pre-public-launch)
+
+- [ ] **Extract `TRPCClientProtocol`** — prerequisite for all ViewInspector tests. Extract a Swift protocol from the concrete `TRPCClient` class with `call(router:procedure:type:input:) async throws -> Output`. Inject via `@Environment` in ViewModels. This is a ~2-day refactor that also enables proper ViewModel unit tests in the existing test suite.
+
+- [ ] **Layer 3: FSM model-based tests for Escrow + Task lifecycle** — Highest-value layer. Build exhaustive path coverage from transition matrix using Swift Testing `@Test(..., arguments:)`. State machines to cover: Escrow (PENDING→FUNDED→RELEASED/REFUNDED/LOCKED_DISPUTE), Task (OPEN→ASSIGNED→IN_PROGRESS→COMPLETED/CANCELLED/DISPUTED), Dispute (OPEN→UNDER_REVIEW→RESOLVED/CLOSED). Auto-generates every valid transition — not handwritten test cases.
+
+- [ ] **Layer 2 + 1: ViewInspector + AST scaffolding** — Add `Inspectable` conformance (or `#if DEBUG` protocol) to top 10 critical ViewModels. Use SwiftSyntax AST parsing to auto-generate test plan from `@State`/`@Binding` declarations. Requires `TRPCClientProtocol` extraction above.
+
+- [ ] **Layer 4: Semantic snapshot tests** — JSON/YAML view tree dumps via ViewInspector for error states and business-critical UI conditions. CI-stable (no pixel flakiness). Apply to: payment failure banner, escrow status pill, dispute submission confirmation.
+
+- [ ] **Layer 5: Pixel-perfect snapshots for 5 critical contracts** — `pointfreeco/swift-snapshot-testing 1.17.0+` via `UIHostingController + UIGraphicsImageRenderer` (offscreen, no Simulator). Scope: green released checkmark, red disputed badge, payment success animation frame, Stripe connect onboarding completion, KYC verified badge.
+
+- [ ] **Build `ios-e2e-tester` skill** — Skill documenting the full 5-layer test generation workflow, TRPCClientProtocol extraction pattern, ViewModel `Inspectable` conformance recipes, FSM template for gig-app state machines, and critical visual contract checklist.
+
+---
+
 ## 📋 Deferred (Post-Beta / B3)
 
 Do NOT work on these until beta is proven and revenue is flowing.
