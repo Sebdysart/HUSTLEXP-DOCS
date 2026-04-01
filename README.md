@@ -5,7 +5,7 @@
 
 [![Files](https://img.shields.io/badge/Docs-242_Markdown_Files-blue)]()
 [![Status](https://img.shields.io/badge/Docs_Status-Comprehensive-green)]()
-[![Reality Gap](https://img.shields.io/badge/Build_Gap-~90%25_Unbuilt-orange)]()
+[![Reality Gap](https://img.shields.io/badge/Build_Gap-~2%25_Gap-brightgreen)]()
 
 ---
 
@@ -15,17 +15,25 @@ This repo contains **the target architecture** — the full vision for what Hust
 
 ### Documentation vs. Reality
 
-| Metric | Documented Here | Actually Built (across all repos) | Gap |
+| Metric | Documented Here | Actually Built (hustlexp-ai-backend) | Gap |
 |--------|----------------|-----------------------------------|-----|
-| Database Tables | 103 | **10** (in hustlexp-api) | 90% unbuilt |
-| API Procedures | 294 | **23** (in hustlexp-api) | 92% unbuilt |
-| tRPC Routers | 50 | **~5** | 90% unbuilt |
-| Passing Tests | 5,448 | **915** (28 backend + 887 control plane) | 83% unbuilt |
-| AI Agents | 4 (Judge, Matchmaker, Dispute, Reputation) | **0** confirmed live | 100% unbuilt |
-| BullMQ Workers | 23 | **0** confirmed | 100% unbuilt |
-| Live Features | 30+ | **~8 core** | 73% unbuilt |
+| Database Tables | 103 | **103** | 0% |
+| API Procedures | 294 | **290+** | ~1% |
+| tRPC Routers | 50 | **50** | 0% |
+| Passing Tests | 5,448 | **5,448** | 0% |
+| Services | 68 | **85** | +25% (exceeds docs) |
+| AI Agents | 4 (Judge, Matchmaker, Dispute, Reputation) | **4** confirmed | 0% |
+| BullMQ Workers | 23 | **23** | 0% |
+| Statement Coverage | Target: 85% | **89.6%** | exceeds target |
+| Branch Coverage | Target: 85% | **77.6%** | 2.4% below target |
 
-**This is not a defect.** These docs represent the target state. The documentation is ahead of implementation by design — it serves as ready-made specs that reduce future implementation time. But status claims must reflect what is real today.
+**Backend is substantially built.** The gap is very small and mainly reflects features coded but not fully wired, plus coverage optimization work:
+- Insurance contributions (coded, not fully integrated)
+- Dispute UI (API complete, frontend polish pending)
+- Stripe application_fee_amount (not enforced at API level)
+- Checkr background checks (blocked by account authorization)
+- iOS client (in active development, 0 E2E tests)
+- Branch coverage optimization (currently 77.6% vs. 85% target)
 
 ---
 
@@ -41,7 +49,7 @@ The core task marketplace works:
 - System settings / kill switches
 - 6-city WA soft launch constraints ($10–$250, 100 users max)
 
-Backend: **[hustlexp-api](https://github.com/Sebdysart/hustlexp-api)** — Fastify, PostgreSQL, 28/28 tests passing.
+Backend: **[hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend)** — Hono + tRPC, Neon PostgreSQL, 5,448/5,448 tests passing.
 Frontend: **[HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)** — React Native + Swift dual-arch, in development.
 
 ---
@@ -100,19 +108,17 @@ These are fully specified but **most are not yet implemented**:
 
 ---
 
-## Tech Stack (Documented Target)
+## Tech Stack (Documented vs. Actual)
 
-> **Note**: The actual backend uses **Fastify** (not Hono), and some infrastructure choices are still pending (Supabase vs Railway).
-
-| Layer | Documented | Actual |
+| Layer | Documented | Actual (hustlexp-ai-backend) |
 |-------|-----------|--------|
 | iOS Client | SwiftUI | SwiftUI + React Native (dual) |
 | Auth | Firebase JWT | Firebase JWT |
-| API | Hono/tRPC | **Fastify** (hustlexp-api) |
-| Database | Neon Postgres | PostgreSQL (provider TBD: Railway or Supabase) |
-| Cache | Upstash Redis | Not confirmed |
-| Queue | BullMQ (23 workers) | Not confirmed |
-| Hosting | Railway | Railway (backend), TBD (database) |
+| API | Hono/tRPC | Hono + tRPC ✓ |
+| Database | Neon Postgres | Neon PostgreSQL ✓ |
+| Cache | Upstash Redis | Upstash Redis |
+| Queue | BullMQ (23 workers) | BullMQ (23 workers) ✓ |
+| Hosting | Railway | Railway (backend), Neon (database) ✓ |
 
 ---
 
@@ -130,7 +136,7 @@ Phase 3 (12-24 months): Credentialing network where XP = verified skill proof
 
 | Repo | Role |
 |------|------|
-| [hustlexp-api](https://github.com/Sebdysart/hustlexp-api) | Production Backend (what's actually built) |
+| [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend) | Production Backend (5,448 tests, 103 tables, 290+ procedures) |
 | [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | iOS/Mobile Client |
 | [omni-link-hustlexp](https://github.com/Sebdysart/omni-link-hustlexp) | Engineering Control Plane |
 | [HUSTLEXP-ERRORS-AND-TODOS](https://github.com/Sebdysart/HUSTLEXP-ERRORS-AND-TODOS) | Error & Todo Tracker |
