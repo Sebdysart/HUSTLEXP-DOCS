@@ -1,192 +1,140 @@
-# HustleXP — Product Documentation
+# HUSTLEXP-DOCS
 
-HustleXP is a **gamified local task marketplace** connecting workers ("Hustlers") and employers ("Posters") for short-form local task completion. Every completed task builds XP, trust tiers, and a verifiable platform reputation that compounds over time instead of resetting. Think TaskRabbit, but your reputation actually matters.
+> **Documentation authority** for the HustleXP platform — a gamified hyperlocal task marketplace.
+> Contains the complete target architecture, specifications, and implementation plans.
 
-**The core thesis:** Workers who invest in building their trust tier — completing tasks, earning ratings, maintaining low dispute rates — unlock better tasks, higher XP multipliers, Live Mode access, and squad formation. The platform rewards consistency with compounding returns. Commoditized gig labor does not.
-
----
-
-## ⚡ Current Status — Live Truth
-
-| Metric | Value |
-|--------|-------|
-| **Phase** | 🟢 Private Beta — Launch Ready |
-| **Ecosystem Health** | 100/100 |
-| **Beta Gate** | 100/100 — all P0 blockers resolved |
-| **iOS App** | 58 screens, SwiftUI (iOS 17+) |
-| **Backend** | 50 tRPC routers, 294 procedures |
-| **Database** | 103 PostgreSQL tables + PostGIS |
-| **Tests** | 5,448 passing, 239 files, 0 failures |
-| **Coverage** | 89.6% statement, 77.6% branch |
-| **API Contracts** | 219 bridges, 0 mismatches |
-| **Background Workers** | 23 BullMQ workers |
-| **AI Agents** | 4 live (Judge, Matchmaker, Dispute, Reputation) |
-| **Last Updated** | 2026-03-15 |
+[![Files](https://img.shields.io/badge/Docs-242_Markdown_Files-blue)]()
+[![Status](https://img.shields.io/badge/Docs_Status-Comprehensive-green)]()
+[![Reality Gap](https://img.shields.io/badge/Build_Gap-~90%25_Unbuilt-orange)]()
 
 ---
 
-## For New Contributors — Read This First
+## Current Status (April 2026)
 
-You can get oriented in 10 minutes by reading these in order:
+This repo contains **the target architecture** — the full vision for what HustleXP will become. It is comprehensive and well-organized. However, the current README must be transparent about what is **documented vs. actually built**.
 
-1. **This file** — What the project is, current status, what's live
-2. [`PROJECT-AUDIT-2026-03.md`](PROJECT-AUDIT-2026-03.md) — Complete in-depth audit: both user POVs, all 58 screens, full feature inventory, technical depth
-3. [`CURRENT_PHASE.md`](CURRENT_PHASE.md) — What phase we're in, what work is allowed, what's frozen
-4. [`specs/04-backend/API_CONTRACT.md`](specs/04-backend/API_CONTRACT.md) — The source of truth for all API shapes
-5. [`private-beta/scorecard.json`](private-beta/scorecard.json) — Machine-readable gate status (check this first every session)
+### Documentation vs. Reality
 
-**Answer these 5 questions and you're oriented:**
-1. What is HustleXP? → Gamified local task marketplace. Reputation compounds, doesn't reset.
-2. What's the current state? → 100/100 health, private beta ready, iOS + Railway backend live.
-3. What are the 3 differentiators? → Trust tier progression, Live Mode radar, proof-of-work chain.
-4. What's the architecture? → SwiftUI iOS → Firebase JWT → Hono/tRPC → Neon Postgres + Upstash Redis + BullMQ.
-5. What's not done? → Checkr (blocked), Rekognition liveness (planned), legal doc placeholders (Gate 1 hard block).
+| Metric | Documented Here | Actually Built (across all repos) | Gap |
+|--------|----------------|-----------------------------------|-----|
+| Database Tables | 103 | **10** (in hustlexp-api) | 90% unbuilt |
+| API Procedures | 294 | **23** (in hustlexp-api) | 92% unbuilt |
+| tRPC Routers | 50 | **~5** | 90% unbuilt |
+| Passing Tests | 5,448 | **915** (28 backend + 887 control plane) | 83% unbuilt |
+| AI Agents | 4 (Judge, Matchmaker, Dispute, Reputation) | **0** confirmed live | 100% unbuilt |
+| BullMQ Workers | 23 | **0** confirmed | 100% unbuilt |
+| Live Features | 30+ | **~8 core** | 73% unbuilt |
 
----
-
-## What's Live Right Now
-
-Everything below is implemented and deployed in production:
-
-**Core Marketplace**
-- ✅ Full task lifecycle (OPEN → ACCEPTED → PROOF_SUBMITTED → COMPLETED) with 9-state machine
-- ✅ Stripe escrow (PENDING → FUNDED → RELEASED / REFUNDED / LOCKED_DISPUTE)
-- ✅ Bidirectional ratings (Hustler ↔ Poster), auto-rating on inactivity
-- ✅ In-app task-scoped messaging with photo attachments and FCM push
-
-**Gamification**
-- ✅ XP system with stacked multipliers (streak × trust tier × live mode)
-- ✅ Trust tiers: Rookie → Verified → Trusted → Elite → Master
-- ✅ Badge system (append-only, immutable, 4 tiers per badge type)
-- ✅ Daily streaks with multiplier (1.0 + streak_days × 0.05, cap 2.0)
-- ✅ Daily challenges (backend wired; iOS screen in progress)
-
-**Features**
-- ✅ Live Mode / ASAP task broadcasting with real-time SSE radar
-- ✅ Squads (Elite+ team formation, shared XP + earnings, levels 1–6)
-- ✅ Recurring tasks (template series, preferred worker assignment)
-- ✅ Tipping (in-app, 100% to worker, min $1, max 50% of task price)
-- ✅ Referral system (referral codes, bonuses on referee's first task)
-- ✅ Featured task promotion ($2.99–$7.99, Stripe-wired)
-- ✅ Batch quests (multi-task, AI route optimization)
-- ✅ Heat map (geographic demand visualization)
-
-**Trust & Safety**
-- ✅ Fraud detection (real-time risk scoring, velocity checks, pattern detection)
-- ✅ Content moderation (toxicity API, moderation queue, appeal workflow)
-- ✅ Biometric proof (GPS + photo + device biometric at submission)
-- ✅ KYC gate (payouts_enabled + stripe_connect_id before any escrow release)
-- ✅ 6-tier rate limiting (Auth / AI / Financial / Mutation / Upload / General)
-- ✅ Geofencing (GPS coordinates validated against task location radius)
-
-**Compliance & Finance**
-- ✅ Subscriptions (Free / Premium $14.99 / Pro $29.99 — Stripe recurring billing)
-- ✅ XP tax (10% on offline payments; Stripe payment intent; DB trigger enforced)
-- ✅ 1099-NEC generation (Stripe Tax API, workers >$600/year, annual filing)
-- ✅ Insurance claims (self-insurance pool, file + review + pay workflow)
-- ✅ GDPR data export + deletion rights
-
-**AI Agents**
-- ✅ Judge (proof verification: GPS + photo + biometric → APPROVE/REVIEW/REJECT)
-- ✅ Matchmaker (worker ranking, price suggestions)
-- ✅ Dispute (fault scoring, split ratio recommendations)
-- ✅ Reputation (dynamic trust scoring, anomaly detection, tier eligibility)
-- ✅ AIRouter cost governance (per-user daily budgets, provider fallback chains, $500/day global cap)
-
-**Infrastructure**
-- ✅ 23 BullMQ workers (payment, escrow, fraud, push, email, SMS, biometric, recurring, tax, etc.)
-- ✅ SSE real-time broadcasting (`/realtime/stream`)
-- ✅ CI pipeline: Zenith Codex (16 layers, PR classifier, readiness score, Greptile review)
+**This is not a defect.** These docs represent the target state. The documentation is ahead of implementation by design — it serves as ready-made specs that reduce future implementation time. But status claims must reflect what is real today.
 
 ---
 
-## What's Deferred
+## What IS Built Right Now
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Checkr background checks | ⏸ Blocked | Account authorization pending — B3 post-beta |
-| AWS Rekognition liveness | 🔵 Planned | Full biometric step-up auth. Amplify SDK not yet installed. |
-| Dispute submission (iOS) | ✅ Complete | Wired to `dispute.create` / `dispute.getByTask` / `dispute.getMine` (backend commit `c6e9ce57`) |
-| Android client | 📋 Roadmap | Post-iOS-beta |
-| Video proof / LiDAR | 📋 Roadmap | Judge Agent Phase 2 |
-| AI-dynamic insurance | 📋 Roadmap | Risk Engine Phase 2 |
-| Background check freemium | 📋 Roadmap | "Earn enough tasks → platform covers your check" model |
+The core task marketplace works:
+- User auth (JWT + phone verification)
+- Task CRUD + full state machine (DRAFT → FUNDED → ACCEPTED → IN_PROGRESS → SUBMITTED → COMPLETED)
+- Escrow payment flow (UNFUNDED → HELD → RELEASED / REFUNDED)
+- XP ledger (append-only, immutable)
+- Dispute initiation
+- Webhook processing (idempotent)
+- System settings / kill switches
+- 6-city WA soft launch constraints ($10–$250, 100 users max)
+
+Backend: **[hustlexp-api](https://github.com/Sebdysart/hustlexp-api)** — Fastify, PostgreSQL, 28/28 tests passing.
+Frontend: **[HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)** — React Native + Swift dual-arch, in development.
 
 ---
 
-## Repository Map
+## What This Repo Contains
+
+### 501 files (48MB) organized as:
+
+| Category | Count | Contents |
+|----------|-------|----------|
+| Product Specs | 8 | Feature requirements |
+| Architecture & Backend | 30+ | System design, schema, API contracts |
+| Frontend & UI | 50+ | Components, patterns, design tokens |
+| Screen Specs | 58 | iOS screen definitions organized by role |
+| UI Puzzle Components | 50+ | Atoms, molecules, sections |
+| Implementation Plans | 8 | Full code examples, TDD specs |
+| Project Execution Records | 48 | Authority & protocol documentation |
+| Legal Documents | 6 | ToS, privacy policy, compliance |
+| Tracking/Audits | 17+ | Status files, health checks |
+
+### Key Directories
 
 ```
-HUSTLEXP-DOCS/
-├── PROJECT-AUDIT-2026-03.md      # ← Start here. Complete project audit.
-├── CURRENT_PHASE.md              # What phase we're in. What's allowed.
-├── PRIVATE_BETA_SPEC.md          # Beta gate definitions + journey specs
-├── private-beta/
-│   └── scorecard.json            # Machine-readable gate status (auto-updated)
-├── specs/
-│   ├── 01-product/               # Product requirements
-│   ├── 04-backend/
-│   │   └── API_CONTRACT.md       # SOURCE OF TRUTH for all API shapes
-│   └── (05-ios/ → see screens-spec/ below)
-├── docs/
-│   └── plans/                    # Implementation design docs + plans
-│       └── 2026-03-14-readme-vision-reset-design.md
-├── tracking/                     # Sprint tracking, orbit state
-├── _archive/                     # Legacy docs — DO NOT USE for current work
-├── FINISHED_STATE.md             # ⚠️ STALE — reflects Jan 2025 scope (3x features have since shipped)
-├── FEATURE_FREEZE.md             # ⚠️ STALE — original freeze list pre-dates live features
-└── BUILD_READINESS.md            # ⚠️ STALE — predates SwiftUI pivot, 32-table era
+specs/          — Product, architecture, frontend, backend specifications
+docs/plans/     — 8 implementation plans with full code
+screens-spec/   — 58 iOS screens organized by role
+ui-puzzle/      — Component library (atoms, molecules, sections)
+PER/            — 48 Project Execution Records
+legal/          — Full legal document suite
+tracking/       — Audit and status files
 ```
-
-> ⚠️ `FINISHED_STATE.md`, `FEATURE_FREEZE.md`, and `BUILD_READINESS.md` reflect the original Jan 2025 MVP scope. They explicitly exclude tipping, recurring tasks, referral, AI agents, and subscriptions — all of which are now live. These documents have not been updated. Use `PROJECT-AUDIT-2026-03.md` and `CURRENT_PHASE.md` as the source of current truth.
 
 ---
 
-## Authority Hierarchy
+## Documented Features (Target State)
 
-When docs and code disagree, this is the resolution order:
+These are fully specified but **most are not yet implemented**:
 
-```
-1. private-beta/scorecard.json     (gate status — machine truth)
-2. CURRENT_PHASE.md                (what phase + what's allowed — human truth)
-3. specs/04-backend/API_CONTRACT.md (API shapes — contract truth)
-4. Backend code                    (implementation truth)
-5. iOS code                        (client truth)
-```
-
-If FINISHED_STATE.md or FEATURE_FREEZE.md conflict with the above — the above wins. Those docs are historical artifacts.
-
----
-
-## The 2-Year North Star
-
-HustleXP becomes a **skilled-labor credentialing network with a marketplace on top**, not a marketplace with badges bolted on.
-
-A Master Hustler (100+ tasks, 4.95+ stars, $10k+ earned, zero disputes) holds a credential more verifiable than a resume. Squads of Elite workers can bid on commercial contracts ($500+) no individual can take alone. The XP economy extends into:
-- Insurance discounts at higher trust tiers
-- Earned wage advance at Trusted+
-- Verified worker identity exportable to other platforms
-- AI agents shift from assistive to predictive: demand forecasting, hot zone routing, pre-positioning
-
-The long-term moat is not the marketplace — it's the identity layer. Workers who have invested years building trust on HustleXP won't start over somewhere else.
+- Task lifecycle with escrow payments
+- Stripe escrow with dispute resolution
+- XP system with trust tiers (Rookie → Grinder → Pro → Elite → Master)
+- Squads / team tasks
+- Live Mode radar (real-time task tracking)
+- Tipping system
+- Referral system with bonuses
+- Batch quests
+- Recurring tasks
+- 4 AI agents (Judge, Matchmaker, Dispute, Reputation)
+- Advanced fraud detection
+- Content moderation pipeline
+- KYC gates (identity verification tiers)
+- Subscription tiers
+- 1099-NEC tax document generation
+- Bidirectional ratings
+- GDPR compliance
 
 ---
 
-## AI Tool Instructions
+## Tech Stack (Documented Target)
 
-> This section is for Cursor, Claude Code, and other AI coding agents.
+> **Note**: The actual backend uses **Fastify** (not Hono), and some infrastructure choices are still pending (Supabase vs Railway).
 
-**At session start:**
-1. Read `private-beta/scorecard.json` — state the current score and top blocker
-2. Read `CURRENT_PHASE.md` — confirm what work is allowed in this phase
-3. Check `specs/04-backend/API_CONTRACT.md` before generating any API calls
+| Layer | Documented | Actual |
+|-------|-----------|--------|
+| iOS Client | SwiftUI | SwiftUI + React Native (dual) |
+| Auth | Firebase JWT | Firebase JWT |
+| API | Hono/tRPC | **Fastify** (hustlexp-api) |
+| Database | Neon Postgres | PostgreSQL (provider TBD: Railway or Supabase) |
+| Cache | Upstash Redis | Not confirmed |
+| Queue | BullMQ (23 workers) | Not confirmed |
+| Hosting | Railway | Railway (backend), TBD (database) |
 
-**Iron laws:**
-- `payloadDrift=11` is the irreducible floor — all type-repr artifacts. Do NOT chase these.
-- `health=100/100` — do not regress this.
-- Do NOT modify API contracts without running `/impact` first.
-- Do NOT work on B3 items (Checkr, Squads insurance, video proof) — deferred post-beta.
-- `FINISHED_STATE.md` is stale — do not use it to determine what features exist.
+---
 
-**Orbit config:** `~/.claude/omni-link/orbit-config.json`
-**Workflow reference:** `/Users/sebastiandysart/omni-link-hustlexp/WORKFLOW.md`
+## North Star Vision
+
+> Become a skilled-labor credentialing network with a marketplace on top.
+
+Phase 1 (Now): Local task marketplace — post tasks, earn money, build XP
+Phase 2 (6-12 months): City-by-city expansion with trust-gated features
+Phase 3 (12-24 months): Credentialing network where XP = verified skill proof
+
+---
+
+## Related Repos
+
+| Repo | Role |
+|------|------|
+| [hustlexp-api](https://github.com/Sebdysart/hustlexp-api) | Production Backend (what's actually built) |
+| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | iOS/Mobile Client |
+| [omni-link-hustlexp](https://github.com/Sebdysart/omni-link-hustlexp) | Engineering Control Plane |
+| [HUSTLEXP-ERRORS-AND-TODOS](https://github.com/Sebdysart/HUSTLEXP-ERRORS-AND-TODOS) | Error & Todo Tracker |
+
+---
+
+*This README updated 2026-04-01 to reflect the gap between documented target state and current reality. See [HUSTLEXP-ERRORS-AND-TODOS](https://github.com/Sebdysart/HUSTLEXP-ERRORS-AND-TODOS) for the full list of what needs to be built.*
