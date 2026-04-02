@@ -1,0 +1,39 @@
+name: Auto Table of Contents
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**/*.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-toc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate TOC
+        run: |
+          echo "# HustleXP Documentation" > docs/INDEX.md
+          echo "" >> docs/INDEX.md
+          echo "Auto-generated table of contents." >> docs/INDEX.md
+          echo "" >> docs/INDEX.md
+          echo "## Documents" >> docs/INDEX.md
+          echo "" >> docs/INDEX.md
+          for f in docs/*.md; do
+            if [ "$f" != "docs/INDEX.md" ]; then
+              title=$(head -5 "$f" | grep "^# " | head -1 | sed 's/^# //')
+              if [ -z "$title" ]; then
+                title=$(basename "$f" .md)
+              fi
+              echo "- [$title]($f)" >> docs/INDEX.md
+            fi
+          done
+      - name: Commit TOC
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/INDEX.md
+          git diff --staged --quiet || git commit -m "docs: auto-update table of contents"
+          git push
