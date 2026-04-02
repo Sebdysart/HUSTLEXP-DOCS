@@ -1,0 +1,40 @@
+name: Markdown Lint
+
+on:
+  push:
+    branches: [main]
+    paths: ['**.md']
+  pull_request:
+    branches: [main]
+    paths: ['**.md']
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install markdownlint-cli2
+        run: npm install -g markdownlint-cli2
+
+      - name: Run markdownlint
+        run: |
+          markdownlint-cli2 "**/*.md" "#node_modules" "#_archive" 2>&1 | tee lint-report.txt || true
+          ERRORS=$(grep -c "^" lint-report.txt || echo 0)
+          echo "## Markdown Lint Report" >> $GITHUB_STEP_SUMMARY
+          echo "Found **$ERRORS** issues across documentation files." >> $GITHUB_STEP_SUMMARY
+          if [ "$ERRORS" -gt 100 ]; then
+            echo "::warning::$ERRORS markdown lint issues found. See full report in artifacts."
+          fi
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown-lint-report
+          path: lint-report.txt
