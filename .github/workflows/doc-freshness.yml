@@ -1,0 +1,47 @@
+name: Doc Freshness Tracker
+
+on:
+  schedule:
+    - cron: '0 9 1 * *'  # First of every month, 9am UTC
+  workflow_dispatch:
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check document freshness
+        run: |
+          echo "## Document Freshness Report" >> $GITHUB_STEP_SUMMARY
+          echo "Generated: $(date -u +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          STALE_COUNT=0
+          THRESHOLD=$((180 * 24 * 60 * 60))  # 6 months
+          NOW=$(date +%s)
+          
+          echo "### Stale Documents (>6 months)" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Last Updated | Age (days) |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------------|------------|" >> $GITHUB_STEP_SUMMARY
+          
+          for f in $(find . -name '*.md' -not -path './node_modules/*' -not -path './.github/*' -not -path './_archive/*' | sort); do
+            LAST=$(git log -1 --format=%ct -- "$f" 2>/dev/null || echo 0)
+            [ "$LAST" -eq 0 ] && continue
+            AGE=$(( NOW - LAST ))
+            if [ "$AGE" -gt "$THRESHOLD" ]; then
+              DAYS=$(( AGE / 86400 ))
+              DATE=$(git log -1 --format=%cs -- "$f")
+              echo "| $f | $DATE | $DAYS |" >> $GITHUB_STEP_SUMMARY
+              STALE_COUNT=$((STALE_COUNT + 1))
+            fi
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Total stale documents: $STALE_COUNT**" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$STALE_COUNT" -gt 50 ]; then
+            echo "::warning::$STALE_COUNT documents haven't been updated in 6+ months."
+          fi
