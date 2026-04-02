@@ -1,0 +1,50 @@
+name: Link Validator
+
+on:
+  schedule:
+    - cron: '0 6 * * 3'  # Every Wednesday 6am UTC
+  workflow_dispatch:
+
+jobs:
+  validate-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Check internal links
+        run: |
+          echo "## Link Validation Report" > link-report.md
+          echo "" >> link-report.md
+          BROKEN=0
+          TOTAL=0
+          for f in $(find . -name '*.md' -not -path './node_modules/*' -not -path './_archive/*' | head -200); do
+            RESULT=$(markdown-link-check "$f" --config .markdown-link-check.json 2>&1 || true)
+            if echo "$RESULT" | grep -q "✖"; then
+              echo "### $f" >> link-report.md
+              echo '```' >> link-report.md
+              echo "$RESULT" | grep "✖" >> link-report.md
+              echo '```' >> link-report.md
+              BROKEN=$((BROKEN + $(echo "$RESULT" | grep -c "✖")))
+            fi
+            TOTAL=$((TOTAL + 1))
+          done
+          echo "## Link Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Checked **$TOTAL** files, found **$BROKEN** broken links." >> $GITHUB_STEP_SUMMARY
+          if [ "$BROKEN" -gt 0 ]; then
+            echo "::warning::$BROKEN broken links found across documentation."
+          fi
+
+      - name: Upload link report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-validation-report
+          path: link-report.md
