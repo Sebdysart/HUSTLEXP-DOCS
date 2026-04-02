@@ -9,6 +9,8 @@ jobs:
   index:
     name: Update Knowledge Graph
     runs-on: ubuntu-latest
+    # Only run when the required secrets are configured
+    if: ${{ vars.INDEXING_ENABLED == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
