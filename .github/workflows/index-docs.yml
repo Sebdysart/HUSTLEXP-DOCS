@@ -12,8 +12,8 @@ jobs:
     # Only run when the required secrets are configured
     if: ${{ vars.INDEXING_ENABLED == 'true' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
           repository: sebastiandysart/hustlexp-ai-backend
           path: backend
