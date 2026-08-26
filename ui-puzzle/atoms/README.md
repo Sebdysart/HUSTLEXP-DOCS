@@ -1,5 +1,7 @@
 # Atoms — Layer 1
 
+> **Subordinate component scope.** Product and business meaning comes from the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 > **Visual primitives. Single responsibility. Zero context.**
 
 Atoms are the smallest visual building blocks. Each atom does ONE thing and does it perfectly.

@@ -1,5 +1,7 @@
 # FEATURE FREEZE — HUSTLEXP v1.0
 
+> **STATUS: SUPERSEDED PRODUCT-SCOPE FREEZE.** Fixed screen/table/feature counts and legacy exclusions do not define Universal V1. Current scope and change governance come from the [Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md). This file remains historical evidence of an earlier freeze.
+
 **STATUS: ACTIVE — No new features without explicit approval**  
 **Effective: January 2025**
 

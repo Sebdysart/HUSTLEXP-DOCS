@@ -1,5 +1,7 @@
 # BACKEND STACK LOCK v1.0.0
 
+> **STATUS: SUPERSEDED AS COMPANY-LEVEL AUTHORITY.** This file is an older implementation proposal. Current repository controlling specs own implementation truth; the [Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) requires PostgreSQL lifecycle authority and a processor-neutral boundary. Vendor-specific “no alternatives” claims here are non-operative.
+
 **Status:** LOCKED FOR V1 — No Alternatives Permitted
 **Date:** 2025-01-20
 **Authority:** Constitutional backend specification for HustleXP

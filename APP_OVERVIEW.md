@@ -1,5 +1,7 @@
 # APP OVERVIEW — HUSTLEXP AI UNDERSTANDING PROOF
 
+> **STATUS: HISTORICAL / SUPERSEDED.** This 2026-01 snapshot does not define current company identity, lifecycle, vendor choice, AI authority, or implementation truth. Use the [HustleXP Business and Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 **STATUS: AI-GENERATED STRUCTURAL TRUTH**
 **PURPOSE: Prove AI understands the project before executing**
 **LAST UPDATED: 2026-01-24**

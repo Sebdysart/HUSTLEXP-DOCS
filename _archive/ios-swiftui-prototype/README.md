@@ -1,5 +1,7 @@
 # HustleXP iOS SwiftUI Package
 
+> **ARCHIVED / HISTORICAL.** “Production-ready” statements below describe an earlier prototype assessment and do not establish current product, release, or business authority. Use the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 Production-ready SwiftUI screens converted from STITCH HTML specifications.
 
 ## Requirements

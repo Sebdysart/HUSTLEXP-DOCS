@@ -1,6 +1,8 @@
 # HustleXP Legal Document Suite
 
-All documents drafted 2026-03-15. Verified bulletproof via 6-point legal audit + independent re-verification pass.
+> **Status: DRAFT — OPEN — LEGAL.** These files are not legal advice, executed agreements, regulatory approval, or production-launch authority. They are subordinate to the [Universal V1 Charter](../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) and require qualified counsel review before use.
+
+All documents were drafted 2026-03-15 and are preserved as working material. Prior internal audit language is not a substitute for qualified legal approval.
 
 ## Documents
 

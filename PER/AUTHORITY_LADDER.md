@@ -1,5 +1,7 @@
 # AUTHORITY LADDER — AMBIGUITY RESOLUTION ORDER
 
+> **STATUS: SUBORDINATE / HISTORICAL EXECUTION GOVERNANCE.** This ladder applies only within its bounded PER workflow and cannot outrank the [Universal V1 Charter](../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) or [documentation precedence](../governance/DOCUMENTATION_AUTHORITY_AND_SOURCE_PRECEDENCE.md).
+
 **STATUS: CONSTITUTIONAL**
 **PURPOSE: Eliminate guessing by defining resolution hierarchy**
 **RULE: GUESSING IS FORBIDDEN**

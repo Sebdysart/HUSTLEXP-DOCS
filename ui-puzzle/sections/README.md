@@ -1,5 +1,7 @@
 # Sections — Layer 3
 
+> **Subordinate component scope.** Product and business meaning comes from the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 > **Narrative fragments. One job per section.**
 
 Sections are screen regions with a single narrative purpose. Each section answers ONE question.

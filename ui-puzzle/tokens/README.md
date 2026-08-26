@@ -1,5 +1,7 @@
 # Tokens — Layer 0
 
+> **Subordinate design-token scope.** Product and business meaning comes from the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 > **Zero-decision primitives. READ-ONLY.**
 
 Tokens are the raw design values that everything else is built from. They contain **no creative decisions** — just values.

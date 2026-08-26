@@ -1,5 +1,7 @@
 # DICTIONARY — HUSTLEXP SEMANTIC DEFINITIONS
 
+> **STATUS: SUPERSEDED FOR BUSINESS, LIFECYCLE, PROVIDER, AND MONEY TERMS.** Preserve this file for design and historical context. Use the [Universal V1 Charter](../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) for current definitions. Legacy Poster/Hustler, escrow, task-state, Live Mode, and AI-authority wording cannot override typed Universal V1 policy.
+
 **STATUS: AUTHORITATIVE**
 **PURPOSE: Ground AI in exact meanings — no interpretation, no drift**
 

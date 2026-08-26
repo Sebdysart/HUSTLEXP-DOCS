@@ -1,5 +1,7 @@
 # Staging Directory
 
+> **Authority notice:** Staging material is non-operative. Promotion requires compliance with the [Universal V1 Charter](../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) and the [documentation precedence](../governance/DOCUMENTATION_AUTHORITY_AND_SOURCE_PRECEDENCE.md).
+
 **Purpose:** Temporary holding area for work-in-progress specs before promotion to locked status.
 
 **Current status:** Empty. All previous staging specs have been promoted to locked subsystem specs.

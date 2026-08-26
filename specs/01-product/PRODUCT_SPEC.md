@@ -1,5 +1,7 @@
 # HustleXP Product Specification v1.6.0
 
+> **STATUS: SUPERSEDED AS ROOT AUTHORITY.** This specification remains subordinate implementation and historical design material. The [HustleXP Business and Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) controls company identity, product lanes, lifecycle, categories, provider policy, processor-neutral money semantics, and production freeze. Legacy escrow-before-task and processor-specific clauses are non-operative.
+
 **STATUS: CONSTITUTIONAL AUTHORITY**  
 **Owner:** HustleXP Core  
 **Last Updated:** February 2026  

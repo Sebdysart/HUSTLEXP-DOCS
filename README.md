@@ -1,146 +1,71 @@
 # HUSTLEXP-DOCS
 
-> **Documentation authority** for the HustleXP platform — a gamified hyperlocal task marketplace.
-> Contains the complete target architecture, specifications, and implementation plans.
+> **Canonical business-policy home for HustleXP.**
 
-[![Files](https://img.shields.io/badge/Docs-242_Markdown_Files-blue)]()
-[![Status](https://img.shields.io/badge/Docs_Status-Comprehensive-green)]()
-[![Reality Gap](https://img.shields.io/badge/Build_Gap-~2%25_Gap-brightgreen)]()
+HustleXP is one managed local-work transaction network. It captures legitimate demand broadly, routes general work to qualified providers and regulated work to credential-verified trade businesses, commits only when explicit gates pass, reconciles every transaction, and converts successful work into repeat relationships.
 
----
+## Start here
 
-## Current Status (April 2026)
+1. [HustleXP Business and Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) — controlling company, business, product-lane, service-cell, category, metrics, and Universal V1 policy.
+2. [Documentation Authority and Source Precedence](governance/DOCUMENTATION_AUTHORITY_AND_SOURCE_PRECEDENCE.md) — what wins when documents conflict.
+3. [Documentation Alignment Register](governance/DOCUMENT_ALIGNMENT_REGISTER.md) — controlling, subordinate, validation, current-evidence, historical, and archived classifications.
 
-This repo contains **the target architecture** — the full vision for what HustleXP will become. It is comprehensive and well-organized. However, the current README must be transparent about what is **documented vs. actually built**.
+## Current operating doctrine
 
-### Documentation vs. Reality
+> **Wide intake. Credentialed routing. Narrow financial commitment.**
 
-| Metric | Documented Here | Actually Built (hustlexp-ai-backend) | Gap |
-|--------|----------------|-----------------------------------|-----|
-| Database Tables | 103 | **103** | 0% |
-| API Procedures | 294 | **290+** | ~1% |
-| tRPC Routers | 50 | **50** | 0% |
-| Passing Tests | 5,448 | **5,448** | 0% |
-| Services | 68 | **85** | +25% (exceeds docs) |
-| AI Agents | 4 (Judge, Matchmaker, Dispute, Reputation) | **4** confirmed | 0% |
-| BullMQ Workers | 23 | **23** | 0% |
-| Statement Coverage | Target: 85% | **89.6%** | exceeds target |
-| Branch Coverage | Target: 85% | **77.6%** | 2.4% below target |
+> **Capture demand broadly. Commit narrowly. Complete safely. Reconcile every transaction. Convert successful work into repeat relationships. Expand only from evidence.**
 
-**Backend is substantially built.** The gap is very small and mainly reflects features coded but not fully wired, plus coverage optimization work:
-- Insurance contributions (coded, not fully integrated)
-- Dispute UI (API complete, frontend polish pending)
-- Stripe application_fee_amount (not enforced at API level)
-- Checkr background checks (blocked by account authorization)
-- iOS client (in active development, 0 E2E tests)
-- Branch coverage optimization (currently 77.6% vs. 85% target)
+The first managed service cell is Bellevue and Redmond, focused on Eastside households with bounded, non-emergency needs. Other Eastside demand may enter controlled overflow.
 
----
+General services use standardized, controlled, and review-only category policies. Licensed trades are active for intake, credential verification, provider outreach, referral, and managed estimates; HustleXP-managed trade payments remain blocked.
 
-## What IS Built Right Now
+## Universal V1 boundary
 
-The core task marketplace works:
-- User auth (JWT + phone verification)
-- Task CRUD + full state machine (DRAFT → FUNDED → ACCEPTED → IN_PROGRESS → SUBMITTED → COMPLETED)
-- Escrow payment flow (UNFUNDED → HELD → RELEASED / REFUNDED)
-- XP ledger (append-only, immutable)
-- Dispute initiation
-- Webhook processing (idempotent)
-- System settings / kill switches
-- 6-city WA soft launch constraints ($10–$250, 100 users max)
+- one occurrence-level lifecycle across Marketplace, Provider OS, BYOP, Task Opportunities, Recurring Work, and future approved trade transactions;
+- one immutable transaction root per occurrence;
+- PostgreSQL owns final lifecycle authority;
+- a Task Draft precedes opportunity and financial commitment;
+- a Financial Security Event precedes Work Order materialization, assignment, and address release;
+- capture, settlement, platform funding, provider payout, reconciliation, and closure remain separate;
+- AI has no independent money, identity, safety, assignment, private-data, or policy authority;
+- the core is processor-neutral;
+- fake-processor certification precedes approved processor sandbox work;
+- production payment creation remains frozen.
 
-Backend: **[hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend)** — Hono + tRPC, Neon PostgreSQL, 5,448/5,448 tests passing.
-Frontend: **[HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)** — React Native + Swift dual-arch, in development.
+## Repository contents
 
----
+This repository preserves product, UX, architecture, screen, implementation, legal-draft, planning, audit, and historical material. Those documents remain useful within their classified scope. They do not outrank the governance directory merely because a filename or heading says `LOCKED`, `FINAL`, `MASTER`, `CONSTITUTIONAL`, `AUTHORITY`, or `SINGLE SOURCE OF TRUTH`.
 
-## What This Repo Contains
+Key families:
 
-### 501 files (48MB) organized as:
-
-| Category | Count | Contents |
-|----------|-------|----------|
-| Product Specs | 8 | Feature requirements |
-| Architecture & Backend | 30+ | System design, schema, API contracts |
-| Frontend & UI | 50+ | Components, patterns, design tokens |
-| Screen Specs | 58 | iOS screen definitions organized by role |
-| UI Puzzle Components | 50+ | Atoms, molecules, sections |
-| Implementation Plans | 8 | Full code examples, TDD specs |
-| Project Execution Records | 48 | Authority & protocol documentation |
-| Legal Documents | 6 | ToS, privacy policy, compliance |
-| Tracking/Audits | 17+ | Status files, health checks |
-
-### Key Directories
-
-```
-specs/          — Product, architecture, frontend, backend specifications
-docs/plans/     — 8 implementation plans with full code
-screens-spec/   — 58 iOS screens organized by role
-ui-puzzle/      — Component library (atoms, molecules, sections)
-PER/            — 48 Project Execution Records
-legal/          — Full legal document suite
-tracking/       — Audit and status files
+```text
+governance/      controlling business policy and documentation precedence
+specs/           subordinate product, architecture, frontend, and backend detail
+screens-spec/    subordinate screen behavior and acceptance detail
+ui-puzzle/       subordinate design-system and component material
+PER/             historical/subordinate execution records
+tracking/        source-dated audits and evidence
+legal/           drafts requiring qualified legal approval
+_archive/        deliberately non-operative historical material
 ```
 
----
+## Truth and safety rules
 
-## Documented Features (Target State)
+- Do not copy static test, table, router, coverage, deployment, or production-readiness claims forward. Verify them at an exact revision.
+- Do not treat legacy escrow shorthand or Stripe-specific examples as Universal V1 authority.
+- Do not claim universal category availability, provider availability, insurance, background screening, payment approval, or legal approval without current evidence.
+- Do not describe a Task Opportunity as assignment or guaranteed earnings.
+- Do not describe external ratings as trade credentials.
+- Do not infer production authority from documentation, a green check, an environment variable, a deployment, or code presence.
 
-These are fully specified but **most are not yet implemented**:
+## Production effects
 
-- Task lifecycle with escrow payments
-- Stripe escrow with dispute resolution
-- XP system with trust tiers (Rookie → Grinder → Pro → Elite → Master)
-- Squads / team tasks
-- Live Mode radar (real-time task tracking)
-- Tipping system
-- Referral system with bonuses
-- Batch quests
-- Recurring tasks
-- 4 AI agents (Judge, Matchmaker, Dispute, Reputation)
-- Advanced fraud detection
-- Content moderation pipeline
-- KYC gates (identity verification tiers)
-- Subscription tiers
-- 1099-NEC tax document generation
-- Bidirectional ratings
-- GDPR compliance
+These documents authorize no deployment, database change, payment action, secret rotation, production configuration mutation, or money-capability enablement.
 
----
+```text
+PRODUCTION_PAYMENT_CREATION = FROZEN
+ACCEPTS_NEW_CUSTOMER_MONEY = false
+```
 
-## Tech Stack (Documented vs. Actual)
-
-| Layer | Documented | Actual (hustlexp-ai-backend) |
-|-------|-----------|--------|
-| iOS Client | SwiftUI | SwiftUI + React Native (dual) |
-| Auth | Firebase JWT | Firebase JWT |
-| API | Hono/tRPC | Hono + tRPC ✓ |
-| Database | Neon Postgres | Neon PostgreSQL ✓ |
-| Cache | Upstash Redis | Upstash Redis |
-| Queue | BullMQ (23 workers) | BullMQ (23 workers) ✓ |
-| Hosting | Railway | Railway (backend), Neon (database) ✓ |
-
----
-
-## North Star Vision
-
-> Become a skilled-labor credentialing network with a marketplace on top.
-
-Phase 1 (Now): Local task marketplace — post tasks, earn money, build XP
-Phase 2 (6-12 months): City-by-city expansion with trust-gated features
-Phase 3 (12-24 months): Credentialing network where XP = verified skill proof
-
----
-
-## Related Repos
-
-| Repo | Role |
-|------|------|
-| [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend) | Production Backend (5,448 tests, 103 tables, 290+ procedures) |
-| [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1) | iOS/Mobile Client |
-| [omni-link-hustlexp](https://github.com/Sebdysart/omni-link-hustlexp) | Engineering Control Plane |
-| [HUSTLEXP-ERRORS-AND-TODOS](https://github.com/Sebdysart/HUSTLEXP-ERRORS-AND-TODOS) | Error & Todo Tracker |
-
----
-
-*This README updated 2026-04-01 to reflect the gap between documented target state and current reality. See [HUSTLEXP-ERRORS-AND-TODOS](https://github.com/Sebdysart/HUSTLEXP-ERRORS-AND-TODOS) for the full list of what needs to be built.*
+Exact implementation and production facts belong to the current repository checkpoints and signed evidence at their exact SHAs.

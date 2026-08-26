@@ -1,5 +1,7 @@
 # HustleXP Stitch Prompts
 
+> **Subordinate design material.** Prompts must use the [Universal V1 Charter](../../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) for product, lifecycle, category, provider, payment, and service-promise truth.
+
 This directory contains ready-to-use prompts for generating high-fidelity UI screens in Google Stitch.
 
 ---

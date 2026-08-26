@@ -1,5 +1,7 @@
 # Screens — Layer 4
 
+> **Subordinate screen scope.** Product and business meaning comes from the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 > **Pure assembly. No invention.**
 
 Screens are assemblies of pre-approved sections. They contain NO new concepts.

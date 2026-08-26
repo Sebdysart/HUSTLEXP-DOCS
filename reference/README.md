@@ -2,6 +2,8 @@
 
 ⚠️ **WARNING: This is NOT production code.**
 
+This material is subordinate to the [Universal V1 Charter](../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) and cannot authorize lifecycle, provider, payment, deployment, or production behavior.
+
 ---
 
 ## What This Is

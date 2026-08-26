@@ -1,5 +1,7 @@
 # CURRENT PHASE: BETA LAUNCH PREP
 
+> **STATUS: HISTORICAL SNAPSHOT (2026-03-15).** Its completeness, launch-readiness, integration, and production claims are not current authority. Use the [Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) for business policy and exact repository/environment evidence for current implementation and release truth. Production payment creation remains frozen.
+
 **Repos under authority:**
 - Frontend: [HUSTLEXPFINAL1](https://github.com/Sebdysart/HUSTLEXPFINAL1)
 - Backend: [hustlexp-ai-backend](https://github.com/Sebdysart/hustlexp-ai-backend)

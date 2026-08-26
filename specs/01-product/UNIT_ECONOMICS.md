@@ -1,5 +1,7 @@
 # UNIT ECONOMICS
 
+> **STATUS: VALIDATION / HISTORICAL INPUT.** Permanent economics, fees, floors, and cohort gates are not established by this file. Use the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) for locked definitions and explicitly labeled validation targets.
+
 **Authority:** PRODUCT_SPEC | STRIPE_INTEGRATION | FINISHED_STATE
 **Status:** v1.0 — Living document (updated as costs change)
 

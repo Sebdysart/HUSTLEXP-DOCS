@@ -1,6 +1,8 @@
 # UI PUZZLE — HUSTLEXP COMPONENT SYSTEM
 
-**STATUS: FROZEN — These are the ONLY building blocks**
+> **Subordinate design-system authority.** “Frozen” applies only to this component system and does not override the [Universal V1 Charter](../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
+**STATUS: FROZEN WITHIN ITS DESIGN SCOPE**
 
 ---
 

@@ -1,5 +1,7 @@
 # FINISHED STATE — HUSTLEXP v1.0
 
+> **STATUS: HISTORICAL / SUPERSEDED.** This earlier fixed-finish definition is preserved as evidence. It cannot override the [Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md), current implementation evidence, or external legal/processor gates.
+
 **STATUS: FROZEN — This document defines "done"**  
 **Last Modified: January 2025**  
 **Rule: No feature exists unless listed here. No feature is added without modifying this document.**

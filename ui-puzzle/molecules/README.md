@@ -1,5 +1,7 @@
 # Molecules — Layer 2
 
+> **Subordinate component scope.** Product and business meaning comes from the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
+
 > **Semantic combinations. Atom assemblies. No screen logic.**
 
 Molecules combine atoms into meaningful units. They have semantic purpose but no screen-level logic.

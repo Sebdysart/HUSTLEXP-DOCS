@@ -1,8 +1,8 @@
 # HustleXP UI Specs
 
-**Source of truth for all UI components, tokens, and screen specifications.**
+> **Subordinate UI authority.** These specifications govern UI detail only when consistent with the [Universal V1 Charter](../../governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) and current implementation contracts.
 
-This directory contains the canonical design language for the HustleXP app.
+This directory contains the maintained design language for the HustleXP app. It cannot independently authorize lifecycle, payment, provider eligibility, serviceability, or production capability.
 
 ## Structure
 
