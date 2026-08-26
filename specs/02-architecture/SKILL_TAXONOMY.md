@@ -133,16 +133,18 @@ Category (6)
 
 | Skill ID | Display Name | Risk | Regulated | Min Tier | Gate |
 |----------|-------------|------|-----------|----------|------|
-| `electrical_work` | Electrical Work | HIGH | Yes | 4 | Electrician License |
-| `plumbing_work` | Plumbing Work | HIGH | Yes | 4 | Plumber License |
-| `hvac_work` | HVAC Work | HIGH | Yes | 4 | HVAC License |
+| `electrical_work` | Electrical Work | HIGH | Yes | 4 | Electrical business + worker credential matrix |
+| `plumbing_work` | Plumbing Work | HIGH | Yes | 4 | Plumbing business + worker credential matrix |
+| `hvac_work` | HVAC Work | HIGH | Yes | 4 | Contractor registration + scope-specific trade credentials |
 | `gas_line_work` | Gas Line Work | HIGH | Yes | 4 | Gas Fitter License |
 | `roofing` | Roofing | HIGH | Yes | 4 | Contractor License |
 | `structural_work` | Structural Modification | HIGH | Yes | 4 | Contractor License |
+| `general_contracting` | General Contracting | HIGH | Yes | 4 | General contractor registration + trade routing |
+| `remodeling` | Remodeling | HIGH | Yes | 4 | General contractor registration + permit/trade matrix |
 | `painting_commercial` | Painting (Commercial) | MEDIUM | Yes | 2 | Contractor License |
 | `painting_residential` | Painting (Residential) | LOW | No | 1 | — |
 
-**Category 2 Total: 35 skills**
+**Category 2 Total: 37 skills**
 
 ---
 
@@ -267,17 +269,17 @@ Category (6)
 | Category | Skills | LOW | MEDIUM | HIGH | CRITICAL | Regulated |
 |----------|--------|-----|--------|------|----------|-----------|
 | Physical Tasks | 30 | 22 | 7 | 1 | 0 | 1 |
-| Handy Work | 35 | 15 | 13 | 6 | 0 | 7 |
+| Handy Work | 37 | 15 | 13 | 8 | 0 | 9 |
 | Transportation | 14 | 10 | 4 | 0 | 0 | 0 |
 | Tech & Digital | 14 | 13 | 1 | 0 | 0 | 0 |
 | Personal Services | 20 | 11 | 4 | 1 | 4 | 3 |
 | Professional | 13 | 12 | 1 | 0 | 0 | 1 |
-| **TOTAL** | **126** | **83** | **30** | **8** | **4** | **12** |
+| **TOTAL** | **128** | **83** | **30** | **10** | **4** | **14** |
 
 **Tier Access Distribution:**
-- Tier 1 (ROOKIE): 83 skills (66%) — immediate access
-- Tier 2 (VERIFIED): 30 skills (24%) — after ID verification
-- Tier 4 (ELITE): 9 skills (7%) — high-risk, licensed trades
+- Tier 1 (ROOKIE): 83 skills (65%) — immediate access
+- Tier 2 (VERIFIED): 30 skills (23%) — after ID verification
+- Tier 4 (ELITE): 11 skills (9%) — high-risk, licensed trades
 - Tier 5 (MASTER): 4 skills (3%) — critical-risk, vulnerable populations
 
 ---
@@ -349,3 +351,4 @@ CREATE INDEX IF NOT EXISTS idx_capability_claims_skill
 ---
 
 **This taxonomy is the canonical skill enumeration. If it's not here, it doesn't exist in HustleXP.**
+
