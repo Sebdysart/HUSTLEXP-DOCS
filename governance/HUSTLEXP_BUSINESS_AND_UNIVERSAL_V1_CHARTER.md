@@ -1,15 +1,17 @@
 # HustleXP Business and Universal V1 Charter
 
-**Charter version:** 1.0.0  
+**Charter version:** 1.1.0  
 **Decision date:** 2026-08-25  
 **Status:** CONTROLLING BUSINESS AUTHORITY  
-**Applies to:** HustleXP company strategy, Marketplace, Provider OS, Bring Your Own Provider, Task Opportunities, Recurring Work, Verified Trade Partner operations, `/OPS`, product copy, and implementation planning  
+**Applies to:** HustleXP company strategy, Marketplace, Provider OS, Bring Your Own Provider, Task Opportunities, Recurring Work, Verified Trade Business operations, `/OPS`, product copy, and implementation planning  
 **Production effect:** NONE  
 **Production payment creation:** FROZEN  
 
 This charter consolidates the founder-approved HustleXP business direction and the Universal V1 operating model. It resolves conflicts among older roadmaps, product specifications, underwriting material, audit records, READMEs, and implementation documents.
 
 It is a business and product-policy authority. It does not claim that a capability is implemented, deployed, legally approved, processor-approved, or production-safe. Exact implementation and production facts must come from the repository and environment that own those facts.
+
+**Version 1.1.0 decision:** Regulated trade businesses are first-class HustleXP providers in an `ACTIVE_GATED` marketplace lane. Referral is an interim capability or acquisition experiment, not the trade business model. Only the exact category, legal role, credential, transaction, and payment capabilities lacking authority remain disabled.
 
 ## 1. Decision-status language
 
@@ -89,9 +91,11 @@ Across both marketplace sides:
 
 ### 3.3 Licensed-trade promise — LOCKED
 
-> **For regulated or licensed work, HustleXP helps customers reach a locally reputable, independently credential-checked business, organize the scope and estimate, and maintain a clear transaction record. The licensed business is responsible for performing the work, required permits, code compliance, workmanship, and its stated warranties.**
+> **For regulated or licensed work, HustleXP keeps the customer inside one managed marketplace relationship: it qualifies the request, routes it exclusively to an eligible Verified Trade Business, coordinates the diagnostic and estimate, records the approved scope and change orders, supports the transaction capabilities that are currently authorized, and preserves the customer relationship through completion and repeat work.**
 
-Until full trade payments are approved, the trade business contracts with and collects payment from the customer directly.
+The Verified Trade Business is the service contractor. It diagnoses regulated scope, submits the estimate, contracts for and performs the regulated work, obtains required permits, uses appropriately licensed or certified workers, and owns workmanship and warranty obligations. HustleXP is the marketplace, transaction network, software/operator layer, and disclosed fee recipient; it does not present itself as the construction contractor unless a separate founder, legal, licensing, insurance, and operational decision deliberately authorizes that role.
+
+Until a category's full marketplace payment topology is approved, the trade business contracts with and collects payment from the customer directly while HustleXP retains the governed intake, estimate, communication, evidence, outcome, reputation, and repeat-relationship record.
 
 ### 3.4 Provider promise — LOCKED
 
@@ -151,7 +155,7 @@ The exact allocation remains external until approved in writing.
 
 1. **HustleXP Transaction Network** — the company and governed operating system.
 2. **General Services Marketplace** — acquires HustleXP-originated customer relationships.
-3. **Verified Trade Partner Network** — routes regulated demand to verified trade businesses.
+3. **Verified Trade Business Network** — operates the active gated marketplace lane for regulated demand and credential-verified businesses.
 4. **Provider OS** — helps providers retain, operate, and expand customer relationships.
 5. **Bring Your Own Provider (BYOP)** — brings pre-matched relationships into the governed system.
 6. **Task Opportunities** — resolves supply and acquires providers around real Task Drafts.
@@ -168,7 +172,7 @@ These are not separate companies or competing lifecycles.
 | BYOP | Customer arrives with provider | Not required | Jointly structured through HX | `BRING_YOUR_OWN_PROVIDER` | Infrastructure fee below Marketplace |
 | Task Opportunity | Derived from a real open Task Draft | Supply acquisition only | Inherits Task Draft scope | Inherits final Work Order origin | Not a separate financial lane |
 | Recurring Work | Prior governed relationship | Usually same-provider preference | Template plus occurrence confirmation | Inherited or explicitly updated | Reduced repeat economics where justified |
-| Verified Trade | Marketplace, Provider OS, or BYOP | Often required | Provider diagnostic and estimate | Same origin fields | Referral/estimate first; payment only after external gates |
+| Verified Trade Business | Marketplace, Provider OS, or BYOP | Often required | Provider diagnostic and estimate | Same origin fields | First-class managed marketplace; exact payment capabilities activate only after external gates |
 
 ### 5.3 Provider OS — LOCKED
 
@@ -243,9 +247,9 @@ These receive the first reusable scope schemas, price templates, provider playbo
 
 These are not represented as standardized V1 liquidity. They route through manual review, provider estimate, referral, waitlist, or decline.
 
-### 7.4 Verified Trade Partner categories — LOCKED COMMERCIAL POSTURE
+### 7.4 Verified Trade Business categories — LOCKED `ACTIVE_GATED` POSTURE
 
-Licensed and regulated trades are an active demand-capture and provider-acquisition lane, not a vague future category.
+Licensed and regulated trades are an active first-class marketplace and provider-acquisition lane, not a vague future category and not a referral-only side business. Demand intake, provider recruitment, credential verification, category eligibility, diagnostics, estimates, Provider OS, outcome records, and repeat-relationship operations are active gated capabilities. Payment-enabled execution activates separately by category only after the Section 11 gates pass.
 
 Priority demand capture:
 
@@ -301,7 +305,14 @@ Before that, the category remains in request mode. A founder-rescued task is not
 
 ### 9.1 Launch provider forms — LOCKED TARGET; OPEN — LEGAL/PROCESSOR
 
-HustleXP intends to support individual sole proprietors, single-member owner-operators, registered service businesses, approved business crews, and licensed trade businesses. A qualified individual should not need to form an LLC solely to earn through HustleXP.
+HustleXP has two first-class provider classes:
+
+| Provider class | Eligible forms | Work authority |
+| --- | --- | --- |
+| `GENERAL_SERVICE_PROVIDER` | Individual sole proprietor, owner-operator, registered service business, or approved business crew | General-service categories allowed by identity, category, risk, geography, and task policy |
+| `VERIFIED_TRADE_BUSINESS` | Licensed or registered business with the required trade, insurance, bond, worker, and category evidence | Regulated categories allowed by jurisdiction-specific credential and task policy |
+
+A qualified general-service individual should not need to form an LLC solely to earn through HustleXP. Regulated work routes exclusively to the appropriately credentialed `VERIFIED_TRADE_BUSINESS` class and its eligible named workers or crews.
 
 Actual eligibility depends on processor rules, Washington legal analysis, classification, category policy, and insurance controls.
 
@@ -328,7 +339,7 @@ Providers can set availability, accept or decline, review economics before commi
 
 New work is blocked for processor restriction, expired required credentials, identity discrepancy, material fraud, fabricated evidence, serious safety allegations requiring investigation, prohibited services, repeated no-shows, undisclosed substitution, or off-record payment coercion. Lower-severity quality failures enter documented remediation before termination where safe.
 
-## 10. Verified Trade Partner policy
+## 10. Verified Trade Business policy
 
 ### 10.1 Reputation and credentials are separate — LOCKED
 
@@ -339,13 +350,15 @@ Google or other public reputation is a sourcing signal, not legal or task eligib
 
 First-party completed and reconciled performance must eventually outweigh external reputation.
 
-### 10.2 Trade commercial modes — LOCKED
+### 10.2 Trade commercial model — LOCKED
 
-**Mode A — Qualified referral:** HustleXP qualifies and introduces. The trade business contracts with and collects from the customer directly.
+The target business model is a managed marketplace, not an external referral directory.
 
-**Mode B — Managed estimate:** HustleXP coordinates intake, provider selection, diagnostic scheduling, versioned estimates, communications, follow-up, and outcome tracking. The trade business still owns the service contract and payment until full approval.
-
-**Mode C — Full managed transaction:** disabled until all legal, processor, credential, sandbox, independent-review, and release gates pass.
+- HustleXP acquires or receives the customer relationship, qualifies the request, identifies eligible businesses, coordinates estimates and booking, supplies the governed workflow, records evidence and outcomes, and earns disclosed marketplace, transaction, software, or qualified-demand economics appropriate to the relationship and approved legal/payment model.
+- The Verified Trade Business is the service contractor. It diagnoses regulated scope, prices and bids its work, enters the service or construction contract, performs the work, obtains required permits, uses qualified workers, and owns workmanship and warranties.
+- A qualified referral may be used when an exact capability is unavailable or as a measured lead-quality experiment. It is not the permanent trade lane definition.
+- A managed estimate is an active marketplace capability even while platform payment is disabled.
+- Full managed payment execution remains disabled per category until every legal, processor, credential, sandbox, independent-review, and release gate passes.
 
 ### 10.3 Trade capability posture — LOCKED
 
@@ -355,6 +368,8 @@ TRADE_PROVIDER_OUTREACH_ALLOWED = true
 TRADE_CREDENTIAL_VERIFICATION_ALLOWED = true
 TRADE_REFERRAL_ALLOWED = true
 TRADE_MANAGED_ESTIMATE_ALLOWED = true
+TRADE_PROVIDER_OS_ALLOWED = true
+TRADE_OUTCOME_AND_REPUTATION_RECORD_ALLOWED = true
 TRADE_PLATFORM_PAYMENT_ALLOWED = false
 TRADE_CHANGE_ORDER_PAYMENT_ALLOWED = false
 TRADE_RECURRING_PAYMENT_ALLOWED = false
@@ -362,11 +377,32 @@ TRADE_RECURRING_PAYMENT_ALLOWED = false
 
 No generic `licensed_trade_enabled` flag may collapse these permissions.
 
-### 10.4 Managed-estimate activation gate — VALIDATION TARGET
+### 10.4 Trade provider and transaction progression — LOCKED
+
+```text
+TRADE_PROSPECT
+→ REPUTATION_QUALIFIED
+→ CREDENTIAL_VERIFICATION
+→ T4_VERIFIED_TRADE_BUSINESS
+→ CATEGORY_ELIGIBLE
+→ PAYMENT_ELIGIBLE
+→ TASK_ELIGIBLE
+→ ESTIMATE / CONDITIONAL_ACCEPTANCE
+→ FINANCIAL_SECURITY_EVENT
+→ WORK_ORDER + ASSIGNMENT
+→ FULFILLMENT
+→ CAPTURE + PROVIDER_FUNDING + HUSTLEXP_REVENUE
+→ RECONCILIATION
+→ REPEAT / PROVIDER_OS
+```
+
+Google and other public reputation identify prospects. Official business, licensing, certification, bond, insurance, workers' compensation, restriction, specialty, and jurisdiction records authorize categories. HustleXP first-party completed and reconciled history governs eventual ranking. `PAYMENT_ELIGIBLE` and downstream money states remain false until the exact approved payment topology exists.
+
+### 10.5 Managed-estimate activation gate — VALIDATION TARGET
 
 Before a trade category is called operationally managed, require three verified businesses, two currently responsive, a category intake schema, official credential matrix, estimate template, emergency/permit rules, evidence policy, customer disclosures, provider agreement, and support SOP.
 
-### 10.5 Trade proof gate — VALIDATION TARGET
+### 10.6 Trade proof gate — VALIDATION TARGET
 
 Before a trade category is called proven, require 25 qualified requests, three verified businesses, 80% provider response, 60% reaching estimate or diagnostic appointment, ten completed projects, 100% credential freshness at assignment, zero known unlicensed assignments, zero unapproved HustleXP payment transactions, improving or positive CM2, and no unresolved severe safety or fraud incident.
 
@@ -374,7 +410,7 @@ Before a trade category is called proven, require 25 qualified requests, three v
 
 ### 11.1 One lifecycle — LOCKED
 
-All Marketplace, Provider OS, BYOP, Task Opportunity, Recurring Work, and future approved trade transactions converge on one occurrence-level lifecycle:
+All Marketplace, Provider OS, BYOP, Task Opportunity, Recurring Work, and payment-eligible trade transactions converge on one occurrence-level lifecycle:
 
 ```text
 TASK_DRAFT
@@ -399,7 +435,7 @@ TASK_DRAFT
 → CLOSED
 ```
 
-Trade referral and managed-estimate work may stop before `PAYMENT_METHOD_READY` and record a typed externally contracted outcome. It must not fabricate downstream payment or Work Order states.
+When an exact trade payment capability is unavailable, the same managed marketplace relationship may record a typed externally contracted and paid outcome before `PAYMENT_METHOD_READY`. That interim payment boundary does not redefine the provider as external to HustleXP and must not fabricate downstream payment or Work Order states.
 
 ### 11.2 Universal invariants — LOCKED
 
@@ -446,7 +482,7 @@ Trade platform payments require a written legal-role decision, category/MCC appr
 9. AI may recommend but may not commit a final price.
 10. Work that cannot support provider earnings and contribution economics is declined, bundled, repriced, or explicitly subsidized as an experiment.
 
-### 12.2 General-service commercial bands — VALIDATION TARGET
+### 12.2 Commercial bands — VALIDATION TARGET
 
 | Lane | Target effective HustleXP revenue |
 | --- | --- |
@@ -455,16 +491,21 @@ Trade platform payments require a written legal-role decision, category/MCC appr
 | Provider OS | 5%–8%; $0 V1 subscription |
 | Repeat marketplace occurrence | 10%–15% after relationship qualification |
 | Provider-estimate work | Economics follow relationship origin |
+| Managed trade marketplace | 5%–12% or a disclosed capped fee |
+| Qualified trade opportunity | Fixed lead or booking fee after legal/commercial approval |
+| Managed trade estimate | Fixed fee, credited estimate fee, or approved success fee |
+| Trade Provider OS transaction | 3%–6% workflow fee; subscription only after independent software value is proven |
 
 The rail-level fee mechanism remains `OPEN — PROCESSOR`.
 
 ### 12.3 Trade pricing — VALIDATION TARGET
 
-- First 10–25 qualified trade opportunities may be free in exchange for outcome reporting and structured feedback.
-- No fee for merely viewing a lead during the proof cohort.
-- After proof, test a fixed attended-estimate fee, a credited estimate fee, or a disclosed capped success fee.
-- A future full managed trade transaction may test 5%–8% of eligible service/labor revenue, excluding or separately treating taxes, permits, major equipment, fixtures, pass-through materials, and subcontractor pass-through costs.
-- Provider OS trade transactions may test a 3%–5% workflow fee with no V1 subscription.
+- The first 10–25 qualified trade opportunities may be free in exchange for outcome reporting and structured feedback; this is a lead-quality experiment, not the durable trade business model.
+- No fee is charged merely for viewing a lead during the proof cohort.
+- Pre-platform-payment monetization may test Provider OS software, marketing or qualified-demand fees, estimate-booking fees, subscriptions, or business listings only after the exact fee and HustleXP role pass legal/commercial review.
+- After proof, test a fixed attended-estimate fee, credited estimate fee, qualified-opportunity fee, or disclosed capped success fee.
+- A full managed trade transaction may test 5%–12% of eligible service/labor revenue or a capped fee, excluding or separately treating taxes, permits, major equipment, fixtures, pass-through materials, and subcontractor pass-through costs.
+- Provider OS trade transactions may test a 3%–6% workflow fee. A paid SaaS subscription remains deferred until the software has independent recurring value.
 
 These are experiments, not processor approval or permanent price policy.
 
@@ -649,6 +690,10 @@ Merchant role, provider-account topology, sole-proprietor eligibility, eligible 
 
 Worker classification, business crew/subcontractor model, HustleXP's Washington contractor/marketplace role, background screening, home-entry controls, required insurance, licensing, customer/provider contract allocation, cancellation enforceability, guarantee/protection language, privacy/evidence retention, tax reporting, permits, and warranty boundaries.
 
+The immediate Washington counsel question is: **Which marketplace behaviors would cause HUSTLR LLC itself to be treated as a contractor or general contractor under RCW 18.27, and which contract, product-copy, estimate, pricing, supervision, warranty, and change-order boundaries keep the Verified Trade Business as the service contractor?**
+
+Washington primary sources confirm that L&I's Verify tool can expose contractor registration, owner identity, workers' compensation, citations, bond claims, and tradesperson certification; electrical contracting businesses require an electrical contractor license and properly certified electricians. RCW 18.27.010 defines contractor and general-contractor activity broadly enough that HustleXP's exact role requires counsel review. See the [Washington L&I verification guidance](https://www.lni.wa.gov/licensing-permits/contractors/hiring-a-contractor/verify-contractor-tradesperson-business), [Washington L&I electrical contractor requirements](https://www.lni.wa.gov/licensing-permits/electrical/electrical-licensing-exams-education/electrical-contractor), and [RCW 18.27.010](https://app.leg.wa.gov/rcw/default.aspx?cite=18.27.010).
+
 Founder policy states the intended outcome. It does not represent external approval as obtained.
 
 ## 19. Documentation and change governance
@@ -682,3 +727,4 @@ The business is solidified when every founder, operator, engineer, provider recr
 12. Why production payment creation remains frozen until the complete external, certification, release, and evidence gates pass.
 
 The charter is complete as a controlling specification. Operational proof remains deliberately unfinished until real cohorts and external approvals provide evidence.
+
