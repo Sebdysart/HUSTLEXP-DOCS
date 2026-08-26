@@ -1,6 +1,6 @@
 # HustleXP Documentation Alignment Register
 
-**Register version:** 1.0.0  
+**Register version:** 1.1.0  
 **Evidence date:** 2026-08-25  
 **Classification:** CURRENT EVIDENCE  
 **Production effect:** NONE
@@ -12,6 +12,8 @@ This register classifies documentation families after adoption of the HustleXP B
 | Document | Scope |
 | --- | --- |
 | `governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md` | Company, business, lanes, market cell, categories, Universal V1 target, metrics, money freeze |
+| `governance/DECISION_2026-08-25_REGULATED_TRADE_BUSINESSES_ACTIVE_GATED.md` | First-class trade-provider decision, marketplace role, capability gates, economics hypotheses, legal boundary |
+| `governance/VERIFIED_TRADE_CREDENTIAL_MATRIX_WASHINGTON.md` | Washington launch verification architecture and initial category evidence matrix |
 | `governance/DOCUMENTATION_AUTHORITY_AND_SOURCE_PRECEDENCE.md` | Cross-document precedence and conflict resolution |
 
 ## Subordinate implementation references
@@ -68,7 +70,7 @@ Historical documents may be cited as evidence of what was believed, designed, or
 | “Escrow funded before task posting” | Task Draft first; processor-neutral Financial Security Event before Work Order and assignment |
 | “Stripe is the payment architecture” | Processor-neutral core; specific processor behavior is externally approved adapter policy |
 | “Task posted means provider can claim” | Opportunity/interest only until eligibility, conditional acceptance, FSE, materialization, and assignment |
-| “Licensed trades are future” | Active intake, verification, referral, and managed estimate; platform payment blocked |
+| “Licensed trades are future, referral-only, or permanently free” | First-class `ACTIVE_GATED` managed marketplace lane; referral may be interim, while exact unauthorized payment capabilities remain blocked |
 | “Google-verified contractor” | Reputation-qualified prospect plus independently credential-verified trade business |
 | “AI auto-prices/assigns/approves” | AI may assist; typed policy and authorized human/system controls decide |
 | “Product is launch-ready except legal” | Historical claim; current implementation, release, legal, processor, and production evidence control |
@@ -93,3 +95,4 @@ The charter is complete without pretending the following are settled:
 - insurance and background-screening requirements;
 - processor program, categories/MCCs, provider types, Financial Security Event, fees, limits, reserves, losses, adjustments, replacement, settlement, and payout behavior;
 - observed customer demand, provider response, service timings, repeat behavior, CM1, CM2, and first-100 cohort results.
+
