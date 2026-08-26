@@ -18,11 +18,11 @@ HustleXP is one managed local-work transaction network. It captures legitimate d
 
 The first managed service cell is Bellevue and Redmond, focused on Eastside households with bounded, non-emergency needs. Other Eastside demand may enter controlled overflow.
 
-General services use standardized, controlled, and review-only category policies. Licensed trades are active for intake, credential verification, provider outreach, referral, and managed estimates; HustleXP-managed trade payments remain blocked.
+General services route to eligible individual or business providers. Regulated work routes exclusively to `VERIFIED_TRADE_BUSINESS` providers through an `ACTIVE_GATED` managed marketplace lane. Intake, recruitment, credential verification, diagnostics, estimates, Provider OS, outcome records, and repeat relationships are active; referral is an interim capability, not the business model. Category-specific platform payments remain blocked until their legal, credential, processor, topology, certification, and release gates pass.
 
 ## Universal V1 boundary
 
-- one occurrence-level lifecycle across Marketplace, Provider OS, BYOP, Task Opportunities, Recurring Work, and future approved trade transactions;
+- one occurrence-level lifecycle across Marketplace, Provider OS, BYOP, Task Opportunities, Recurring Work, and Verified Trade Business transactions;
 - one immutable transaction root per occurrence;
 - PostgreSQL owns final lifecycle authority;
 - a Task Draft precedes opportunity and financial commitment;
@@ -69,3 +69,4 @@ ACCEPTS_NEW_CUSTOMER_MONEY = false
 ```
 
 Exact implementation and production facts belong to the current repository checkpoints and signed evidence at their exact SHAs.
+
