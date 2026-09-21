@@ -1,72 +1,24 @@
-# HUSTLEXP-DOCS
+# HustleXP documentation
 
-> **Canonical business-policy home for HustleXP.**
-
-HustleXP is one managed local-work transaction network. It captures legitimate demand broadly, routes general work to qualified providers and regulated work to credential-verified trade businesses, commits only when explicit gates pass, reconciles every transaction, and converts successful work into repeat relationships.
+Status: DOCUMENTATION HANDOFF CANDIDATE — 2026-09-21. Adoption requires review and a separately permitted merge. No runtime, deployment, payment, outreach or sharing effects are authorized.
 
 ## Start here
 
-1. [HustleXP Business and Universal V1 Charter](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) — controlling company, business, product-lane, service-cell, category, metrics, and Universal V1 policy.
-2. [Documentation Authority and Source Precedence](governance/DOCUMENTATION_AUTHORITY_AND_SOURCE_PRECEDENCE.md) — what wins when documents conflict.
-3. [Documentation Alignment Register](governance/DOCUMENT_ALIGNMENT_REGISTER.md) — controlling, subordinate, validation, current-evidence, historical, and archived classifications.
+The [Canonical Document Index](https://docs.google.com/document/d/1QTrT40LK5zo-DN6ER7naM3p43WlyxkBxKsjL23p20mY/edit) discovers current business/product policy. This repository is a supporting reference, not a competing policy authority. Read [source precedence](governance/DOCUMENTATION_AUTHORITY_AND_SOURCE_PRECEDENCE.md) and the [current Charter pointer](governance/HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md).
 
-## Current operating doctrine
+Observed policy set: Charter 1.5.0; Underwriting 3.6; Frontend/WorkLinks 1.3; Context 1.5.0; Intake/Learning Rail 1.2; Activation/Copy 2.2; /OPS 1.3; Index 1.2. These labels are orientation, not immutable Google revision evidence. Re-read relevant changed sections.
 
-> **Wide intake. Credentialed routing. Narrow financial commitment.**
+HustleXP is a managed local-work transaction network. Broad legitimate-demand intake does not imply available supply, serviceability or payment authority. Each commitment requires applicable scope, eligibility, economics and approval evidence.
 
-> **Capture demand broadly. Commit narrowly. Complete safely. Reconcile every transaction. Convert successful work into repeat relationships. Expand only from evidence.**
+## Role entry points
 
-The first managed service cell is Bellevue and Redmond, focused on Eastside households with bounded, non-emergency needs. Other Eastside demand may enter controlled overflow.
+- Developers: backend `docs/HUSTLEXP_CURRENT_BACKEND_CHECKPOINT.md` and `docs/M01_PROVIDER_ACCOUNT_HANDOFF.md` in its matching documentation candidate. Resolve exact commit and adoption status; default-branch presence is not deployed identity.
+- Founder/operators: existing [Leadgen Structured Register](https://docs.google.com/spreadsheets/d/1cl-VBlEW3hUBiUNBpRo16H-o8O49Cox0xcr3gdX9hlw/edit), `Operate_Now`, and Playbook P35–P38. A published contact is not clearance or qualified demand. Existing sharing and holds remain binding.
+- Product/support: current participant, /OPS and activation authorities linked by the Canonical Index. Proposed UI is not implemented behavior.
+- Coordination: existing [Shared Goal, Execution & Review Log](https://docs.google.com/document/d/1Kstx5GO2FLeliaK7qTwjohD7FDYW8C8WD7My8byjvhY/edit). LOCAL_ONLY reports are not portable, independently accessible test evidence.
 
-General services route to eligible individual or business providers. Regulated work routes exclusively to `VERIFIED_TRADE_BUSINESS` providers through an `ACTIVE_GATED` managed marketplace lane. Intake, recruitment, credential verification, diagnostics, estimates, Provider OS, outcome records, and repeat relationships are active; referral is an interim capability, not the business model. Category-specific platform payments remain blocked until their legal, credential, processor, topology, certification, and release gates pass.
+`specs/`, `screens-spec/`, `ui-puzzle/`, `PER/`, `tracking/` and `legal/` retain useful subordinate, proposed, draft or historical material. FINAL, LOCKED and CONSTITUTIONAL labels do not override current policy. Conflicting clauses require explicit reconciliation, not erased history or disabled safety checks. Legal drafts are not executed approvals.
 
-## Universal V1 boundary
+Separate source presence, testing, deployment, enablement, use and production health. A customer workspace may contain separate paid assessment and execution roots. Purpose-limited assessment access is not paid execution assignment. Free visits and specifically permitted external-service records never fabricate financial security or reconciliation. Production customer-money creation remains frozen unless separately approved and certified.
 
-- one occurrence-level lifecycle across Marketplace, Provider OS, BYOP, Task Opportunities, Recurring Work, and Verified Trade Business transactions;
-- one immutable transaction root per occurrence;
-- PostgreSQL owns final lifecycle authority;
-- a Task Draft precedes opportunity and financial commitment;
-- a Financial Security Event precedes Work Order materialization, assignment, and address release;
-- capture, settlement, platform funding, provider payout, reconciliation, and closure remain separate;
-- AI has no independent money, identity, safety, assignment, private-data, or policy authority;
-- the core is processor-neutral;
-- fake-processor certification precedes approved processor sandbox work;
-- production payment creation remains frozen.
-
-## Repository contents
-
-This repository preserves product, UX, architecture, screen, implementation, legal-draft, planning, audit, and historical material. Those documents remain useful within their classified scope. They do not outrank the governance directory merely because a filename or heading says `LOCKED`, `FINAL`, `MASTER`, `CONSTITUTIONAL`, `AUTHORITY`, or `SINGLE SOURCE OF TRUTH`.
-
-Key families:
-
-```text
-governance/      controlling business policy and documentation precedence
-specs/           subordinate product, architecture, frontend, and backend detail
-screens-spec/    subordinate screen behavior and acceptance detail
-ui-puzzle/       subordinate design-system and component material
-PER/             historical/subordinate execution records
-tracking/        source-dated audits and evidence
-legal/           drafts requiring qualified legal approval
-_archive/        deliberately non-operative historical material
-```
-
-## Truth and safety rules
-
-- Do not copy static test, table, router, coverage, deployment, or production-readiness claims forward. Verify them at an exact revision.
-- Do not treat legacy escrow shorthand or Stripe-specific examples as Universal V1 authority.
-- Do not claim universal category availability, provider availability, insurance, background screening, payment approval, or legal approval without current evidence.
-- Do not describe a Task Opportunity as assignment or guaranteed earnings.
-- Do not describe external ratings as trade credentials.
-- Do not infer production authority from documentation, a green check, an environment variable, a deployment, or code presence.
-
-## Production effects
-
-These documents authorize no deployment, database change, payment action, secret rotation, production configuration mutation, or money-capability enablement.
-
-```text
-PRODUCTION_PAYMENT_CREATION = FROZEN
-ACCEPTS_NEW_CUSTOMER_MONEY = false
-```
-
-Exact implementation and production facts belong to the current repository checkpoints and signed evidence at their exact SHAs.
-
+[AGENTS.md](AGENTS.md) is the proposed agent entry point. Replaced front doors are byte-preserved in `_archive/2026-09-21-front-door/` and Git history. This targeted repair does not certify every legacy file.

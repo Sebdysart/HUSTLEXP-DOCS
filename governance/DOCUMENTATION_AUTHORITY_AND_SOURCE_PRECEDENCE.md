@@ -1,64 +1,37 @@
-# HustleXP Documentation Authority and Source Precedence
+# Documentation authority and evidence boundaries
 
-**Version:** 1.0.0  
-**Effective:** 2026-08-25  
-**Production effect:** NONE
+Version 1.1.0 candidate | observed 2026-09-21 | scope: documentation routing, not new business policy | production effect: NONE.
 
-## Precedence
+## Different kinds of truth
 
-Use this order when HustleXP documents conflict:
+1. Applicable external obligations and executed processor/legal/insurance decisions constrain their exact capabilities. Founder-stated payment topology is not written processor approval.
+2. The [Canonical Index](https://docs.google.com/document/d/1QTrT40LK5zo-DN6ER7naM3p43WlyxkBxKsjL23p20mY/edit) identifies approved business/product authorities. The current Charter pointer replaces the repository's obsolete v1.1.0 authority claim.
+3. Exact commits, local-delta manifests, database/migration identity, test commands/results and observed runtime establish only claims they support. Specs do not prove code; code does not grant approval.
+4. Subordinate specifications elaborate current policy. Proposed states stay labeled. Decisions and evidence need owner, source, date, scope and expiry/change trigger.
+5. Logs, old audits, roadmaps and archived instructions are source-dated records. LOCAL_ONLY is not independently accessible proof. Do not restore older candidates over newer work.
 
-1. Applicable law, written regulator direction, executed agreements, and written processor/insurance decisions constrain what may be executed.
-2. [HustleXP Business and Universal V1 Charter](HUSTLEXP_BUSINESS_AND_UNIVERSAL_V1_CHARTER.md) controls company identity, operating doctrine, product lanes, business policy, service cells, categories, economics definitions, metrics, and Universal V1 target behavior.
-3. Repository-specific controlling specifications own exact implementation boundaries and current engineering truth, provided they do not contradict the charter.
-4. Current checkpoints and evidence records own source-dated observations only.
-5. Approved subordinate product, UX, architecture, runbook, and policy documents elaborate within the authorities above.
-6. Validation plans and experiments are proposals until their evidence is reviewed and promoted.
-7. Roadmaps, audits, archived specs, prior READMEs, underwriting assumptions, implementation plans, and files labeled final/locked/master/constitutional are historical or subordinate unless the alignment register explicitly promotes them.
+## Policy pointers observed 2026-09-21
 
-## Conflict rules
+| Authority | Document |
+|---|---|
+| Charter 1.5.0 | https://docs.google.com/document/d/1-SIB7kDkaeuMMAFCoK6sGPVTtxpDfOXCLLCgCGyP-v8/edit |
+| Underwriting 3.6 | https://docs.google.com/document/d/1lbxM2D4vPX3NfzEPa6JvnvdS3EWzfL48aNY8piTBrYg/edit |
+| Frontend/WorkLinks 1.3 | https://docs.google.com/document/d/1c-2nUsUT3tx3e7RIR0X7OvIXeZjSJtYdQXNRhHqQ8ec/edit |
+| Context 1.5.0 | https://docs.google.com/document/d/1ATlIq6nuIG8sb1hl7B9O1wIz5_uGJ45Vl-5GjgbDwik/edit |
+| Intake/Learning Rail 1.2 | https://docs.google.com/document/d/1JWbveF0AK69fw4xlnGb53yCSD9DpkyfklYGrWPoopuY/edit |
+| Activation/Copy 2.2 | https://docs.google.com/document/d/1j_iCMvN3MHxVGyDhiqj4wtL_p-o7AyNIGHPe-P_YXiE/edit |
+| /OPS 1.3 | https://docs.google.com/document/d/1_tTJOze6KKqzK6WEuH-z5HeRcx7Lc3M__0TNYi476-U/edit |
 
-- Current evidence beats stale status claims.
-- Typed lifecycle states beat “escrow,” “paid,” “funded,” or “complete” shorthand.
-- Processor-neutral intent beats processor-specific examples.
-- Official credentials beat external ratings for trade eligibility.
-- Broad demand intake never implies serviceability or payment authority.
-- One lifecycle beats origin-specific parallel lifecycles.
-- A real Task Draft precedes opportunities and financial commitment.
-- The Financial Security Event precedes Work Order materialization, hard assignment, and exact-address release.
-- Capture, settlement, platform funding, provider payout, reconciliation, and closure remain separate.
-- Production money and deployment remain frozen unless separately authorized by exact release evidence.
+Read current relevant revisions before building; these labels are not permanent freshness evidence. All existing approval/release procedures remain binding.
 
-## Document classifications
+## Material boundaries
 
-| Classification | Meaning |
-| --- | --- |
-| `CONTROLLING` | May define present policy within its stated scope. |
-| `SUBORDINATE` | May elaborate but cannot contradict controlling authority. |
-| `CURRENT EVIDENCE` | Source-dated observation; expires as reality changes. |
-| `VALIDATION` | Hypothesis, test band, or proposed target. |
-| `EXTERNAL DECISION` | Legal, processor, insurance, or regulatory result. |
-| `HISTORICAL` | Preserved evidence; no execution authority. |
-| `ARCHIVED` | Deliberately excluded from current planning. |
+Task Draft, opportunity, eligibility, conditional commitment, financial security, paid Work Order and assignment are distinct. Capture, settlement, funding/payout and reconciliation are distinct. Assessment-only access follows its own consent, eligibility, purpose and expiry controls; the older blanket paid-assignment address rule is not applicable to every visit. Distinct paid obligations keep distinct roots within one workspace. Free assessment and permitted external outcomes never become synthetic payment success. AI has no independent consequential authority.
 
-## Required header for new governing documents
+Implementation dispositions: VERIFIED WORKING, PARTIAL, BROKEN, PHANTOM, DEAD/REDUNDANT or UNKNOWN, with scoped evidence. Production blocker/severity is separate. Planned is not automatically phantom; unexecuted is not automatically broken.
 
-Every new governing document must declare:
+## Change control
 
-```text
-Title
-Version
-Decision date or evidence date
-Classification
-Scope
-Authority or owner
-Supersedes / superseded by
-External decisions still open
-Production effect
-```
+Name owner, scope, version, superseded source, implementation impact and affected tests. Routine parameter changes do not restart the entire baseline. Do not silently decide unresolved economics, legal allocation, processor capability or staffing while fixing prose. Record conflicting clauses, affected workflow, accountable decision owner and resolving action.
 
-## Legacy document rule
-
-Existing documents are preserved. Their content remains useful for history, design exploration, implementation detail, and evidence. When they conflict with the charter, the conflicting clause is non-operative without requiring destructive history rewriting.
-
-The words `LOCKED`, `FINAL`, `MASTER`, `CONSTITUTIONAL`, `AUTHORITY`, and `SINGLE SOURCE OF TRUTH` inside an older filename or document do not alter this precedence.
+Preserve archives and actual safeguards. Never publish private records or secrets to simplify access. A saved document, PR or green check is not independent approval, deployed identity or production certification.
